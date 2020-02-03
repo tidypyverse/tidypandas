@@ -1,5 +1,5 @@
 # dplyr count like utility: returns an ungrouped dataframe
-def dplyr_count(df, count_column_name = "n"):
+def tidy_count(df, count_column_name = "n"):
   
   assert (df.__class__.__name__ == "DataFrameGroupBy"), "input should be a grouped dataframe"
   
@@ -12,7 +12,7 @@ def dplyr_count(df, count_column_name = "n"):
   return res
 
 # dplyr add_count like utility: returns an ungrouped dataframe   
-def dplyr_add_count(df, count_column_name = "n"):
+def tidy_add_count(df, count_column_name = "n"):
   
   assert (df.__class__.__name__ == "DataFrameGroupBy"), "input should be a grouped dataframe"
   
@@ -26,7 +26,7 @@ def dplyr_add_count(df, count_column_name = "n"):
   return res
   
 # dplyr ungroup like utility: returns an ungrouped dataframe
-def dplyr_ungroup(df):
+def tidy_ungroup(df):
   
   df_class = df.__class__.__name__
   if df_class == 'DataFrame':
