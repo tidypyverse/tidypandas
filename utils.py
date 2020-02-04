@@ -36,3 +36,20 @@ def tidy_ungroup(df):
     res = df.obj
   
   return res
+
+# sanitize_index
+# 1. Converts row indexes into columns (if any)
+# 2. Flattens multilevel column indexes into single index with '__' used for concatenation
+def sanitize_index(df):
+  df = df.reset_index()
+  df.columns = ['__'.join(col).rstrip("__") for col in df.columns.values]
+  return df
+
+# tidyr::complete
+def tidy_complete(df, nest_by):
+    df  = df.set_index(nest_by)
+    mux = pd.MultiIndex.from_product(df.index.levels, names = nest_by)
+    df  = df.reindex(mux, fill_value = 0).reset_index()
+    
+    return df
+ 
