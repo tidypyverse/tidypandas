@@ -43,6 +43,7 @@ def tidy_ungroup(df):
 def sanitize_index(df):
   df = df.reset_index()
   df.columns = ['__'.join(col).rstrip("__") for col in df.columns.values]
+  
   return df
 
 # tidyr::complete
