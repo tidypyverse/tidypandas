@@ -17,17 +17,22 @@ def is_tidy_frame(df):
 
 #---------------------------------------------  
 def is_grouped_frame(df):
-  res = df.__class__.__name__ == "DataFrameGroupBy"
-  return(res)
+    
+    res = df.__class__.__name__ == "DataFrameGroupBy"
+    
+    return(res)
 
 #---------------------------------------------
 def ungroup(df):
+    
     assert is_pandas_frame(df)
     assert is_tidy_frame(df)
+    
     if is_grouped_frame(df):
         res = df.obj
     else:
         res = df
+    
     return res
 
 #---------------------------------------------
