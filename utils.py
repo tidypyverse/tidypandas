@@ -35,6 +35,14 @@ def ungroup(df):
     
     return res
 
+                       .reset_index()
+                       .rename(columns = {0: count_column_name}))
+  
+    if grouped_flag:
+        res = res.groupby(group_vars)
+  
+    return res
+
 #---------------------------------------------
 def count(df, column_names_to_group_by = [], count_column_name = "n"):
   
@@ -42,9 +50,7 @@ def count(df, column_names_to_group_by = [], count_column_name = "n"):
     assert is_tidy_frame(df)
       
     if isinstance(column_names_to_group_by, str):
-        temp_list = []
-        temp_list.append(column_names_to_group_by)
-        column_names_to_group_by = temp_list
+        column_names_to_group_by = [column_names_to_group_by]
         
     grouped_flag = is_grouped_frame(df)
   
@@ -70,3 +76,16 @@ def count(df, column_names_to_group_by = [], count_column_name = "n"):
         res = res.groupby(group_vars)
   
     return res
+
+#---------------------------------------------
+def select(df, column_names):
+    
+    assert is_pandas_frame(df)
+    assert is_tidy_frame(df)
+    
+    if isinstance(column_names, str):
+        column_names = [column_names]
+    
+    res = df.loc[:, column_names]
+    
+    return(res)
