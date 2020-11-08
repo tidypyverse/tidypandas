@@ -1,22 +1,38 @@
 import pandas as pd
-bmt = pd.read_feather("work/ltv_modeling/data/training_datasets/dataset_2019-01-01.feather")
-bmt
-bmt.info()
+import numpy as np
 
-bmt_tidy = tidy(bmt)
-bmt_tidy
-bmt_tidy.info()
+iris = pd.read_csv("iris.csv",)
+iris
 
-bmt_tidy.group_by(['n_rides'])
+# grouped ----------------------------------------------------------------------
 
-bmt_tidy_2 = bmt_tidy.select(['user_id', 'n_rides'])
-bmt_tidy_2
-bmt_tidy
+iris_tidy = tidy(iris)
+iris_tidy
 
-bmt_tidy_3 = bmt_tidy.select(['user_id', 'n_rides'], include = False)
-bmt_tidy_3
-bmt_tidy
+iris_tidy.get_info()
+iris_tidy.get_ncol()
+iris_tidy.get_nrow()
+iris_tidy.get_colnames()
+iris_tidy.to_pandas()
 
-bmt_tidy_grouped = bmt_tidy.group_by(['n_rides'])
-bmt_tidy_grouped.info()
-bmt_tidy_grouped.select(['user_id'])
+iris_tidy.select(['Sepal.Length', 'Species'])
+iris_tidy.select(['Sepal.Length', 'Species'], include = False)
+
+iris_tidy.slice(np.random.choice(np.arange(5), 10))
+
+iris_tidy.group_by(['Species'])
+
+# ungrouped --------------------------------------------------------------------
+iris_tidy_grouped = tidy(iris).group_by(['Species'])
+iris_tidy_grouped
+
+iris_tidy_grouped.get_info()
+iris_tidy_grouped.get_ncol()
+iris_tidy_grouped.get_nrow()
+iris_tidy_grouped.get_colnames()
+iris_tidy_grouped.to_pandas()
+
+iris_tidy_grouped.select(['Sepal.Length']) # grouped columns are always kept
+iris_tidy_grouped.select(['Sepal.Length', 'Species'], include = False)
+
+iris_tidy_grouped.slice(np.random.choice(np.arange(5), 10))

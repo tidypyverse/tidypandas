@@ -6,8 +6,10 @@ def tidy(x):
   df_type = x.__class__.__name__ # ["DataFrame", "DataFrameGroupBy"]
   if df_type == "DataFrame":
     res = tidyDataFrame(x)
+    print("Successfully created a tidyDataFrame object")
   else:
     res = tidyGroupedDataFrame(x)
+    print("Successfully created a tidyGroupedDataFrame object:")
   
   return res
 

@@ -11,7 +11,7 @@ Implementation notes (for the developer team):
 [x] select for tidy grouped
 
 [x] group_by for tidy
-[ ] ungroup for tidy grouped
+[x] ungroup for tidy grouped
 
 [ ] mutate for tidy
 [ ] mutate for tidy grouped
@@ -28,5 +28,14 @@ Implementation notes (for the developer team):
 [ ] summarise for tidy
 [ ] summarise for tidy grouped
 
-[ ] slice for tidy
-[ ] slice for tidy grouped
+[x] slice for tidy
+[x] slice for tidy grouped
+
+## class methods
+
+[x] init
+[x] repr
+[x] to_pandas
+[x] get_nrow
+[x] get_ncol
+[x] get_colnames
