@@ -2,7 +2,25 @@ import copy
 import numpy as np
 
 class tidyDataFrame:
-    def __init__(self, x):
+    def __init__(self, x, check = True):
+        
+        if check:
+            assert isinstance(x, pd.DataFrame)
+            row_flag = not isinstance(x.index, pd.MultiIndex)
+            columns  = list(x.columns)
+            col_flag = not isinstance(columns, pd.MultiIndex)
+            # check if row index is rangeIndex
+            flag_no_index = isinstance(x.index, (pd.RangeIndex, pd.Int64Index))
+            # check if all column names are strings
+            str_flag = all([isinstance(y, str) for y in columns])
+            # check if column names are unique
+            if len(set(columns)) == len(columns):
+                unique_flag = True
+            else:
+                unique_flag = False
+            
+            flag = all([row_flag, col_flag, flag_no_index, str_flag, unique_flag])
+            assert flag # this requires to be more descriptive
         self.__data = copy.deepcopy(x)
     
     def __repr__(self):
@@ -45,7 +63,7 @@ class tidyDataFrame:
         
         res = self.__data.loc[:, column_names]
         
-        return tidyDataFrame(res)
+        return tidyDataFrame(res, check = False)
     
     def group_by(self, column_names):
         
@@ -56,7 +74,7 @@ class tidyDataFrame:
         assert all([x in cols for x in column_names])
         
         res = self.__data.groupby(column_names)
-        return tidyGroupedDataFrame(res)
+        return tidyGroupedDataFrame(res, check = False)
     
     def slice(self, row_numbers):
         
@@ -66,4 +84,27 @@ class tidyDataFrame:
         
         res = self.__data.take(row_numbers).reset_index(drop = True)
         
-        return tidyDataFrame(res)
+        return tidyDataFrame(res, check = False)
+        
+    def arrange(self, column_names, ascending = False, na_position = 'last'):
+        
+        if not isinstance(column_names, list):
+            column_names = [column_names]
+        assert len(column_names) > 0
+        cn = self.get_colnames()
+        assert all([x in cn for x in column_names])
+        if not isinstance(ascending, list):
+            isinstance(ascending, bool)
+        else:
+            assert all([isinstance(x, bool) for x in ascending])
+            assert len(ascending) == len(column_names)
+        
+        res = self.__data.sort_values(by = column_names
+                                        , axis         = 0
+                                        , ascending    = ascending
+                                        , inplace      = False
+                                        , kind         = 'quicksort'
+                                        , na_position  = na_position
+                                        , ignore_index = True
+                                        )
+        return tidyDataFrame(res, check = False)

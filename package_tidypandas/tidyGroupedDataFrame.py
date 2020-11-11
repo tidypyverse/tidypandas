@@ -1,7 +1,14 @@
 import copy
 
 class tidyGroupedDataFrame:
-    def __init__(self, x):
+    def __init__(self, x, check = True):
+        if check:
+            raise TypeError(
+                ('If you want to intend work with a existing grouped pandas'
+                   ' dataframe, then consider removing the grouping structure'
+                   ' and creating an instance of tidyDataFrame'
+                   ' and then group_by'
+                  ))
         self.__data = copy.deepcopy(x)
     
     def __repr__(self):
@@ -53,10 +60,10 @@ class tidyGroupedDataFrame:
         res = (self.__data.obj.loc[:, column_names]
                               .groupby(group_var_names)
                               )
-        return tidyGroupedDataFrame(res)
+        return tidyGroupedDataFrame(res, check = False)
     
     def ungroup(self):
-        return tidyDataFrame(self.__data.obj)
+        return tidyDataFrame(self.__data.obj, check = False)
     
     def slice(self, row_numbers):
         
@@ -69,4 +76,35 @@ class tidyGroupedDataFrame:
                    .drop(columns = 'level_' + str(len(group_var_names)))
                    .groupby(group_var_names)
                    )
-        return tidyGroupedDataFrame(res)
+        return tidyGroupedDataFrame(res, check = False)
+        
+    def arrange(self, column_names, ascending = False, na_position = 'last'):
+        
+        if not isinstance(column_names, list):
+            column_names = [column_names]
+        assert len(column_names) > 0
+        cn = self.get_colnames()
+        assert all([x in cn for x in column_names])
+        if not isinstance(ascending, list):
+            isinstance(ascending, bool)
+        else:
+            assert all([isinstance(x, bool) for x in ascending])
+            assert len(ascending) == len(column_names)
+        
+        group_var_names = self.__data.grouper.names
+        res = (self.__data
+                   .apply(lambda x: x.sort_values(by = column_names
+                                                    , axis         = 0
+                                                    , ascending    = ascending
+                                                    , inplace      = False
+                                                    , kind         = 'quicksort'
+                                                    , na_position  = na_position
+                                                    , ignore_index = True
+                                                    )
+                         )
+                   .reset_index(drop = True)
+                   .groupby(group_var_names)
+                   )
+        
+        return tidyGroupedDataFrame(res, check = False)
+        
