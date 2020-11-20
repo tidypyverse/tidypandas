@@ -7,48 +7,32 @@ Implementation notes (for the developer team):
 
 ## Basic Verbs (one-table)
 
-[x] select for tidy
-
-[x] select for tidy grouped
-
-[x] group_by for tidy
-
-[x] ungroup for tidy grouped
-
-[ ] mutate for tidy
-
-[ ] mutate for tidy grouped
-
-[ ] arrange for tidy
-
-[ ] arrange for tidy grouped
-
-[ ] filter for tidy
-
-[ ] filter for tidy grouped
-
-[ ] distinct for tidy
-
-[ ] distinct for tidy grouped
-
-[ ] summarise for tidy
-
-[ ] summarise for tidy grouped
-
-[x] slice for tidy
-
-[x] slice for tidy grouped
+- [x] select for tidy
+- [x] select for tidy grouped
+- [x] group_by for tidy
+- [x] ungroup for tidy grouped
+- [x] mutate for tidy
+- [ ] mutate for tidy grouped
+- [x] arrange for tidy
+- [x] arrange for tidy grouped
+- [ ] filter for tidy
+- [ ] filter for tidy grouped
+- [ ] distinct for tidy
+- [ ] distinct for tidy grouped
+- [ ] summarise for tidy
+- [ ] summarise for tidy grouped
+- [x] slice for tidy
+- [x] slice for tidy grouped
+- [ ] mutate_across for tidy (grahitr)
+- [ ] mutate_across for tidy grouped (grahitr)
+- [ ] summarise_across for tidy (grahitr)
+- [ ] summarise_across for tidy grouped (grahitr)
 
 ## class methods
 
-[x] init
-
-[x] repr
-
-[x] to_pandas
-
-[x] get_nrow
-
-[x] get_ncol
-
-[x] get_colnames
+- [x] init
+- [x] repr
+- [x] to_pandas
+- [x] get_nrow
+- [x] get_ncol
+- [x] get_colnames
