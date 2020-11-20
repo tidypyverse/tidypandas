@@ -276,7 +276,7 @@ def arrange(df, cols, decreasing = False, check = True):
                         )
                  .reset_index(drop = True)
                  .groupby(groupvars)
-                 )
+                 ) 
     else:
         res = df.sort_values(by = cols
                              , ascending = not decreasing

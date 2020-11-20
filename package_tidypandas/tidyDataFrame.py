@@ -1,5 +1,6 @@
 import copy
 import numpy as np
+import pandas as pd
 
 class tidyDataFrame:
     def __init__(self, x, check = True):
@@ -108,3 +109,51 @@ class tidyDataFrame:
                                         , ignore_index = True
                                         )
         return tidyDataFrame(res, check = False)
+    
+    def mutate(self, dictionary):
+        '''
+        {"hp": [lambda x, y: x - y.mean(), ['a', 'b']]
+           , "new" : lambda x: x.hp - x.mp.mean() + x.shape[1]
+           , "existing" : [lambda x: x + 1]
+           }
+        TODO:
+            1. assign multiple columns at once case
+            2. grouped version
+        '''
+        mutated = copy.deepcopy(self.__data)
+        
+        for akey in dictionary:
+            
+            # lambda function case
+            if callable(dictionary[akey]):
+                # assigning to single column
+                if isinstance(akey, str):
+                    mutated[akey] = dictionary[akey](mutated)
+            
+            # simple function case
+            if isinstance(dictionary[akey], (list, tuple)):
+                cn = set(mutated.columns)
+                
+                # case 1: only simple function
+                if len(dictionary[akey]) == 1:
+                    assert callable(dictionary[akey][0])
+                    
+                    # assign to a single column
+                    # column should pre-exist
+                    assert set([akey]).issubset(cn)
+                    mutated[akey] = dictionary[akey][0](mutated[akey])
+                
+                # case2: function with required columns
+                elif len(dictionary[akey]) == 2:
+                    assert callable(dictionary[akey][0])
+                    assert isinstance(dictionary[akey][1], (list, tuple, str))
+                    if not isinstance(dictionary[akey][1], (list, tuple)):
+                        colnames_to_use = [dictionary[akey][1]]
+                    else:
+                        colnames_to_use = dictionary[akey][1]
+                    assert set(colnames_to_use).issubset(cn)
+                    
+                    input_list = [mutated[colname] for colname in colnames_to_use]
+                    mutated[akey] = dictionary[akey][0](*input_list)
+            
+        return tidyDataFrame(mutated, check = False)
