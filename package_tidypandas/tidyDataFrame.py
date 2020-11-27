@@ -2,6 +2,9 @@ import copy
 import numpy as np
 import pandas as pd
 
+from package_tidypandas.tidyGroupedDataFrame import tidyGroupedDataFrame
+from package_tidypandas.tidypredicates import *
+
 class tidyDataFrame:
     def __init__(self, x, check = True):
         
@@ -60,7 +63,7 @@ class tidyDataFrame:
         if not include:
             column_names = self.__data.columns.difference(column_names)
             if len(column_names) == 0:
-                raise "Removing all columns is not allowed"
+                raise Exception("Removing all columns is not allowed")
         
         res = self.__data.loc[:, column_names]
         
@@ -157,3 +160,20 @@ class tidyDataFrame:
                     mutated[akey] = dictionary[akey][0](*input_list)
             
         return tidyDataFrame(mutated, check = False)
+
+    def mutate_across(self, func, column_names=None, predicate=None, prefix=""):
+
+        assert callable(func)
+        assert isinstance(prefix, str)
+
+        if column_names is not None:
+            assert isinstance(column_names, list)
+            assert all([isinstance(acol, str) for acol in column_names])
+        else:
+            assert predicate is not None and callable(predicate)
+            column_names = predicate(self)
+
+        res = self
+        res = res.mutate({prefix + acol: [func, [acol]] for acol in column_names})
+
+        return res
