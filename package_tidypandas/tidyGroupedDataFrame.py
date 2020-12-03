@@ -1,4 +1,5 @@
 import copy
+from package_tidypandas import tidyDataFrame
 
 class tidyGroupedDataFrame:
     def __init__(self, x, check = True):
