@@ -35,7 +35,7 @@ class tidyDataFrame:
         return ''
     
     def to_pandas(self):
-        return self.__data
+        return copy.copy(self.__data)
     
     def get_info(self):
         print('Tidy dataframe with shape: {shape}'\
