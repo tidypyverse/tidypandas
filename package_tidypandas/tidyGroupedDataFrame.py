@@ -1,7 +1,9 @@
 import copy
-from package_tidypandas import tidyDataFrame
+# from package_tidypandas import tidyDataFrame
 
 class tidyGroupedDataFrame:
+    
+    # init method
     def __init__(self, x, check = True):
         if check:
             raise TypeError(
@@ -12,6 +14,7 @@ class tidyGroupedDataFrame:
                   ))
         self.__data = copy.deepcopy(x)
     
+    # print method
     def __repr__(self):
         print('Tidy grouped dataframe with shape: {shape}'\
                .format(shape = self.__data.obj.shape))
@@ -21,9 +24,11 @@ class tidyGroupedDataFrame:
         print(self.__data.obj.head(10))
         return ''
     
+    # pandas copy method
     def to_pandas(self):
         return copy.copy(self.__data)
     
+    # get methods
     def get_info(self):
         print('Tidy grouped dataframe with shape: {shape}'\
                .format(shape = self.__data.obj.shape))
@@ -41,7 +46,12 @@ class tidyGroupedDataFrame:
         
     def get_colnames(self):
         return list(self.__data.obj.columns)
-        
+    
+    # ungroup method
+    def ungroup(self):
+        return tidyDataFrame(self.__data.obj, check = False)
+     
+    # basic verbs   
     def select(self, column_names, include = True):
         
         column_names = list(column_names)
@@ -62,9 +72,6 @@ class tidyGroupedDataFrame:
                               .groupby(group_var_names)
                               )
         return tidyGroupedDataFrame(res, check = False)
-    
-    def ungroup(self):
-        return tidyDataFrame(self.__data.obj, check = False)
     
     def slice(self, row_numbers):
         
@@ -181,9 +188,7 @@ class tidyGroupedDataFrame:
                         for i in range(len(akey)):
                             mutated[akey[i]] = res_list[i]
                     else:
-                        raise TypeError(("Column name(s) to be assigned should ")
-                                        ("either be a string or a tuple of strings")
-                                        )
+                        raise TypeError("Column names to be assigned should either be a string or a tuple of strings")
                 # case2: simple function with required columns
                 elif len(dictionary[akey]) == 2:
                     assert callable(dictionary[akey][0])
@@ -217,8 +222,128 @@ class tidyGroupedDataFrame:
                             mutated[akey[i]] = res_list[i]
                 else:
                     # TODO create your own error class
-                    raise ValueError(("Some value(s) in the dictionary is")
-                                     ("neither callable nor a list or a tuple")
-                                     )
+                    raise ValueError("Some value(s) in the dictionary is neither callable nor a list or a tuple")
             
         return tidyGroupedDataFrame(mutated, check = False)
+    
+    def filter(self, query_string = None, mask = None):
+   
+        if query_string is None and mask is None:
+            raise Exception("Both 'query' and 'mask' cannot be None")
+        if query_string is not None and mask is not None:
+            raise Exception("One among 'query' and 'mask' should be None")
+        
+        group_var_names = self.__data.grouper.names
+        
+        if query_string is not None and mask is None:
+            res = (self.__data
+                       .obj
+                       .query(query_string)
+                       .groupby(group_var_names)
+                       )
+        if query_string is None and mask is not None:
+            res = self.__data.obj.iloc[mask, :]
+            res = res.groupby(group_var_names)
+            
+        res = tidyGroupedDataFrame(res, check = False)
+        return res
+        
+    def mutate_across(self, func, column_names = None, predicate = None, prefix = ""):
+
+        assert callable(func)
+        assert isinstance(prefix, str)
+        
+        if (column_names is not None) and (predicate is not None):
+            raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
+        
+        if (column_names is None) and (predicate is None):
+            raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
+        
+        # use column_names
+        if column_names is not None:
+            assert isinstance(column_names, list)
+            assert all([isinstance(acol, str) for acol in column_names])
+        # use predicate to assign appropriate column_names
+        else:
+            mask = list(self.__data.apply(predicate, axis = 0))
+            assert all([isinstance(x, bool) for x in mask])
+            column_names = self.__data.columns[mask]
+        
+        # make a copy of the dataframe and apply mutate in order
+        for acol in column_names:
+            self.__data[prefix + acol] = fun(self.__data[acol])
+            
+        return tidyDataFrame(self, check = False)
+        
+    def distinct(self, column_names = None, keep = 'first', retain_all_columns = False, ignore_grouping = False):
+        
+        if isinstance(column_names, str):
+            column_names = [column_names]
+        assert (column_names is None) or (isinstance(column_names, list))
+        if column_names is not None:
+            assert all(isinstance(x, str) for x in column_names)
+            cols = self.get_colnames()
+            assert all([x in cols for x in column_names])
+        assert isinstance(retain_all_columns, bool)
+        
+        group_var_names = self.__data.grouper.names
+        # column_names should not intersect with grouping variables
+        if column_names is not None:
+            assert not any(x in group_var_names for x in column_names)
+        
+        # function: distinct per chunk
+        def distinct_wrapper(chunk):
+            
+            chunk = chunk.drop(columns = group_var_names)
+            
+            if column_names is None:
+                res = chunk.drop_duplicates(keep = keep, ignore_index = True)
+            else:
+                if retain_all_columns:
+                    res = chunk.drop_duplicates(subset = column_names
+                                                      , keep = keep
+                                                      , ignore_index = True
+                                                      )
+                else:
+                    res = (chunk.loc[:, column_names]
+                                .drop_duplicates(keep = keep, ignore_index = True)
+                               )
+            
+            return res
+        
+        if ignore_grouping:
+            if column_names is None:
+                res = (self.ungroup()
+                           .to_pandas()
+                           .drop_duplicates(keep = keep, ignore_index = True)
+                           )
+            else:
+                res = (self.ungroup()
+                           .to_pandas()
+                           .drop_duplicates(subset = column_names
+                                            , keep = keep
+                                            , ignore_index = True
+                                            )
+                            )
+            if retain_all_columns:
+                res = res.groupby(column_names)
+            else:
+                if column_names is None:
+                    to_select = self.get_colnames()
+                else:
+                    to_select = list(set(column_names).union(group_var_names))
+                
+                res = (res.loc[:, to_select]
+                          .groupby(group_var_names)
+                          )
+        else: # grouped distinct
+            res = (self.__data
+                       .apply(distinct_wrapper)
+                       .reset_index(drop = True, level = 1) # remove col_1
+                       .reset_index()
+                       .groupby(group_var_names)
+                       )
+        
+        
+        return tidyGroupedDataFrame(res, check = False)
+    

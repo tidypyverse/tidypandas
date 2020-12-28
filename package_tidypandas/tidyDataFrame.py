@@ -2,10 +2,11 @@ import copy
 import numpy as np
 import pandas as pd
 
-from package_tidypandas.tidyGroupedDataFrame import tidyGroupedDataFrame
-from package_tidypandas.tidypredicates import *
+#from package_tidypandas.tidyGroupedDataFrame import tidyGroupedDataFrame
+#from package_tidypandas.tidypredicates import *
 
 class tidyDataFrame:
+    # init method
     def __init__(self, x, check = True):
         
         if check:
@@ -24,9 +25,10 @@ class tidyDataFrame:
                 unique_flag = False
             
             flag = all([row_flag, col_flag, flag_no_index, str_flag, unique_flag])
-            assert flag # this requires to be more descriptive
+            assert flag # TODO: this requires to be more descriptive
         self.__data = copy.deepcopy(x)
     
+    # print method
     def __repr__(self):
         print('Tidy dataframe with shape: {shape}'\
               .format(shape = self.__data.shape))
@@ -34,9 +36,11 @@ class tidyDataFrame:
         print(self.__data.head(10))
         return ''
     
+    # pandas copy method
     def to_pandas(self):
         return copy.copy(self.__data)
     
+    # get methods
     def get_info(self):
         print('Tidy dataframe with shape: {shape}'\
               .format(shape = self.__data.shape))
@@ -51,7 +55,21 @@ class tidyDataFrame:
         
     def get_colnames(self):
         return list(self.__data.columns)
+    
+    # groupby method
+    def group_by(self, column_names):
         
+        if isinstance(column_names, str):
+            column_names = [column_names]
+        assert len(column_names) > 0
+        assert all([isinstance(x, str) for x in column_names])
+        cols = self.__data.columns.to_list()
+        assert all([x in cols for x in column_names])
+        
+        res = self.__data.groupby(column_names)
+        return tidyGroupedDataFrame(res, check = False)
+    
+    # basic verbs  
     def select(self, column_names, include = True):
         
         column_names = list(column_names)
@@ -68,17 +86,6 @@ class tidyDataFrame:
         res = self.__data.loc[:, column_names]
         
         return tidyDataFrame(res, check = False)
-    
-    def group_by(self, column_names):
-        
-        column_names = list(column_names)
-        assert len(column_names) > 0
-        assert all([isinstance(x, str) for x in column_names])
-        cols = self.__data.columns.to_list()
-        assert all([x in cols for x in column_names])
-        
-        res = self.__data.groupby(column_names)
-        return tidyGroupedDataFrame(res, check = False)
     
     def slice(self, row_numbers):
         
@@ -160,20 +167,71 @@ class tidyDataFrame:
                     mutated[akey] = dictionary[akey][0](*input_list)
             
         return tidyDataFrame(mutated, check = False)
-
-    def mutate_across(self, func, column_names=None, predicate=None, prefix=""):
+        
+    def filter(self, query_string = None, mask = None):
+   
+        if query_string is None and mask is None:
+            raise Exception("Both 'query' and 'mask' cannot be None")
+        if query_string is not None and mask is not None:
+            raise Exception("One among 'query' and 'mask' should be None")
+        
+        if query_string is not None and mask is None:
+            res = self.__data.query(query_string)
+        if query_string is None and mask is not None:
+            res = self.__data.iloc[mask, :]
+            
+        return tidyDataFrame(res, check = False)
+        
+    def distinct(self, column_names = None, keep = 'first', retain_all_columns = False):
+        if isinstance(column_names, str):
+            column_names = [column_names]
+        assert (column_names is None) or (isinstance(column_names, list))
+        if column_names is not None:
+            assert all(isinstance(x, str) for x in column_names)
+            cols = self.get_colnames()
+            assert all([x in cols for x in column_names])
+        assert isinstance(retain_all_columns, bool)
+        
+        if column_names is None:
+            res = self.__data.drop_duplicates(keep = keep, ignore_index = True)
+        else:
+            if retain_all_columns:
+                res = self.__data.drop_duplicates(subset = column_names
+                                                  , keep = keep
+                                                  , ignore_index = True
+                                                  )
+            else:
+                res = (self.__data
+                           .loc[:, column_names]
+                           .drop_duplicates(keep = keep, ignore_index = True)
+                           )
+        
+        return tidyDataFrame(res, check = False)
+    
+    # basic extensions    
+    def mutate_across(self, func, column_names = None, predicate = None, prefix = ""):
 
         assert callable(func)
         assert isinstance(prefix, str)
-
+        
+        if (column_names is not None) and (predicate is not None):
+            raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
+        
+        if (column_names is None) and (predicate is None):
+            raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
+        
+        # use column_names
         if column_names is not None:
             assert isinstance(column_names, list)
             assert all([isinstance(acol, str) for acol in column_names])
+        # use predicate to assign appropriate column_names
         else:
-            assert predicate is not None and callable(predicate)
-            column_names = predicate(self)
-
-        res = self
-        res = res.mutate({prefix + acol: [func, [acol]] for acol in column_names})
-
-        return res
+            mask = list(self.__data.apply(predicate, axis = 0))
+            assert all([isinstance(x, bool) for x in mask])
+            column_names = self.__data.columns[mask]
+        
+        # make a copy of the dataframe and apply mutate in order
+        for acol in column_names:
+            self.__data[prefix + acol] = fun(self.__data[acol])
+            
+        return tidyDataFrame(self, check = False)

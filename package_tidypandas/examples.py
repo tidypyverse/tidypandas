@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 
-
 iris = pd.read_csv("~/personal/tidypandas/iris.csv")
 iris
 
@@ -41,9 +40,15 @@ iris_tidy.mutate({"sl"           : lambda x : x['Sepal.Length'] + x.shape[1],
                  }
                 )
 
+iris_tidy.filter("Species == 'setosa'")
+
+iris_tidy.distinct()
+iris_tidy.distinct('Species')
+iris_tidy.distinct(['Sepal.Length', 'Sepal.Width'])
+iris_tidy.distinct(['Sepal.Length', 'Sepal.Width'], retain_all_columns = True)
 
 # grouped --------------------------------------------------------------------
-iris_tidy_grouped = tidyDataFrame(iris).group_by(['Species'])
+iris_tidy_grouped = tidyDataFrame(iris).group_by('Species')
 iris_tidy_grouped
 
 iris_tidy_grouped.get_info()
@@ -57,7 +62,7 @@ iris_tidy_grouped.select(['Sepal.Length', 'Species'], include = False)
 
 iris_tidy_grouped.slice(range(3))
 
-iris_tidy_grouped.ungroup()
+iris_tidy_grouped.ungroup() 
 
 iris_tidy_grouped.arrange('Sepal.Length', ascending = True)
 iris_tidy_grouped.mutate(
@@ -77,3 +82,11 @@ iris_tidy_grouped.mutate({"sl"           : lambda x : x['Sepal.Length'] + x.shap
                           "Petal.Length" : (lambda x: x + 2, )
                          }
                          )
+
+iris_tidy_grouped.filter("Species == 'setosa'")
+
+iris_tidy_grouped.distinct()
+iris_tidy_grouped.distinct(ignore_grouping = True)
+iris_tidy_grouped.distinct(['Sepal.Length', 'Sepal.Width'])
+iris_tidy_grouped.distinct(['Sepal.Length', 'Sepal.Width'], ignore_grouping = True)
+iris_tidy_grouped.distinct(['Sepal.Length', 'Sepal.Width'], retain_all_columns = True)
