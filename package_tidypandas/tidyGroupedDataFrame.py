@@ -46,6 +46,9 @@ class tidyGroupedDataFrame:
         
     def get_colnames(self):
         return list(self.__data.obj.columns)
+        
+    def get_groupvars(self):
+        return self.__data.grouper.names
     
     # ungroup method
     def ungroup(self):

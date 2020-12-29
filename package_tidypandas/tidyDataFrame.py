@@ -5,6 +5,26 @@ import pandas as pd
 #from package_tidypandas.tidyGroupedDataFrame import tidyGroupedDataFrame
 #from package_tidypandas.tidypredicates import *
 
+def is_string_or_string_list(x):
+    
+    res = False
+    if isinstance(x, str):
+        res = True
+    elif isinstance(x, list):
+        if all([isinstance(i, str) for i in x]):
+            res = True
+    else:
+        res = False
+    
+    return res
+    
+def enlist(x):
+    if not isinstance(x, list):
+        x = [x]
+    
+    return x
+
+
 class tidyDataFrame:
     # init method
     def __init__(self, x, check = True):
@@ -235,3 +255,85 @@ class tidyDataFrame:
             self.__data[prefix + acol] = fun(self.__data[acol])
             
         return tidyDataFrame(self, check = False)
+        
+    # join methods
+    def join(self, y, how = 'inner', on = None, on_x = None, on_y = None):
+
+        # assertions
+        assert isinstance(y, (tidyDataFrame, tidyGroupedDataFrame))
+        assert how in ['inner', 'outer', 'left', 'right', 'anti']
+        cn_x = self.get_colnames()
+        cn_y = y.get_colnames()
+        is_y_grouped = False
+        if isinstance(y, tidyGroupedDataFrame):
+            is_y_grouped = True
+            assert on is not None # only on is supported when y is grouped
+            groupvars = y.get_groupvars()
+            y = y.ungroup().to_pandas()
+        else:
+            y = y.to_pandas()
+            
+        if on is None:
+            assert on_x is not None and on_y is not None
+            assert len(on_x) == len(on_y)
+            assert is_string_or_string_list(on_x)
+            assert is_string_or_string_list(on_y)
+            on_x = enlist(on_x)
+            on_y = enlist(on_y)
+        else:
+            assert on_x is None and on_y is None
+            assert isinstance(on, (str, list))
+            if isinstance(on, str):
+                assert on in cn_x
+                assert on in cn_y
+                on = enlist(on)
+            else:
+                assert all([on in x for x in cn_x])
+                assert all([on in x for x in cn_x])
+                
+        # merge call
+        if how == 'anti':
+            res = pd.merge(self.__data
+                           , y
+                           , how = how
+                           , on = on
+                           , left_on = on_x
+                           , right_on = on_y
+                           , indicator = True
+                           )
+            res = res.loc[res._merge == 'left_only', :].drop(columns='_merge')
+        else:    
+            res = pd.merge(self.__data
+                           , y
+                           , how = how
+                           , on = on
+                           , left_on = on_x
+                           , right_on = on_y
+                           )
+                       
+        # handle grouping
+        if is_y_grouped:
+            if all(i in list(res.columns) for i in groupvars):
+                res = tidyGroupedDataFrame(res.groupby(groupvars), check = False)
+            else:
+                raise Exception('Merged output should have groupby columns names. Most likely they have got appended by _x or _y')
+        else:
+            res = tidyDataFrame(res, check = False)
+            
+        return res
+        
+    def join_inner(self, y, on = None, on_x = None, on_y = None):
+        return self.join(y, 'inner', on, on_x, on_y)
+        
+    def join_outer(self, y, on = None, on_x = None, on_y = None):
+        return self.join(y, 'outer', on, on_x, on_y)
+        
+    def join_left(self, y, on = None, on_x = None, on_y = None):
+        return self.join(y, 'left', on, on_x, on_y)
+        
+    def join_right(self, y, on = None, on_x = None, on_y = None):
+        return self.join(y, 'right', on, on_x, on_y)
+        
+    def join_anti(self, y, on = None, on_x = None, on_y = None):
+        return self.join(y, 'anti', on, on_x, on_y)    
+
