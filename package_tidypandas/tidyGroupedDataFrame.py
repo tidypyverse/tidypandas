@@ -1,5 +1,5 @@
 import copy
-# from package_tidypandas import tidyDataFrame
+import pandas as pd
 
 class tidyGroupedDataFrame:
     
@@ -52,6 +52,9 @@ class tidyGroupedDataFrame:
     
     # ungroup method
     def ungroup(self):
+        ## importing it here to avoid circular imports
+        from package_tidypandas.tidyDataFrame import tidyDataFrame
+
         return tidyDataFrame(self.__data.obj, check = False)
      
     # basic verbs   
@@ -255,28 +258,41 @@ class tidyGroupedDataFrame:
 
         assert callable(func)
         assert isinstance(prefix, str)
-        
+
         if (column_names is not None) and (predicate is not None):
             raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
         
         if (column_names is None) and (predicate is None):
             raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
-        
+
+        mutated = copy.deepcopy(self.__data)
+        grouping_columns = mutated.grouper.names
+        cn = mutated.obj.columns
+
         # use column_names
         if column_names is not None:
             assert isinstance(column_names, list)
             assert all([isinstance(acol, str) for acol in column_names])
         # use predicate to assign appropriate column_names
         else:
-            mask = list(self.__data.apply(predicate, axis = 0))
-            assert all([isinstance(x, bool) for x in mask])
-            column_names = self.__data.columns[mask]
+            mask_predicate = list(self.__data.obj.apply(predicate, axis=0))
+            assert all([isinstance(x, bool) for x in mask_predicate])
+
+            mask_non_grouping_column = [acol not in grouping_columns for acol in cn]
+
+            mask = [x and y for x, y in zip(mask_predicate, mask_non_grouping_column)]
+            column_names = cn[mask]
         
         # make a copy of the dataframe and apply mutate in order
         for acol in column_names:
-            self.__data[prefix + acol] = fun(self.__data[acol])
-            
-        return tidyDataFrame(self, check = False)
+            def assigner_single(chunk):
+                chunk[prefix + acol] = func(chunk[acol])
+                return chunk
+            mutated = (mutated.apply(assigner_single)
+                              .reset_index(drop = True)
+                              .groupby(grouping_columns))
+
+        return tidyGroupedDataFrame(mutated, check = False)
         
     def distinct(self, column_names = None, keep = 'first', retain_all_columns = False, ignore_grouping = False):
         
@@ -349,4 +365,153 @@ class tidyGroupedDataFrame:
         
         
         return tidyGroupedDataFrame(res, check = False)
-    
+
+    def summarise(self, dictionary):
+
+        """
+
+        Parameters
+        ----------
+        dictionary: dictionary
+            map of summarised column names to summarised functions
+
+        Returns
+        -------
+        a tidyDataFrame
+
+        Examples
+        -------
+        type1:
+        dictionary = {"cross_entropy": [lambda p, q: sum(p*log(q)), ['a', 'b']]}
+        dictionary = {"sepal_length": [lambda x: mean(x)]}
+        type2:
+        dictionary = {"cross_entropy": lambda x: (x.a*log(x.b)).sum()}
+        type3:
+        dictionary = {"sepal_length": "mean"}
+
+        """
+        ## 1. will summarised columns earlier in the dictionary be available for later aggregations? NO
+
+        # Type checks
+        assert isinstance(dictionary, dict)
+
+        grouped = copy.deepcopy(self.__data)
+        cn = self.get_colnames()
+
+        keys = dictionary.keys()
+        values = dictionary.values()
+
+        assert all([isinstance(akey, str) for akey in keys])
+        assert all([isinstance(avalue, (list, tuple)) or callable(avalue) for avalue in values])
+
+        # dict: akey -> summarised series
+        res = dict()
+
+        for akey in keys:
+            avalue = dictionary[akey]
+            if isinstance(avalue, (list, tuple)):
+                if len(avalue) == 1:
+                    func = avalue[0]
+                    func_args = [akey]
+                elif len(avalue) == 2:
+                    func = avalue[0]
+                    func_args = avalue[1]
+                    assert isinstance(func_args, (list, tuple, str))
+                    if isinstance(func_args, str):
+                        func_args = [func_args]
+                    else:
+                        func_args = list(func_args) ## explicitly converts tuples to list
+                        assert all(isinstance(acol_name, str) for acol_name in func_args)
+                else:
+                    raise ValueError("values of type list in the dictionary should be of len 1 or 2")
+
+                assert callable(func)
+                assert set(func_args).issubset(cn)
+                ## summarise for type 1
+
+                def summariser_single(chunk):
+                    input_cols = map(lambda x: chunk[x], func_args)
+                    return func(*input_cols)
+
+
+                res.update({akey: grouped.apply(summariser_single)})
+
+            if callable(avalue):
+                ## summarise for type 2
+                res.update({akey: grouped.apply(avalue)})
+
+            ## TODO: to support avalue to be a string name for popular aggregate functions.
+
+        list_summarised = list(res.values())
+
+        assert all([a_summarised.shape == list_summarised[0].shape for a_summarised in list_summarised[1:]]), \
+            "all summarised series don't have same shape"
+
+        ## importing it here to avoid circular imports
+        from package_tidypandas.tidyDataFrame import tidyDataFrame
+
+        return tidyDataFrame(pd.DataFrame(res).reset_index(drop=False))
+
+    def summarise_across(self, func, column_names = None, predicate = None, prefix = ""):
+        """
+
+        Parameters
+        ----------
+        func: callable
+            aggregate function
+        column_names: list
+            list of column names(string)
+        predicate: callable
+            function to select columns, exactly one among column_names and predicate must be specified
+        prefix: string
+            prefix to add to column names
+
+        Returns
+        -------
+        a tidyDataFrame
+        """
+
+        assert callable(func)
+        assert isinstance(prefix, str)
+
+        if (column_names is not None) and (predicate is not None):
+            raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
+
+        if (column_names is None) and (predicate is None):
+            raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
+
+        grouped = copy.deepcopy(self.__data)
+        grouping_columns = grouped.grouper.names
+        cn = grouped.obj.columns
+
+        # use column_names
+        if column_names is not None:
+            assert isinstance(column_names, list)
+            assert all([isinstance(acol, str) for acol in column_names])
+        # use predicate to assign appropriate column_names
+        else:
+            mask_predicate = list(self.__data.obj.apply(predicate, axis=0))
+            assert all([isinstance(x, bool) for x in mask_predicate])
+
+            mask_non_grouping_column = [acol not in grouping_columns for acol in cn]
+
+            mask = [x and y for x, y in zip(mask_predicate, mask_non_grouping_column)]
+            column_names = cn[mask]
+
+        # dict: akey -> summarised series
+        res = dict()
+
+        for acol in column_names:
+            def summariser_single(chunk):
+                return func(chunk[acol])
+            res.update({prefix+acol: grouped.apply(summariser_single)})
+
+        list_summarised = list(res.values())
+
+        assert all([a_summarised.shape == list_summarised[0].shape for a_summarised in list_summarised[1:]]), \
+            "all summarised series don't have same shape"
+
+        ## importing it here to avoid circular imports
+        from package_tidypandas.tidyDataFrame import tidyDataFrame
+
+        return tidyDataFrame(pd.DataFrame(res).reset_index(drop=False))

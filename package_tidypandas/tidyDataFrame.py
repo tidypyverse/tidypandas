@@ -2,8 +2,8 @@ import copy
 import numpy as np
 import pandas as pd
 
-#from package_tidypandas.tidyGroupedDataFrame import tidyGroupedDataFrame
-#from package_tidypandas.tidypredicates import *
+from package_tidypandas.tidyGroupedDataFrame import tidyGroupedDataFrame
+from package_tidypandas.tidypredicates import *
 
 def is_string_or_string_list(x):
     
@@ -233,6 +233,8 @@ class tidyDataFrame:
 
         assert callable(func)
         assert isinstance(prefix, str)
+
+        mutated = copy.deepcopy(self.__data)
         
         if (column_names is not None) and (predicate is not None):
             raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
@@ -252,9 +254,9 @@ class tidyDataFrame:
         
         # make a copy of the dataframe and apply mutate in order
         for acol in column_names:
-            self.__data[prefix + acol] = fun(self.__data[acol])
+            mutated[prefix + acol] = func(mutated[acol])
             
-        return tidyDataFrame(self, check = False)
+        return tidyDataFrame(mutated, check = False)
         
     # join methods
     def join(self, y, how = 'inner', on = None, on_x = None, on_y = None):
