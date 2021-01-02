@@ -1,6 +1,7 @@
 import copy
 import numpy as np
 import pandas as pd
+import warnings
 
 #from package_tidypandas.tidyGroupedDataFrame import tidyGroupedDataFrame
 #from package_tidypandas.tidypredicates import *
@@ -45,8 +46,25 @@ class tidyDataFrame:
                 unique_flag = False
             
             flag = all([row_flag, col_flag, flag_no_index, str_flag, unique_flag])
-            assert flag # TODO: this requires to be more descriptive
-        self.__data = copy.deepcopy(x)
+            if not flag:
+                if not row_flag:
+                    warnings.warn("Row index should not be a MultiIndex object.")
+                if not col_flag:
+                    warnings.warn("Column index should not be a MultiIndex object.")
+                if not flag_no_index:
+                    warnings.warn("Row index should not either RangeIndex or Int64Index. Perhaps, you might want to reset index with df.reset_index(drop = False)?")
+                if not str_flag:
+                    warnings.warn("Column index should be string column names.")
+                if not unique_flag:
+                    warnings.warn("Column names(index) should be unique.")
+                
+                # raise the error After informative warnings
+                raise Exception("Cannot use the pandas dataframe due to above warnings.")
+            
+            print("Success! Created a tidy dataframe.")       
+                    
+        self.__data = copy.copy(x)
+        return None
     
     # print method
     def __repr__(self):
@@ -73,33 +91,45 @@ class tidyDataFrame:
     def get_ncol(self):
         return self.__data.shape[1]
         
+    def get_shape(self):
+        return self.__data.shape
+        
+    def get_dim(self):
+        return self.__data.shape
+        
     def get_colnames(self):
         return list(self.__data.columns)
     
     # groupby method
     def group_by(self, column_names):
         
-        if isinstance(column_names, str):
-            column_names = [column_names]
+        assert is_string_or_string_list(column_names)
+        column_names = enlist(column_names)
         assert len(column_names) > 0
-        assert all([isinstance(x, str) for x in column_names])
-        cols = self.__data.columns.to_list()
+        cols = self.get_colnames()
         assert all([x in cols for x in column_names])
         
         res = self.__data.groupby(column_names)
         return tidyGroupedDataFrame(res, check = False)
+        
+    # ungroup method
+    # just a placeholder
+    def ungroup(self):
+        warnings.warn("Cannot ungroup an ungrouped tidy dataframe. Ungrouped dataframe as returned asis.")
+        return self
     
     # basic verbs  
     def select(self, column_names, include = True):
         
-        column_names = list(column_names)
+        assert is_string_or_string_list(column_names)
+        column_names = enlist(column_names)
         assert len(column_names) > 0
-        assert all([isinstance(x, str) for x in column_names])
-        cols = self.__data.columns.to_list()
+        cols = list(self.__data.columns)
         assert all([x in cols for x in column_names])
         
         if not include:
-            column_names = self.__data.columns.difference(column_names)
+            column_names = cols.difference(column_names)
+            column_names = list(column_names)
             if len(column_names) == 0:
                 raise Exception("Removing all columns is not allowed")
         
@@ -119,8 +149,7 @@ class tidyDataFrame:
         
     def arrange(self, column_names, ascending = False, na_position = 'last'):
         
-        if not isinstance(column_names, list):
-            column_names = [column_names]
+        column_names = enlist(column_names)
         assert len(column_names) > 0
         cn = self.get_colnames()
         assert all([x in cn for x in column_names])
@@ -150,7 +179,7 @@ class tidyDataFrame:
             1. assign multiple columns at once case
             2. grouped version
         '''
-        mutated = copy.deepcopy(self.__data)
+        mutated = copy.copy(self.__data)
         
         for akey in dictionary:
             
@@ -257,39 +286,33 @@ class tidyDataFrame:
         return tidyDataFrame(self, check = False)
         
     # join methods
-    def join(self, y, how = 'inner', on = None, on_x = None, on_y = None):
+    def join(self, y, how = 'inner', on = None, on_x = None, on_y = None, suffix_y = "_y"):
 
         # assertions
         assert isinstance(y, (tidyDataFrame, tidyGroupedDataFrame))
         assert how in ['inner', 'outer', 'left', 'right', 'anti']
         cn_x = self.get_colnames()
         cn_y = y.get_colnames()
-        is_y_grouped = False
         if isinstance(y, tidyGroupedDataFrame):
-            is_y_grouped = True
-            assert on is not None # only on is supported when y is grouped
-            groupvars = y.get_groupvars()
             y = y.ungroup().to_pandas()
         else:
             y = y.to_pandas()
             
         if on is None:
             assert on_x is not None and on_y is not None
-            assert len(on_x) == len(on_y)
             assert is_string_or_string_list(on_x)
             assert is_string_or_string_list(on_y)
             on_x = enlist(on_x)
             on_y = enlist(on_y)
-        else:
+            assert len(on_x) == len(on_y)
+            assert all([e in cn_x for e in on_x])
+            assert all([e in cn_y for e in on_y])
+        else: # on is provided
             assert on_x is None and on_y is None
-            assert isinstance(on, (str, list))
-            if isinstance(on, str):
-                assert on in cn_x
-                assert on in cn_y
-                on = enlist(on)
-            else:
-                assert all([on in x for x in cn_x])
-                assert all([on in x for x in cn_x])
+            assert is_string_or_string_list(on)
+            on = enlist(on)
+            assert all([e in cn_x for e in on])
+            assert all([e in cn_y for e in on])
                 
         # merge call
         if how == 'anti':
@@ -300,8 +323,9 @@ class tidyDataFrame:
                            , left_on = on_x
                            , right_on = on_y
                            , indicator = True
+                           , suffixes = (None, suffix_y)
                            )
-            res = res.loc[res._merge == 'left_only', :].drop(columns='_merge')
+            res = res.loc[res._merge == 'left_only', :].drop(columns = '_merge')
         else:    
             res = pd.merge(self.__data
                            , y
@@ -309,31 +333,40 @@ class tidyDataFrame:
                            , on = on
                            , left_on = on_x
                            , right_on = on_y
+                           , suffixes = (None, suffix_y)
                            )
-                       
-        # handle grouping
-        if is_y_grouped:
-            if all(i in list(res.columns) for i in groupvars):
-                res = tidyGroupedDataFrame(res.groupby(groupvars), check = False)
-            else:
-                raise Exception('Merged output should have groupby columns names. Most likely they have got appended by _x or _y')
-        else:
-            res = tidyDataFrame(res, check = False)
+                           
+        # remove the new 'on_y' columns
+        if on is None:
+            def appender(x):
+                if x in cn_x:
+                    res = x + suffix
+                else:
+                    res = x
+                return res
             
-        return res
+            new_on_y = map(appender, on_y)
+            res = res.drop(columns = new_on_y)
         
-    def join_inner(self, y, on = None, on_x = None, on_y = None):
-        return self.join(y, 'inner', on, on_x, on_y)
+        # check for unique column names
+        res_columns = list(res.columns)
+        if len(set(res_columns)) != len(res_columns):
+            raise Exception('Join should not result in ambiguous column names. Consider changing the value of "suffix_y" argument')
+                
+        return tidyDataFrame(res, check = False)
         
-    def join_outer(self, y, on = None, on_x = None, on_y = None):
-        return self.join(y, 'outer', on, on_x, on_y)
+    def join_inner(self, y, on = None, on_x = None, on_y = None, suffix_y = '_y'):
+        return self.join(y, 'inner', on, on_x, on_y, suffix_y)
         
-    def join_left(self, y, on = None, on_x = None, on_y = None):
-        return self.join(y, 'left', on, on_x, on_y)
+    def join_outer(self, y, on = None, on_x = None, on_y = None, suffix_y = '_y'):
+        return self.join(y, 'outer', on, on_x, on_y, suffix_y)
         
-    def join_right(self, y, on = None, on_x = None, on_y = None):
-        return self.join(y, 'right', on, on_x, on_y)
+    def join_left(self, y, on = None, on_x = None, on_y = None, suffix_y = '_y'):
+        return self.join(y, 'left', on, on_x, on_y, suffix_y)
         
-    def join_anti(self, y, on = None, on_x = None, on_y = None):
-        return self.join(y, 'anti', on, on_x, on_y)    
+    def join_right(self, y, on = None, on_x = None, on_y = None, suffix_y = '_y'):
+        return self.join(y, 'right', on, on_x, on_y, suffix_y)
+        
+    def join_anti(self, y, on = None, on_x = None, on_y = None, suffix_y = '_y'):
+        return self.join(y, 'anti', on, on_x, on_y, suffix_y)    
 

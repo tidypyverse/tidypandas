@@ -21,6 +21,7 @@ iris_tidy.select(['Sepal.Length', 'Species'], include = False)
 iris_tidy.slice([1, 149])
 
 iris_tidy.group_by(['Species'])
+iris_tidy.ungroup() # expect a warning
 
 iris_tidy.arrange(['Sepal.Length', 'Petal.Width'], ascending = [True, False])
 
@@ -54,8 +55,19 @@ iris_p = tidyDataFrame(iris).select(['Petal.Length', 'Petal.Width', 'Species'])
 iris_p_g = (tidyDataFrame(iris).group_by('Species')
                                .select(['Petal.Length', 'Petal.Width', 'Species'])
                                )
-iris_s.join_inner(iris_p, on_x = 'pl', on_y = 'Petal.Length')
-iris_s.join_outer(iris_p_g, on = 'Species')
+                               
+iris_sepal = (iris_tidy.select(['Sepal.Length', 'Sepal.Width', 'Species']))
+iris_petal = (iris_tidy.select(['Petal.Length', 'Petal.Width', 'Species'])) 
+iris_sep_pet = (iris_tidy.select(['Sepal.Length', 'Sepal.Width', 'Petal.Length', 'Species']))
+iris_petal_2 = (iris_petal.mutate({'pl' : (lambda x: x, 'Petal.Length')})
+                          .select(['Petal.Length'], include = False)
+                          )
+                               
+# test simple case with on
+iris_sepal.join_inner(iris_petal, on = 'Species')
+iris_sep_pet.join_inner(iris_petal, on = 'Species')
+# with on_x and on_y
+iris_petal_2.join_inner(iris_petal, on_x = 'pl', on_y = 'Petal.Length')
 
 # grouped --------------------------------------------------------------------
 iris_tidy_grouped = tidyDataFrame(iris).group_by('Species')
@@ -100,3 +112,10 @@ iris_tidy_grouped.distinct(ignore_grouping = True)
 iris_tidy_grouped.distinct(['Sepal.Length', 'Sepal.Width'])
 iris_tidy_grouped.distinct(['Sepal.Length', 'Sepal.Width'], ignore_grouping = True)
 iris_tidy_grouped.distinct(['Sepal.Length', 'Sepal.Width'], retain_all_columns = True)
+
+# test simple case with on
+iris_sepal.group_by('Species').join_inner(iris_petal, on = 'Species')
+iris_sepal.join_inner(iris_petal.group_by('Species'), on = 'Species')
+iris_sep_pet.group_by('Petal.Length').join_inner(iris_petal, on = 'Species')
+# with on_x and on_y
+iris_petal_2.group_by('Species').join_inner(iris_petal, on_x = 'pl', on_y = 'Petal.Length')
