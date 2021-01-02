@@ -69,6 +69,10 @@ iris_sep_pet.join_inner(iris_petal, on = 'Species')
 # with on_x and on_y
 iris_petal_2.join_inner(iris_petal, on_x = 'pl', on_y = 'Petal.Length')
 
+iris_tidy.count()
+iris_tidy.count('Species')
+iris_tidy.count(['Species', 'Sepal.Length'])
+
 # grouped --------------------------------------------------------------------
 iris_tidy_grouped = tidyDataFrame(iris).group_by('Species')
 iris_tidy_grouped
@@ -119,3 +123,8 @@ iris_sepal.join_inner(iris_petal.group_by('Species'), on = 'Species')
 iris_sep_pet.group_by('Petal.Length').join_inner(iris_petal, on = 'Species')
 # with on_x and on_y
 iris_petal_2.group_by('Species').join_inner(iris_petal, on_x = 'pl', on_y = 'Petal.Length')
+
+iris_tidy_grouped.count()
+iris_tidy_grouped.count('Species')
+iris_tidy_grouped.count(['Species', 'Sepal.Length'])
+iris_tidy_grouped.count(['Sepal.Length'])

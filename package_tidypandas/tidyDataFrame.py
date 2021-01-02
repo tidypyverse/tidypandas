@@ -119,13 +119,26 @@ class tidyDataFrame:
         return self
     
     # basic verbs  
-    def select(self, column_names, include = True):
+    def select(self, column_names = None, predicate = None, include = True):
+        if (column_names is None) and (predicate is None):
+            raise Exception('Exactly one among "column_names" and "predicate" should not be None')
+        if (column_names is not None) and (predicate is not None):
+            raise Exception('Exactly one among "column_names" and "predicate" should not be None')
         
-        assert is_string_or_string_list(column_names)
-        column_names = enlist(column_names)
-        assert len(column_names) > 0
-        cols = list(self.__data.columns)
-        assert all([x in cols for x in column_names])
+        if column_names is None:
+            assert callable(predicate)
+            col_bool_dict = dict(self.__data.apply(predicate))
+            for akey in col_bool_dict:
+                if not col_bool_dict[akey]:
+                    del col_bool_dict[akey]
+            column_names = list(col_bool_dict.keys())
+            assert len(column_names) > 0
+        else:
+            assert is_string_or_string_list(column_names)
+            column_names = enlist(column_names)
+            assert len(column_names) > 0
+            cols = self.get_colnames()
+            assert all([x in cols for x in column_names])
         
         if not include:
             column_names = cols.difference(column_names)
@@ -369,4 +382,40 @@ class tidyDataFrame:
         
     def join_anti(self, y, on = None, on_x = None, on_y = None, suffix_y = '_y'):
         return self.join(y, 'anti', on, on_x, on_y, suffix_y)    
-
+        
+    # count
+    def count(self, column_names = None, count_column_name = 'n', sort = 'descending'):
+        
+        assert (column_names is None) or is_string_or_string_list(column_names)
+        if column_names is not None:
+            column_names = enlist(column_names)
+        assert isinstance(count_column_name, str)
+        assert count_column_name not in self.get_colnames()
+        assert isinstance(sort, str)
+        assert sort in ['asending', 'descending', 'natural']
+        
+        if column_names is not None:
+            res = (self.__data
+                       .groupby(column_names)
+                       .size()
+                       .reset_index()
+                       .rename(columns = {0: count_column_name})
+                       )
+            asc = True
+            if sort == 'descending':
+                asc = False
+            
+            if sort != 'natural':
+                #print('went here')
+                res = res.sort_values(by = count_column_name
+                                      , axis         = 0
+                                      , ascending    = asc
+                                      , inplace      = False
+                                      , kind         = 'quicksort'
+                                      , na_position  = 'first'
+                                      , ignore_index = True
+                                      )
+        else:
+            res = pd.DataFrame({count_column_name : self.get_nrow()}, index = [0])
+            
+        return tidyDataFrame(res, check = False)
