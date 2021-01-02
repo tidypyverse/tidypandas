@@ -141,7 +141,7 @@ class tidyDataFrame:
             assert all([x in cols for x in column_names])
         
         if not include:
-            column_names = cols.difference(column_names)
+            column_names = set(cols).difference(set(column_names))
             column_names = list(column_names)
             if len(column_names) == 0:
                 raise Exception("Removing all columns is not allowed")
@@ -294,7 +294,7 @@ class tidyDataFrame:
         
         # make a copy of the dataframe and apply mutate in order
         for acol in column_names:
-            self.__data[prefix + acol] = fun(self.__data[acol])
+            self.__data[prefix + acol] = func(self.__data[acol])
             
         return tidyDataFrame(self, check = False)
         
@@ -353,7 +353,7 @@ class tidyDataFrame:
         if on is None:
             def appender(x):
                 if x in cn_x:
-                    res = x + suffix
+                    res = x + suffix_y
                 else:
                     res = x
                 return res

@@ -87,7 +87,7 @@ class tidyGroupedDataFrame:
             assert all([x in cols for x in column_names])
         
         if not include:
-            column_names = cols.difference(set(column_names))
+            column_names = set(cols).difference(set(column_names))
             column_names = list(column_names)
             
         groupvars    = self.get_groupvars()
@@ -286,12 +286,12 @@ class tidyGroupedDataFrame:
         groupvars = self.get_groupvars()
         # column_names should not intersect with grouping variables
         if column_names is not None:
-            assert not any(x in group_var_names for x in column_names)
+            assert not any(x in groupvars for x in column_names)
         
         # function: distinct per chunk
         def distinct_wrapper(chunk):
             
-            chunk = chunk.drop(columns = group_var_names)
+            chunk = chunk.drop(columns = groupvars)
             
             if column_names is None:
                 res = chunk.drop_duplicates(keep = keep, ignore_index = True)
@@ -328,19 +328,18 @@ class tidyGroupedDataFrame:
                 if column_names is None:
                     to_select = self.get_colnames()
                 else:
-                    to_select = list(set(column_names).union(group_var_names))
+                    to_select = list(set(column_names).union(groupvars))
                 
                 res = (res.loc[:, to_select]
-                          .groupby(group_var_names)
+                          .groupby(groupvars)
                           )
         else: # grouped distinct
             res = (self.__data
                        .apply(distinct_wrapper)
                        .reset_index(drop = True, level = 1) # remove col_1
                        .reset_index()
-                       .groupby(group_var_names)
+                       .groupby(groupvars)
                        )
-        
         
         return tidyGroupedDataFrame(res, check = False)
     

@@ -48,13 +48,6 @@ iris_tidy.distinct('Species')
 iris_tidy.distinct(['Sepal.Length', 'Sepal.Width'])
 iris_tidy.distinct(['Sepal.Length', 'Sepal.Width'], retain_all_columns = True)
 
-iris_s = (tidyDataFrame(iris).select(['Sepal.Length', 'Sepal.Width', 'Petal.Length', 'Species'])
-                             .mutate({"pl": (lambda x: x, 'Petal.Length')})
-                             )
-iris_p = tidyDataFrame(iris).select(['Petal.Length', 'Petal.Width', 'Species'])
-iris_p_g = (tidyDataFrame(iris).group_by('Species')
-                               .select(['Petal.Length', 'Petal.Width', 'Species'])
-                               )
                                
 iris_sepal = (iris_tidy.select(['Sepal.Length', 'Sepal.Width', 'Species']))
 iris_petal = (iris_tidy.select(['Petal.Length', 'Petal.Width', 'Species'])) 
