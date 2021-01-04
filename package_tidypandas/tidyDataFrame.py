@@ -127,11 +127,8 @@ class tidyDataFrame:
         
         if column_names is None:
             assert callable(predicate)
-            col_bool_dict = dict(self.__data.apply(predicate))
-            for akey in col_bool_dict:
-                if not col_bool_dict[akey]:
-                    del col_bool_dict[akey]
-            column_names = list(col_bool_dict.keys())
+            col_bool_list = list(self.__data.apply(predicate, axis = 0))
+            column_names = list(np.array(self.get_colnames())[col_bool_list])
             assert len(column_names) > 0
         else:
             assert is_string_or_string_list(column_names)
@@ -245,28 +242,25 @@ class tidyDataFrame:
         return tidyDataFrame(res, check = False)
         
     def distinct(self, column_names = None, keep = 'first', retain_all_columns = False):
-        if isinstance(column_names, str):
-            column_names = [column_names]
-        assert (column_names is None) or (isinstance(column_names, list))
+        
         if column_names is not None:
-            assert all(isinstance(x, str) for x in column_names)
+            assert is_string_or_string_list(column_names)
+            column_names = enlist(column_names)
             cols = self.get_colnames()
-            assert all([x in cols for x in column_names])
+            assert set(column_names).issubset(cols)
+        else:
+            column_names = self.get_colnames()
         assert isinstance(retain_all_columns, bool)
         
-        if column_names is None:
-            res = self.__data.drop_duplicates(keep = keep, ignore_index = True)
-        else:
-            if retain_all_columns:
-                res = self.__data.drop_duplicates(subset = column_names
-                                                  , keep = keep
-                                                  , ignore_index = True
-                                                  )
-            else:
-                res = (self.__data
-                           .loc[:, column_names]
-                           .drop_duplicates(keep = keep, ignore_index = True)
-                           )
+        res = (self.__data
+                   .drop_duplicates(subset = column_names
+                                    , keep = keep
+                                    , ignore_index = True
+                                    )
+                   )
+        
+        if not retain_all_columns:
+            res = res.loc[:, column_names]
         
         return tidyDataFrame(res, check = False)
     
@@ -392,7 +386,7 @@ class tidyDataFrame:
         assert isinstance(count_column_name, str)
         assert count_column_name not in self.get_colnames()
         assert isinstance(sort, str)
-        assert sort in ['asending', 'descending', 'natural']
+        assert sort in ['ascending', 'descending', 'natural']
         
         if column_names is not None:
             res = (self.__data
@@ -419,3 +413,4 @@ class tidyDataFrame:
             res = pd.DataFrame({count_column_name : self.get_nrow()}, index = [0])
             
         return tidyDataFrame(res, check = False)
+

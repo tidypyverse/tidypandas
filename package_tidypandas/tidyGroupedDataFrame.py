@@ -73,11 +73,8 @@ class tidyGroupedDataFrame:
         
         if column_names is None:
             assert callable(predicate)
-            col_bool_dict = dict(self.__data.apply(predicate))
-            for akey in col_bool_dict:
-                if not col_bool_dict[akey]:
-                    del col_bool_dict[akey]
-            column_names = list(col_bool_dict.keys())
+            col_bool_list = list(self.ungroup().to_pandas().apply(predicate))
+            column_names = list(np.array(self.get_colnames())[col_bool_list])
             assert len(column_names) > 0
         else:
             assert is_string_or_string_list(column_names)
@@ -273,75 +270,41 @@ class tidyGroupedDataFrame:
         res = tidyGroupedDataFrame(res, check = False)
         return res
     
-    def distinct(self, column_names = None, keep = 'first', retain_all_columns = False, ignore_grouping = False):
+    # distinct ---------------------------------------------------------------
+    def distinct(self
+                 , column_names = None
+                 , keep = 'first'
+                 , retain_all_columns = False
+                 ):
         
         if column_names is not None:
             assert is_string_or_string_list(column_names)
             column_names = enlist(column_names)
             cols = self.get_colnames()
-            assert all([x in cols for x in column_names])
-        assert (column_names is None) or (isinstance(column_names, list))
+            assert set(column_names).issubset(cols)
+        else:
+            column_names = self.get_colnames()
         assert isinstance(retain_all_columns, bool)
         
-        groupvars = self.get_groupvars()
-        # column_names should not intersect with grouping variables
-        if column_names is not None:
-            assert not any(x in groupvars for x in column_names)
         
-        # function: distinct per chunk
-        def distinct_wrapper(chunk):
-            
-            chunk = chunk.drop(columns = groupvars)
-            
-            if column_names is None:
-                res = chunk.drop_duplicates(keep = keep, ignore_index = True)
-            else:
-                if retain_all_columns:
-                    res = chunk.drop_duplicates(subset = column_names
+        groupvars = self.get_groupvars()
+        cols_subset = set(column_names).difference(groupvars)
+        res = (self.__data
+                   .apply(lambda x: x.drop_duplicates(subset = cols_subset
                                                       , keep = keep
                                                       , ignore_index = True
                                                       )
-                else:
-                    res = (chunk.loc[:, column_names]
-                                .drop_duplicates(keep = keep, ignore_index = True)
-                               )
-            
-            return res
-        
-        if ignore_grouping:
-            if column_names is None:
-                res = (self.ungroup()
-                           .to_pandas()
-                           .drop_duplicates(keep = keep, ignore_index = True)
-                           )
-            else:
-                res = (self.ungroup()
-                           .to_pandas()
-                           .drop_duplicates(subset = column_names
-                                            , keep = keep
-                                            , ignore_index = True
-                                            )
-                            )
-            if retain_all_columns:
-                res = res.groupby(column_names)
-            else:
-                if column_names is None:
-                    to_select = self.get_colnames()
-                else:
-                    to_select = list(set(column_names).union(groupvars))
-                
-                res = (res.loc[:, to_select]
-                          .groupby(groupvars)
                           )
-        else: # grouped distinct
-            res = (self.__data
-                       .apply(distinct_wrapper)
-                       .reset_index(drop = True, level = 1) # remove col_1
-                       .reset_index()
-                       .groupby(groupvars)
-                       )
+                   .reset_index(drop = True)
+                   )
         
-        return tidyGroupedDataFrame(res, check = False)
+        if not retain_all_columns:
+            res = res.loc[:, list(set(column_names + groupvars))]
+        
+        # regroup
+        res = res.groupby(groupvars)
+        
+        return tidyGroupedDataFrame(res, check = False)    
     
     # join methods
     def join(self, y, how = 'inner', on = None, on_x = None, on_y = None, suffix_y = "_y"):

@@ -17,6 +17,7 @@ iris_tidy.to_pandas()
 
 iris_tidy.select(['Sepal.Length', 'Species'])
 iris_tidy.select(['Sepal.Length', 'Species'], include = False)
+iris_tidy.select(predicate = pd.api.types.is_float_dtype)
 
 iris_tidy.slice([1, 149])
 
@@ -41,6 +42,8 @@ iris_tidy.mutate({"sl"           : lambda x : x['Sepal.Length'] + x.shape[1],
                  }
                 )
 
+iris_tidy.mutate(predicate = lambda x: x, func)
+
 iris_tidy.filter("Species == 'setosa'")
 
 iris_tidy.distinct()
@@ -62,9 +65,11 @@ iris_sep_pet.join_inner(iris_petal, on = 'Species')
 # with on_x and on_y
 iris_petal_2.join_inner(iris_petal, on_x = 'pl', on_y = 'Petal.Length')
 
-iris_tidy.count()
+iris_tidy.count(count_column_name = "size")
 iris_tidy.count('Species')
-iris_tidy.count(['Species', 'Sepal.Length'])
+iris_tidy.count(['Species', 'Sepal.Length'], sort = "natural")
+iris_tidy.count(['Species', 'Sepal.Length'], sort = "descending")
+iris_tidy.count(['Species', 'Sepal.Length'], sort = "ascending")
 
 # grouped --------------------------------------------------------------------
 iris_tidy_grouped = tidyDataFrame(iris).group_by('Species')
@@ -78,6 +83,7 @@ iris_tidy_grouped.to_pandas()
 
 iris_tidy_grouped.select(['Sepal.Length']) # grouped columns are always kept
 iris_tidy_grouped.select(['Sepal.Length', 'Species'], include = False)
+iris_tidy_grouped.select(predicate = pd.api.types.is_float_dtype)
 
 iris_tidy_grouped.slice(range(2))
 
@@ -105,9 +111,7 @@ iris_tidy_grouped.mutate({"sl"           : lambda x : x['Sepal.Length'] + x.shap
 iris_tidy_grouped.filter("Species == 'setosa'")
 
 iris_tidy_grouped.distinct()
-iris_tidy_grouped.distinct(ignore_grouping = True)
 iris_tidy_grouped.distinct(['Sepal.Length', 'Sepal.Width'])
-iris_tidy_grouped.distinct(['Sepal.Length', 'Sepal.Width'], ignore_grouping = True)
 iris_tidy_grouped.distinct(['Sepal.Length', 'Sepal.Width'], retain_all_columns = True)
 
 # test simple case with on
@@ -119,5 +123,5 @@ iris_petal_2.group_by('Species').join_inner(iris_petal, on_x = 'pl', on_y = 'Pet
 
 iris_tidy_grouped.count()
 iris_tidy_grouped.count('Species')
-iris_tidy_grouped.count(['Species', 'Sepal.Length'])
 iris_tidy_grouped.count(['Sepal.Length'])
+iris_tidy_grouped.count(['Species', 'Sepal.Length'])
