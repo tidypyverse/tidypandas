@@ -115,7 +115,6 @@ class tidyDataFrame:
     # ungroup method
     # just a placeholder
     def ungroup(self):
-        warnings.warn("Cannot ungroup an ungrouped tidy dataframe. Ungrouped dataframe as returned asis.")
         return self
     
     # basic verbs  
@@ -376,17 +375,37 @@ class tidyDataFrame:
         
     def join_anti(self, y, on = None, on_x = None, on_y = None, suffix_y = '_y'):
         return self.join(y, 'anti', on, on_x, on_y, suffix_y)    
+    
+    # binding functions
+    def cbind(self, y):
+        # number of rows should match
+        assert self.get_nrow() == y.get_nrow()
+        # column names should differ
+        assert len(set(self.get_colnames()).intersection(y.get_colnames())) == 0
         
+        res = pd.concat([self.__data, y.ungroup().to_pandas()]
+                        , axis = 1
+                        , ignore_index = False # not to loose column names
+                        )
+        return tidyDataFrame(res, check = False)
+    
+    def rbind(self, y):
+        res = pd.concat([self.__data, y.ungroup().to_pandas()]
+                        , axis = 0
+                        , ignore_index = True # loose row indexes
+                        )
+        return tidyDataFrame(res, check = False)
+    
     # count
-    def count(self, column_names = None, count_column_name = 'n', sort = 'descending'):
+    def count(self, column_names = None, count_column_name = 'n', sort_order = 'descending'):
         
         assert (column_names is None) or is_string_or_string_list(column_names)
         if column_names is not None:
             column_names = enlist(column_names)
         assert isinstance(count_column_name, str)
         assert count_column_name not in self.get_colnames()
-        assert isinstance(sort, str)
-        assert sort in ['ascending', 'descending', 'natural']
+        assert isinstance(sort_order, str)
+        assert sort_order in ['ascending', 'descending', 'natural']
         
         if column_names is not None:
             res = (self.__data
@@ -396,11 +415,10 @@ class tidyDataFrame:
                        .rename(columns = {0: count_column_name})
                        )
             asc = True
-            if sort == 'descending':
+            if sort_order == 'descending':
                 asc = False
             
-            if sort != 'natural':
-                #print('went here')
+            if sort_order != 'natural':
                 res = res.sort_values(by = count_column_name
                                       , axis         = 0
                                       , ascending    = asc
@@ -414,3 +432,16 @@ class tidyDataFrame:
             
         return tidyDataFrame(res, check = False)
 
+    def add_count(self
+                  , column_names = None
+                  , count_column_name = 'n'
+                  , sort_order = 'natural'
+                  ):
+        count_frame = self.count(column_names, count_column_name, sort_order)
+        if column_names is None:
+            res = self.mutate({count_column_name : lambda x: count_frame.to_pandas().iloc[0,0]})
+        else:
+            res = self.join_inner(count_frame, on = column_names)
+        
+        return res
+        

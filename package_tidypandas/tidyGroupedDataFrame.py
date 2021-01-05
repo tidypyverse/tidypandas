@@ -394,7 +394,30 @@ class tidyGroupedDataFrame:
         
     def join_anti(self, y, on = None, on_x = None, on_y = None):
         return self.join(y, 'anti', on, on_x, on_y)    
+    
+    # binding functions
+    def cbind(self, y):
+        # number of rows should match
+        assert self.get_nrow() == y.get_nrow()
+        # column names should differ
+        assert len(set(self.get_colnames()).intersection(y.get_colnames())) == 0
         
+        res = pd.concat([self.ungroup().to_pandas(), y.ungroup().to_pandas()]
+                        , axis = 1
+                        , ignore_index = False # not to loose column names
+                        )
+        res = res.groupby(self.get_groupvars())
+        return tidyGroupedDataFrame(res, check = False)
+    
+    def rbind(self, y):
+        res = pd.concat([self.ungroup().to_pandas(), y.ungroup().to_pandas()]
+                        , axis = 0
+                        , ignore_index = True # loose row indexes
+                        )
+        res = res.groupby(self.get_groupvars())
+        return tidyGroupedDataFrame(res, check = False)
+
+    
     # count
     def count(self, column_names = None, count_column_name = 'n', sort = 'descending'):
         
@@ -437,3 +460,20 @@ class tidyGroupedDataFrame:
         res = res.groupby(groupvars)
             
         return tidyGroupedDataFrame(res, check = False)
+    
+    def add_count(self
+                  , column_names = None
+                  , count_column_name = 'n'
+                  , sort_order = 'natural'
+                  ):
+        
+        
+        count_frame = self.count(column_names, count_column_name, sort_order)
+        if column_names is None:
+            join_names = self.get_groupvars()
+        else:
+            join_names = list(set(enlist(column_names)).union(self.get_groupvars()))
+            
+        res = self.join_inner(count_frame, on = join_names)
+        
+        return res

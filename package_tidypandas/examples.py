@@ -65,11 +65,20 @@ iris_sep_pet.join_inner(iris_petal, on = 'Species')
 # with on_x and on_y
 iris_petal_2.join_inner(iris_petal, on_x = 'pl', on_y = 'Petal.Length')
 
+
+# cbind and rbind
+iris_sepal.select('Species', include = False).cbind(iris_petal)
+iris_sepal.rbind(iris_petal)
+
 iris_tidy.count(count_column_name = "size")
 iris_tidy.count('Species')
-iris_tidy.count(['Species', 'Sepal.Length'], sort = "natural")
-iris_tidy.count(['Species', 'Sepal.Length'], sort = "descending")
-iris_tidy.count(['Species', 'Sepal.Length'], sort = "ascending")
+iris_tidy.count(['Species', 'Sepal.Length'], sort_order = "natural")
+iris_tidy.count(['Species', 'Sepal.Length'], sort_order = "descending")
+iris_tidy.count(['Species', 'Sepal.Length'], sort_order = "ascending")
+
+iris_tidy.add_count()
+iris_tidy.add_count("Species")
+iris_tidy.add_count(["Species", "Sepal.Length"])
 
 # grouped --------------------------------------------------------------------
 iris_tidy_grouped = tidyDataFrame(iris).group_by('Species')
@@ -121,7 +130,30 @@ iris_sep_pet.group_by('Petal.Length').join_inner(iris_petal, on = 'Species')
 # with on_x and on_y
 iris_petal_2.group_by('Species').join_inner(iris_petal, on_x = 'pl', on_y = 'Petal.Length')
 
+# cbind and rbind
+(iris_sepal.group_by('Sepal.Length')
+           .select('Species', include = False)
+           .cbind(iris_petal)
+           )
+(iris_sepal.group_by('Sepal.Length')
+           .select('Species', include = False)
+           .cbind(iris_petal.group_by('Species'))
+           )
+
+(iris_sepal.group_by('Sepal.Length')
+           .rbind(iris_petal)
+           )
+
+(iris_sepal.group_by('Sepal.Length')
+           .rbind(iris_petal.group_by('Species'))
+           )
+
 iris_tidy_grouped.count()
 iris_tidy_grouped.count('Species')
 iris_tidy_grouped.count(['Sepal.Length'])
 iris_tidy_grouped.count(['Species', 'Sepal.Length'])
+
+iris_tidy_grouped.add_count()
+iris_tidy_grouped.add_count('Species')
+iris_tidy_grouped.add_count(['Sepal.Length'])
+iris_tidy_grouped.add_count(['Species', 'Sepal.Length'])
