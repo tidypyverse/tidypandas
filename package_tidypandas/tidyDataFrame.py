@@ -25,6 +25,20 @@ def enlist(x):
     
     return x
 
+def tidy(pdf, sep = "__"):
+    
+    if isinstance(pdf.columns, pd.MultiIndex):
+        lol = list(map(list, list(pdf.columns)))
+        cns = list(map(lambda x: sep.join(map(str, x)).rstrip(sep), lol))
+        pdf.columns = cns
+    else:
+        pdf.columns.name = None
+    
+    pdf = pdf.reset_index(drop = False)
+    assert len(set(pdf.columns)) == len(pdf.columns)
+    
+    return pdf
+
 
 class tidyDataFrame:
     # init method
@@ -444,4 +458,71 @@ class tidyDataFrame:
             res = self.join_inner(count_frame, on = column_names)
         
         return res
+    
+    # pivot methods
+    def pivot_wider(self
+                    , names_from
+                    , values_from
+                    , values_fill = None
+                    , values_fn = "mean"
+                    , id_cols = None
+                    , drop_na = True
+                    , retain_levels = False
+                    , sep = "__"
+                    ):
         
+        cn = self.get_colnames()
+        
+        assert is_string_or_string_list(names_from)
+        names_from = enlist(names_from)
+        assert set(names_from).issubset(cn)
+        
+        assert is_string_or_string_list(values_from)
+        values_from = enlist(values_from)
+        assert set(values_from).issubset(cn)
+        assert len(set(values_from).intersection(names_from)) == 0
+        set_union_names_values_from = set(values_from).union(names_from)
+        
+        if id_cols is None:
+            id_cols = set(cn).difference(set_union_names_values_from)
+        else:
+            assert is_string_or_string_list(id_cols)
+            id_cols = enlist(id_cols)
+            assert len(set(id_cols).intersection(set_union_names_values_from)) == 0
+        
+        if values_fill is not None:
+            if isinstance(values_fill, dict):
+                keys_fill = set(values_fill.keys())
+                assert set(values_from) == keys_fill
+            else:
+                assert not isinstance(values_fill, list)          
+        if values_fn != "mean":
+            if isinstance(values_fn, dict):
+                keys_fn = set(values_fn.keys())
+                assert set(values_from) == keys_fn
+                assert all([callable(x) for x in values_fn.values()])
+            else:
+                assert not isinstance(values_fn, list)
+        
+        
+        assert isinstance(drop_na, bool)
+        assert isinstance(retain_levels, bool)
+        assert isinstance(sep, str)
+        
+        # make values_from a scalar if it is
+        if len(values_from) == 1:
+            values_from = values_from[0]
+        
+        res = pd.pivot_table(data         = self.__data
+                             , index      = id_cols
+                             , columns    = names_from
+                             , values     = values_from
+                             , fill_value = values_fill
+                             , aggfunc    = values_fn
+                             , margins    = False
+                             , dropna     = drop_na
+                             , observed   = retain_levels
+                             )
+                
+        res = tidy(res, sep)        
+        return tidyDataFrame(res)
