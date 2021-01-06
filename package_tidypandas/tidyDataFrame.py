@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import warnings
 
-#from package_tidypandas.tidyGroupedDataFrame import tidyGroupedDataFrame
-#from package_tidypandas.tidypredicates import *
+from package_tidypandas.tidyGroupedDataFrame import tidyGroupedDataFrame
+from package_tidypandas.tidypredicates import *
 
 def is_string_or_string_list(x):
     
@@ -177,54 +177,6 @@ class tidyDataFrame:
                                         , ignore_index = True
                                         )
         return tidyDataFrame(res, check = False)
-    
-    def mutate(self, dictionary):
-        '''
-        {"hp": [lambda x, y: x - y.mean(), ['a', 'b']]
-           , "new" : lambda x: x.hp - x.mp.mean() + x.shape[1]
-           , "existing" : [lambda x: x + 1]
-           }
-        TODO:
-            1. assign multiple columns at once case
-            2. grouped version
-        '''
-        mutated = copy.copy(self.__data)
-        
-        for akey in dictionary:
-            
-            # lambda function case
-            if callable(dictionary[akey]):
-                # assigning to single column
-                if isinstance(akey, str):
-                    mutated[akey] = dictionary[akey](mutated)
-            
-            # simple function case
-            if isinstance(dictionary[akey], (list, tuple)):
-                cn = set(mutated.columns)
-                
-                # case 1: only simple function
-                if len(dictionary[akey]) == 1:
-                    assert callable(dictionary[akey][0])
-                    
-                    # assign to a single column
-                    # column should pre-exist
-                    assert set([akey]).issubset(cn)
-                    mutated[akey] = dictionary[akey][0](mutated[akey])
-                
-                # case2: function with required columns
-                elif len(dictionary[akey]) == 2:
-                    assert callable(dictionary[akey][0])
-                    assert isinstance(dictionary[akey][1], (list, tuple, str))
-                    if not isinstance(dictionary[akey][1], (list, tuple)):
-                        colnames_to_use = [dictionary[akey][1]]
-                    else:
-                        colnames_to_use = dictionary[akey][1]
-                    assert set(colnames_to_use).issubset(cn)
-                    
-                    input_list = [mutated[colname] for colname in colnames_to_use]
-                    mutated[akey] = dictionary[akey][0](*input_list)
-            
-        return tidyDataFrame(mutated, check = False)
         
     def filter(self, query_string = None, mask = None):
    
@@ -262,12 +214,71 @@ class tidyDataFrame:
             res = res.loc[:, column_names]
         
         return tidyDataFrame(res, check = False)
-    
+
+    def mutate(self, dictionary=None, func=None, column_names = None, predicate = None, prefix = ""):
+        if dictionary is None and func is None:
+            raise Exception("Either dictionary or func with predicate/column_names should be provided.")
+
+        if dictionary is not None:
+            return self._mutate(dictionary)
+        else:
+            return self._mutate_across(func, column_names=column_names, predicate=predicate, prefix=prefix)
+
+    def _mutate(self, dictionary):
+        '''
+        {"hp": [lambda x, y: x - y.mean(), ['a', 'b']]
+           , "new" : lambda x: x.hp - x.mp.mean() + x.shape[1]
+           , "existing" : [lambda x: x + 1]
+           }
+        TODO:
+            1. assign multiple columns at once case
+            2. grouped version
+        '''
+        mutated = copy.deepcopy(self.__data)
+
+        for akey in dictionary:
+
+            # lambda function case
+            if callable(dictionary[akey]):
+                # assigning to single column
+                if isinstance(akey, str):
+                    mutated[akey] = dictionary[akey](mutated)
+
+            # simple function case
+            if isinstance(dictionary[akey], (list, tuple)):
+                cn = set(mutated.columns)
+
+                # case 1: only simple function
+                if len(dictionary[akey]) == 1:
+                    assert callable(dictionary[akey][0])
+
+                    # assign to a single column
+                    # column should pre-exist
+                    assert set([akey]).issubset(cn)
+                    mutated[akey] = dictionary[akey][0](mutated[akey])
+
+                # case2: function with required columns
+                elif len(dictionary[akey]) == 2:
+                    assert callable(dictionary[akey][0])
+                    assert isinstance(dictionary[akey][1], (list, tuple, str))
+                    if not isinstance(dictionary[akey][1], (list, tuple)):
+                        colnames_to_use = [dictionary[akey][1]]
+                    else:
+                        colnames_to_use = dictionary[akey][1]
+                    assert set(colnames_to_use).issubset(cn)
+
+                    input_list = [mutated[colname] for colname in colnames_to_use]
+                    mutated[akey] = dictionary[akey][0](*input_list)
+
+        return tidyDataFrame(mutated, check=False)
+
     # basic extensions    
-    def mutate_across(self, func, column_names = None, predicate = None, prefix = ""):
+    def _mutate_across(self, func, column_names = None, predicate = None, prefix = ""):
 
         assert callable(func)
         assert isinstance(prefix, str)
+
+        mutated = copy.deepcopy(self.__data)
         
         if (column_names is not None) and (predicate is not None):
             raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
@@ -287,10 +298,183 @@ class tidyDataFrame:
         
         # make a copy of the dataframe and apply mutate in order
         for acol in column_names:
-            self.__data[prefix + acol] = func(self.__data[acol])
+            mutated[prefix + acol] = func(mutated[acol])
             
-        return tidyDataFrame(self, check = False)
-        
+        return tidyDataFrame(mutated, check = False)
+    
+    def summarise(self, dictionary=None, func=None, column_names=None, predicate=None, prefix = ""):
+        """
+
+        Parameters
+        ----------
+        dictionary: dictionary
+            map of summarised column names to summarised functions
+        func: callable
+            aggregate function
+        column_names: list
+            list of column names(string)
+        predicate: callable
+            function to select columns, exactly one among column_names and predicate must be specified
+        prefix: string
+            prefix to add to column names
+
+        Returns
+        -------
+        a tidyDataFrame
+
+        Note
+        -------
+        Either dictionary or func with predicate/column names should be provided.
+
+        Examples
+        -------
+        type1:
+        dictionary = {"cross_entropy": [lambda p, q: sum(p*log(q)), ['a', 'b']]}
+        dictionary = {"sepal_length": [lambda x: mean(x)]}
+        type2:
+        dictionary = {"cross_entropy": lambda x: (x.a*log(x.b)).sum()}
+        type3:
+        dictionary = {"sepal_length": "mean"}
+
+        """
+        if dictionary is None and func is None:
+            raise Exception("Either dictionary or func with predicate/column_names should be provided.")
+
+        if dictionary is not None:
+            return self._summarise(dictionary)
+        else:
+            return self._summarise_across(func, column_names=column_names, predicate=predicate, prefix=prefix)
+
+    def _summarise(self, dictionary):
+        """
+
+        Parameters
+        ----------
+        dictionary: dictionary
+            map of summarised column names to summarised functions
+
+        Returns
+        -------
+        a tidyDataFrame
+
+        Examples
+        -------
+        type1:
+        dictionary = {"cross_entropy": [lambda p, q: sum(p*log(q)), ['a', 'b']]}
+        dictionary = {"sepal_length": [lambda x: mean(x)]}
+        type2:
+        dictionary = {"cross_entropy": lambda x: (x.a*log(x.b)).sum()}
+        type3:
+        dictionary = {"sepal_length": "mean"}
+
+        """
+        ## 1. will summarised columns earlier in the dictionary be available for later aggregations? NO
+
+        # Type checks
+        assert isinstance(dictionary, dict)
+
+        cn = self.get_colnames()
+
+        keys = dictionary.keys()
+        values = dictionary.values()
+
+        assert all([isinstance(akey, str) for akey in keys])
+        assert all([isinstance(avalue, (list, tuple)) or callable(avalue) for avalue in values])
+
+        # dict: akey -> summarised series
+        res = dict()
+
+        for akey in keys:
+            avalue = dictionary[akey]
+            if isinstance(avalue, (list, tuple)):
+                if len(avalue) == 1:
+                    func = avalue[0]
+                    func_args = [akey]
+                elif len(avalue) == 2:
+                    func = avalue[0]
+                    func_args = avalue[1]
+                    assert isinstance(func_args, (list, tuple, str))
+                    if isinstance(func_args, str):
+                        func_args = [func_args]
+                    else:
+                        func_args = list(func_args) ## explicitly converts tuples to list
+                        assert all(isinstance(acol_name, str) for acol_name in func_args)
+                else:
+                    raise ValueError("values of type list in the dictionary should be of len 1 or 2")
+
+                assert callable(func)
+                assert set(func_args).issubset(cn)
+
+                ## summarise for type 1
+                input_cols = map(lambda x: self.__data[x], func_args)
+                res.update({akey: pd.Series(func(*input_cols))})
+
+            if callable(avalue):
+                ## summarise for type 2
+                res.update({akey: pd.Series(self.__data.pipe(avalue))})
+
+            ## TODO: to support avalue to be a string name for popular aggregate functions.
+
+        list_summarised = list(res.values())
+
+        assert all([a_summarised.shape == list_summarised[0].shape for a_summarised in list_summarised[1:]]), \
+            "all summarised series don't have same shape"
+
+        return tidyDataFrame(pd.DataFrame(res), check=False)
+
+    def _summarise_across(self, func, column_names=None, predicate=None, prefix = ""):
+        """
+
+        Parameters
+        ----------
+        func: callable
+            aggregate function
+        column_names: list
+            list of column names(string)
+        predicate: callable
+            function to select columns, exactly one among column_names and predicate must be specified
+        prefix: string
+            prefix to add to column names
+
+        Returns
+        -------
+        a tidyDataFrame
+        """
+
+        assert callable(func)
+        assert isinstance(prefix, str)
+
+        if (column_names is not None) and (predicate is not None):
+            raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
+
+        if (column_names is None) and (predicate is None):
+            raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
+
+        cn = self.get_colnames()
+
+        # use column_names
+        if column_names is not None:
+            assert isinstance(column_names, list)
+            assert all([isinstance(acol, str) for acol in column_names])
+        # use predicate to assign appropriate column_names
+        else:
+            mask = list(self.__data.apply(predicate, axis=0))
+            column_names = list(np.array(cn)[mask])
+
+        # dict: akey -> summarised series
+        res = dict()
+
+        for acol in column_names:
+            res.update({prefix+acol: pd.Series(func(self.__data[acol]))})
+
+        list_summarised = list(res.values())
+
+        assert all([a_summarised.shape == list_summarised[0].shape for a_summarised in list_summarised[1:]]), \
+            "all summarised series don't have same shape"
+
+        return tidyDataFrame(pd.DataFrame(res), check=False)
+
+    
     # join methods
     def join(self, y, how = 'inner', on = None, on_x = None, on_y = None, suffix_y = "_y"):
 

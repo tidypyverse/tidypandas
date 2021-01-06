@@ -1,5 +1,5 @@
 import copy
-# from package_tidypandas import tidyDataFrame
+import pandas as pd
 
 class tidyGroupedDataFrame:
     
@@ -61,6 +61,9 @@ class tidyGroupedDataFrame:
     
     # ungroup method
     def ungroup(self):
+        ## importing it here to avoid circular imports
+        from package_tidypandas.tidyDataFrame import tidyDataFrame
+
         return tidyDataFrame(self.__data.obj, check = False)
      
     # basic verbs   
@@ -138,7 +141,38 @@ class tidyGroupedDataFrame:
         
         return tidyGroupedDataFrame(res, check = False)
     
-    def mutate(self, dictionary):
+    def filter(self, query_string = None, mask = None):
+   
+        if query_string is None and mask is None:
+            raise Exception("Both 'query' and 'mask' cannot be None")
+        if query_string is not None and mask is not None:
+            raise Exception("One among 'query' and 'mask' should be None")
+        
+        group_var_names = self.__data.grouper.names
+        
+        if query_string is not None and mask is None:
+            res = (self.__data
+                       .obj
+                       .query(query_string)
+                       .groupby(group_var_names)
+                       )
+        if query_string is None and mask is not None:
+            res = self.__data.obj.iloc[mask, :]
+            res = res.groupby(group_var_names)
+            
+        res = tidyGroupedDataFrame(res, check = False)
+        return res
+
+    def mutate(self, dictionary=None, func=None, column_names = None, predicate = None, prefix = ""):
+        if dictionary is None and func is None:
+            raise Exception("Either dictionary or func with predicate/column_names should be provided.")
+
+        if dictionary is not None:
+            return self._mutate(dictionary)
+        else:
+            return self._mutate_across(func, column_names=column_names, predicate=predicate, prefix=prefix)
+
+    def _mutate(self, dictionary):
         '''
         {"hp": [lambda x, y: x - y.mean(), ['a', 'b']]
            , "new" : lambda x: x.hp - x.mp.mean() + x.shape[1]
@@ -149,57 +183,55 @@ class tidyGroupedDataFrame:
         '''
         assert isinstance(dictionary, dict)
         mutated = copy.deepcopy(self.__data)
-        cn      = self.get_colnames()
-        
+        cn = self.get_colnames()
+
         group_var_names = self.__data.grouper.names
-        
-        
+
         for akey in dictionary:
-            
+
             # lambda function case
             if callable(dictionary[akey]):
-                
+
                 def assigner_single(chunk):
                     chunk[akey] = dictionary[akey](chunk)
                     return chunk
-                
+
                 # assigning to single column
                 if isinstance(akey, str):
                     mutated = (mutated.apply(assigner_single)
-                                      .reset_index(drop = True)
-                                      .groupby(group_var_names)
-                                      )
-                
+                               .reset_index(drop=True)
+                               .groupby(group_var_names)
+                               )
+
                 # TODO: assigning to multiple columns
-                else: 
+                else:
                     assert all([isinstance(x, str) for x in akey])
                     res_list = dictionary[akey](mutated)
                     assert len(akey) == len(res_list)
                     for i in range(len(akey)):
                         mutated[akey[i]] = res_list[i]
-                    
-            
+
             # simple function case
             if isinstance(dictionary[akey], (list, tuple)):
-                
+
                 # case 1: only simple function
                 if len(dictionary[akey]) == 1:
                     assert callable(dictionary[akey][0])
-                    
+
                     # assign to a single column
                     # column should pre-exist
                     if isinstance(akey, str):
                         assert set([akey]).issubset(cn)
-                        
+
                         def assigner_single(chunk):
                             chunk[akey] = dictionary[akey][0](chunk[akey])
                             return chunk
-                        
+
                         mutated = (mutated.apply(assigner_single)
-                                          .reset_index(drop = True)
-                                          .groupby(group_var_names)
-                                          )
-                    
+                                   .reset_index(drop=True)
+                                   .groupby(group_var_names)
+                                   )
+
                     # TODO: akey is tuple
                     elif isinstance(akey, tuple):
                         assert all([isinstance(x, str) for x in akey])
@@ -220,22 +252,22 @@ class tidyGroupedDataFrame:
                     else:
                         colnames_to_use = dictionary[akey][1]
                     assert set(colnames_to_use).issubset(cn)
-                    
+
                     # input_list = [mutated[colname] for colname in colnames_to_use]
-                    
+
                     # assign to a single column
                     if isinstance(akey, str):
-                        
+
                         def assigner_single(chunk):
                             input_cols = map(lambda x: chunk[x], colnames_to_use)
                             chunk[akey] = dictionary[akey][0](*input_cols)
                             return chunk
-                        
+
                         mutated = (mutated.apply(assigner_single)
-                                          .reset_index(drop = True)
-                                          .groupby(group_var_names)
-                                          )
-                        
+                                   .reset_index(drop=True)
+                                   .groupby(group_var_names)
+                                   )
+
                     # TODO: multiple columns
                     else:
                         res_list = dictionary[akey][0](*input_list)
@@ -245,37 +277,245 @@ class tidyGroupedDataFrame:
                 else:
                     # TODO create your own error class
                     raise ValueError("Some value(s) in the dictionary is neither callable nor a list or a tuple")
-            
+
+        return tidyGroupedDataFrame(mutated, check=False)
+        
+    def _mutate_across(self, func, column_names = None, predicate = None, prefix = ""):
+
+        assert callable(func)
+        assert isinstance(prefix, str)
+
+        if (column_names is not None) and (predicate is not None):
+            raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
+        
+        if (column_names is None) and (predicate is None):
+            raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
+
+        mutated = copy.deepcopy(self.__data)
+        grouping_columns = mutated.grouper.names
+        cn = mutated.obj.columns
+
+        # use column_names
+        if column_names is not None:
+            assert isinstance(column_names, list)
+            assert all([isinstance(acol, str) for acol in column_names])
+        # use predicate to assign appropriate column_names
+        else:
+            mask_predicate = list(self.__data.obj.apply(predicate, axis=0))
+            assert all([isinstance(x, bool) for x in mask_predicate])
+
+            mask_non_grouping_column = [acol not in grouping_columns for acol in cn]
+
+            mask = [x and y for x, y in zip(mask_predicate, mask_non_grouping_column)]
+            column_names = cn[mask]
+        
+        # make a copy of the dataframe and apply mutate in order
+        for acol in column_names:
+            def assigner_single(chunk):
+                chunk[prefix + acol] = func(chunk[acol])
+                return chunk
+            mutated = (mutated.apply(assigner_single)
+                              .reset_index(drop = True)
+                              .groupby(grouping_columns))
+
         return tidyGroupedDataFrame(mutated, check = False)
     
-    def filter(self, query_string = None, mask = None):
-   
-        if query_string is None and mask is None:
-            raise Exception("Both 'query' and 'mask' cannot be None")
-        if query_string is not None and mask is not None:
-            raise Exception("One among 'query' and 'mask' should be None")
-        
-        groupvars = self.get_groupvars()
-        
-        if query_string is not None and mask is None:
-            res = (self.__data
-                       .obj
-                       .query(query_string)
-                       .groupby(groupvars)
-                       )
-        if query_string is None and mask is not None:
-            res = self.__data.obj.iloc[mask, :]
-            res = res.groupby(groupvars)
-            
-        res = tidyGroupedDataFrame(res, check = False)
-        return res
+    def summarise(self, dictionary=None, func=None, column_names=None, predicate=None, prefix = ""):
+        """
+
+        Parameters
+        ----------
+        dictionary: dictionary
+            map of summarised column names to summarised functions
+        func: callable
+            aggregate function
+        column_names: list
+            list of column names(string)
+        predicate: callable
+            function to select columns, exactly one among column_names and predicate must be specified
+        prefix: string
+            prefix to add to column names
+
+        Returns
+        -------
+        a tidyDataFrame
+
+        Note
+        -------
+        Either dictionary or func with predicate/column names should be provided.
+
+        Examples
+        -------
+        type1:
+        dictionary = {"cross_entropy": [lambda p, q: sum(p*log(q)), ['a', 'b']]}
+        dictionary = {"sepal_length": [lambda x: mean(x)]}
+        type2:
+        dictionary = {"cross_entropy": lambda x: (x.a*log(x.b)).sum()}
+        type3:
+        dictionary = {"sepal_length": "mean"}
+
+        """
+        if dictionary is None and func is None:
+            raise Exception("Either dictionary or func with predicate/column_names should be provided.")
+
+        if dictionary is not None:
+            return self._summarise(dictionary)
+        else:
+            return self._summarise_across(func, column_names=column_names, predicate=predicate, prefix=prefix)
+
+    def _summarise(self, dictionary):
+
+        """
+
+        Parameters
+        ----------
+        dictionary: dictionary
+            map of summarised column names to summarised functions
+
+        Returns
+        -------
+        a tidyDataFrame
+
+        Examples
+        -------
+        type1:
+        dictionary = {"cross_entropy": [lambda p, q: sum(p*log(q)), ['a', 'b']]}
+        dictionary = {"sepal_length": [lambda x: mean(x)]}
+        type2:
+        dictionary = {"cross_entropy": lambda x: (x.a*log(x.b)).sum()}
+        type3:
+        dictionary = {"sepal_length": "mean"}
+
+        """
+        ## 1. will summarised columns earlier in the dictionary be available for later aggregations? NO
+
+        # Type checks
+        assert isinstance(dictionary, dict)
+
+        ## don't need a deepcopy as this is data is never overwritten in the method
+        grouped = self.__data
+        cn = self.get_colnames()
+
+        keys = dictionary.keys()
+        values = dictionary.values()
+
+        assert all([isinstance(akey, str) for akey in keys])
+        assert all([isinstance(avalue, (list, tuple)) or callable(avalue) for avalue in values])
+
+        # dict: akey -> summarised series
+        res = dict()
+
+        for akey in keys:
+            avalue = dictionary[akey]
+            if isinstance(avalue, (list, tuple)):
+                if len(avalue) == 1:
+                    func = avalue[0]
+                    func_args = [akey]
+                elif len(avalue) == 2:
+                    func = avalue[0]
+                    func_args = avalue[1]
+                    assert isinstance(func_args, (list, tuple, str))
+                    if isinstance(func_args, str):
+                        func_args = [func_args]
+                    else:
+                        func_args = list(func_args) ## explicitly converts tuples to list
+                        assert all(isinstance(acol_name, str) for acol_name in func_args)
+                else:
+                    raise ValueError("values of type list in the dictionary should be of len 1 or 2")
+
+                assert callable(func)
+                assert set(func_args).issubset(cn)
+                ## summarise for type 1
+
+                def summariser_single(chunk):
+                    input_cols = map(lambda x: chunk[x], func_args)
+                    return func(*input_cols)
+
+
+                res.update({akey: grouped.apply(summariser_single)})
+
+            if callable(avalue):
+                ## summarise for type 2
+                res.update({akey: grouped.apply(avalue)})
+
+            ## TODO: to support avalue to be a string name for popular aggregate functions.
+
+        list_summarised = list(res.values())
+
+        assert all([a_summarised.shape == list_summarised[0].shape for a_summarised in list_summarised[1:]]), \
+            "all summarised series don't have same shape"
+
+        ## importing it here to avoid circular imports
+        from package_tidypandas.tidyDataFrame import tidyDataFrame
+
+        return tidyDataFrame(pd.DataFrame(res).reset_index(drop=False), check=False)
+
+    def _summarise_across(self, func, column_names = None, predicate = None, prefix = ""):
+        """
+
+        Parameters
+        ----------
+        func: callable
+            aggregate function
+        column_names: list
+            list of column names(string)
+        predicate: callable
+            function to select columns, exactly one among column_names and predicate must be specified
+        prefix: string
+            prefix to add to column names
+
+        Returns
+        -------
+        a tidyDataFrame
+        """
+
+        assert callable(func)
+        assert isinstance(prefix, str)
+
+        if (column_names is not None) and (predicate is not None):
+            raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
+
+        if (column_names is None) and (predicate is None):
+            raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
+
+        ## don't need a deepcopy as this is data is never overwritten in the method
+        grouped = self.__data
+        grouping_columns = grouped.grouper.names
+        cn = grouped.obj.columns
+
+        # use column_names
+        if column_names is not None:
+            assert isinstance(column_names, list)
+            assert all([isinstance(acol, str) for acol in column_names])
+        # use predicate to assign appropriate column_names
+        else:
+            mask_predicate = list(self.__data.obj.apply(predicate, axis=0))
+            assert all([isinstance(x, bool) for x in mask_predicate])
+
+            mask_non_grouping_column = [acol not in grouping_columns for acol in cn]
+
+            mask = [x and y for x, y in zip(mask_predicate, mask_non_grouping_column)]
+            column_names = cn[mask]
+
+        # dict: akey -> summarised series
+        res = dict()
+
+        for acol in column_names:
+            def summariser_single(chunk):
+                return func(chunk[acol])
+            res.update({prefix+acol: grouped.apply(summariser_single)})
+
+        list_summarised = list(res.values())
+
+        assert all([a_summarised.shape == list_summarised[0].shape for a_summarised in list_summarised[1:]]), \
+            "all summarised series don't have same shape"
+
+        ## importing it here to avoid circular imports
+        from package_tidypandas.tidyDataFrame import tidyDataFrame
+
+        return tidyDataFrame(pd.DataFrame(res).reset_index(drop=False), check=False)
     
-    # distinct ---------------------------------------------------------------
-    def distinct(self
-                 , column_names = None
-                 , keep = 'first'
-                 , retain_all_columns = False
-                 ):
+    def distinct(self, column_names = None, keep = 'first', retain_all_columns = False, ignore_grouping = False):
         
         if column_names is not None:
             assert is_string_or_string_list(column_names)
@@ -408,72 +648,3 @@ class tidyGroupedDataFrame:
                         )
         res = res.groupby(self.get_groupvars())
         return tidyGroupedDataFrame(res, check = False)
-    
-    def rbind(self, y):
-        res = pd.concat([self.ungroup().to_pandas(), y.ungroup().to_pandas()]
-                        , axis = 0
-                        , ignore_index = True # loose row indexes
-                        )
-        res = res.groupby(self.get_groupvars())
-        return tidyGroupedDataFrame(res, check = False)
-
-    
-    # count
-    def count(self, column_names = None, count_column_name = 'n', sort = 'descending'):
-        
-        assert (column_names is None) or is_string_or_string_list(column_names)
-        if column_names is not None:
-            column_names = enlist(column_names)
-        assert isinstance(count_column_name, str)
-        assert count_column_name not in self.get_colnames()
-        assert isinstance(sort, str)
-        assert sort in ['asending', 'descending', 'natural']
-        
-        groupvars = self.get_groupvars()
-        if column_names is None:
-            column_names = []
-            
-        temp_groupvars = list(set(column_names + groupvars))
-            
-        res = (self.ungroup()
-                   .to_pandas()
-                   .groupby(temp_groupvars)
-                   .size()
-                   .reset_index()
-                   .rename(columns = {0: count_column_name})
-                   )
-        asc = True
-        if sort == 'descending':
-            asc = False
-        
-        if sort != 'natural':
-            res = res.sort_values(by = count_column_name
-                                  , axis         = 0
-                                  , ascending    = asc
-                                  , inplace      = False
-                                  , kind         = 'quicksort'
-                                  , na_position  = 'first'
-                                  , ignore_index = True
-                                  )
-        
-        # bring back the grouping
-        res = res.groupby(groupvars)
-            
-        return tidyGroupedDataFrame(res, check = False)
-    
-    def add_count(self
-                  , column_names = None
-                  , count_column_name = 'n'
-                  , sort_order = 'natural'
-                  ):
-        
-        
-        count_frame = self.count(column_names, count_column_name, sort_order)
-        if column_names is None:
-            join_names = self.get_groupvars()
-        else:
-            join_names = list(set(enlist(column_names)).union(self.get_groupvars()))
-            
-        res = self.join_inner(count_frame, on = join_names)
-        
-        return res
