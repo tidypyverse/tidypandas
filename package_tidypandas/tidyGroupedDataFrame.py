@@ -7,12 +7,15 @@ class tidyGroupedDataFrame:
     def __init__(self, x, check = True):
         if check:
             raise TypeError(
-                ('If you want to intend work with a existing grouped pandas'
+                ('If you intend to work with a existing grouped pandas'
                    ' dataframe, then consider removing the grouping structure'
                    ' and creating an instance of tidyDataFrame'
                    ' and then group_by'
                   ))
-        self.__data = copy.deepcopy(x)
+        else:
+            self.__data = copy.copy(x)
+        
+        return None
     
     # print method
     def __repr__(self):
@@ -44,6 +47,12 @@ class tidyGroupedDataFrame:
     def get_ncol(self):
         return self.__data.obj.shape[1]
         
+    def get_shape(self):
+        return self.__data.obj.shape
+    
+    def get_dim(self):
+        return self.__data.obj.shape
+    
     def get_colnames(self):
         return list(self.__data.obj.columns)
         
@@ -58,44 +67,54 @@ class tidyGroupedDataFrame:
         return tidyDataFrame(self.__data.obj, check = False)
      
     # basic verbs   
-    def select(self, column_names, include = True):
+    def select(self, column_names = None, predicate = None, include = True):
         
-        column_names = list(column_names)
-        assert len(column_names) == len(set(column_names))
-        assert len(column_names) > 0
-        assert all([isinstance(x, str) for x in column_names])
-        cols = self.__data.obj.columns.to_list()
-        assert all([x in cols for x in column_names])
+        if (column_names is None) and (predicate is None):
+            raise Exception('Exactly one among "column_names" and "predicate" should not be None')
+        if (column_names is not None) and (predicate is not None):
+            raise Exception('Exactly one among "column_names" and "predicate" should not be None')
+        
+        if column_names is None:
+            assert callable(predicate)
+            col_bool_list = list(self.ungroup().to_pandas().apply(predicate))
+            column_names = list(np.array(self.get_colnames())[col_bool_list])
+            assert len(column_names) > 0
+        else:
+            assert is_string_or_string_list(column_names)
+            column_names = enlist(column_names)
+            assert len(column_names) > 0
+            cols = self.get_colnames()
+            assert all([x in cols for x in column_names])
         
         if not include:
-            column_names = set(self.__data.obj.columns).difference(set(column_names))
+            column_names = set(cols).difference(set(column_names))
             column_names = list(column_names)
             
-        group_var_names = self.__data.grouper.names
-        column_names    = list(set(column_names + group_var_names))
+        groupvars    = self.get_groupvars()
+        column_names = list(set(column_names + groupvars))
         
         res = (self.__data.obj.loc[:, column_names]
-                              .groupby(group_var_names)
+                              .groupby(groupvars)
                               )
         return tidyGroupedDataFrame(res, check = False)
     
     def slice(self, row_numbers):
         
         assert all([x >=0 for x in row_numbers])
-        group_var_names = self.__data.grouper.names
+        groupvars = self.get_groupvars()
         
         res = (self.__data
                    .apply(lambda x: x.iloc[row_numbers, :])
                    .reset_index(drop = True)
-                   .groupby(group_var_names)
+                   .groupby(groupvars)
                    )
         
         return tidyGroupedDataFrame(res, check = False)
         
     def arrange(self, column_names, ascending = False, na_position = 'last'):
         
-        if not isinstance(column_names, list):
-            column_names = [column_names]
+        assert is_string_or_string_list(column_names)
+        column_names = enlist(column_names)
         assert len(column_names) > 0
         cn = self.get_colnames()
         assert all([x in cn for x in column_names])
@@ -105,7 +124,7 @@ class tidyGroupedDataFrame:
             assert all([isinstance(x, bool) for x in ascending])
             assert len(ascending) == len(column_names)
         
-        group_var_names = self.__data.grouper.names
+        groupvars = self.get_groupvars()
         res = (self.__data
                    .apply(lambda x: x.sort_values(by = column_names
                                                     , axis         = 0
@@ -117,7 +136,7 @@ class tidyGroupedDataFrame:
                                                     )
                          )
                    .reset_index(drop = True)
-                   .groupby(group_var_names)
+                   .groupby(groupvars)
                    )
         
         return tidyGroupedDataFrame(res, check = False)
@@ -300,79 +319,7 @@ class tidyGroupedDataFrame:
                               .groupby(grouping_columns))
 
         return tidyGroupedDataFrame(mutated, check = False)
-        
-    def distinct(self, column_names = None, keep = 'first', retain_all_columns = False, ignore_grouping = False):
-        
-        if isinstance(column_names, str):
-            column_names = [column_names]
-        assert (column_names is None) or (isinstance(column_names, list))
-        if column_names is not None:
-            assert all(isinstance(x, str) for x in column_names)
-            cols = self.get_colnames()
-            assert all([x in cols for x in column_names])
-        assert isinstance(retain_all_columns, bool)
-        
-        group_var_names = self.__data.grouper.names
-        # column_names should not intersect with grouping variables
-        if column_names is not None:
-            assert not any(x in group_var_names for x in column_names)
-        
-        # function: distinct per chunk
-        def distinct_wrapper(chunk):
-            
-            chunk = chunk.drop(columns = group_var_names)
-            
-            if column_names is None:
-                res = chunk.drop_duplicates(keep = keep, ignore_index = True)
-            else:
-                if retain_all_columns:
-                    res = chunk.drop_duplicates(subset = column_names
-                                                      , keep = keep
-                                                      , ignore_index = True
-                                                      )
-                else:
-                    res = (chunk.loc[:, column_names]
-                                .drop_duplicates(keep = keep, ignore_index = True)
-                               )
-            
-            return res
-        
-        if ignore_grouping:
-            if column_names is None:
-                res = (self.ungroup()
-                           .to_pandas()
-                           .drop_duplicates(keep = keep, ignore_index = True)
-                           )
-            else:
-                res = (self.ungroup()
-                           .to_pandas()
-                           .drop_duplicates(subset = column_names
-                                            , keep = keep
-                                            , ignore_index = True
-                                            )
-                            )
-            if retain_all_columns:
-                res = res.groupby(column_names)
-            else:
-                if column_names is None:
-                    to_select = self.get_colnames()
-                else:
-                    to_select = list(set(column_names).union(group_var_names))
-                
-                res = (res.loc[:, to_select]
-                          .groupby(group_var_names)
-                          )
-        else: # grouped distinct
-            res = (self.__data
-                       .apply(distinct_wrapper)
-                       .reset_index(drop = True, level = 1) # remove col_1
-                       .reset_index()
-                       .groupby(group_var_names)
-                       )
-        
-        
-        return tidyGroupedDataFrame(res, check = False)
-
+    
     def summarise(self, dictionary=None, func=None, column_names=None, predicate=None, prefix = ""):
         """
 
@@ -567,3 +514,137 @@ class tidyGroupedDataFrame:
         from package_tidypandas.tidyDataFrame import tidyDataFrame
 
         return tidyDataFrame(pd.DataFrame(res).reset_index(drop=False), check=False)
+    
+    def distinct(self, column_names = None, keep = 'first', retain_all_columns = False, ignore_grouping = False):
+        
+        if column_names is not None:
+            assert is_string_or_string_list(column_names)
+            column_names = enlist(column_names)
+            cols = self.get_colnames()
+            assert set(column_names).issubset(cols)
+        else:
+            column_names = self.get_colnames()
+        assert isinstance(retain_all_columns, bool)
+        
+        
+        groupvars = self.get_groupvars()
+        cols_subset = set(column_names).difference(groupvars)
+        res = (self.__data
+                   .apply(lambda x: x.drop_duplicates(subset = cols_subset
+                                                      , keep = keep
+                                                      , ignore_index = True
+                                                      )
+                          )
+                   .reset_index(drop = True)
+                   )
+        
+        if not retain_all_columns:
+            res = res.loc[:, list(set(column_names + groupvars))]
+        
+        # regroup
+        res = res.groupby(groupvars)
+        
+        return tidyGroupedDataFrame(res, check = False)    
+    
+    # join methods
+    def join(self, y, how = 'inner', on = None, on_x = None, on_y = None, suffix_y = "_y"):
+
+        # assertions
+        assert isinstance(y, (tidyDataFrame, tidyGroupedDataFrame))
+        assert how in ['inner', 'outer', 'left', 'right', 'anti']
+        cn_x = self.get_colnames()
+        cn_y = y.get_colnames()
+        if isinstance(y, tidyGroupedDataFrame):
+            y = y.ungroup().to_pandas()
+        else:
+            y = y.to_pandas()
+            
+        if on is None:
+            assert on_x is not None and on_y is not None
+            assert is_string_or_string_list(on_x)
+            assert is_string_or_string_list(on_y)
+            on_x = enlist(on_x)
+            on_y = enlist(on_y)
+            assert len(on_x) == len(on_y)
+            assert all([e in cn_x for e in on_x])
+            assert all([e in cn_y for e in on_y])
+        else: # on is provided
+            assert on_x is None and on_y is None
+            assert is_string_or_string_list(on)
+            on = enlist(on)
+            assert all([e in cn_x for e in on])
+            assert all([e in cn_y for e in on])
+                
+        # merge call
+        if how == 'anti':
+            res = pd.merge(self.ungroup().to_pandas()
+                           , y
+                           , how = how
+                           , on = on
+                           , left_on = on_x
+                           , right_on = on_y
+                           , indicator = True
+                           , suffixes = (None, suffix_y)
+                           )
+            res = res.loc[res._merge == 'left_only', :].drop(columns = '_merge')
+        else:    
+            res = pd.merge(self.ungroup().to_pandas()
+                           , y
+                           , how = how
+                           , on = on
+                           , left_on = on_x
+                           , right_on = on_y
+                           , suffixes = (None, suffix_y)
+                           )
+                           
+        # remove the new 'on_y' columns
+        if on is None:
+            def appender(x):
+                if x in cn_x:
+                    res = x + suffix
+                else:
+                    res = x
+                return res
+            
+            new_on_y = map(appender, on_y)
+            res = res.drop(columns = new_on_y)
+        
+        # check for unique column names
+        res_columns = list(res.columns)
+        if len(set(res_columns)) != len(res_columns):
+            raise Exception('Join should not result in ambiguous column names. Consider changing the value of "suffix_y" argument')
+        
+        # bring back the original grouping of x
+        groupvars = self.get_groupvars()
+        res = res.groupby(groupvars)
+                
+        return tidyGroupedDataFrame(res, check = False)
+        
+    def join_inner(self, y, on = None, on_x = None, on_y = None):
+        return self.join(y, 'inner', on, on_x, on_y)
+        
+    def join_outer(self, y, on = None, on_x = None, on_y = None):
+        return self.join(y, 'outer', on, on_x, on_y)
+        
+    def join_left(self, y, on = None, on_x = None, on_y = None):
+        return self.join(y, 'left', on, on_x, on_y)
+        
+    def join_right(self, y, on = None, on_x = None, on_y = None):
+        return self.join(y, 'right', on, on_x, on_y)
+        
+    def join_anti(self, y, on = None, on_x = None, on_y = None):
+        return self.join(y, 'anti', on, on_x, on_y)    
+    
+    # binding functions
+    def cbind(self, y):
+        # number of rows should match
+        assert self.get_nrow() == y.get_nrow()
+        # column names should differ
+        assert len(set(self.get_colnames()).intersection(y.get_colnames())) == 0
+        
+        res = pd.concat([self.ungroup().to_pandas(), y.ungroup().to_pandas()]
+                        , axis = 1
+                        , ignore_index = False # not to loose column names
+                        )
+        res = res.groupby(self.get_groupvars())
+        return tidyGroupedDataFrame(res, check = False)
