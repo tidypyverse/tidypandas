@@ -62,7 +62,7 @@ class tidyGroupedDataFrame:
     # ungroup method
     def ungroup(self):
         ## importing it here to avoid circular imports
-        from package_tidypandas.tidyDataFrame import tidyDataFrame
+        # from package_tidypandas.tidyDataFrame import tidyDataFrame
 
         return tidyDataFrame(self.__data.obj, check = False)
      
@@ -446,7 +446,7 @@ class tidyGroupedDataFrame:
             "all summarised series don't have same shape"
 
         ## importing it here to avoid circular imports
-        from package_tidypandas.tidyDataFrame import tidyDataFrame
+        # from package_tidypandas.tidyDataFrame import tidyDataFrame
 
         return tidyDataFrame(pd.DataFrame(res).reset_index(drop=False), check=False)
 
@@ -511,7 +511,7 @@ class tidyGroupedDataFrame:
             "all summarised series don't have same shape"
 
         ## importing it here to avoid circular imports
-        from package_tidypandas.tidyDataFrame import tidyDataFrame
+        # from package_tidypandas.tidyDataFrame import tidyDataFrame
 
         return tidyDataFrame(pd.DataFrame(res).reset_index(drop=False), check=False)
     
@@ -648,3 +648,101 @@ class tidyGroupedDataFrame:
                         )
         res = res.groupby(self.get_groupvars())
         return tidyGroupedDataFrame(res, check = False)
+    
+    def rbind(self, y):
+        res = pd.concat([self.ungroup().to_pandas(), y.ungroup().to_pandas()]
+                        , axis = 0
+                        , ignore_index = True # loose row indexes
+                        )
+        res = res.groupby(self.get_groupvars())
+        return tidyGroupedDataFrame(res, check = False)
+
+
+    # count
+    def count(self, column_names = None, count_column_name = 'n', sort = 'descending'):
+
+        assert (column_names is None) or is_string_or_string_list(column_names)
+        if column_names is not None:
+            column_names = enlist(column_names)
+        assert isinstance(count_column_name, str)
+        assert count_column_name not in self.get_colnames()
+        assert isinstance(sort, str)
+        assert sort in ['asending', 'descending', 'natural']
+        
+        groupvars = self.get_groupvars()
+        if column_names is None:
+            column_names = []
+            
+        temp_groupvars = list(set(column_names + groupvars))
+            
+        res = (self.ungroup()
+                   .to_pandas()
+                   .groupby(temp_groupvars)
+                   .size()
+                   .reset_index()
+                   .rename(columns = {0: count_column_name})
+                   )
+        asc = True
+        if sort == 'descending':
+            asc = False
+        
+        if sort != 'natural':
+            res = res.sort_values(by = count_column_name
+                                  , axis         = 0
+                                  , ascending    = asc
+                                  , inplace      = False
+                                  , kind         = 'quicksort'
+                                  , na_position  = 'first'
+                                  , ignore_index = True
+                                  )
+        
+        # bring back the grouping
+        res = res.groupby(groupvars)
+
+        return tidyGroupedDataFrame(res, check = False)
+
+    def add_count(self
+                  , column_names = None
+                  , count_column_name = 'n'
+                  , sort_order = 'natural'
+                  ):
+
+
+        count_frame = self.count(column_names, count_column_name, sort_order)
+        if column_names is None:
+            join_names = self.get_groupvars()
+        else:
+            join_names = list(set(enlist(column_names)).union(self.get_groupvars()))
+
+        res = self.join_inner(count_frame, on = join_names)
+
+        return res
+    
+    def pivot_wider(self
+                    , names_from
+                    , values_from
+                    , values_fill = None
+                    , values_fn = "mean"
+                    , id_cols = None
+                    , groupby_id_cols = False
+                    , drop_na = True
+                    , retain_levels = False
+                    , sep = "__"
+                    ):
+        
+        warnings.warn("'pivot_wider' does not consider or retain the grouping structure of the input.")
+        res = (self.ungroup()
+                   .pivot_wider(names_from
+                                , values_from
+                                , values_fill
+                                , values_fn
+                                , id_cols
+                                , groupby_id_cols
+                                , drop_na
+                                , retain_levels
+                                , sep
+                                )
+                   )
+        
+        return res
+        

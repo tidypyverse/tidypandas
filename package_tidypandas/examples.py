@@ -94,6 +94,7 @@ iris_tidy.pivot_wider(id_cols       = ["Sepal.Length", "Sepal.Width"]
 iris_tidy.pivot_wider(id_cols       = ["Sepal.Length", "Sepal.Width"]
                       , names_from  = "Species"
                       , values_from = ["Petal.Length", "Petal.Width"]
+                      , groupby_id_cols = True
                       )
 
 iris_tidy.pivot_wider(id_cols       = ["Sepal.Length", "Sepal.Width"]
@@ -103,6 +104,10 @@ iris_tidy.pivot_wider(id_cols       = ["Sepal.Length", "Sepal.Width"]
 
 iris_tidy.pivot_wider(id_cols       = ["Sepal.Length"]
                       , names_from  = ["Species", "Petal.Width"]
+                      , values_from = ["Petal.Length", "Sepal.Width"]
+                      )
+
+iris_tidy.pivot_wider(names_from  = ["Species", "Petal.Width"]
                       , values_from = ["Petal.Length", "Sepal.Width"]
                       )
 
@@ -183,3 +188,31 @@ iris_tidy_grouped.add_count()
 iris_tidy_grouped.add_count('Species')
 iris_tidy_grouped.add_count(['Sepal.Length'])
 iris_tidy_grouped.add_count(['Species', 'Sepal.Length'])
+
+# pivoting
+iris_tidy_grouped.pivot_wider(id_cols       = "Sepal.Length"
+                              , names_from  = "Species"
+                              , values_from = "Petal.Length"
+                              )
+
+(iris_tidy.group_by("Sepal.Length")
+          .pivot_wider(id_cols       = ["Sepal.Length", "Sepal.Width"]
+                       , names_from  = "Species"
+                       , values_from = "Petal.Length"
+                       )
+          )
+
+iris_tidy.pivot_wider(id_cols       = ["Sepal.Length", "Sepal.Width"]
+                      , names_from  = "Species"
+                      , values_from = ["Petal.Length", "Petal.Width"]
+                      )
+
+iris_tidy.pivot_wider(id_cols       = ["Sepal.Length", "Sepal.Width"]
+                      , names_from  = ["Species", "Petal.Width"]
+                      , values_from = ["Petal.Length"]
+                      )
+
+iris_tidy.pivot_wider(id_cols       = ["Sepal.Length"]
+                      , names_from  = ["Species", "Petal.Width"]
+                      , values_from = ["Petal.Length", "Sepal.Width"]
+                      )

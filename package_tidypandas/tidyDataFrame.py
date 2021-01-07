@@ -3,8 +3,8 @@ import numpy as np
 import pandas as pd
 import warnings
 
-from package_tidypandas.tidyGroupedDataFrame import tidyGroupedDataFrame
-from package_tidypandas.tidypredicates import *
+# from package_tidypandas.tidyGroupedDataFrame import tidyGroupedDataFrame
+# from package_tidypandas.tidypredicates import *
 
 def is_string_or_string_list(x):
     
@@ -650,6 +650,7 @@ class tidyDataFrame:
                     , values_fill = None
                     , values_fn = "mean"
                     , id_cols = None
+                    , groupby_id_cols = False
                     , drop_na = True
                     , retain_levels = False
                     , sep = "__"
@@ -668,7 +669,11 @@ class tidyDataFrame:
         set_union_names_values_from = set(values_from).union(names_from)
         
         if id_cols is None:
-            id_cols = set(cn).difference(set_union_names_values_from)
+            id_cols = list(set(cn).difference(set_union_names_values_from))
+            if len(id_cols) == 0:
+                raise Exception("'id_cols' is turning out to be empty. Choose the 'names_from' and 'values_from' appropriately or specify 'id_cols' explicitly.")
+            else:
+                print("'id_cols' chosen: " + str(id_cols))
         else:
             assert is_string_or_string_list(id_cols)
             id_cols = enlist(id_cols)
@@ -688,7 +693,7 @@ class tidyDataFrame:
             else:
                 assert not isinstance(values_fn, list)
         
-        
+        assert isinstance(groupby_id_cols, bool)
         assert isinstance(drop_na, bool)
         assert isinstance(retain_levels, bool)
         assert isinstance(sep, str)
@@ -708,5 +713,8 @@ class tidyDataFrame:
                              , observed   = retain_levels
                              )
                 
-        res = tidy(res, sep)        
-        return tidyDataFrame(res)
+        res = tidyDataFrame(tidy(res, sep), check = False)
+        if groupby_id_cols:
+            res = res.group_by(id_cols)
+            
+        return res
