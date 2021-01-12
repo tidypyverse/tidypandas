@@ -7,31 +7,15 @@ Implementation notes (for the developer team):
 
 ## Basic Verbs (one-table)
 
-- [x] select for tidy
-- [x] select for tidy grouped
-
-- [x] group_by for tidy
-- [x] ungroup for tidy
-- [x] ungroup for tidy grouped
-
-- [ ] mutate for tidy
-- [ ] mutate for tidy grouped
-
-- [x] arrange for tidy
-- [x] arrange for tidy grouped
-
-- [x] filter for tidy
-- [x] filter for tidy grouped
-
-- [x] distinct for tidy
-- [x] distinct for tidy grouped
-
-- [ ] summarise for tidy
-- [ ] summarise for tidy grouped
-
-- [x] slice for tidy
-- [x] slice for tidy grouped
-
+- [x] select
+- [x] group_by
+- [x] ungroup
+- [x] mutate
+- [x] arrange
+- [x] filter
+- [x] distinct
+- [x] summarise
+- [x] slice
 
 ## class methods
 
@@ -62,13 +46,13 @@ Implementation notes (for the developer team):
  
 ## pivot methods
 
-- [] pivot_longer
-- [] pivot_wider
+- [x] pivot_longer
+- [x] pivot_wider
 
 ## functions
 
-- [] coalasce
-- [] bind_rows
-- [] bind_cols
+- [ ] coalasce
+- [ ] bind_rows
+- [ ] bind_cols
 
 

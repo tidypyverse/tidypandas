@@ -111,6 +111,17 @@ iris_tidy.pivot_wider(names_from  = ["Species", "Petal.Width"]
                       , values_from = ["Petal.Length", "Sepal.Width"]
                       )
 
+# melt
+(iris_tidy.pivot_wider(id_cols       = ["Sepal.Length", "Sepal.Width"]
+                      , names_from  = "Species"
+                      , values_from = "Petal.Length"
+                      )
+          .pivot_longer(cols = ["setosa", "versicolor", "virginica"]
+                        , names_to = "species"
+                        , values_to = "value"
+                        )
+)
+
 # grouped --------------------------------------------------------------------
 iris_tidy_grouped = tidyDataFrame(iris).group_by('Species')
 iris_tidy_grouped
@@ -128,6 +139,9 @@ iris_tidy_grouped.select(predicate = pd.api.types.is_float_dtype)
 iris_tidy_grouped.slice(range(2))
 
 iris_tidy_grouped.ungroup() 
+
+iris_tidy_grouped.group_by('Sepal.Length')
+iris_tidy_grouped.group_by(['Sepal.Length', 'Species'])
 
 iris_tidy_grouped.arrange('Sepal.Length', ascending = True)
 iris_tidy_grouped.mutate(
@@ -216,3 +230,15 @@ iris_tidy.pivot_wider(id_cols       = ["Sepal.Length"]
                       , names_from  = ["Species", "Petal.Width"]
                       , values_from = ["Petal.Length", "Sepal.Width"]
                       )
+
+# melt
+(iris_tidy.pivot_wider(id_cols       = ["Sepal.Length", "Sepal.Width"]
+                      , names_from  = "Species"
+                      , values_from = "Petal.Length"
+                      )
+          .group_by("Sepal.Length")
+          .pivot_longer(cols = ["setosa", "versicolor", "virginica"]
+                        , names_to = "species"
+                        , values_to = "value"
+                        )
+)

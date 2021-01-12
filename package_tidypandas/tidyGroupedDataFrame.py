@@ -59,6 +59,25 @@ class tidyGroupedDataFrame:
     def get_groupvars(self):
         return self.__data.grouper.names
     
+    # group_by method
+    def group_by(self, groupvars):
+        
+        cn = self.get_colnames()
+        assert is_string_or_string_list(groupvars)
+        groupvars = enlist(groupvars)
+        assert set(groupvars).issubset(cn)
+        
+        existing_groupvars = self.get_groupvars()
+        incoming_groupvars = list(set(groupvars).difference(existing_groupvars))
+        if len(incoming_groupvars) >= 1:
+            print("New grouping columns: " + str(incoming_groupvars))
+            new_groupvars = list(set(existing_groupvars).union(incoming_groupvars))
+            res = (self.ungroup()
+                       .group_by(new_groupvars)
+                       )
+            
+            return res
+    
     # ungroup method
     def ungroup(self):
         ## importing it here to avoid circular imports
@@ -657,7 +676,6 @@ class tidyGroupedDataFrame:
         res = res.groupby(self.get_groupvars())
         return tidyGroupedDataFrame(res, check = False)
 
-
     # count
     def count(self, column_names = None, count_column_name = 'n', sort = 'descending'):
 
@@ -718,6 +736,7 @@ class tidyGroupedDataFrame:
 
         return res
     
+    # pivoting
     def pivot_wider(self
                     , names_from
                     , values_from
@@ -742,6 +761,35 @@ class tidyGroupedDataFrame:
                                 , retain_levels
                                 , sep
                                 )
+                   )
+        
+        return res
+    
+    def pivot_longer(self
+                     , cols
+                     , names_to = "key"
+                     , values_to = "value"
+                     ):
+        
+        # assertions
+        cn = self.get_colnames()
+        assert is_string_or_string_list(cols)
+        assert set(cols).issubset(cn)
+        
+        id_vars = set(cn).difference(cols)
+        assert isinstance(names_to, str)
+        assert isinstance(values_to, str)
+        assert names_to not in id_vars
+        assert values_to not in id_vars
+        
+        warnings.warn("'pivot_longer' does not consider or retain the grouping structure of the input.")
+        
+        # core operation
+        res = (self.ungroup()
+                   .pivot_longer(cols        = cols
+                                 , names_to  = names_to
+                                 , values_to = values_to
+                                 )
                    )
         
         return res

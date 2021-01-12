@@ -2,6 +2,7 @@ import copy
 import numpy as np
 import pandas as pd
 import warnings
+from tabulate import tabulate
 
 # from package_tidypandas.tidyGroupedDataFrame import tidyGroupedDataFrame
 # from package_tidypandas.tidypredicates import *
@@ -73,7 +74,7 @@ class tidyDataFrame:
                     warnings.warn("Column names(index) should be unique.")
                 
                 # raise the error After informative warnings
-                raise Exception("Cannot use the pandas dataframe due to above warnings.")
+                raise Exception("Cannot use the pandas dataframe due to above warnings. Try the 'tidy' function.")
             
             print("Success! Created a tidy dataframe.")       
                     
@@ -85,7 +86,7 @@ class tidyDataFrame:
         print('Tidy dataframe with shape: {shape}'\
               .format(shape = self.__data.shape))
         print('First few rows:')
-        print(self.__data.head(10))
+        print(tabulate(self.__data.head(6),headers = 'keys',tablefmt = 'psql'))
         return ''
     
     # pandas copy method
@@ -718,3 +719,35 @@ class tidyDataFrame:
             res = res.group_by(id_cols)
             
         return res
+    
+    def pivot_longer(self
+                     , cols
+                     , names_to = "key"
+                     , values_to = "value"
+                     ):
+        
+        # assertions
+        cn = self.get_colnames()
+        assert is_string_or_string_list(cols)
+        assert set(cols).issubset(cn)
+        
+        id_vars = set(cn).difference(cols)
+        assert isinstance(names_to, str)
+        assert isinstance(values_to, str)
+        assert names_to not in id_vars
+        assert values_to not in id_vars
+        
+        
+        # core operation
+        res = (self.__data
+                   .melt(id_vars         = id_vars
+                         , value_vars    = cols
+                         , var_name      = names_to
+                         , value_name    = values_to
+                         , ignore_index  = True
+                         )
+                   )
+        
+        res = tidyDataFrame(res, check = False)
+        return res
+        
