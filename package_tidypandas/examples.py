@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-iris = pd.read_csv("~/personal/tidypandas/iris.csv")
+iris = pd.read_csv("~/tidypandas/iris.csv")
 iris
 
 # ungrouped ----------------------------------------------------------------------
@@ -121,6 +121,37 @@ iris_tidy.pivot_wider(names_from  = ["Species", "Petal.Width"]
                         , values_to = "value"
                         )
 )
+
+iris_tidy_2 = iris_tidy.mutate({'pl' : (lambda x: x + 1, 'Petal.Length')})
+iris_tidy_2
+
+# bind rows and cols
+bind_rows([iris_tidy, iris_tidy_2])
+bind_cols([iris_tidy, iris_tidy_2])
+
+# slice extensions
+iris_tidy.slice_head(3)
+iris_tidy.slice_head(151)
+iris_tidy.slice_head(prop = 0.1)
+iris_tidy.slice_head(prop = 1.1) # should throw an error
+
+iris_tidy.slice_tail(3)
+iris_tidy.slice_tail(151)
+iris_tidy.slice_tail(prop = 0.1)
+iris_tidy.slice_head(prop = 1.1) # should throw an error
+
+iris_tidy.slice_sample(n = 3)
+iris_tidy.slice_sample(n = 151)    # should throw an error
+iris_tidy.slice_sample(prop = 0.2)
+iris_tidy.slice_sample(prop = 1.2) # should throw an error
+
+iris_tidy.slice_bootstrap(n = 20)
+iris_tidy.slice_bootstrap(n = 200)
+iris_tidy.slice_bootstrap(prop = 0.4)
+iris_tidy.slice_bootstrap(prop = 1.4)
+
+iris_tidy.slice_min(n = 3, order_by = 'Sepal.Length')
+iris_tidy.slice_max(n = 3, order_by = ['Sepal.Width', 'Sepal.Length']) 
 
 # grouped --------------------------------------------------------------------
 iris_tidy_grouped = tidyDataFrame(iris).group_by('Species')
@@ -242,3 +273,27 @@ iris_tidy.pivot_wider(id_cols       = ["Sepal.Length"]
                         , values_to = "value"
                         )
 )
+
+# slice methods
+iris_tidy_grouped.slice_head(n = 2)
+iris_tidy_grouped.slice_head(prop = 0.1)
+
+iris_tidy_grouped.slice_tail(n = 3)
+iris_tidy_grouped.slice_tail(prop = 0.3)
+
+iris_tidy_grouped.slice_sample(n = 2)
+iris_tidy_grouped.slice_sample(prop = 0.05)
+
+iris_tidy_grouped.slice_bootstrap(n = 10)
+iris_tidy_grouped.slice_bootstrap(prop = 1.5)
+
+iris_tidy_grouped.slice_min(n = 2, order_by = "Sepal.Length")
+iris_tidy_grouped.slice_min(n = 2
+                            , order_by = "Sepal.Length"
+                            , ties_method = "first"
+                            )
+iris_tidy_grouped.slice_max(n = 2, order_by = "Sepal.Length")
+iris_tidy_grouped.slice_max(n = 2
+                            , order_by = "Sepal.Length"
+                            , ties_method = "first"
+                            )

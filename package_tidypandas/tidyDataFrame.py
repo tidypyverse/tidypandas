@@ -26,21 +26,62 @@ def enlist(x):
     
     return x
 
+def get_unique_names(strings):
+    theset = set([])
+    thelist = []
+    for astring in strings:
+        while(astring in theset):
+            astring = astring + "_1"
+        else:
+            theset.add(astring)
+            thelist.append(astring)
+    
+    return(thelist)
+
 def tidy(pdf, sep = "__"):
     
     if isinstance(pdf.columns, pd.MultiIndex):
         lol = list(map(list, list(pdf.columns)))
         cns = list(map(lambda x: sep.join(map(str, x)).rstrip(sep), lol))
-        pdf.columns = cns
+        pdf.columns = get_unique_names(cns)
     else:
         pdf.columns.name = None
     
     pdf = pdf.reset_index(drop = False)
-    assert len(set(pdf.columns)) == len(pdf.columns)
     
     return pdf
 
 
+def bind_rows(x, rowid_column_name = "rowid"):
+    
+    if isinstance(x, dict):
+        str_keys = [str(x) for x in x.keys()]
+        if len(set(str_keys)) < len(str_keys):
+            raise Exception("keys of the dictionary should form unique strings")
+        
+        def add_rowid_column(val):
+            pdf = val[1].ungroup().to_pandas()
+            pdf[rowid_column_name] = str(val[0])
+            return pdf
+        
+        pdfs = map(add_rowid_column, x.items())
+    else:
+        pdfs = map(lambda y: y.to_pandas(), x)
+        
+    res = pd.concat(pdfs, axis = 'index', ignore_index = True)
+    res = tidyDataFrame(res, check= False)
+    return res
+
+def bind_cols(x):
+    
+    pdfs = list(map(lambda y: y.ungroup().to_pandas(), x))
+    rls  = set(map(lambda y: y.shape[0], pdfs))
+    if len(rls) > 1:
+        raise Exception("Cannot bind columns as tidy dataframes have different number of rows")
+    res = pd.concat(pdfs, axis = "columns", ignore_index = False)
+    res.columns = get_unique_names(list(res.columns))
+    return tidyDataFrame(res, check = False)
+    
 class tidyDataFrame:
     # init method
     def __init__(self, x, check = True):
@@ -83,10 +124,11 @@ class tidyDataFrame:
     
     # print method
     def __repr__(self):
-        print('Tidy dataframe with shape: {shape}'\
+        print('-- Tidy dataframe with shape: {shape}'\
               .format(shape = self.__data.shape))
-        print('First few rows:')
-        print(tabulate(self.__data.head(6),headers = 'keys',tablefmt = 'psql'))
+        print('-- First few rows:')
+        print(self.__data.head(10))
+        #print(tabulate(self.__data.head(6),headers = 'keys',tablefmt = 'psql'))
         return ''
     
     # pandas copy method
@@ -750,4 +792,161 @@ class tidyDataFrame:
         
         res = tidyDataFrame(res, check = False)
         return res
+    
+    # slice extensions
+    def slice_head(self, n = None, prop = None):
         
+        nr = self.get_nrow()
+
+        # exactly one of then should be none
+        assert not ((n is None) and (prop is None))
+        assert not ((n is not None) and (prop is not None))
+            
+        if n is not None:
+            n = int(np.floor(n))
+            assert n > 0
+        if prop is not None:
+            assert prop > 0
+            assert prop <= 1
+            n = int(np.floor(prop * nr))
+        
+        return tidyDataFrame(self.__data.head(n).reset_index(drop = True)
+                             , check = False
+                             )
+    
+    def slice_tail(self, n = None, prop = None):
+        
+        nr = self.get_nrow()
+        
+        # exactly one of then should be none
+        assert not ((n is None) and (prop is None))
+        assert not ((n is not None) and (prop is not None))
+            
+        if n is not None:
+            n = int(np.floor(n))
+            assert n > 0
+        if prop is not None:
+            assert prop > 0
+            assert prop <= 1
+            n = int(np.floor(prop * nr))
+        
+        return tidyDataFrame(self.__data.tail(n).reset_index(drop = True)
+                             , check = False
+                             )
+    
+    def slice_sample(self, n = None, prop = None, random_state = None):
+        
+        nr = self.get_nrow()
+        
+        # exactly one of then should be none
+        assert not ((n is None) and (prop is None))
+        assert not ((n is not None) and (prop is not None))
+            
+        if n is not None:
+            n = int(np.floor(n))
+            assert n > 0
+        if prop is not None:
+            assert prop > 0
+            assert prop <= 1
+            n = int(np.floor(prop * nr))
+        
+        return tidyDataFrame((self.__data
+                                  .sample(n
+                                          , replace = False
+                                          , random_state = random_state
+                                          , axis = "index"
+                                          )
+                                  .reset_index(drop = True)
+                                  )
+                              
+                             , check = False
+                             )
+    
+    def slice_bootstrap(self, n = None, prop = None, random_state = None):
+        
+        nr = self.get_nrow()
+        
+        if n is not None:
+            n = int(np.floor(n))
+            assert n > 0
+        if prop is not None:
+            assert prop > 0
+            n = int(np.floor(prop * nr))
+        
+        return tidyDataFrame((self.__data
+                                  .sample(n
+                                          , replace = True
+                                          , random_state = random_state
+                                          , axis = "index"
+                                          )
+                                  .reset_index(drop = True)
+                                  )
+                              
+                             , check = False
+                             )
+    
+    def slice_min(self
+                  , n = None
+                  , prop = None
+                  , order_by = None
+                  , ties_method = "all"
+                  ):
+        
+        nr = self.get_nrow()
+        
+        # exactly one of then should be none
+        assert not ((n is None) and (prop is None))
+        assert not ((n is not None) and (prop is not None))
+            
+        if n is not None:
+            n = int(np.floor(n))
+            assert n > 0
+        if prop is not None:
+            assert prop > 0
+            assert prop <= 1
+            n = int(np.floor(prop * nr))
+        
+        if order_by is None:
+            raise Exception("argument 'order_by' should not be None")
+        
+        if ties_method is None:
+            ties_method = "all"
+            
+        res = (self.__data
+                   .nsmallest(n, columns = order_by, keep = ties_method)
+                   .reset_index(drop = True)
+                   )
+        return tidyDataFrame(res, check = False)
+    
+    def slice_max(self
+                  , n = None
+                  , prop = None
+                  , order_by = None
+                  , ties_method = "all"
+                  ):
+        
+        nr = self.get_nrow()
+        
+        # exactly one of then should be none
+        assert not ((n is None) and (prop is None))
+        assert not ((n is not None) and (prop is not None))
+            
+        if n is not None:
+            n = int(np.floor(n))
+            assert n > 0
+        if prop is not None:
+            assert prop > 0
+            assert prop <= 1
+            n = int(np.floor(prop * nr))
+        
+        if order_by is None:
+            raise Exception("argument 'order_by' should not be None")
+        
+        if ties_method is None:
+            ties_method = "all"
+            
+        res = (self.__data
+                   .nlargest(n, columns = order_by, keep = ties_method)
+                   .reset_index(drop = True)
+                   )
+        return tidyDataFrame(res, check = False)

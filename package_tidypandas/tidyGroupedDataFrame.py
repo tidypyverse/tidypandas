@@ -19,11 +19,11 @@ class tidyGroupedDataFrame:
     
     # print method
     def __repr__(self):
-        print('Tidy grouped dataframe with shape: {shape}'\
+        print('-- Tidy grouped dataframe with shape: {shape}'\
                .format(shape = self.__data.obj.shape))
-        print("Groupby variables: ", self.__data.grouper.names)
-        print("Number of groups: ", self.__data.ngroups)
-        print('First few rows:')
+        print("-- Groupby variables: ", self.__data.grouper.names)
+        print("-- Number of groups: ", self.__data.ngroups)
+        print('-- First few rows:')
         print(self.__data.obj.head(10))
         return ''
     
@@ -793,4 +793,207 @@ class tidyGroupedDataFrame:
                    )
         
         return res
+    
+    # slice extensions
+    def slice_head(self, n = None, prop = None):
+
+        # exactly one of then should be none
+        assert not ((n is None) and (prop is None))
+        assert not ((n is not None) and (prop is not None))
         
+        if prop is None:
+            n = int(np.floor(n))
+            assert n > 0
+            res = (self.__data
+                       .apply(lambda chunk : chunk.head(n))
+                       .reset_index(drop = True)
+                       .groupby(self.get_groupvars())
+                       )
+        else:
+            assert prop > 0
+            assert prop <= 1
+            res = (self.__data
+                       .apply(lambda chunk : chunk.head(int(chunk.shape[0] * prop)))
+                       .reset_index(drop = True)
+                       .groupby(self.get_groupvars())
+                       )
+        
+        return tidyGroupedDataFrame(res, check = False)
+    
+    def slice_tail(self, n = None, prop = None):
+
+        # exactly one of then should be none
+        assert not ((n is None) and (prop is None))
+        assert not ((n is not None) and (prop is not None))
+        
+        if prop is None:
+            n = int(np.floor(n))
+            assert n > 0
+            res = (self.__data
+                       .apply(lambda chunk : chunk.tail(n))
+                       .reset_index(drop = True)
+                       .groupby(self.get_groupvars())
+                       )
+        else:
+            assert prop > 0
+            assert prop <= 1
+            res = (self.__data
+                       .apply(lambda chunk : chunk.tail(int(chunk.shape[0] * prop)))
+                       .reset_index(drop = True)
+                       .groupby(self.get_groupvars())
+                       )
+        
+        return tidyGroupedDataFrame(res, check = False)
+        
+    def slice_sample(self, n = None, prop = None, random_state = None):
+        
+        # exactly one of then should be none
+        assert not ((n is None) and (prop is None))
+        assert not ((n is not None) and (prop is not None))
+        if n is not None:
+            n = int(np.floor(n))
+            assert n > 0
+        else:
+            assert prop > 0
+            assert prop <= 1
+            
+        if prop is None:
+            res = (self.__data
+                       .sample(n = n, random_state = random_state, replace = False)
+                       .reset_index(drop = True)
+                       .groupby(self.get_groupvars())
+                       )
+        else:
+            res = (self.__data
+                       .sample(frac = prop, random_state = random_state, replace = False)
+                       .reset_index(drop = True)
+                       .groupby(self.get_groupvars())
+                       )
+        
+        return tidyGroupedDataFrame(res, check = False)
+    
+    def slice_bootstrap(self, n = None, prop = None, random_state = None):
+        
+        # exactly one of then should be none
+        assert not ((n is None) and (prop is None))
+        assert not ((n is not None) and (prop is not None))
+        if n is not None:
+            n = int(np.floor(n))
+            assert n > 0
+        else:
+            assert prop > 0
+            
+        if prop is None:
+            res = (self.__data
+                       .sample(n = n
+                               , random_state = random_state
+                               , replace = True
+                               )
+                       .reset_index(drop = True)
+                       .groupby(self.get_groupvars())
+                       )
+        else:
+            res = (self.__data
+                       .sample(frac = prop
+                               , random_state = random_state
+                               , replace = True
+                               )
+                       .reset_index(drop = True)
+                       .groupby(self.get_groupvars())
+                       )
+        
+        return tidyGroupedDataFrame(res, check = False)
+    
+    def slice_min(self
+                  , n = None
+                  , prop = None
+                  , order_by = None
+                  , ties_method = "all"
+                  ):
+        
+        # exactly one of then should be none
+        assert not ((n is None) and (prop is None))
+        assert not ((n is not None) and (prop is not None))
+            
+        if n is not None:
+            n = int(np.floor(n))
+            assert n > 0
+        if prop is not None:
+            assert prop > 0
+            assert prop <= 1
+            
+        if order_by is None:
+            raise Exception("argument 'order_by' should not be None")
+        
+        if ties_method is None:
+            ties_method = "all"
+        
+        if prop is None:
+            res = (self.__data
+                       .apply(lambda chunk: chunk.nsmallest(n
+                                                            , columns = order_by
+                                                            , keep = ties_method
+                                                            )
+                              )
+                       .reset_index(drop = True)
+                       .groupby(self.get_groupvars())
+                       )
+        else:
+            res = (self.__data
+                       .apply(lambda chunk: chunk.nsmallest(int(np.floor(prop * chunk.shape[0]))
+                                                            , columns = order_by
+                                                            , keep = ties_method
+                                                            )
+                              )
+                       .reset_index(drop = True)
+                       .groupby(self.get_groupvars())
+                       )
+        
+        return tidyGroupedDataFrame(res, check = False)
+    
+    def slice_max(self
+                  , n = None
+                  , prop = None
+                  , order_by = None
+                  , ties_method = "all"
+                  ):
+        
+        # exactly one of then should be none
+        assert not ((n is None) and (prop is None))
+        assert not ((n is not None) and (prop is not None))
+            
+        if n is not None:
+            n = int(np.floor(n))
+            assert n > 0
+        if prop is not None:
+            assert prop > 0
+            assert prop <= 1
+            
+        if order_by is None:
+            raise Exception("argument 'order_by' should not be None")
+        
+        if ties_method is None:
+            ties_method = "all"
+        
+        if prop is None:
+            res = (self.__data
+                       .apply(lambda chunk: chunk.nlargest(n
+                                                           , columns = order_by
+                                                           , keep = ties_method
+                                                           )
+                              )
+                       .reset_index(drop = True)
+                       .groupby(self.get_groupvars())
+                       )
+        else:
+            res = (self.__data
+                       .apply(lambda chunk: chunk.nlargest(int(np.floor(prop * chunk.shape[0]))
+                                                           , columns = order_by
+                                                           , keep = ties_method
+                                                           )
+                              )
+                       .reset_index(drop = True)
+                       .groupby(self.get_groupvars())
+                       )
+        
+        return tidyGroupedDataFrame(res, check = False)
