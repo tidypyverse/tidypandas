@@ -28,13 +28,14 @@ Implementation notes (for the developer team):
 - [x] get_shape
 - [x] get_dim
 - [x] get_groupvars for tidy grouped
+- [x] to_dict for tidy grouped
 
-## joins
+## join methods
 
 - [x] join method for tidy (inner, outer, left, right, anti are special cases)
 - [x] join method for tidy grouped
 
-## binds
+## bind methods
 
 - [x] cbind
 - [x] rbind
@@ -49,10 +50,23 @@ Implementation notes (for the developer team):
 - [x] pivot_longer
 - [x] pivot_wider
 
+## slice methods
+
+- [x] slice_head
+- [x] slice_tail
+- [x] slice_sample
+- [x] slice_bootstrap
+- [x] slice_min
+- [x] slice_max
+
+## apply methods
+
+- [x] group_modify
+
 ## functions
 
 - [ ] coalasce
-- [ ] bind_rows
-- [ ] bind_cols
+- [x] bind_rows
+- [x] bind_cols
 
 

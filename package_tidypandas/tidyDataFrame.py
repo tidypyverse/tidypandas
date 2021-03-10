@@ -46,6 +46,10 @@ def tidy(pdf, sep = "__"):
         pdf.columns = get_unique_names(cns)
     else:
         pdf.columns.name = None
+        
+    if isinstance(pdf.index, pd.MultiIndex):
+        n_levels = len(pdf.index[0])
+        pdf = pdf.droplevel(level = n_levels - 1).reset_index(drop = False)
     
     pdf = pdf.reset_index(drop = False)
     

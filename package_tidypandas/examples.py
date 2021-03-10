@@ -162,6 +162,7 @@ iris_tidy_grouped.get_ncol()
 iris_tidy_grouped.get_nrow()
 iris_tidy_grouped.get_colnames()
 iris_tidy_grouped.to_pandas()
+iris_tidy_grouped.to_dict()
 
 iris_tidy_grouped.select(['Sepal.Length']) # grouped columns are always kept
 iris_tidy_grouped.select(['Sepal.Length', 'Species'], include = False)
@@ -297,3 +298,25 @@ iris_tidy_grouped.slice_max(n = 2
                             , order_by = "Sepal.Length"
                             , ties_method = "first"
                             )
+
+# group modify
+(iris_tidy.group_by("Species")
+          .group_modify(lambda x: (x.slice_head(2)
+                                    .select(["Species", "Sepal.Length"]
+                                            ,include = False
+                                            )
+                                    )
+                        )
+          )
+
+(iris_tidy.group_by(["Sepal.Length", "Species"])
+          .group_modify(lambda x: (x.slice_head(2)
+                                    .select(["Species", "Sepal.Length"]
+                                            ,include = False
+                                            )
+                                    )
+                        )
+          )
+
+
+

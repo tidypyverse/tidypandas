@@ -31,6 +31,10 @@ class tidyGroupedDataFrame:
     def to_pandas(self):
         return copy.copy(self.__data)
     
+    # to dict method
+    def to_dict(self):
+        return dict(tuple(self.__data))
+    
     # get methods
     def get_info(self):
         print('Tidy grouped dataframe with shape: {shape}'\
@@ -997,3 +1001,21 @@ class tidyGroupedDataFrame:
                        )
         
         return tidyGroupedDataFrame(res, check = False)
+    
+    # apply methods
+    def group_modify(self, func):
+        
+        gvs = self.get_groupvars()
+        
+        def func_wrapper(chunk):
+            return func(tidyDataFrame(chunk, check = False)).to_pandas()
+        
+        res = (self.__data
+                   .apply(func_wrapper)
+                   .droplevel(level = len(gvs))
+                   .reset_index()
+                   .groupby(gvs)
+                   )
+        
+        return tidyGroupedDataFrame(res, check = False)
+        
