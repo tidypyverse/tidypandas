@@ -63,10 +63,32 @@ Implementation notes (for the developer team):
 
 - [x] group_modify
 
+## set-like methods
+
+- [ ] union
+- [ ] intersect
+- [ ] setdiff
+
+## completing methods
+
+- [ ] expand
+- [ ] complete
+
+## na methods
+
+- [ ] fill_na
+- [ ] replace_na
+
+## character column helper methods
+
+- [ ] separate
+- [ ] unite
+- [ ] separate_rows
+
 ## functions
 
-- [ ] coalasce
 - [x] bind_rows
 - [x] bind_cols
+- [ ] union_all
 
 
