@@ -29,6 +29,8 @@ Implementation notes (for the developer team):
 - [x] get_dim
 - [x] get_groupvars for tidy grouped
 - [x] to_dict for tidy grouped
+- [x] pipe
+- [x] pipe2 (or pipe_pandas)
 
 ## join methods
 
@@ -63,11 +65,11 @@ Implementation notes (for the developer team):
 
 - [x] group_modify
 
-## set-like methods
+## set-like methods (for ungrouped only)
 
-- [ ] union
-- [ ] intersect
-- [ ] setdiff
+- [x] union
+- [x] intersect
+- [x] setdiff
 
 ## completing methods
 
@@ -77,7 +79,8 @@ Implementation notes (for the developer team):
 ## na methods
 
 - [ ] fill_na
-- [ ] replace_na
+- [x] replace_na
+- [x] drop_na
 
 ## character column helper methods
 

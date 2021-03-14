@@ -15,6 +15,9 @@ iris_tidy.get_nrow()
 iris_tidy.get_colnames()
 iris_tidy.to_pandas()
 
+iris_tidy.pipe(lambda x: x.select('Petal.Width'))
+iris_tidy.pipe2(lambda x: x.loc[:, ['Petal.Width']])
+
 iris_tidy.select(['Sepal.Length', 'Species'])
 iris_tidy.select(['Sepal.Length', 'Species'], include = False)
 iris_tidy.select(predicate = pd.api.types.is_float_dtype)
@@ -153,6 +156,35 @@ iris_tidy.slice_bootstrap(prop = 1.4)
 iris_tidy.slice_min(n = 3, order_by = 'Sepal.Length')
 iris_tidy.slice_max(n = 3, order_by = ['Sepal.Width', 'Sepal.Length']) 
 
+iris_tidy.expand(['Species'])
+iris_tidy.expand(['Species', 'Sepal.Length'])
+iris_tidy.expand([['Species', 'Sepal.Length']])
+iris_tidy.expand(['Species', 'Sepal.Length', ['Petal.Length', 'Petal.Width']])
+iris_tidy.expand([['Species', 'Sepal.Length'], ['Petal.Length', 'Petal.Width']])
+
+iris_tidy.complete(['Species', 'Sepal.Length'])
+iris_tidy.complete(['Species', 'Sepal.Length', ['Petal.Length', 'Petal.Width']])
+
+zero_five = iris_tidy.slice(np.arange(5))
+three_eight = iris_tidy.slice(np.arange(3, 8))
+
+zero_five.union(three_eight)
+zero_five.intersection(three_eight)
+zero_five.setdiff(three_eight)
+
+iris_2 = copy.copy(iris)
+iris_2.iloc[1,1] = pd.NA
+iris_2.iloc[2,4] = pd.NA
+iris_2.Species = pd.Categorical(iris_2.Species)
+iris
+
+tidyDataFrame(iris_2).replace_na({"Sepal.Width" : 0, "Species" : "unknown"})
+
+tidyDataFrame(iris_2).drop_na()
+tidyDataFrame(iris_2).drop_na(column_names = "Species")
+tidyDataFrame(iris_2).drop_na(column_names = ["Species", "Sepal.Length"])
+
+
 # grouped --------------------------------------------------------------------
 iris_tidy_grouped = tidyDataFrame(iris).group_by('Species')
 iris_tidy_grouped
@@ -183,6 +215,8 @@ iris_tidy_grouped.mutate(
 iris_tidy_grouped.mutate(
     {"pl": (lambda x: x + 1, 'Petal.Length')}
     )
+
+
 
 iris_tidy_grouped.mutate(
     {"pl": (lambda x, y: x + y, ['Petal.Length', 'Petal.Width'])}
@@ -309,6 +343,11 @@ iris_tidy_grouped.slice_max(n = 2
                         )
           )
 
+(iris_tidy.group_by("Species")
+          .group_modify(lambda x: x.slice_head(2).mutate({"Species" : (lambda x: x + "_",)}))
+          )
+
+
 (iris_tidy.group_by(["Sepal.Length", "Species"])
           .group_modify(lambda x: (x.slice_head(2)
                                     .select(["Species", "Sepal.Length"]
@@ -318,5 +357,21 @@ iris_tidy_grouped.slice_max(n = 2
                         )
           )
 
+# na methods
+iris_2 = copy.copy(iris)
+iris_2.iloc[1,1] = pd.NA
+iris_2.iloc[2,4] = pd.NA
+iris_2.Species = pd.Categorical(iris_2.Species)
+iris
 
+(tidyDataFrame(iris_2).group_by('Sepal.Length')
+                      .replace_na({"Sepal.Width" : 0, "Species" : "unknown"})
+                      )
 
+(tidyDataFrame(iris_2).group_by('Species')
+                      .replace_na({"Sepal.Width" : 0, "Species" : "unknown"})
+                      )
+
+tidyDataFrame(iris_2).group_by('Sepal.Length').drop_na()
+tidyDataFrame(iris_2).group_by('Species').drop_na(column_names = "Species")
+tidyDataFrame(iris_2).group_by('Species').drop_na(column_names = ["Species", "Sepal.Length"])

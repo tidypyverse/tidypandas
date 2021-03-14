@@ -35,6 +35,28 @@ class tidyGroupedDataFrame:
     def to_dict(self):
         return dict(tuple(self.__data))
     
+    # pipe method
+    def pipe(self, func):
+        return func(self)
+    
+    # pipe pandas method
+    def pipe_pandas(self, func, as_tidy = True):
+        res = func(self.__data)
+        if isinstance(res, (pd.DataFrame
+                            , pd.core.groupby.DataFrameGroupBy
+                            )
+                      ):
+            res = tidy(res)
+        
+        if isinstance(res, pd.DataFrame):
+            res = tidyDataFrame(res, check = False)
+        else:
+            res = tidyGroupedDataFrame(res, check = False)
+        return res
+    
+    # alias for pipe_pandas
+    pipe2 = pipe_pandas
+    
     # get methods
     def get_info(self):
         print('Tidy grouped dataframe with shape: {shape}'\
@@ -80,7 +102,10 @@ class tidyGroupedDataFrame:
                        .group_by(new_groupvars)
                        )
             
-            return res
+        return res
+    
+    # alias for group_by
+    groupby = group_by
     
     # ungroup method
     def ungroup(self):
@@ -150,13 +175,13 @@ class tidyGroupedDataFrame:
         groupvars = self.get_groupvars()
         res = (self.__data
                    .apply(lambda x: x.sort_values(by = column_names
-                                                    , axis         = 0
-                                                    , ascending    = ascending
-                                                    , inplace      = False
-                                                    , kind         = 'quicksort'
-                                                    , na_position  = na_position
-                                                    , ignore_index = True
-                                                    )
+                                                  , axis         = 0
+                                                  , ascending    = ascending
+                                                  , inplace      = False
+                                                  , kind         = 'quicksort'
+                                                  , na_position  = na_position
+                                                  , ignore_index = True
+                                                  )
                          )
                    .reset_index(drop = True)
                    .groupby(groupvars)
@@ -1008,7 +1033,11 @@ class tidyGroupedDataFrame:
         gvs = self.get_groupvars()
         
         def func_wrapper(chunk):
-            return func(tidyDataFrame(chunk, check = False)).to_pandas()
+            res = func(tidyDataFrame(chunk, check = False)).to_pandas()
+            existing_columns = list(res.columns)
+            gvs_in = set(gvs).intersection(existing_columns)
+            res = res.drop(columns = list(gvs_in))    
+            return res
         
         res = (self.__data
                    .apply(func_wrapper)
@@ -1018,4 +1047,21 @@ class tidyGroupedDataFrame:
                    )
         
         return tidyGroupedDataFrame(res, check = False)
+    
+    # na handling methods
+    def replace_na(self, column_replace_dict):
+        gvs = self.get_groupvars()
+        res = (self.ungroup()
+                   .replace_na(column_replace_dict)
+                   .group_by(gvs)
+                   )
+        return res
+    
+    def drop_na(self, column_names = None): 
+        gvs = self.get_groupvars()
+        res = (self.ungroup()
+                   .drop_na(column_names)
+                   .group_by(gvs)
+                   )
+        return res
         

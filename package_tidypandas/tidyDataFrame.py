@@ -38,21 +38,49 @@ def get_unique_names(strings):
     
     return(thelist)
 
-def tidy(pdf, sep = "__"):
+def tidy(pdf, sep = "__", verbose = False):
     
-    if isinstance(pdf.columns, pd.MultiIndex):
-        lol = list(map(list, list(pdf.columns)))
-        cns = list(map(lambda x: sep.join(map(str, x)).rstrip(sep), lol))
-        pdf.columns = get_unique_names(cns)
-    else:
-        pdf.columns.name = None
+    assert isinstance(pdf, (pd.DataFrame, pd.core.groupby.DataFrameGroupBy))
+    assert isinstance(sep, str)
+    
+    is_grouped = False
+    if isinstance(pdf, pd.core.groupby.DataFrameGroupBy):
+        is_grouped = True
+        gvs = pdf.grouper.names
+        pdf = pdf.obj
+    
+    try:
+        # handle column multiindex
+        if isinstance(pdf.columns, pd.MultiIndex):
+            # paste vertically with 'sep' and get unique names
+            lol = list(map(list, list(pdf.columns)))
+            cns = list(map(lambda x: sep.join(map(str, x)).rstrip(sep), lol))
+            pdf.columns = get_unique_names(cns)
+        else:
+            # when not an multiindex, avoid column index from having some name
+            pdf.columns.name = None
+            pdf.columns = get_unique_names(list(pdf.columns))
+    except:
+        if verbose:
+            raise Exception("Unable to tidy: Problem handling column index or multiindex")
+    try:    
+        # handle row multiindex    
+        if isinstance(pdf.index, pd.MultiIndex):
+            n_levels = len(pdf.index[0])
+            pdf = pdf.droplevel(level = n_levels - 1).reset_index(drop = False)
+        else:
+            # convert non-multiindex to a column only if not rangeindex
+            if not isinstance(pdf.index, (pd.RangeIndex, pd.Int64Index)):
+                pdf = pdf.reset_index(drop = False)
+    except:
+        if verbose:
+            raise Exception("Unable to tidy: Problem handling row index or multiindex")
         
-    if isinstance(pdf.index, pd.MultiIndex):
-        n_levels = len(pdf.index[0])
-        pdf = pdf.droplevel(level = n_levels - 1).reset_index(drop = False)
-    
-    pdf = pdf.reset_index(drop = False)
-    
+    if is_grouped:
+        pdf = pdf.groupby(gvs)
+        
+    if verbose:
+        print("successfully tidied!")
     return pdf
 
 
@@ -73,7 +101,7 @@ def bind_rows(x, rowid_column_name = "rowid"):
         pdfs = map(lambda y: y.to_pandas(), x)
         
     res = pd.concat(pdfs, axis = 'index', ignore_index = True)
-    res = tidyDataFrame(res, check= False)
+    res = tidyDataFrame(res, check = False)
     return res
 
 def bind_cols(x):
@@ -139,6 +167,28 @@ class tidyDataFrame:
     def to_pandas(self):
         return copy.copy(self.__data)
     
+    # pipe method
+    def pipe(self, func):
+        return func(self)
+    
+    # pipe pandas method
+    def pipe_pandas(self, func, as_tidy = True):
+        res = func(self.__data)
+        if isinstance(res, (pd.DataFrame
+                            , pd.core.groupby.DataFrameGroupBy
+                            )
+                      ):
+            res = tidy(res)
+        
+        if isinstance(res, pd.DataFrame):
+            res = tidyDataFrame(res, check = False)
+        else:
+            res = tidyGroupedDataFrame(res, check = False)
+        return res
+    
+    # alias for pipe_pandas
+    pipe2 = pipe_pandas    
+    
     # get methods
     def get_info(self):
         print('Tidy dataframe with shape: {shape}'\
@@ -172,7 +222,10 @@ class tidyDataFrame:
         
         res = self.__data.groupby(column_names)
         return tidyGroupedDataFrame(res, check = False)
-        
+    
+    # alias for group_by
+    groupby = group_by
+    
     # ungroup method
     # just a placeholder
     def ungroup(self):
@@ -541,13 +594,11 @@ class tidyDataFrame:
 
         # assertions
         assert isinstance(y, (tidyDataFrame, tidyGroupedDataFrame))
+        assert isinstance(how, str)
         assert how in ['inner', 'outer', 'left', 'right', 'anti']
         cn_x = self.get_colnames()
         cn_y = y.get_colnames()
-        if isinstance(y, tidyGroupedDataFrame):
-            y = y.ungroup().to_pandas()
-        else:
-            y = y.to_pandas()
+        y = y.ungroup().to_pandas()
             
         if on is None:
             assert on_x is not None and on_y is not None
@@ -569,7 +620,7 @@ class tidyDataFrame:
         if how == 'anti':
             res = pd.merge(self.__data
                            , y
-                           , how = how
+                           , how = "left"
                            , on = on
                            , left_on = on_x
                            , right_on = on_y
@@ -954,3 +1005,64 @@ class tidyDataFrame:
                    .reset_index(drop = True)
                    )
         return tidyDataFrame(res, check = False)
+    
+    # expand and complete utilities
+    def expand(self, l):
+        # TODO
+        return None
+            
+    def complete(self, l):
+        expanded = df.expand(l)
+        return expanded.join_left(df, on = expanded.get_colnames())
+    
+    # set like methods
+    def union(self, y):
+        assert set(self.get_colnames()) == set(y.get_colnames())
+        return self.join_outer(y, on = self.get_colnames())
+    
+    def intersection(self, y):
+        assert set(self.get_colnames()) == set(y.get_colnames())
+        return self.join_inner(y, on = self.get_colnames())
+        
+    def setdiff(self, y):
+        assert set(self.get_colnames()) == set(y.get_colnames())
+        return self.join_anti(y, on = self.get_colnames())
+    
+    # na handling methods
+    def replace_na(self, column_replace_dict):
+        
+        assert isinstance(column_replace_dict, dict)
+        cns = self.get_colnames()
+        for akey in column_replace_dict:
+            if akey in cns:
+                self = self.mutate({akey : (lambda x: np.where(x.isna()
+                                                               , column_replace_dict[akey]
+                                                               , x)
+                                            ,
+                                            )
+                                    }
+                                   )
+        return self
+    
+    def drop_na(self, column_names = None):
+        
+        if column_names is not None:
+            assert is_string_or_string_list(column_names)
+            column_names = enlist(column_names)
+            assert set(column_names).issubset(self.get_colnames())
+        else:
+            column_names = self.get_colnames()
+        
+        res = (self.__data
+                   .dropna(axis = "index"
+                           , how = "any"
+                           , subset = column_names
+                           , inplace = False
+                           )
+                   .reset_index(drop = True)
+                   )
+        
+        return tidyDataFrame(res, check = False)
+        
+        
+        
