@@ -77,7 +77,9 @@ def tidy(pdf, sep = "__", verbose = False):
     except:
         if verbose:
             raise Exception("Unable to tidy: Problem handling row index or multiindex")
-        
+     
+    pdf = pdf.fillna(pd.NA)
+     
     if is_grouped:
         pdf = pdf.groupby(gvs)
         
@@ -1140,19 +1142,9 @@ class tidyDataFrame:
         def reduce_join(df, columns, sep):
             assert len(columns) > 1
             slist = [df[x].astype(str) for x in columns]
-            return reduce(lambda x, y: x + sep + y, slist[1:], slist[0]).to_frame(name = into)
-        
-        '''
-        res = self.mutate(
-            {into : lambda x: (x.loc[:, column_names]
-                                      .apply(lambda row: sep.join(row.values.astype(str))
-                                             , axis = 1
-                                             )
-                                      )
-                                      }
-                                     )
-        '''
-        
+            red_series = reduce(lambda x, y: x + sep + y, slist[1:], slist[0])
+            return red_series.to_frame(name = into)
+                
         joined = reduce_join(self.__data, column_names, sep)
         
         if not keep:
@@ -1163,3 +1155,14 @@ class tidyDataFrame:
            res = self.cbind(tidyDataFrame(joined, check = False)) 
          
         return res
+    
+    def separate_rows(self, column_name, sep = ";"):
+        
+        def splitter(str_col):
+            return [re.split(sep, x) for x in str_col]
+            
+        res = self.__data
+        res[column_name] = splitter(res[column_name])
+        res = res.explode(column_name, ignore_index = True)
+        
+        return tidyDataFrame(res, check = False)

@@ -198,7 +198,7 @@ temp_df = pd.DataFrame(
      , "str_col": ["a-b", "c-d-e", "f"]
      }
     )
-tidyDataFrame(temp_df).separate("str_col", into = ["01", "02"], sep = "-")
+tidyDataFrame(temp_df).separate("str_col", into = ["01", "02"], sep = "-") # error
 tidyDataFrame(temp_df).separate("str_col"
                                 , into = ["01", "02", "03"]
                                 , sep = "-"
@@ -212,7 +212,7 @@ tidyDataFrame(temp_df).separate("str_col"
                                 , strict = False
                                 )
 
-tidyDataFrame(temp_df).separate("str_col", into = ["01", "02", "03", "04"], sep = "-")
+tidyDataFrame(temp_df).separate("str_col", into = ["01", "02", "03", "04"], sep = "-") # error
 tidyDataFrame(temp_df).separate("str_col"
                                 , into = ["01", "02", "03", "04"]
                                 , sep = "-"
@@ -228,6 +228,8 @@ temp_df = pd.DataFrame(
 
 tidyDataFrame(temp_df).unite(["id", "str_col"], "united")
 tidyDataFrame(temp_df).unite(["id", "str_col"], "united", keep = True)
+
+tidyDataFrame(temp_df).separate_rows("str_col", sep = "-")
 
 # grouped --------------------------------------------------------------------
 iris_tidy_grouped = tidyDataFrame(iris).group_by('Species')
@@ -464,3 +466,5 @@ tidyDataFrame(temp_df).group_by('gc').separate("str_col", into = ["01", "02", "0
 tidyDataFrame(temp_df).group_by('gc').separate("gc", into = ["01", "02", "03", "04"], sep = "-")
 
 tidyDataFrame(temp_df).group_by('gc').unite(["id", "str_col"], "united")
+
+tidyDataFrame(temp_df).group_by('gc').separate_rows("str_col", "-")

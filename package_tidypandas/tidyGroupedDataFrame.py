@@ -1120,3 +1120,16 @@ class tidyGroupedDataFrame:
                    )
         
         return res
+    
+    def separate_rows(self, column_name, sep = ";"):
+        
+        gvs = self.get_groupvars()
+        assert column_name not in gvs
+        
+        res = (self.ungroup()
+                   .separate_rows(column_name, sep)
+                   .group_by(gvs)
+                   )
+        
+        return res
+    

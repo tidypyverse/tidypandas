@@ -87,12 +87,11 @@ Implementation notes (for the developer team):
 
 - [x] separate
 - [x] unite
-- [ ] separate_rows
+- [x] separate_rows
 
 ## functions
 
 - [x] bind_rows
 - [x] bind_cols
-- [ ] union_all
 
 
