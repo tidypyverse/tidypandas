@@ -31,6 +31,23 @@ class tidyGroupedDataFrame:
     def to_pandas(self):
         return copy.copy(self.__data)
     
+    # series copy method
+    def to_series(self, column_name):
+        
+        assert isinstance(column_name, str)
+        assert column_name in self.get_colnames()
+        
+        gvs = self.get_groupvars()
+        ib = (self.select(column_name)
+                  .ungroup()
+                  .to_pandas()
+                  )
+        series_obj = ib.loc[:, column_name]
+        series_obj.index = pd.Index(ib.loc[:, gvs])
+        res = series_obj.groupby(level = 0)
+        return res
+        
+    
     # to dict method
     def to_dict(self):
         return dict(tuple(self.__data))
@@ -1064,4 +1081,42 @@ class tidyGroupedDataFrame:
                    .group_by(gvs)
                    )
         return res
+    
+    def fill_na(self, column_direction_dict):
+        return self.group_modify(lambda chunk : chunk.fill_na(column_direction_dict))
+    
+    # string methods
+    def separate(self
+                 , column_name
+                 , into
+                 , sep = '[^[:alnum:]]+'
+                 , strict = True
+                 , keep = False
+                 ):
         
+        gvs = self.get_groupvars()
+        assert not column_name in gvs
+        
+        res = (self.ungroup()
+                   .separate(column_name
+                             , into = into
+                             , sep = sep
+                             , strict = strict
+                             , keep = keep
+                             )
+                   .groupby(gvs)
+                   )
+        
+        return res
+    
+    def unite(self, column_names, into, sep = "_", keep = False):
+        
+        gvs = self.get_groupvars()
+        assert len(set(column_names).intersection(gvs)) == 0
+        
+        res = (self.ungroup()
+                   .unite(column_names, into, sep, keep)
+                   .group_by(gvs)
+                   )
+        
+        return res

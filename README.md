@@ -78,14 +78,14 @@ Implementation notes (for the developer team):
 
 ## na methods
 
-- [ ] fill_na
+- [x] fill_na
 - [x] replace_na
 - [x] drop_na
 
 ## character column helper methods
 
-- [ ] separate
-- [ ] unite
+- [x] separate
+- [x] unite
 - [ ] separate_rows
 
 ## functions

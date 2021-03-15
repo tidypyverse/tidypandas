@@ -5,7 +5,6 @@ iris = pd.read_csv("~/tidypandas/iris.csv")
 iris
 
 # ungrouped ----------------------------------------------------------------------
-
 iris_tidy = tidyDataFrame(iris)
 iris_tidy
 
@@ -14,6 +13,7 @@ iris_tidy.get_ncol()
 iris_tidy.get_nrow()
 iris_tidy.get_colnames()
 iris_tidy.to_pandas()
+iris_tidy.to_series('Sepal.Length')
 
 iris_tidy.pipe(lambda x: x.select('Petal.Width'))
 iris_tidy.pipe2(lambda x: x.loc[:, ['Petal.Width']])
@@ -184,6 +184,50 @@ tidyDataFrame(iris_2).drop_na()
 tidyDataFrame(iris_2).drop_na(column_names = "Species")
 tidyDataFrame(iris_2).drop_na(column_names = ["Species", "Sepal.Length"])
 
+trial_pd = pd.DataFrame(
+    {"id": [1,1,1,2,2,2,3,3]
+    , "value" : [1, pd.NA, 2, pd.NA, 3, pd.NA,pd.NA, pd.NA]
+    })
+tidyDataFrame(trial_pd).fill_na({"value" : "up"})
+tidyDataFrame(trial_pd).fill_na({"value" : "down"})
+tidyDataFrame(trial_pd).fill_na({"value" : "updown"})
+tidyDataFrame(trial_pd).fill_na({"value" : "downup"})
+
+temp_df = pd.DataFrame(
+    {"id" : [1,2,3]
+     , "str_col": ["a-b", "c-d-e", "f"]
+     }
+    )
+tidyDataFrame(temp_df).separate("str_col", into = ["01", "02"], sep = "-")
+tidyDataFrame(temp_df).separate("str_col"
+                                , into = ["01", "02", "03"]
+                                , sep = "-"
+                                , strict = False
+                                )
+
+tidyDataFrame(temp_df).separate("str_col", into = ["01", "02", "03"], sep = "-")
+tidyDataFrame(temp_df).separate("str_col"
+                                , into = ["01", "02", "03"]
+                                , sep = "-"
+                                , strict = False
+                                )
+
+tidyDataFrame(temp_df).separate("str_col", into = ["01", "02", "03", "04"], sep = "-")
+tidyDataFrame(temp_df).separate("str_col"
+                                , into = ["01", "02", "03", "04"]
+                                , sep = "-"
+                                , strict = False
+                                )
+
+temp_df = pd.DataFrame(
+    {"id" : [1,2,3]
+     , "str_col": ["a-b", "c-d-e", "f"]
+     , "gc" : [1,1,2]
+     }
+    )
+
+tidyDataFrame(temp_df).unite(["id", "str_col"], "united")
+tidyDataFrame(temp_df).unite(["id", "str_col"], "united", keep = True)
 
 # grouped --------------------------------------------------------------------
 iris_tidy_grouped = tidyDataFrame(iris).group_by('Species')
@@ -195,6 +239,7 @@ iris_tidy_grouped.get_nrow()
 iris_tidy_grouped.get_colnames()
 iris_tidy_grouped.to_pandas()
 iris_tidy_grouped.to_dict()
+iris_tidy_grouped.to_series('Sepal.Length')
 
 iris_tidy_grouped.select(['Sepal.Length']) # grouped columns are always kept
 iris_tidy_grouped.select(['Sepal.Length', 'Species'], include = False)
@@ -375,3 +420,47 @@ iris
 tidyDataFrame(iris_2).group_by('Sepal.Length').drop_na()
 tidyDataFrame(iris_2).group_by('Species').drop_na(column_names = "Species")
 tidyDataFrame(iris_2).group_by('Species').drop_na(column_names = ["Species", "Sepal.Length"])
+
+trial_pd = pd.DataFrame(
+    {"id": [1,1,1,2,2,2,3,3]
+    , "value" : [1, pd.NA, 2, pd.NA, 3, pd.NA,pd.NA, pd.NA]
+    })
+tidyDataFrame(trial_pd).group_by("id").fill_na({"value" : "up"})
+tidyDataFrame(trial_pd).group_by("id").fill_na({"value" : "down"})
+tidyDataFrame(trial_pd).group_by("id").fill_na({"value" : "updown"})
+tidyDataFrame(trial_pd).group_by("id").fill_na({"value" : "downup"})
+
+temp_df = pd.DataFrame(
+    {"id" : [1,2,3]
+     , "str_col": ["a-b", "c-d-e", "f"]
+     , "gc" : [1,1,2]
+     }
+    )
+tidyDataFrame(temp_df).group_by('gc').separate("str_col", into = ["01", "02"], sep = "-")
+(tidyDataFrame(temp_df).group_by('gc')
+                      .separate("str_col"
+                                , into = ["01", "02", "03"]
+                                , sep = "-"
+                                , strict = False
+                                )
+                      )
+
+tidyDataFrame(temp_df).group_by('gc').separate("str_col", into = ["01", "02", "03"], sep = "-")
+(tidyDataFrame(temp_df).group_by('gc')
+                      .separate("str_col"
+                                , into = ["01", "02", "03"]
+                                , sep = "-"
+                                , strict = False
+                                )
+                      )
+
+tidyDataFrame(temp_df).group_by('gc').separate("str_col", into = ["01", "02", "03", "04"], sep = "-")
+(tidyDataFrame(temp_df).group_by('gc')
+                       .separate("str_col"
+                                , into = ["01", "02", "03", "04"]
+                                , sep = "-"
+                                , strict = False
+                                ))
+tidyDataFrame(temp_df).group_by('gc').separate("gc", into = ["01", "02", "03", "04"], sep = "-")
+
+tidyDataFrame(temp_df).group_by('gc').unite(["id", "str_col"], "united")

@@ -81,8 +81,11 @@ flights_tidy.get_info()
 # simple crosstab implementation
 
 temp = pd.crosstab(flights['origin'], flights['dest']).reset_index(drop = False)
+temp2 = copy.copy(temp)
 temp.columns.name = None
 temp
+
+tidy(temp2)
 
 def crosstab_tidy(df, two_string_list):
     
@@ -128,3 +131,5 @@ iris_tidy.mutate({"sl"           : lambda x : x['Sepal.Length'] + x.shape[1],
                   "Petal.Length" : (lambda x: x + 2, )
                  }
                 )
+
+flights_tidy.unite(["year", "month"], "year_mon")

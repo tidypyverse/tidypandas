@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 import warnings
 from tabulate import tabulate
+import re
+from functools import reduce
 
 # from package_tidypandas.tidyGroupedDataFrame import tidyGroupedDataFrame
 # from package_tidypandas.tidypredicates import *
@@ -166,6 +168,14 @@ class tidyDataFrame:
     # pandas copy method
     def to_pandas(self):
         return copy.copy(self.__data)
+    
+    # series copy method
+    def to_series(self, column_name):
+        
+        assert isinstance(column_name, str)
+        assert column_name in self.get_colnames()
+        
+        return self.select(column_name).to_pandas().loc[:, column_name]
     
     # pipe method
     def pipe(self, func):
@@ -1064,5 +1074,92 @@ class tidyDataFrame:
         
         return tidyDataFrame(res, check = False)
         
+    def fill_na(self, column_direction_dict):
         
+        assert isinstance(column_direction_dict, dict)
+        assert set(column_direction_dict.keys()).issubset(self.get_colnames())
+        valid_methods = ["up", "down", "updown", "downup"]
+        assert set(column_direction_dict.values()).issubset(valid_methods)
         
+        data = self.__data
+        
+        for akey in column_direction_dict:
+            method = column_direction_dict[akey]
+            if method == "up":
+                data[akey] = data[akey].bfill()
+            elif method == "down":
+                data[akey] = data[akey].ffill()
+            elif method == "updown":
+                data[akey] = data[akey].bfill()
+                data[akey] = data[akey].ffill()
+            else:
+                data[akey] = data[akey].ffill()
+                data[akey] = data[akey].bfill()
+            
+            data[akey] = np.where(data[akey].isna(), pd.NA, data[akey])
+            
+        return tidyDataFrame(data, check = False)
+    
+    # string utilities
+    def separate(self
+                 , column_name
+                 , into
+                 , sep = '[^[:alnum:]]+'
+                 , strict = True
+                 , keep = False
+                 ):
+        
+        split_df = pd.DataFrame(
+            [re.split(sep, i) for i in self.to_series(column_name)]
+            ).fillna(pd.NA)
+        
+        if len(into) == split_df.shape[1]:
+            split_df.columns = into
+        elif len(into) < split_df.shape[1]:
+            if strict:
+                raise Exception("Column is split into more number of columns than the length of 'into'")
+            else:
+                split_df = split_df.iloc[:, 0:len(into)]
+                split_df = split_df.set_axis(into, axis = 'columns')
+        else:
+            if strict:
+                raise Exception("Column is split into less number of columns than the length of 'into'")
+            else:
+                split_df.columns = into[0:split_df.shape[1]]     
+            
+        if keep:
+            res = self.cbind(tidyDataFrame(split_df, check = False))
+        else:
+            res = (self.select(column_name, include = False)
+                       .cbind(tidyDataFrame(split_df, check = False))
+                       )
+        return res
+    
+    def unite(self, column_names, into, sep = "_", keep = False):
+        
+        def reduce_join(df, columns, sep):
+            assert len(columns) > 1
+            slist = [df[x].astype(str) for x in columns]
+            return reduce(lambda x, y: x + sep + y, slist[1:], slist[0]).to_frame(name = into)
+        
+        '''
+        res = self.mutate(
+            {into : lambda x: (x.loc[:, column_names]
+                                      .apply(lambda row: sep.join(row.values.astype(str))
+                                             , axis = 1
+                                             )
+                                      )
+                                      }
+                                     )
+        '''
+        
+        joined = reduce_join(self.__data, column_names, sep)
+        
+        if not keep:
+           res = (self.cbind(tidyDataFrame(joined, check = False))
+                      .select(column_names, include = False)    
+                      )
+        else:
+           res = self.cbind(tidyDataFrame(joined, check = False)) 
+         
+        return res
