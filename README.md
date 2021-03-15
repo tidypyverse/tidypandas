@@ -31,6 +31,7 @@ Implementation notes (for the developer team):
 - [x] to_dict for tidy grouped
 - [x] pipe
 - [x] pipe2 (or pipe_pandas)
+- [x] to_series
 
 ## join methods
 
