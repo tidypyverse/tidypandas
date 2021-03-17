@@ -69,15 +69,24 @@ def tidy(pdf, sep = "__", verbose = False):
         # handle row multiindex    
         if isinstance(pdf.index, pd.MultiIndex):
             n_levels = len(pdf.index[0])
-            pdf = pdf.droplevel(level = n_levels - 1).reset_index(drop = False)
+            try:
+                #pdf = pdf.droplevel(level = n_levels - 1).reset_index(drop = False)
+                pdf = pdf.reset_index(drop = False)
+            except:
+                #pdf = pdf.droplevel(level = n_levels - 1).reset_index(drop = True)
+                pdf = pdf.reset_index(drop = True)
         else:
             # convert non-multiindex to a column only if not rangeindex
             if not isinstance(pdf.index, (pd.RangeIndex, pd.Int64Index)):
-                pdf = pdf.reset_index(drop = False)
+                try:
+                    pdf = pdf.reset_index(drop = False)
+                except:
+                    pdf = pdf.reset_index(drop = True)
     except:
         if verbose:
             raise Exception("Unable to tidy: Problem handling row index or multiindex")
-     
+    
+    # convert NaN, NaT, None and others to NA    
     pdf = pdf.fillna(pd.NA)
      
     if is_grouped:
@@ -191,11 +200,11 @@ class tidyDataFrame:
                             )
                       ):
             res = tidy(res)
-        
-        if isinstance(res, pd.DataFrame):
-            res = tidyDataFrame(res, check = False)
-        else:
-            res = tidyGroupedDataFrame(res, check = False)
+        if as_tidy:
+            if isinstance(res, pd.DataFrame):
+                res = tidyDataFrame(res, check = False)
+            else:
+                res = tidyGroupedDataFrame(res, check = False)
         return res
     
     # alias for pipe_pandas
@@ -760,7 +769,6 @@ class tidyDataFrame:
                     , values_fill = None
                     , values_fn = "mean"
                     , id_cols = None
-                    , groupby_id_cols = False
                     , drop_na = True
                     , retain_levels = False
                     , sep = "__"
@@ -803,7 +811,6 @@ class tidyDataFrame:
             else:
                 assert not isinstance(values_fn, list)
         
-        assert isinstance(groupby_id_cols, bool)
         assert isinstance(drop_na, bool)
         assert isinstance(retain_levels, bool)
         assert isinstance(sep, str)
@@ -824,8 +831,6 @@ class tidyDataFrame:
                              )
                 
         res = tidyDataFrame(tidy(res, sep), check = False)
-        if groupby_id_cols:
-            res = res.group_by(id_cols)
             
         return res
     

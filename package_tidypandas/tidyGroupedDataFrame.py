@@ -789,26 +789,30 @@ class tidyGroupedDataFrame:
                     , values_fill = None
                     , values_fn = "mean"
                     , id_cols = None
-                    , groupby_id_cols = False
                     , drop_na = True
                     , retain_levels = False
                     , sep = "__"
                     ):
         
-        warnings.warn("'pivot_wider' does not consider or retain the grouping structure of the input.")
+        gvs = self.get_groupvars()
+        assert  len(set(enlist(names_from)).union(enlist(values_from)).intersection(gvs)) == 0
+        
+        if id_cols is not None:
+            id_cols = list(set(enlist(id_cols)).union(gvs))
+        
         res = (self.ungroup()
                    .pivot_wider(names_from
                                 , values_from
                                 , values_fill
                                 , values_fn
                                 , id_cols
-                                , groupby_id_cols
                                 , drop_na
                                 , retain_levels
                                 , sep
                                 )
+                   .group_by(gvs)
                    )
-        
+   
         return res
     
     def pivot_longer(self
@@ -823,19 +827,20 @@ class tidyGroupedDataFrame:
         assert set(cols).issubset(cn)
         
         id_vars = set(cn).difference(cols)
+        gvs = self.get_groupvars()
+        assert set(gvs).issubset(id_vars)
         assert isinstance(names_to, str)
         assert isinstance(values_to, str)
         assert names_to not in id_vars
         assert values_to not in id_vars
-        
-        warnings.warn("'pivot_longer' does not consider or retain the grouping structure of the input.")
-        
+                
         # core operation
         res = (self.ungroup()
                    .pivot_longer(cols        = cols
                                  , names_to  = names_to
                                  , values_to = values_to
                                  )
+                   .group_by(gvs)
                    )
         
         return res

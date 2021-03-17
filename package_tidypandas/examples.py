@@ -179,7 +179,6 @@ iris_2.Species = pd.Categorical(iris_2.Species)
 iris
 
 tidyDataFrame(iris_2).replace_na({"Sepal.Width" : 0, "Species" : "unknown"})
-
 tidyDataFrame(iris_2).drop_na()
 tidyDataFrame(iris_2).drop_na(column_names = "Species")
 tidyDataFrame(iris_2).drop_na(column_names = ["Species", "Sepal.Length"])
@@ -200,7 +199,7 @@ temp_df = pd.DataFrame(
     )
 tidyDataFrame(temp_df).separate("str_col", into = ["01", "02"], sep = "-") # error
 tidyDataFrame(temp_df).separate("str_col"
-                                , into = ["01", "02", "03"]
+                                , into = ["01", "02"]
                                 , sep = "-"
                                 , strict = False
                                 )
@@ -226,7 +225,7 @@ temp_df = pd.DataFrame(
      }
     )
 
-tidyDataFrame(temp_df).unite(["id", "str_col"], "united")
+tidyDataFrame(temp_df).unite(["id", "str_col"], "united", sep = "-")
 tidyDataFrame(temp_df).unite(["id", "str_col"], "united", keep = True)
 
 tidyDataFrame(temp_df).separate_rows("str_col", sep = "-")
@@ -320,27 +319,43 @@ iris_tidy_grouped.add_count(['Species', 'Sepal.Length'])
 iris_tidy_grouped.pivot_wider(id_cols       = "Sepal.Length"
                               , names_from  = "Species"
                               , values_from = "Petal.Length"
-                              )
+                              ) # error
 
-(iris_tidy.group_by("Sepal.Length")
-          .pivot_wider(id_cols       = ["Sepal.Length", "Sepal.Width"]
-                       , names_from  = "Species"
+(iris_tidy_grouped.pivot_wider(id_cols       = ["Species", "Sepal.Width"]
+                       , names_from  = "Sepal.Length"
+                       , values_from = "Petal.Length"
+                       )
+          )
+    
+(iris_tidy.groupby(['Species', 'Petal.Width'])
+          .pivot_wider(id_cols = ["Species", "Sepal.Width"]
+                       , names_from  = "Sepal.Length"
                        , values_from = "Petal.Length"
                        )
           )
 
-iris_tidy.pivot_wider(id_cols       = ["Sepal.Length", "Sepal.Width"]
-                      , names_from  = "Species"
+(iris_tidy_grouped.pivot_wider(names_from  = "Sepal.Length"
+                       , values_from = "Petal.Length"
+                       )
+          )
+
+iris_tidy_grouped.pivot_wider(id_cols = ["Sepal.Width"]
+                      , names_from  = "Sepal.Length"
                       , values_from = ["Petal.Length", "Petal.Width"]
                       )
 
-iris_tidy.pivot_wider(id_cols       = ["Sepal.Length", "Sepal.Width"]
-                      , names_from  = ["Species", "Petal.Width"]
+iris_tidy_grouped.pivot_wider(id_cols       = ["Species", "Sepal.Width"]
+                      , names_from  = ["Sepal.Length", "Petal.Width"]
                       , values_from = ["Petal.Length"]
                       )
 
-iris_tidy.pivot_wider(id_cols       = ["Sepal.Length"]
-                      , names_from  = ["Species", "Petal.Width"]
+iris_tidy_grouped.pivot_wider(id_cols       = ["Sepal.Length", "Species"]
+                      , names_from  = ["Petal.Width"]
+                      , values_from = ["Petal.Length", "Sepal.Width"]
+                      )
+
+iris_tidy_grouped.pivot_wider(id_cols = ["Sepal.Length", "Species"]
+                      , names_from  = ["Petal.Width"]
                       , values_from = ["Petal.Length", "Sepal.Width"]
                       )
 
@@ -349,7 +364,7 @@ iris_tidy.pivot_wider(id_cols       = ["Sepal.Length"]
                       , names_from  = "Species"
                       , values_from = "Petal.Length"
                       )
-          .group_by("Sepal.Length")
+          #.group_by("Sepal.Length")
           .pivot_longer(cols = ["setosa", "versicolor", "virginica"]
                         , names_to = "species"
                         , values_to = "value"
