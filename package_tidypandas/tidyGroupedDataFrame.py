@@ -19,13 +19,25 @@ class tidyGroupedDataFrame:
     
     # print method
     def __repr__(self):
-        print('-- Tidy grouped dataframe with shape: {shape}'\
-               .format(shape = self.__data.obj.shape))
-        print("-- Groupby variables: ", self.__data.grouper.names)
-        print("-- Number of groups: ", self.__data.ngroups)
-        print('-- First few rows:')
-        print(self.__data.obj.head(10))
-        return ''
+        header_line     = '-- Tidy grouped dataframe with shape: {shape}'\
+        .format(shape = self.__data.obj.shape)
+        gvs_line        = "-- Groupby variables: " + str(self.__data.grouper.names)
+        n_groups_line   = "-- Number of groups: " + str(self.__data.ngroups)
+        few_rows_line   = '-- First few rows:'
+        pandas_str_line = self.__data.obj.head(10).__str__()
+        
+        tidy_string     = (header_line +
+                           '\n' +
+                           gvs_line +
+                           '\n' +
+                           n_groups_line +
+                           '\n' +
+                           few_rows_line +
+                           '\n' +
+                           pandas_str_line
+                           )    
+    
+        return tidy_string
     
     # pandas copy method
     def to_pandas(self):
@@ -44,7 +56,7 @@ class tidyGroupedDataFrame:
                   )
         series_obj = ib.loc[:, column_name]
         series_obj.index = pd.Index(ib.loc[:, gvs])
-        res = series_obj.groupby(level = 0)
+        res = series_obj.groupby(series_obj.index)
         return res
         
     

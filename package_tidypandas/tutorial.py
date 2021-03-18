@@ -128,6 +128,8 @@ flights_tidy.group_by('dest').slice_sample(prop = 0.1)
 
 # pandas
 flights.groupby('dest').sample(frac = 0.1)
+tidyDataFrame(flights.groupby('dest').sample(frac = 0.1))
+tidy(flights.groupby('dest').sample(frac = 0.1))
 
 # 5
 # mutate and summarize cover multiple paradigms underneath

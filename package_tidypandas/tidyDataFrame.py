@@ -10,7 +10,28 @@ from functools import reduce
 # from package_tidypandas.tidypredicates import *
 
 def is_string_or_string_list(x):
+    '''
+    is_string_or_string_list(x)
     
+    Check whether the input is a string or a list of strings
+
+    Parameters
+    ----------
+    x : object
+        Any python object
+
+    Returns
+    -------
+    bool
+    True if input is a string or a list of strings
+    
+    Examples
+    --------
+    is_string_or_string_list("bar")      # True
+    is_string_or_string_list(["bar"])    # True
+    is_string_or_string_list(("bar",))   # False
+    is_string_or_string_list(["bar", 1]) # False
+    '''
     res = False
     if isinstance(x, str):
         res = True
@@ -23,24 +44,118 @@ def is_string_or_string_list(x):
     return res
     
 def enlist(x):
+    '''
+    enlist(x)
+    
+    Returns the input in a list (as first element of the list) unless input itself is a list
+
+    Parameters
+    ----------
+    x : object
+        Any python object
+
+    Returns
+    -------
+    list
+    Returns the input in a list (as first element of the list) unless input itself is a list
+    
+    Examples
+    --------
+    enlist(["a"]) # ["a"]
+    enlist("a")   # ["a"]
+    enlist((1, )) # [(1, )]
+    '''
     if not isinstance(x, list):
         x = [x]
     
     return x
 
 def get_unique_names(strings):
-    theset = set([])
-    thelist = []
-    for astring in strings:
-        while(astring in theset):
-            astring = astring + "_1"
-        else:
-            theset.add(astring)
-            thelist.append(astring)
+    '''
+    get_unique_names(strings)
     
-    return(thelist)
+    Returns a list of same length as the input such that elements are unique. This is done by adding '_1'. The resulting list does not alter nth element if the nth element occurs for the first time in the input list starting from left.
+    
+    Parameters
+    ----------
+    strings : list
+        A list of strings
+
+    Returns
+    -------
+    list of strings
+    
+    Examples
+    --------
+    get_unique_names(['a', 'b'])               # ['a', 'b']
+    get_unique_names(['a', 'a'])               # ['a', 'a_1']
+    get_unique_names(['a', 'a', 'a_1'])        # ['a', 'a_1_1', 'a_1']
+    '''
+    assert is_string_or_string_list(strings)
+    strings = enlist(strings)
+
+    new_list = []
+    old_set = set(strings)
+    
+    for astring in strings:
+        counter = 0 
+        while True:
+            if astring in new_list:
+                counter = 1
+                astring = astring + "_1" 
+            elif astring in old_set:
+                if counter > 0:
+                    astring = astring + "_1"
+                else:
+                    new_list.append(astring)
+                    try:
+                        old_set.remove(astring)
+                    except:
+                        pass
+                    break
+            else:
+                new_list.append(astring)
+                try:
+                    old_set.remove(astring)
+                except:
+                    pass
+                break
+        
+    return new_list
 
 def tidy(pdf, sep = "__", verbose = False):
+    '''
+    tidy(pdf)
+    
+    Returns a pandas dataframe with simplified index structure. This might be helpful before creating an TidyDataFrame object.
+    
+    Parameters
+    ----------
+    strings : pandas.DataFrame or pandas.core.groupby.DataFrameGroupBy
+        A pandas dataframe or grouped pandas dataframe
+
+    Returns
+    -------
+    A pandas dataframe with simplified index structure.If the input dataframe is grouped, then output is grouped too.
+    
+    Notes
+    -----
+    Returns a `tidy` pandas dataframe. A `tidy` pandas dataframe is a pandas dataframe whose:
+    1. Column names (x.columns) are an unnamed pd.Index object of unique strings.
+    2. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0 and step = 1.
+    
+    This is done by collapsing the column MultiIndex by concatenating names using separator 'sep' and ensuring that the resulting names are unique. The row Index or MultiIndex are added to the dataframe as columns if their names do not clash with the existing column names of the dataframe.
+    
+    Examples
+    --------
+    from nycflights13 import *
+    
+    ex1 = flights.groupby('dest').apply(lambda x: x.head(2))
+    tidy(ex1)
+    
+    ex2 = pd.crosstab(flights['origin'], flights['dest'])
+    tidy(ex2)
+    '''
     
     assert isinstance(pdf, (pd.DataFrame, pd.core.groupby.DataFrameGroupBy))
     assert isinstance(sep, str)
@@ -55,45 +170,45 @@ def tidy(pdf, sep = "__", verbose = False):
         # handle column multiindex
         if isinstance(pdf.columns, pd.MultiIndex):
             # paste vertically with 'sep' and get unique names
+            # a   d 
+            # b c e
+            # becomes
+            # a__b,a__c, d__e
             lol = list(map(list, list(pdf.columns)))
             cns = list(map(lambda x: sep.join(map(str, x)).rstrip(sep), lol))
             pdf.columns = get_unique_names(cns)
         else:
-            # when not an multiindex, avoid column index from having some name
+            # avoid column index from having some name
             pdf.columns.name = None
             pdf.columns = get_unique_names(list(pdf.columns))
     except:
         if verbose:
-            raise Exception("Unable to tidy: Problem handling column index or multiindex")
+            raise Exception("Unable to tidy: column index or multiindex")
     try:    
-        # handle row multiindex    
-        if isinstance(pdf.index, pd.MultiIndex):
-            n_levels = len(pdf.index[0])
+        # handle row multiindex 
+        flag_row_multiindex = isinstance(pdf.index, pd.MultiIndex)
+        flag_complex_index = True
+        if isinstance(pdf.index, pd.RangeIndex):
+            if pdf.index.start == 0 and pdf.index.step == 1:
+                flag_complex_index = False
+                  
+        if flag_row_multiindex or flag_complex_index:
+            # first, attempt to not drop the index, then drop when former fails
             try:
-                #pdf = pdf.droplevel(level = n_levels - 1).reset_index(drop = False)
                 pdf = pdf.reset_index(drop = False)
             except:
-                #pdf = pdf.droplevel(level = n_levels - 1).reset_index(drop = True)
                 pdf = pdf.reset_index(drop = True)
-        else:
-            # convert non-multiindex to a column only if not rangeindex
-            if not isinstance(pdf.index, (pd.RangeIndex, pd.Int64Index)):
-                try:
-                    pdf = pdf.reset_index(drop = False)
-                except:
-                    pdf = pdf.reset_index(drop = True)
+                if verbose:
+                    warnings.warn("Dropped the row index")
     except:
         if verbose:
-            raise Exception("Unable to tidy: Problem handling row index or multiindex")
-    
-    # convert NaN, NaT, None and others to NA    
-    pdf = pdf.fillna(pd.NA)
-     
+            raise Exception("Unable to tidy: row index or multiindex")
+        
     if is_grouped:
         pdf = pdf.groupby(gvs)
         
     if verbose:
-        print("successfully tidied!")
+        print("Successfully tidied!")
     return pdf
 
 
@@ -137,7 +252,10 @@ class tidyDataFrame:
             columns  = list(x.columns)
             col_flag = not isinstance(columns, pd.MultiIndex)
             # check if row index is rangeIndex
-            flag_no_index = isinstance(x.index, (pd.RangeIndex, pd.Int64Index))
+            flag_no_index = False
+            if isinstance(x.index, pd.RangeIndex):
+                if x.index.start == 0 and x.index.step == 1:
+                    flag_no_index = True           
             # check if all column names are strings
             str_flag = all([isinstance(y, str) for y in columns])
             # check if column names are unique
@@ -153,28 +271,37 @@ class tidyDataFrame:
                 if not col_flag:
                     warnings.warn("Column index should not be a MultiIndex object.")
                 if not flag_no_index:
-                    warnings.warn("Row index should not either RangeIndex or Int64Index. Perhaps, you might want to reset index with df.reset_index(drop = False)?")
+                    warnings.warn("Row index is not a RangeIndex with start = 0 and step = 1.")
                 if not str_flag:
                     warnings.warn("Column index should be string column names.")
                 if not unique_flag:
                     warnings.warn("Column names(index) should be unique.")
                 
                 # raise the error After informative warnings
-                raise Exception("Cannot use the pandas dataframe due to above warnings. Try the 'tidy' function.")
-            
-            print("Success! Created a tidy dataframe.")       
-                    
+                raise Exception(("Input pandas dataframe is not tidy."
+                                 " See to above warnings."
+                                 " Try the 'tidy' function."
+                                 " ex: tidy(untidy pandas dataframe) --> tidy pandas dataframe."
+                                ))
+                               
         self.__data = copy.copy(x)
         return None
     
-    # print method
+    # repr method
     def __repr__(self):
-        print('-- Tidy dataframe with shape: {shape}'\
-              .format(shape = self.__data.shape))
-        print('-- First few rows:')
-        print(self.__data.head(10))
-        #print(tabulate(self.__data.head(6),headers = 'keys',tablefmt = 'psql'))
-        return ''
+        header_line   = '-- Tidy dataframe with shape: {shape}'\
+              .format(shape = self.__data.shape)
+        few_rows_line = '-- First few rows:'
+        pandas_str    = self.__data.head(10).__str__()
+    
+        tidy_string = (header_line + 
+                       '\n' +
+                       few_rows_line + 
+                       '\n' +
+                       pandas_str
+                       )
+        
+        return tidy_string
     
     # pandas copy method
     def to_pandas(self):
@@ -200,11 +327,11 @@ class tidyDataFrame:
                             )
                       ):
             res = tidy(res)
-        if as_tidy:
-            if isinstance(res, pd.DataFrame):
-                res = tidyDataFrame(res, check = False)
-            else:
-                res = tidyGroupedDataFrame(res, check = False)
+            if as_tidy:
+                if isinstance(res, pd.DataFrame):
+                    res = tidyDataFrame(res, check = False)
+                else:
+                    res = tidyGroupedDataFrame(res, check = False)
         return res
     
     # alias for pipe_pandas
@@ -214,7 +341,6 @@ class tidyDataFrame:
     def get_info(self):
         print('Tidy dataframe with shape: {shape}'\
               .format(shape = self.__data.shape))
-        print('\n')
         return self.__data.info()
         
     def get_nrow(self):

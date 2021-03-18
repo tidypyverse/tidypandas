@@ -15,8 +15,12 @@ iris_tidy.get_colnames()
 iris_tidy.to_pandas()
 iris_tidy.to_series('Sepal.Length')
 
-iris_tidy.pipe(lambda x: x.select('Petal.Width'))
-iris_tidy.pipe2(lambda x: x.loc[:, ['Petal.Width']])
+iris_tidy.pipe(lambda x: x.select(['Petal.Width', 'Sepal.Width']))
+iris_tidy.pipe(lambda x: x.get_nrow())
+
+iris_tidy.pipe2(lambda x: x.loc[:, ['Petal.Width', 'Sepal.Width']])
+iris_tidy.pipe2(lambda x: x.loc[:, ['Petal.Width', 'Sepal.Width']], as_tidy = False)
+iris_tidy.pipe2(lambda x: x.shape)
 
 iris_tidy.select(['Sepal.Length', 'Species'])
 iris_tidy.select(['Sepal.Length', 'Species'], include = False)
@@ -25,7 +29,7 @@ iris_tidy.select(predicate = pd.api.types.is_float_dtype)
 iris_tidy.slice([1, 149])
 
 iris_tidy.group_by(['Species'])
-iris_tidy.ungroup() # expect a warning
+iris_tidy.ungroup()
 
 iris_tidy.arrange(['Sepal.Length', 'Petal.Width'], ascending = [True, False])
 
