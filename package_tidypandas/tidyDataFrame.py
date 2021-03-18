@@ -6,7 +6,7 @@ from tabulate import tabulate
 import re
 from functools import reduce
 
-# from package_tidypandas.tidyGroupedDataFrame import tidyGroupedDataFrame
+# from package_tidypandas.TidyGroupedDataFrame import TidyGroupedDataFrame
 # from package_tidypandas.tidypredicates import *
 
 def is_string_or_string_list(x):
@@ -229,7 +229,7 @@ def bind_rows(x, rowid_column_name = "rowid"):
         pdfs = map(lambda y: y.to_pandas(), x)
         
     res = pd.concat(pdfs, axis = 'index', ignore_index = True)
-    res = tidyDataFrame(res, check = False)
+    res = TidyDataFrame(res, check = False)
     return res
 
 def bind_cols(x):
@@ -240,9 +240,9 @@ def bind_cols(x):
         raise Exception("Cannot bind columns as tidy dataframes have different number of rows")
     res = pd.concat(pdfs, axis = "columns", ignore_index = False)
     res.columns = get_unique_names(list(res.columns))
-    return tidyDataFrame(res, check = False)
+    return TidyDataFrame(res, check = False)
     
-class tidyDataFrame:
+class TidyDataFrame:
     # init method
     def __init__(self, x, check = True):
         
@@ -329,9 +329,9 @@ class tidyDataFrame:
             res = tidy(res)
             if as_tidy:
                 if isinstance(res, pd.DataFrame):
-                    res = tidyDataFrame(res, check = False)
+                    res = TidyDataFrame(res, check = False)
                 else:
-                    res = tidyGroupedDataFrame(res, check = False)
+                    res = TidyGroupedDataFrame(res, check = False)
         return res
     
     # alias for pipe_pandas
@@ -368,7 +368,7 @@ class tidyDataFrame:
         assert all([x in cols for x in column_names])
         
         res = self.__data.groupby(column_names)
-        return tidyGroupedDataFrame(res, check = False)
+        return TidyGroupedDataFrame(res, check = False)
     
     # alias for group_by
     groupby = group_by
@@ -405,7 +405,7 @@ class tidyDataFrame:
         
         res = self.__data.loc[:, column_names]
         
-        return tidyDataFrame(res, check = False)
+        return TidyDataFrame(res, check = False)
     
     def slice(self, row_numbers):
         
@@ -415,7 +415,7 @@ class tidyDataFrame:
         
         res = self.__data.take(row_numbers).reset_index(drop = True)
         
-        return tidyDataFrame(res, check = False)
+        return TidyDataFrame(res, check = False)
         
     def arrange(self, column_names, ascending = False, na_position = 'last'):
         
@@ -437,7 +437,7 @@ class tidyDataFrame:
                                         , na_position  = na_position
                                         , ignore_index = True
                                         )
-        return tidyDataFrame(res, check = False)
+        return TidyDataFrame(res, check = False)
         
     def filter(self, query_string = None, mask = None):
    
@@ -451,7 +451,7 @@ class tidyDataFrame:
         if query_string is None and mask is not None:
             res = self.__data.iloc[mask, :]
             
-        return tidyDataFrame(res, check = False)
+        return TidyDataFrame(res, check = False)
         
     def distinct(self, column_names = None, keep = 'first', retain_all_columns = False):
         
@@ -474,7 +474,7 @@ class tidyDataFrame:
         if not retain_all_columns:
             res = res.loc[:, column_names]
         
-        return tidyDataFrame(res, check = False)
+        return TidyDataFrame(res, check = False)
 
     def mutate(self, dictionary=None, func=None, column_names = None, predicate = None, prefix = ""):
         if dictionary is None and func is None:
@@ -531,7 +531,7 @@ class tidyDataFrame:
                     input_list = [mutated[colname] for colname in colnames_to_use]
                     mutated[akey] = dictionary[akey][0](*input_list)
 
-        return tidyDataFrame(mutated, check=False)
+        return TidyDataFrame(mutated, check=False)
 
     # basic extensions    
     def _mutate_across(self, func, column_names = None, predicate = None, prefix = ""):
@@ -561,7 +561,7 @@ class tidyDataFrame:
         for acol in column_names:
             mutated[prefix + acol] = func(mutated[acol])
             
-        return tidyDataFrame(mutated, check = False)
+        return TidyDataFrame(mutated, check = False)
     
     def summarise(self, dictionary=None, func=None, column_names=None, predicate=None, prefix = ""):
         """
@@ -581,7 +581,7 @@ class tidyDataFrame:
 
         Returns
         -------
-        a tidyDataFrame
+        a TidyDataFrame
 
         Note
         -------
@@ -616,7 +616,7 @@ class tidyDataFrame:
 
         Returns
         -------
-        a tidyDataFrame
+        a TidyDataFrame
 
         Examples
         -------
@@ -681,7 +681,7 @@ class tidyDataFrame:
         assert all([a_summarised.shape == list_summarised[0].shape for a_summarised in list_summarised[1:]]), \
             "all summarised series don't have same shape"
 
-        return tidyDataFrame(pd.DataFrame(res), check=False)
+        return TidyDataFrame(pd.DataFrame(res), check=False)
 
     def _summarise_across(self, func, column_names=None, predicate=None, prefix = ""):
         """
@@ -699,7 +699,7 @@ class tidyDataFrame:
 
         Returns
         -------
-        a tidyDataFrame
+        a TidyDataFrame
         """
 
         assert callable(func)
@@ -733,14 +733,14 @@ class tidyDataFrame:
         assert all([a_summarised.shape == list_summarised[0].shape for a_summarised in list_summarised[1:]]), \
             "all summarised series don't have same shape"
 
-        return tidyDataFrame(pd.DataFrame(res), check=False)
+        return TidyDataFrame(pd.DataFrame(res), check=False)
 
     
     # join methods
     def join(self, y, how = 'inner', on = None, on_x = None, on_y = None, suffix_y = "_y"):
 
         # assertions
-        assert isinstance(y, (tidyDataFrame, tidyGroupedDataFrame))
+        assert isinstance(y, (TidyDataFrame, TidyGroupedDataFrame))
         assert isinstance(how, str)
         assert how in ['inner', 'outer', 'left', 'right', 'anti']
         cn_x = self.get_colnames()
@@ -802,7 +802,7 @@ class tidyDataFrame:
         if len(set(res_columns)) != len(res_columns):
             raise Exception('Join should not result in ambiguous column names. Consider changing the value of "suffix_y" argument')
                 
-        return tidyDataFrame(res, check = False)
+        return TidyDataFrame(res, check = False)
         
     def join_inner(self, y, on = None, on_x = None, on_y = None, suffix_y = '_y'):
         return self.join(y, 'inner', on, on_x, on_y, suffix_y)
@@ -830,14 +830,14 @@ class tidyDataFrame:
                         , axis = 1
                         , ignore_index = False # not to loose column names
                         )
-        return tidyDataFrame(res, check = False)
+        return TidyDataFrame(res, check = False)
     
     def rbind(self, y):
         res = pd.concat([self.__data, y.ungroup().to_pandas()]
                         , axis = 0
                         , ignore_index = True # loose row indexes
                         )
-        return tidyDataFrame(res, check = False)
+        return TidyDataFrame(res, check = False)
     
     # count
     def count(self, column_names = None, count_column_name = 'n', sort_order = 'descending'):
@@ -873,7 +873,7 @@ class tidyDataFrame:
         else:
             res = pd.DataFrame({count_column_name : self.get_nrow()}, index = [0])
             
-        return tidyDataFrame(res, check = False)
+        return TidyDataFrame(res, check = False)
 
     def add_count(self
                   , column_names = None
@@ -956,7 +956,7 @@ class tidyDataFrame:
                              , observed   = retain_levels
                              )
                 
-        res = tidyDataFrame(tidy(res, sep), check = False)
+        res = TidyDataFrame(tidy(res, sep), check = False)
             
         return res
     
@@ -988,7 +988,7 @@ class tidyDataFrame:
                          )
                    )
         
-        res = tidyDataFrame(res, check = False)
+        res = TidyDataFrame(res, check = False)
         return res
     
     # slice extensions
@@ -1008,7 +1008,7 @@ class tidyDataFrame:
             assert prop <= 1
             n = int(np.floor(prop * nr))
         
-        return tidyDataFrame(self.__data.head(n).reset_index(drop = True)
+        return TidyDataFrame(self.__data.head(n).reset_index(drop = True)
                              , check = False
                              )
     
@@ -1028,7 +1028,7 @@ class tidyDataFrame:
             assert prop <= 1
             n = int(np.floor(prop * nr))
         
-        return tidyDataFrame(self.__data.tail(n).reset_index(drop = True)
+        return TidyDataFrame(self.__data.tail(n).reset_index(drop = True)
                              , check = False
                              )
     
@@ -1048,7 +1048,7 @@ class tidyDataFrame:
             assert prop <= 1
             n = int(np.floor(prop * nr))
         
-        return tidyDataFrame((self.__data
+        return TidyDataFrame((self.__data
                                   .sample(n
                                           , replace = False
                                           , random_state = random_state
@@ -1071,7 +1071,7 @@ class tidyDataFrame:
             assert prop > 0
             n = int(np.floor(prop * nr))
         
-        return tidyDataFrame((self.__data
+        return TidyDataFrame((self.__data
                                   .sample(n
                                           , replace = True
                                           , random_state = random_state
@@ -1114,7 +1114,7 @@ class tidyDataFrame:
                    .nsmallest(n, columns = order_by, keep = ties_method)
                    .reset_index(drop = True)
                    )
-        return tidyDataFrame(res, check = False)
+        return TidyDataFrame(res, check = False)
     
     def slice_max(self
                   , n = None
@@ -1147,7 +1147,7 @@ class tidyDataFrame:
                    .nlargest(n, columns = order_by, keep = ties_method)
                    .reset_index(drop = True)
                    )
-        return tidyDataFrame(res, check = False)
+        return TidyDataFrame(res, check = False)
     
     # expand and complete utilities
     def expand(self, l):
@@ -1205,7 +1205,7 @@ class tidyDataFrame:
                    .reset_index(drop = True)
                    )
         
-        return tidyDataFrame(res, check = False)
+        return TidyDataFrame(res, check = False)
         
     def fill_na(self, column_direction_dict):
         
@@ -1231,7 +1231,7 @@ class tidyDataFrame:
             
             data[akey] = np.where(data[akey].isna(), pd.NA, data[akey])
             
-        return tidyDataFrame(data, check = False)
+        return TidyDataFrame(data, check = False)
     
     # string utilities
     def separate(self
@@ -1261,10 +1261,10 @@ class tidyDataFrame:
                 split_df.columns = into[0:split_df.shape[1]]     
             
         if keep:
-            res = self.cbind(tidyDataFrame(split_df, check = False))
+            res = self.cbind(TidyDataFrame(split_df, check = False))
         else:
             res = (self.select(column_name, include = False)
-                       .cbind(tidyDataFrame(split_df, check = False))
+                       .cbind(TidyDataFrame(split_df, check = False))
                        )
         return res
     
@@ -1279,11 +1279,11 @@ class tidyDataFrame:
         joined = reduce_join(self.__data, column_names, sep)
         
         if not keep:
-           res = (self.cbind(tidyDataFrame(joined, check = False))
+           res = (self.cbind(TidyDataFrame(joined, check = False))
                       .select(column_names, include = False)    
                       )
         else:
-           res = self.cbind(tidyDataFrame(joined, check = False)) 
+           res = self.cbind(TidyDataFrame(joined, check = False)) 
          
         return res
     
@@ -1296,4 +1296,4 @@ class tidyDataFrame:
         res[column_name] = splitter(res[column_name])
         res = res.explode(column_name, ignore_index = True)
         
-        return tidyDataFrame(res, check = False)
+        return TidyDataFrame(res, check = False)

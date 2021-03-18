@@ -8,11 +8,11 @@ planes
 airports
 airlines
 
-flights_tidy  = tidyDataFrame(flights)
-weather_tidy  = tidyDataFrame(weather)
-planes_tidy   = tidyDataFrame(planes)
-airports_tidy = tidyDataFrame(airports)
-airlines_tidy = tidyDataFrame(flights)
+flights_tidy  = TidyDataFrame(flights)
+weather_tidy  = TidyDataFrame(weather)
+planes_tidy   = TidyDataFrame(planes)
+airports_tidy = TidyDataFrame(airports)
+airlines_tidy = TidyDataFrame(flights)
 
 flights_tidy.get_info()
 
@@ -20,9 +20,9 @@ flights_tidy.get_info()
 
 # - column names are strings, and form unique set of names (no multiindex, no name)
 # - row index is absent (no index or miltiindex)
-# - Most importantly, method calls on a tidydataframe results in a tidydataframe again (most of the times except for methods like to_pandas)
+# - Most importantly, method calls on a TidyDataFrame results in a TidyDataFrame again (most of the times except for methods like to_pandas)
 
-# Package defines two classes: tidyDataFrame and tidyGroupedDataFrame.
+# Package defines two classes: TidyDataFrame and tidyGroupedDataFrame.
 
 # 1
 # Suppose a day-month combination defines a group.
@@ -128,7 +128,7 @@ flights_tidy.group_by('dest').slice_sample(prop = 0.1)
 
 # pandas
 flights.groupby('dest').sample(frac = 0.1)
-tidyDataFrame(flights.groupby('dest').sample(frac = 0.1))
+TidyDataFrame(flights.groupby('dest').sample(frac = 0.1))
 tidy(flights.groupby('dest').sample(frac = 0.1))
 
 # 5
@@ -144,7 +144,7 @@ flights_tidy.mutate(predicate = lambda x: x.dtypes in numeric_dtypes,
     .join(flights.select_dtypes(exclude= numeric_dtypes))
     )
 
-iris_tidy = tidyDataFrame(pd.read_csv("~/tidypandas/iris.csv"))
+iris_tidy = TidyDataFrame(pd.read_csv("~/tidypandas/iris.csv"))
 
 # 6
 # all styles can be used within a single call

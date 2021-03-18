@@ -1,7 +1,7 @@
 import copy
 import pandas as pd
 
-class tidyGroupedDataFrame:
+class TidyGroupedDataFrame:
     
     # init method
     def __init__(self, x, check = True):
@@ -9,7 +9,7 @@ class tidyGroupedDataFrame:
             raise TypeError(
                 ('If you intend to work with a existing grouped pandas'
                    ' dataframe, then consider removing the grouping structure'
-                   ' and creating an instance of tidyDataFrame'
+                   ' and creating an instance of TidyDataFrame'
                    ' and then group_by'
                   ))
         else:
@@ -78,9 +78,9 @@ class tidyGroupedDataFrame:
             res = tidy(res)
         
         if isinstance(res, pd.DataFrame):
-            res = tidyDataFrame(res, check = False)
+            res = TidyDataFrame(res, check = False)
         else:
-            res = tidyGroupedDataFrame(res, check = False)
+            res = TidyGroupedDataFrame(res, check = False)
         return res
     
     # alias for pipe_pandas
@@ -139,9 +139,9 @@ class tidyGroupedDataFrame:
     # ungroup method
     def ungroup(self):
         ## importing it here to avoid circular imports
-        # from package_tidypandas.tidyDataFrame import tidyDataFrame
+        # from package_tidypandas.TidyDataFrame import TidyDataFrame
 
-        return tidyDataFrame(self.__data.obj, check = False)
+        return TidyDataFrame(self.__data.obj, check = False)
      
     # basic verbs   
     def select(self, column_names = None, predicate = None, include = True):
@@ -173,7 +173,7 @@ class tidyGroupedDataFrame:
         res = (self.__data.obj.loc[:, column_names]
                               .groupby(groupvars)
                               )
-        return tidyGroupedDataFrame(res, check = False)
+        return TidyGroupedDataFrame(res, check = False)
     
     def slice(self, row_numbers):
         
@@ -186,7 +186,7 @@ class tidyGroupedDataFrame:
                    .groupby(groupvars)
                    )
         
-        return tidyGroupedDataFrame(res, check = False)
+        return TidyGroupedDataFrame(res, check = False)
         
     def arrange(self, column_names, ascending = False, na_position = 'last'):
         
@@ -216,7 +216,7 @@ class tidyGroupedDataFrame:
                    .groupby(groupvars)
                    )
         
-        return tidyGroupedDataFrame(res, check = False)
+        return TidyGroupedDataFrame(res, check = False)
     
     def filter(self, query_string = None, mask = None):
    
@@ -237,7 +237,7 @@ class tidyGroupedDataFrame:
             res = self.__data.obj.iloc[mask, :]
             res = res.groupby(group_var_names)
             
-        res = tidyGroupedDataFrame(res, check = False)
+        res = TidyGroupedDataFrame(res, check = False)
         return res
 
     def mutate(self, dictionary=None, func=None, column_names = None, predicate = None, prefix = ""):
@@ -355,7 +355,7 @@ class tidyGroupedDataFrame:
                     # TODO create your own error class
                     raise ValueError("Some value(s) in the dictionary is neither callable nor a list or a tuple")
 
-        return tidyGroupedDataFrame(mutated, check=False)
+        return TidyGroupedDataFrame(mutated, check=False)
         
     def _mutate_across(self, func, column_names = None, predicate = None, prefix = ""):
 
@@ -395,7 +395,7 @@ class tidyGroupedDataFrame:
                               .reset_index(drop = True)
                               .groupby(grouping_columns))
 
-        return tidyGroupedDataFrame(mutated, check = False)
+        return TidyGroupedDataFrame(mutated, check = False)
     
     def summarise(self, dictionary=None, func=None, column_names=None, predicate=None, prefix = ""):
         """
@@ -415,7 +415,7 @@ class tidyGroupedDataFrame:
 
         Returns
         -------
-        a tidyDataFrame
+        a TidyDataFrame
 
         Note
         -------
@@ -451,7 +451,7 @@ class tidyGroupedDataFrame:
 
         Returns
         -------
-        a tidyDataFrame
+        a TidyDataFrame
 
         Examples
         -------
@@ -523,9 +523,9 @@ class tidyGroupedDataFrame:
             "all summarised series don't have same shape"
 
         ## importing it here to avoid circular imports
-        # from package_tidypandas.tidyDataFrame import tidyDataFrame
+        # from package_tidypandas.TidyDataFrame import TidyDataFrame
 
-        return tidyDataFrame(pd.DataFrame(res).reset_index(drop=False), check=False)
+        return TidyDataFrame(pd.DataFrame(res).reset_index(drop=False), check=False)
 
     def _summarise_across(self, func, column_names = None, predicate = None, prefix = ""):
         """
@@ -543,7 +543,7 @@ class tidyGroupedDataFrame:
 
         Returns
         -------
-        a tidyDataFrame
+        a TidyDataFrame
         """
 
         assert callable(func)
@@ -588,9 +588,9 @@ class tidyGroupedDataFrame:
             "all summarised series don't have same shape"
 
         ## importing it here to avoid circular imports
-        # from package_tidypandas.tidyDataFrame import tidyDataFrame
+        # from package_tidypandas.TidyDataFrame import TidyDataFrame
 
-        return tidyDataFrame(pd.DataFrame(res).reset_index(drop=False), check=False)
+        return TidyDataFrame(pd.DataFrame(res).reset_index(drop=False), check=False)
     
     def distinct(self, column_names = None, keep = 'first', retain_all_columns = False, ignore_grouping = False):
         
@@ -621,17 +621,17 @@ class tidyGroupedDataFrame:
         # regroup
         res = res.groupby(groupvars)
         
-        return tidyGroupedDataFrame(res, check = False)    
+        return TidyGroupedDataFrame(res, check = False)    
     
     # join methods
     def join(self, y, how = 'inner', on = None, on_x = None, on_y = None, suffix_y = "_y"):
 
         # assertions
-        assert isinstance(y, (tidyDataFrame, tidyGroupedDataFrame))
+        assert isinstance(y, (TidyDataFrame, TidyGroupedDataFrame))
         assert how in ['inner', 'outer', 'left', 'right', 'anti']
         cn_x = self.get_colnames()
         cn_y = y.get_colnames()
-        if isinstance(y, tidyGroupedDataFrame):
+        if isinstance(y, TidyGroupedDataFrame):
             y = y.ungroup().to_pandas()
         else:
             y = y.to_pandas()
@@ -695,7 +695,7 @@ class tidyGroupedDataFrame:
         groupvars = self.get_groupvars()
         res = res.groupby(groupvars)
                 
-        return tidyGroupedDataFrame(res, check = False)
+        return TidyGroupedDataFrame(res, check = False)
         
     def join_inner(self, y, on = None, on_x = None, on_y = None):
         return self.join(y, 'inner', on, on_x, on_y)
@@ -724,7 +724,7 @@ class tidyGroupedDataFrame:
                         , ignore_index = False # not to loose column names
                         )
         res = res.groupby(self.get_groupvars())
-        return tidyGroupedDataFrame(res, check = False)
+        return TidyGroupedDataFrame(res, check = False)
     
     def rbind(self, y):
         res = pd.concat([self.ungroup().to_pandas(), y.ungroup().to_pandas()]
@@ -732,7 +732,7 @@ class tidyGroupedDataFrame:
                         , ignore_index = True # loose row indexes
                         )
         res = res.groupby(self.get_groupvars())
-        return tidyGroupedDataFrame(res, check = False)
+        return TidyGroupedDataFrame(res, check = False)
 
     # count
     def count(self, column_names = None, count_column_name = 'n', sort = 'descending'):
@@ -775,7 +775,7 @@ class tidyGroupedDataFrame:
         # bring back the grouping
         res = res.groupby(groupvars)
 
-        return tidyGroupedDataFrame(res, check = False)
+        return TidyGroupedDataFrame(res, check = False)
 
     def add_count(self
                   , column_names = None
@@ -881,7 +881,7 @@ class tidyGroupedDataFrame:
                        .groupby(self.get_groupvars())
                        )
         
-        return tidyGroupedDataFrame(res, check = False)
+        return TidyGroupedDataFrame(res, check = False)
     
     def slice_tail(self, n = None, prop = None):
 
@@ -906,7 +906,7 @@ class tidyGroupedDataFrame:
                        .groupby(self.get_groupvars())
                        )
         
-        return tidyGroupedDataFrame(res, check = False)
+        return TidyGroupedDataFrame(res, check = False)
         
     def slice_sample(self, n = None, prop = None, random_state = None):
         
@@ -933,7 +933,7 @@ class tidyGroupedDataFrame:
                        .groupby(self.get_groupvars())
                        )
         
-        return tidyGroupedDataFrame(res, check = False)
+        return TidyGroupedDataFrame(res, check = False)
     
     def slice_bootstrap(self, n = None, prop = None, random_state = None):
         
@@ -965,7 +965,7 @@ class tidyGroupedDataFrame:
                        .groupby(self.get_groupvars())
                        )
         
-        return tidyGroupedDataFrame(res, check = False)
+        return TidyGroupedDataFrame(res, check = False)
     
     def slice_min(self
                   , n = None
@@ -1012,7 +1012,7 @@ class tidyGroupedDataFrame:
                        .groupby(self.get_groupvars())
                        )
         
-        return tidyGroupedDataFrame(res, check = False)
+        return TidyGroupedDataFrame(res, check = False)
     
     def slice_max(self
                   , n = None
@@ -1059,7 +1059,7 @@ class tidyGroupedDataFrame:
                        .groupby(self.get_groupvars())
                        )
         
-        return tidyGroupedDataFrame(res, check = False)
+        return TidyGroupedDataFrame(res, check = False)
     
     # apply methods
     def group_modify(self, func):
@@ -1067,7 +1067,7 @@ class tidyGroupedDataFrame:
         gvs = self.get_groupvars()
         
         def func_wrapper(chunk):
-            res = func(tidyDataFrame(chunk, check = False)).to_pandas()
+            res = func(TidyDataFrame(chunk, check = False)).to_pandas()
             existing_columns = list(res.columns)
             gvs_in = set(gvs).intersection(existing_columns)
             res = res.drop(columns = list(gvs_in))    
@@ -1080,7 +1080,7 @@ class tidyGroupedDataFrame:
                    .groupby(gvs)
                    )
         
-        return tidyGroupedDataFrame(res, check = False)
+        return TidyGroupedDataFrame(res, check = False)
     
     # na handling methods
     def replace_na(self, column_replace_dict):
