@@ -1,5 +1,6 @@
 import copy
 import pandas as pd
+from collections import defaultdict
 
 class TidyGroupedDataFrame:
     
@@ -175,6 +176,24 @@ class TidyGroupedDataFrame:
                               )
         return TidyGroupedDataFrame(res, check = False)
     
+    def relocate(self, column_names, before = None, after = None):
+        gvs = self.get_groupvars()
+        res = (self.ungroup()
+                   .relocate(column_names, before, after)
+                   .group_by(gvs)
+                   )
+        return res
+    
+    def rename(self, old_new_dict):
+        gvs = self.get_groupvars()
+        keys = old_new_dict.keys()
+        new_gvs = [old_new_dict[agv] if agv in keys else agv for agv in gvs]
+        res = (self.ungroup()
+                   .rename(old_new_dict)
+                   .group_by(new_gvs)
+                   )
+        return res
+         
     def slice(self, row_numbers):
         
         assert all([x >=0 for x in row_numbers])

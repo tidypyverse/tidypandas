@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-iris = pd.read_csv("~/tidypandas/iris.csv")
+iris = pd.read_csv("iris.csv")
 iris
 
 # ungrouped ----------------------------------------------------------------------
@@ -25,6 +25,22 @@ iris_tidy.pipe2(lambda x: x.shape)
 iris_tidy.select(['Sepal.Length', 'Species'])
 iris_tidy.select(['Sepal.Length', 'Species'], include = False)
 iris_tidy.select(predicate = pd.api.types.is_float_dtype)
+
+iris_tidy.relocate('Species')
+iris_tidy.relocate(['Species'])
+iris_tidy.relocate(['Species', 'Petal.Length'])
+
+iris_tidy.relocate(['Species', 'Petal.Length'], before = 'Petal.Width')
+iris_tidy.relocate('Species', before = 'Petal.Width')
+iris_tidy.relocate(['Species', 'Petal.Length'], before = 'Sepal.Length')
+
+iris_tidy.relocate(['Species', 'Petal.Length'], after = 'Petal.Width')
+iris_tidy.relocate('Species', after = 'Sepal.Width')
+iris_tidy.relocate(['Species', 'Petal.Length'], after = 'Sepal.Length')
+
+iris_tidy.rename({"Petal.Length": "petal_length"})
+iris_tidy.rename({"Petal.Length": "Species"}) # error
+
 
 iris_tidy.slice([1, 149])
 
@@ -134,6 +150,8 @@ iris_tidy_2
 
 # bind rows and cols
 bind_rows([iris_tidy, iris_tidy_2])
+bind_rows({"one" : iris_tidy, "two" : iris_tidy_2})
+
 bind_cols([iris_tidy, iris_tidy_2])
 
 # slice extensions
@@ -249,6 +267,13 @@ iris_tidy_grouped.to_series('Sepal.Length')
 iris_tidy_grouped.select(['Sepal.Length']) # grouped columns are always kept
 iris_tidy_grouped.select(['Sepal.Length', 'Species'], include = False)
 iris_tidy_grouped.select(predicate = pd.api.types.is_float_dtype)
+
+iris_tidy_grouped.relocate('Petal.Width')
+iris_tidy_grouped.relocate(['Petal.Width'], after = 'Sepal.Length')
+
+iris_tidy_grouped.rename({'Petal.Length' : 'petal_length'})
+iris_tidy_grouped.rename({'Species' : 'species'})
+iris_tidy_grouped.rename({'Species' : 'species', 'Petal.Length' : 'petal_length'})
 
 iris_tidy_grouped.slice(range(2))
 

@@ -2,246 +2,14 @@ import copy
 import numpy as np
 import pandas as pd
 import warnings
-from tabulate import tabulate
 import re
 from functools import reduce
+from collections_extended import setlist
 
 # from package_tidypandas.TidyGroupedDataFrame import TidyGroupedDataFrame
 # from package_tidypandas.tidypredicates import *
 
-def is_string_or_string_list(x):
-    '''
-    is_string_or_string_list(x)
-    
-    Check whether the input is a string or a list of strings
-
-    Parameters
-    ----------
-    x : object
-        Any python object
-
-    Returns
-    -------
-    bool
-    True if input is a string or a list of strings
-    
-    Examples
-    --------
-    is_string_or_string_list("bar")      # True
-    is_string_or_string_list(["bar"])    # True
-    is_string_or_string_list(("bar",))   # False
-    is_string_or_string_list(["bar", 1]) # False
-    '''
-    res = False
-    if isinstance(x, str):
-        res = True
-    elif isinstance(x, list):
-        if all([isinstance(i, str) for i in x]):
-            res = True
-    else:
-        res = False
-    
-    return res
-    
-def enlist(x):
-    '''
-    enlist(x)
-    
-    Returns the input in a list (as first element of the list) unless input itself is a list
-
-    Parameters
-    ----------
-    x : object
-        Any python object
-
-    Returns
-    -------
-    list
-    Returns the input in a list (as first element of the list) unless input itself is a list
-    
-    Examples
-    --------
-    enlist(["a"]) # ["a"]
-    enlist("a")   # ["a"]
-    enlist((1, )) # [(1, )]
-    '''
-    if not isinstance(x, list):
-        x = [x]
-    
-    return x
-
-def get_unique_names(strings):
-    '''
-    get_unique_names(strings)
-    
-    Returns a list of same length as the input such that elements are unique. This is done by adding '_1'. The resulting list does not alter nth element if the nth element occurs for the first time in the input list starting from left.
-    
-    Parameters
-    ----------
-    strings : list
-        A list of strings
-
-    Returns
-    -------
-    list of strings
-    
-    Examples
-    --------
-    get_unique_names(['a', 'b'])               # ['a', 'b']
-    get_unique_names(['a', 'a'])               # ['a', 'a_1']
-    get_unique_names(['a', 'a', 'a_1'])        # ['a', 'a_1_1', 'a_1']
-    '''
-    assert is_string_or_string_list(strings)
-    strings = enlist(strings)
-
-    new_list = []
-    old_set = set(strings)
-    
-    for astring in strings:
-        counter = 0 
-        while True:
-            if astring in new_list:
-                counter = 1
-                astring = astring + "_1" 
-            elif astring in old_set:
-                if counter > 0:
-                    astring = astring + "_1"
-                else:
-                    new_list.append(astring)
-                    try:
-                        old_set.remove(astring)
-                    except:
-                        pass
-                    break
-            else:
-                new_list.append(astring)
-                try:
-                    old_set.remove(astring)
-                except:
-                    pass
-                break
-        
-    return new_list
-
-def tidy(pdf, sep = "__", verbose = False):
-    '''
-    tidy(pdf)
-    
-    Returns a pandas dataframe with simplified index structure. This might be helpful before creating an TidyDataFrame object.
-    
-    Parameters
-    ----------
-    strings : pandas.DataFrame or pandas.core.groupby.DataFrameGroupBy
-        A pandas dataframe or grouped pandas dataframe
-
-    Returns
-    -------
-    A pandas dataframe with simplified index structure.If the input dataframe is grouped, then output is grouped too.
-    
-    Notes
-    -----
-    Returns a `tidy` pandas dataframe. A `tidy` pandas dataframe is a pandas dataframe whose:
-    1. Column names (x.columns) are an unnamed pd.Index object of unique strings.
-    2. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0 and step = 1.
-    
-    This is done by collapsing the column MultiIndex by concatenating names using separator 'sep' and ensuring that the resulting names are unique. The row Index or MultiIndex are added to the dataframe as columns if their names do not clash with the existing column names of the dataframe.
-    
-    Examples
-    --------
-    from nycflights13 import *
-    
-    ex1 = flights.groupby('dest').apply(lambda x: x.head(2))
-    tidy(ex1)
-    
-    ex2 = pd.crosstab(flights['origin'], flights['dest'])
-    tidy(ex2)
-    '''
-    
-    assert isinstance(pdf, (pd.DataFrame, pd.core.groupby.DataFrameGroupBy))
-    assert isinstance(sep, str)
-    
-    is_grouped = False
-    if isinstance(pdf, pd.core.groupby.DataFrameGroupBy):
-        is_grouped = True
-        gvs = pdf.grouper.names
-        pdf = pdf.obj
-    
-    try:
-        # handle column multiindex
-        if isinstance(pdf.columns, pd.MultiIndex):
-            # paste vertically with 'sep' and get unique names
-            # a   d 
-            # b c e
-            # becomes
-            # a__b,a__c, d__e
-            lol = list(map(list, list(pdf.columns)))
-            cns = list(map(lambda x: sep.join(map(str, x)).rstrip(sep), lol))
-            pdf.columns = get_unique_names(cns)
-        else:
-            # avoid column index from having some name
-            pdf.columns.name = None
-            pdf.columns = get_unique_names(list(pdf.columns))
-    except:
-        if verbose:
-            raise Exception("Unable to tidy: column index or multiindex")
-    try:    
-        # handle row multiindex 
-        flag_row_multiindex = isinstance(pdf.index, pd.MultiIndex)
-        flag_complex_index = True
-        if isinstance(pdf.index, pd.RangeIndex):
-            if pdf.index.start == 0 and pdf.index.step == 1:
-                flag_complex_index = False
-                  
-        if flag_row_multiindex or flag_complex_index:
-            # first, attempt to not drop the index, then drop when former fails
-            try:
-                pdf = pdf.reset_index(drop = False)
-            except:
-                pdf = pdf.reset_index(drop = True)
-                if verbose:
-                    warnings.warn("Dropped the row index")
-    except:
-        if verbose:
-            raise Exception("Unable to tidy: row index or multiindex")
-        
-    if is_grouped:
-        pdf = pdf.groupby(gvs)
-        
-    if verbose:
-        print("Successfully tidied!")
-    return pdf
-
-
-def bind_rows(x, rowid_column_name = "rowid"):
-    
-    if isinstance(x, dict):
-        str_keys = [str(x) for x in x.keys()]
-        if len(set(str_keys)) < len(str_keys):
-            raise Exception("keys of the dictionary should form unique strings")
-        
-        def add_rowid_column(val):
-            pdf = val[1].ungroup().to_pandas()
-            pdf[rowid_column_name] = str(val[0])
-            return pdf
-        
-        pdfs = map(add_rowid_column, x.items())
-    else:
-        pdfs = map(lambda y: y.to_pandas(), x)
-        
-    res = pd.concat(pdfs, axis = 'index', ignore_index = True)
-    res = TidyDataFrame(res, check = False)
-    return res
-
-def bind_cols(x):
-    
-    pdfs = list(map(lambda y: y.ungroup().to_pandas(), x))
-    rls  = set(map(lambda y: y.shape[0], pdfs))
-    if len(rls) > 1:
-        raise Exception("Cannot bind columns as tidy dataframes have different number of rows")
-    res = pd.concat(pdfs, axis = "columns", ignore_index = False)
-    res.columns = get_unique_names(list(res.columns))
-    return TidyDataFrame(res, check = False)
-    
+  
 class TidyDataFrame:
     # init method
     def __init__(self, x, check = True):
@@ -405,6 +173,67 @@ class TidyDataFrame:
         
         res = self.__data.loc[:, column_names]
         
+        return TidyDataFrame(res, check = False)
+    
+    def relocate(self, column_names, before = None, after = None):
+        
+        assert is_string_or_string_list(column_names)
+        column_names = enlist(column_names)
+        assert len(set(column_names)) == len(column_names) # assert if column_names are unique
+        current_colnames = self.get_colnames()
+         
+        assert (before is None) or (after is None) # at least one of them is None
+        if before is None:
+            if after is not None:
+                assert isinstance(after, str)
+                assert after in current_colnames
+                assert not (after in column_names)
+        
+        if after is None:
+            if before is not None:
+                assert isinstance(before, str)
+                assert before in current_colnames
+                assert not (before in column_names)
+        
+        cc_setlist       = setlist(current_colnames)
+        cc_trunc_setlist = cc_setlist.difference(column_names)
+            
+        # case 1: relocate to start when both before and after are None
+        if (before is None) and (after is None):
+            new_colnames = copy.copy(column_names)
+            new_colnames.extend(list(cc_trunc_setlist))
+        elif (before is not None):
+            # case 2: before is not None
+            pos_before   = int(np.where([x == before for x in cc_trunc_setlist])[0])
+            cc_left      = list(cc_trunc_setlist[ :pos_before])
+            cc_right     = list(cc_trunc_setlist[pos_before: ])
+            new_colnames = copy.copy(cc_left)
+            new_colnames.extend(column_names)
+            new_colnames.extend(cc_right)
+        else:
+            # case 3: after is not None
+            pos_after    = int(np.where([x == after for x in cc_trunc_setlist])[0])      
+            cc_left      = list(cc_trunc_setlist[ :(pos_after + 1)])
+            cc_right     = list(cc_trunc_setlist[(pos_after + 1): ])
+            new_colnames = copy.copy(cc_left)
+            new_colnames.extend(column_names)
+            new_colnames.extend(cc_right)
+      
+        res = self.__data.loc[:, new_colnames]
+        return TidyDataFrame(res, check = False)
+    
+
+    def rename(self, old_new_dict):
+        col_names = self.get_colnames()
+        assert isinstance(old_new_dict, dict)
+        assert set(col_names).issuperset(old_new_dict.keys()) # old names should be there
+        assert is_unique_list(list(old_new_dict.values())) # new names should be unique
+        
+        # new names should not intersect with 'remaining' names
+        remaining = set(col_names).difference(old_new_dict.keys())
+        assert len(remaining.intersection(old_new_dict.values())) == 0
+        
+        res = self.__data.rename(columns = old_new_dict)
         return TidyDataFrame(res, check = False)
     
     def slice(self, row_numbers):
