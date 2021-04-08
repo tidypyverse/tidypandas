@@ -1,6 +1,5 @@
 import copy
 import pandas as pd
-from collections import defaultdict
 
 class TidyGroupedDataFrame:
     
@@ -1169,3 +1168,8 @@ class TidyGroupedDataFrame:
         
         return res
     
+    def add_rowid(self, column_name = "rowid"):
+        
+        assert column_name not in self.get_colnames()
+        res = self.group_modify(lambda x: x.rowid_to_column(column_name))
+        return res

@@ -1,3 +1,8 @@
+# -----------------------------------------------------------------------------
+# This file is a part of tidypandas python package
+# Find the dev version here: https://github.com/talegari/tidypandas
+# -----------------------------------------------------------------------------
+
 import copy
 import numpy as np
 import pandas as pd
@@ -6,11 +11,131 @@ import re
 from functools import reduce
 from collections_extended import setlist
 
-# from package_tidypandas.TidyGroupedDataFrame import TidyGroupedDataFrame
-# from package_tidypandas.tidypredicates import *
+# from tidypandas.tidy_helpers import *
 
-  
 class TidyDataFrame:
+    '''
+    TidyDataFrame class
+    A tidy dataframe is a wrapper over 'tidy' ungrouped pandas DataFrame object.
+    A pandas dataframe is said to be 'tidy' if:
+        1. Column names (x.columns) are an unnamed pd.Index object of unique strings.
+        2. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0 and step = 1.
+    
+    Methods constitute a grammar of data manipulation mostly returning a 'tidy' dataframe as a result. The other class TidyGroupedDataFrame defines similarly named methods which provide similar functionality for grouped tidy dataframes. Methods 'to_pandas' and 'to_series' convert into pandas dataframe or series.
+    
+    Methods
+    -------
+    init
+        Creates a tidy dataframe from a 'tidy' pandas dataframe
+        
+    'to' methods:
+        to_pandas
+            Returns the underlying pandas dataframe
+        to_series
+            Returns selected column as pandas series
+    
+    'pipe' methods:
+        pipe    
+            A pipe method for tidy dataframe
+        pipe2
+            A pipe method that works on the underlying pandas object
+    
+    'get' methods:
+        get_info
+            Shows info about the dataframe
+        get_nrow
+            Returns number of rows of the dataframe
+        get_ncol
+            Returns number of rows of the dataframe
+        get_shape (alias: get_dim)
+            Returns the shape or dimension of the dataframe
+        get_colnames
+            Returns column names of the dataframe
+
+    'group' related methods:
+        group_by (alias: groupby)
+            Returns a grouped dataframe by grouping across selected column(s)
+        ungroup
+            Returns a dataframe by removing the grouping structure if present
+    
+    'basic' methods:
+        select
+            Returns a dataframe with selected columns
+        arrange
+            Returns a dataframe after sorting rows
+        slice
+            Returns a dataframe to subset by row numbers
+        distinct
+            Returns a distinct rows defined by selected columns
+        filter
+            Returns a dataframe with rows selected by some criteria
+        mutate
+            Returns a dataframe by adding or changing a few columns
+        summarise (alias: summarize)
+            Returns a dataframe after aggregating over selected columns
+        
+    'count' methods:
+        count
+            Returns a dataframe after counting over selected columns
+        add_count
+            Returns a dataframe by adding a new count column to input
+            
+    'pivot' methods:
+        pivot_wider
+            Returns a dataframe by converting from long to wide format
+        pivot_longer
+            Returns a dataframe by converting from wide to long format
+            
+    'missing value' methods:
+        drop_na
+            Returns a dataframe by dropping rows which have mssing values in selected columns
+        relapce_na
+            Returns a dataframe by replacing missing values in selected columns
+        fill_na
+            Returns a dataframe by filling missing values from up, down or both directions for selected columns
+    'string' methods:
+        separate
+            Returns a dataframe by splitting a string column into multiple columns
+        unite
+            Returns a dataframe by combining multiple string columns 
+        separate_rows
+            Returns a dataframe by exploding a string column
+    'completion' methods:
+        expand
+            Returns a dataframe with combinations of columns
+        complete
+            Returns a dataframe by creating additional rows with some comninations of columns 
+        slice extensions:
+    
+    'slice' extensions:
+        slice_head
+            Returns a dataframe with top few rows of the input
+        slice_tail
+            Returns a dataframe with last few rows of the input
+        slice_max
+            Returns a dataframe with few rows corrsponding to maximum values of some columns
+        slice_min
+            Returns a dataframe with few rows corrsponding to maximum values of some columns
+        slice_sample
+            Returns a dataframe with a sample (without replacement) of rows
+        slice_sample
+            Returns a dataframe with a sample (with replacement) of rows
+    
+    'join' methods:
+        join, inner_join, outer_join, left_join, right_join, anti_join:
+            Returns a joined dataframe of a pair of dataframes
+    'set operations' methods:
+        union, intersection, setdiff:
+            Returns a dataframe after set like operations over a pair of dataframes
+    'bind' methods:
+        rbind, cbind:
+            Returns a dataframe by rowwise or column wise binding of a pair of dataframes
+    
+    'misc' methods:
+        add_rowid:
+            Returns a dataframe with rowids added
+    
+    '''
     # init method
     def __init__(self, x, check = True):
         
@@ -78,7 +203,7 @@ class TidyDataFrame:
     # series copy method
     def to_series(self, column_name):
         
-        assert isinstance(column_name, str)
+        assert isinstance(column_name, str), "Input column names should be a string"
         assert column_name in self.get_colnames()
         
         return self.select(column_name).to_pandas().loc[:, column_name]
@@ -89,6 +214,7 @@ class TidyDataFrame:
     
     # pipe pandas method
     def pipe_pandas(self, func, as_tidy = True):
+        assert isinstance(is_tidy, bool)
         res = func(self.__data)
         if isinstance(res, (pd.DataFrame
                             , pd.core.groupby.DataFrameGroupBy
@@ -563,7 +689,8 @@ class TidyDataFrame:
             "all summarised series don't have same shape"
 
         return TidyDataFrame(pd.DataFrame(res), check=False)
-
+    
+    summarize = summarise
     
     # join methods
     def join(self, y, how = 'inner', on = None, on_x = None, on_y = None, suffix_y = "_y"):
@@ -648,7 +775,13 @@ class TidyDataFrame:
     def join_anti(self, y, on = None, on_x = None, on_y = None, suffix_y = '_y'):
         return self.join(y, 'anti', on, on_x, on_y, suffix_y)    
     
-    # binding functions
+    inner_join = join_inner
+    outer_join = join_outer
+    left_join = join_left
+    right_join = join_right
+    anti_join = join_anti
+    
+    # binding methods
     def cbind(self, y):
         # number of rows should match
         assert self.get_nrow() == y.get_nrow()
@@ -1126,3 +1259,14 @@ class TidyDataFrame:
         res = res.explode(column_name, ignore_index = True)
         
         return TidyDataFrame(res, check = False)
+    
+    # misc utils
+    
+    def add_rowid(self, column_name = "rowid"):
+        
+        assert column_name not in self.get_colnames()
+        res = (self.mutate({column_name : lambda x: np.arange(x.shape[0])})
+                   .relocate(column_name)
+                   )
+        return res
+        

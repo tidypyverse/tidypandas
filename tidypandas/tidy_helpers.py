@@ -1,3 +1,8 @@
+# -----------------------------------------------------------------------------
+# This file is a part of tidypandas python package
+# Find the dev version here: https://github.com/talegari/tidypandas
+# -----------------------------------------------------------------------------
+
 import pandas as pd
 
 def is_string_or_string_list(x):
@@ -115,15 +120,67 @@ def get_unique_names(strings):
     return new_list
 
 def is_pdf(x):
+    '''
+    is_pdf(x)
+    
+    Returns True if the input is a grouped or ungrouped pandas dataframe
+
+    Parameters
+    ----------
+    x : any python object
+
+    Returns
+    -------
+    bool
+    '''
     return isinstance(x, (pandas.DataFrame, pandas.core.groupby.DataFrameGroupBy))
 
 def is_ungrouped_pdf(x):
+    '''
+    is_ungrouped_pdf(x)
+    
+    Returns True if the input is an ungrouped pandas dataframe
+
+    Parameters
+    ----------
+    x : any python object
+
+    Returns
+    -------
+    bool
+    '''
     return isinstance(x, pandas.DataFrame)
 
 def is_grouped_pdf(x):
+    '''
+    is_grouped_pdf(x)
+    
+    Returns True if the input is a grouped pandas dataframe
+
+    Parameters
+    ----------
+    x : any python object
+
+    Returns
+    -------
+    bool
+    '''
     return isinstance(x, pandas.core.groupby.DataFrameGroupBy)
 
 def is_unique_list(x):
+    '''
+    is_unique_list(x)
+    
+    Returns True if input list does not have duplicates
+
+    Parameters
+    ----------
+    x : list
+
+    Returns
+    -------
+    bool
+    '''
     assert isinstance(x, list)
     return len(set(x)) == len(x)
 
@@ -135,12 +192,12 @@ def tidy(pdf, sep = "__", verbose = False):
     
     Parameters
     ----------
-    strings : pandas.DataFrame or pandas.core.groupby.DataFrameGroupBy
+    pdf : pandas.DataFrame or pandas.core.groupby.DataFrameGroupBy
         A pandas dataframe or grouped pandas dataframe
 
     Returns
     -------
-    A pandas dataframe with simplified index structure.If the input dataframe is grouped, then output is grouped too.
+    A pandas dataframe with simplified index structure. If the input dataframe is grouped, then output is grouped too.
     
     Notes
     -----
