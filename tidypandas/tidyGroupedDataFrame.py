@@ -5,16 +5,49 @@ class TidyGroupedDataFrame:
     
     # init method
     def __init__(self, x, check = True):
-        if check:
-            raise TypeError(
-                ('If you intend to work with a existing grouped pandas'
-                   ' dataframe, then consider removing the grouping structure'
-                   ' and creating an instance of TidyDataFrame'
-                   ' and then group_by'
-                  ))
-        else:
-            self.__data = copy.copy(x)
+        '''
+        init
+        Create a tidy grouped dataframe from a grouped pandas dataframe
+
+        Parameters
+        ----------
+        x : pandas grouped dataframe
+        check : bool, optional, default is True
+            Whether to check if the input pandas grouped dataframe is 'simple'. It is advised to set this to True in user level code.
+
+        Raises
+        ------
+        Exception if the input pandas grouped dataframe is not 'simple' and warning messages pin point to the precise issue so that user can make necessary changes to the input pandas dataframe. 
         
+        Notes
+        -----
+        A pandas dataframe is said to be 'simple' if:
+        1. Column names (x.columns) are an unnamed pd.Index object of unique strings.
+        2. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0 and step = 1.
+        
+        Returns
+        -------
+        Object of class 'TidyGroupedDataFrame'
+        
+        Examples
+        --------
+        from nycflights13 import flights
+        flights_grouped_tidy = TidyGroupedDataFrame(flights.groupby('dest'))
+        flights_grouped_tidy
+        '''
+        assert isinstance(check, bool)
+        assert isinstance(x, pd.core.groupby.DataFrameGroupBy)
+        if check:
+            flag_simple = is_simple(x, verbose = True)
+            if not flag_simple:    
+            # raise the error After informative warnings
+                raise Exception(("Input pandas grouped dataframe is not 'simple'."
+                                 " See to above warnings."
+                                 " Try the 'simplify' function."
+                                 " ex: simplify(not simple pandas dataframe) --> simple pandas dataframe."
+                                ))
+                               
+        self.__data = copy.deepcopy(x)   
         return None
     
     # print method
@@ -39,141 +72,478 @@ class TidyGroupedDataFrame:
     
         return tidy_string
     
-    # pandas copy method
+    ##########################################################################
+    # to pandas methods
+    ##########################################################################
+    
     def to_pandas(self):
+        '''
+        to_pandas
+        Returns (a copy) a pandas grouped dataframe
+
+        Returns
+        -------
+        pandas grouped dataframe
+        
+        Examples
+        --------
+        from nycflights13 import flights
+        flights_grouped_tidy = TidyGroupedDataFrame(flights.groupby('dest'))
+        flights_grouped_tidy.to_pandas()
+        '''
         return copy.copy(self.__data)
     
     # series copy method
     def to_series(self, column_name):
+        '''
+        to_series
+        Returns (a copy) a column as grouped pandas series
         
+        Parameters
+        ----------
+        column_name : str
+            Name of the column to be returned as grouped pandas series
+
+        Returns
+        -------
+        pandas series
+        
+        Examples
+        --------
+        from nycflights13 import flights
+        flights_tidy = TidyDataFrame(flights)
+        
+        flights_tidy.group_by(['hour', 'day']).to_series('dest').head()
+        flights_tidy.group_by(['hour']).to_series('dest').head()
+        '''
         assert isinstance(column_name, str)
         assert column_name in self.get_colnames()
         
         gvs = self.get_groupvars()
+        # pick column and groupby columns
         ib = (self.select(column_name)
                   .ungroup()
                   .to_pandas()
                   )
-        series_obj = ib.loc[:, column_name]
-        series_obj.index = pd.Index(ib.loc[:, gvs])
+        series_obj = ib[column_name]
+        
+        # create index
+        if len(gvs) == 1:
+            ind = pd.Index(ib[gvs[0]])
+        else:
+            ind = pd.MultiIndex.from_frame(ib[gvs])
+        
+        series_obj.index = ind
         res = series_obj.groupby(series_obj.index)
         return res
         
     
     # to dict method
     def to_dict(self):
-        return dict(tuple(self.__data))
+        '''
+        to_dict
+        Returns a dictionary per group
+
+        Returns
+        -------
+        dict
+            A value is a pandas dataframe. Key is a tuple contatining values of grouping columns that define a group.
+            
+        Examples
+        --------
+        from nycflights13 import flights
+        flights_grouped_tidy = TidyGroupedDataFrame(flights.groupby('dest'))
+        flights_grouped_tidy.to_dict()
+        '''
+        res = dict(tuple(self.__data))
+        if len(self.get_groupvars()) == 1:
+            keys = list(res.keys())
+            for akey in keys:
+                res[(akey, )] = res[akey]
+                del res[akey]
+        
+        return res
     
-    # pipe method
+    ##########################################################################
+    # pipe methods
+    ##########################################################################
+    
     def pipe(self, func):
+        '''
+        pipe
+        Returns func(self)
+
+        Parameters
+        ----------
+        func : callable
+
+        Returns
+        -------
+        Depends on the return type of `func`
+        '''
         return func(self)
     
     # pipe pandas method
     def pipe_pandas(self, func, as_tidy = True):
-        res = func(self.__data)
+        '''
+        pipe_pandas (alias pipe2)
+        Returns func(self.to_pandas())
+
+        Parameters
+        ----------
+        func : calable
+            func should accept the underlying pandas dataframe as input
+        as_tidy : bool, optional, default is True
+            When True and the result of func(self.to_pandas()) is a pandas dataframe. Then, the result is tidied with tidy_helpers.tidy and converted to a tidyDataframe or a tidyGroupedDataFrame. 
+
+        Returns
+        -------
+        Depends on the return type of `func`.
+        
+        Notes
+        -----
+        Expected usage is when you have to apply a pandas code chunk to a tidy dataframe and convert it back to tidy format.
+        
+        Examples
+        --------
+        from nycflights13 import flights
+        flights_grouped_tidy = (TidyDataFrame(flights)
+                                .group_by('hour')
+                                .arrange('dep_time')
+                                )
+        flights_grouped_tidy
+        
+        flights_grouped_tidy.pipe2(lambda x: x.head().reset_index(drop = True))
+        flights_grouped_tidy.pipe2(lambda x: x.obj.shape)
+        '''
+        res = func(self.to_pandas())
         if isinstance(res, (pd.DataFrame
                             , pd.core.groupby.DataFrameGroupBy
                             )
                       ):
             res = tidy(res)
         
-        if isinstance(res, pd.DataFrame):
-            res = TidyDataFrame(res, check = False)
-        else:
-            res = TidyGroupedDataFrame(res, check = False)
+            if isinstance(res, pd.DataFrame):
+                res = TidyDataFrame(res, check = False)
+            else:
+                res = TidyGroupedDataFrame(res, check = False)
         return res
     
     # alias for pipe_pandas
     pipe2 = pipe_pandas
     
-    # get methods
-    def get_info(self):
-        print('Tidy grouped dataframe with shape: {shape}'\
-               .format(shape = self.__data.obj.shape))
-        print("Groupby variables: ", self.__data.grouper.names)
-        print("Number of groups: ", self.__data.ngroups)
-        print('\n')
-        
-        return self.__data.obj.info()
     
     def get_nrow(self):
+        '''
+        get_nrow
+        Get the number of rows
+        
+        Returns
+        -------
+        int
+        '''
         return self.__data.obj.shape[0]
     
     def get_ncol(self):
+        '''
+        get_ncol
+        Get the number of columns
+        
+        Returns
+        -------
+        int
+        '''
         return self.__data.obj.shape[1]
         
     def get_shape(self):
+        '''
+        get_shape (alias get_dim)
+        Get the number of rows and columns
+        
+        Returns
+        -------
+        tuple
+            Number of rows and Number of columns
+        '''
         return self.__data.obj.shape
     
-    def get_dim(self):
-        return self.__data.obj.shape
+    get_dim = get_shape
     
     def get_colnames(self):
+        '''
+        get_colnames
+        Get the column names of the dataframe
+
+        Returns
+        -------
+        list
+            List of unique strings that form the column index of the underlying grouped pandas dataframe
+        '''
         return list(self.__data.obj.columns)
         
     def get_groupvars(self):
+        '''
+        get_groupvars
+        Get the grouping column names of the dataframe
+
+        Returns
+        -------
+        list
+            List of unique strings that form the grouping columns of the underlying grouped pandas dataframe
+        '''
         return self.__data.grouper.names
     
-    # group_by method
-    def group_by(self, groupvars):
+    ##########################################################################
+    # grouby methods
+    ##########################################################################
+    
+    def group_by(self, column_names):
+        '''
+        group_by
+        Group by some column names
         
-        cn = self.get_colnames()
-        assert is_string_or_string_list(groupvars)
-        groupvars = enlist(groupvars)
-        assert set(groupvars).issubset(cn)
+        Parameters
+        ----------
+        column_names : str or list of strings
+            Names of the columns to be grouped by
+
+        Returns
+        -------
+        TidyGroupedDataFrame
         
-        existing_groupvars = self.get_groupvars()
-        incoming_groupvars = list(set(groupvars).difference(existing_groupvars))
-        if len(incoming_groupvars) >= 1:
-            print("New grouping columns: " + str(incoming_groupvars))
-            new_groupvars = list(set(existing_groupvars).union(incoming_groupvars))
-            res = (self.ungroup()
-                       .group_by(new_groupvars)
-                       )
+        Notes
+        -----
+        Tidy grouped dataframes does not remember the order of grouping variables. Grouping variables form a set.
+        
+        Examples
+        --------
+        from nycflights13 import flights
+        # group by 'dest' and 'origin'
+        flights_tidy_grouped = TidyDataFrame(flights).group_by(['dest', 'origin'])
+        flights_tidy_grouped
+        
+        # add 'hour' as a new grouping variable
+        flights_tidy_grouped.group_by('hour')
+        
+        # add 'hour' and 'dest' as grouping variables
+        # only 'hour' is the new grouping variable as 'dest' is already a grouping variable
+        flights_tidy_grouped.group_by(['hour', 'dest'])
+        
+        # if you intend to add 'hour' and remove 'dest' from the grouping variables, then use ungroup
+        flights_tidy_grouped.ungroup('dest').group_by('hour')
+        '''
+        
+        cns = self.get_colnames()
+        assert is_string_or_string_list(column_names),\
+            "'column_names' should be a string or list of strings"
+        column_names = list(set(enlist(column_names)))
+        assert set(cns).issuperset(column_names),\
+            "'column_names'(columns to groupby) should be a subset of existing column names"
+        
+        existing_gvs = self.get_groupvars()
+        incoming_gvs = list(set(column_names).difference(existing_gvs))
+        if len(incoming_gvs) >= 1:
+            print("New grouping columns: " + str(incoming_gvs))
+            new_gvs = list(set(existing_gvs).union(incoming_gvs))
             
+            res = (self.ungroup()
+                       .group_by(new_gvs)
+                       )
+        else:
+            res = copy.copy(self)
+        
         return res
     
     # alias for group_by
     groupby = group_by
     
     # ungroup method
-    def ungroup(self):
-        ## importing it here to avoid circular imports
-        # from package_tidypandas.TidyDataFrame import TidyDataFrame
+    def ungroup(self, column_names = None):
+        '''
+        ungroup
+        Remove some or all grouping columns
 
-        return TidyDataFrame(self.__data.obj, check = False)
-     
-    # basic verbs   
-    def select(self, column_names = None, predicate = None, include = True):
-        
-        if (column_names is None) and (predicate is None):
-            raise Exception('Exactly one among "column_names" and "predicate" should not be None')
-        if (column_names is not None) and (predicate is not None):
-            raise Exception('Exactly one among "column_names" and "predicate" should not be None')
+        Parameters
+        ----------
+        column_names : None or str or a list of strings, optional
+            When None, all grouping variables are removed and an ungrouped tidy dataframe is returned.
+            When str or list of column names are provided, only tose column names are removed from the grouping variables.
+                
+        Returns
+        -------
+        TidyDataFrame or TidyGroupedDataFrame
+        '''
         
         if column_names is None:
-            assert callable(predicate)
-            col_bool_list = list(self.ungroup().to_pandas().apply(predicate))
-            column_names = list(np.array(self.get_colnames())[col_bool_list])
-            assert len(column_names) > 0
+            res = TidyDataFrame(self.__data.obj, check = False)
         else:
-            assert is_string_or_string_list(column_names)
+            assert is_string_or_string_list(column_names),\
+                "`column_names` should be a string or list of strings"
             column_names = enlist(column_names)
-            assert len(column_names) > 0
+            gvs = self.get_groupvars()
+            assert set(gvs).issuperset(column_names),\
+                "`column_names` (columns to groupby) should be a subset of existing column names"
+            new_gvs = list(set(gvs).difference(column_names))
+            
+            if len(new_gvs) >= 1:
+                res = TidyGroupedDataFrame(self.__data.obj.groupby(new_gvs)
+                                           , check = False
+                                           )
+            else:
+                res = TidyDataFrame(self.__data.obj, check = False)
+        return res
+    
+    ##########################################################################
+    # apply methods
+    ##########################################################################   
+    
+    def group_modify(self, func):
+        '''
+        group_modify
+        Modify dataframe per group
+
+        Parameters
+        ----------
+        func : callable
+            Both input and output of the function should be TidyDataFrame
+
+        Returns
+        -------
+        TidyGroupedDataFrame
+        
+        Notes
+        -----
+        This is a wrapper over apply method of pandas groupby object. 
+        
+        1. The grouping columns are present in the data chunks provided to `func`. 
+        2. If the output per chunk after applying `func` contains any of the grouping columns, then they are removed.
+        3. Final result will be grouped by the grouping columns of the input.
+        
+        Examples
+        --------
+        from nycflights13 import flights
+        ex1 = TidyGroupedDataFrame(flights.groupby('dest'))
+        ex1
+        
+        ex1.group_modify(lambda x: x.slice_head(2))
+        ex1.group_modify(lambda x: x.select('origin'))
+        
+        ex2 = TidyGroupedDataFrame(flights.groupby(['dest', 'origin']))
+        ex2
+        
+        ex2.group_modify(lambda x: x.filter('minute >= 30'))
+        '''
+        
+        gvs = self.get_groupvars()
+        
+        def func_wrapper(chunk):
+            
+            res = func(TidyDataFrame(chunk, check = False))
+            assert isinstance(res, TidyDataFrame),\
+                "`func` should return a tidy ungrouped dataframe"
+            res = res.to_pandas()
+            
+            existing_columns = list(res.columns)
+            gvs_in = set(gvs).intersection(existing_columns)
+            res = res.drop(columns = list(gvs_in))    
+            
+            return res
+        
+        res = (self.__data
+                   .apply(func_wrapper)
+                   .droplevel(level = len(gvs))
+                   .reset_index()
+                   .groupby(gvs)
+                   )
+        
+        return TidyGroupedDataFrame(res, check = False)
+    
+    ##########################################################################
+    # basic verbs
+    ##########################################################################
+    
+    ##########################################################################
+    # select
+    ##########################################################################
+    
+    def select(self, column_names = None, predicate = None, include = True):
+        '''
+        select
+        Select a subset of columns by name or predicate
+
+        Parameters
+        ----------
+        column_names : list, optional
+            list of column names(strings) to be selected. The default is None.
+        predicate : callable, optional
+            function which returns a bool. The default is None.
+        include : bool, optional
+            Whether the columns are to be selected or not. The default is True.
+
+        Returns
+        -------
+        TidyGroupedDataFrame
+        
+        Notes
+        -----
+        1. Select works by either specifying column names or a predicate, not both.
+        2. When predicate is used, predicate should accept a pandas series and return a bool. Each column is passed to the predicate and the result indicates whether the column should be selected or not.
+        3. When include is False, we select the remaining columns.
+        4. Grouping columns are always included in the output.
+        
+        Examples
+        --------
+        from nycflights13 import flights
+        flights_grouped_tidy = TidyGroupedDataFrame(flights.groupby(['origin', 'dest']))
+        flights_grouped_tidy
+        
+        # select with names
+        flights_grouped_tidy.select(['distance', 'hour'])
+        
+        # select using a predicate: only non-numeric columns
+        flights_grouped_tidy.select(predicate = lambda x: x.dtype == "object")
+        
+        # select columns ending with 'time'
+        flights_grouped_tidy.select(predicate = lambda x: bool(re.match(".*time$", x.name)))
+        
+        # invert the selection
+        flights_grouped_tidy.select(['distance', 'hour'], include = False)
+        '''
+        
+        if (column_names is None) and (predicate is None):
+            raise Exception('Exactly one among `column_names` and `predicate` should not be None')
+        if (column_names is not None) and (predicate is not None):
+            raise Exception('Exactly one among `column_names` and `predicate` should not be None')
+        
+        if column_names is None:
+            assert callable(predicate), "`predicate` should be a function"
+            col_bool_np = np.array(list(self.__data.obj.apply(predicate, axis = "index")))
+            column_names = list(np.array(self.get_colnames())[col_bool_np])
+        else:
+            assert is_string_or_string_list(column_names),\
+                "`column_names` should be a string or list of strings"
+            column_names = list(setlist(enlist(column_names)))
             cols = self.get_colnames()
-            assert all([x in cols for x in column_names])
+            assert set(cols).issuperset(column_names),\
+                "Atleast one string in `column_names` is not an existing column name"
         
         if not include:
-            column_names = set(cols).difference(set(column_names))
-            column_names = list(column_names)
-            
-        groupvars    = self.get_groupvars()
-        column_names = list(set(column_names + groupvars))
+            column_names = list(setlist(cols).difference(set(column_names)))
         
-        res = (self.__data.obj.loc[:, column_names]
-                              .groupby(groupvars)
-                              )
+        if len(column_names) == 0:
+            warnings.warn("None of the columns are selected except grouping columns")
+        
+        # add group variables
+        gvs = self.groupvars()
+        column_names = list(set(column_names).union(gvs))
+                
+        res = (self.__data
+                   .obj
+                   .loc[:, column_names]
+                   .groupby(gvs)
+                   )
         return TidyGroupedDataFrame(res, check = False)
+        
     
     def relocate(self, column_names, before = None, after = None):
         gvs = self.get_groupvars()
@@ -1079,26 +1449,6 @@ class TidyGroupedDataFrame:
         
         return TidyGroupedDataFrame(res, check = False)
     
-    # apply methods
-    def group_modify(self, func):
-        
-        gvs = self.get_groupvars()
-        
-        def func_wrapper(chunk):
-            res = func(TidyDataFrame(chunk, check = False)).to_pandas()
-            existing_columns = list(res.columns)
-            gvs_in = set(gvs).intersection(existing_columns)
-            res = res.drop(columns = list(gvs_in))    
-            return res
-        
-        res = (self.__data
-                   .apply(func_wrapper)
-                   .droplevel(level = len(gvs))
-                   .reset_index()
-                   .groupby(gvs)
-                   )
-        
-        return TidyGroupedDataFrame(res, check = False)
     
     # na handling methods
     def replace_na(self, column_replace_dict):

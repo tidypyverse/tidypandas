@@ -253,7 +253,7 @@ TidyDataFrame(temp_df).unite(["id", "str_col"], "united", keep = True)
 TidyDataFrame(temp_df).separate_rows("str_col", sep = "-")
 
 # grouped --------------------------------------------------------------------
-iris_tidy_grouped = TidyDataFrame(iris).group_by('Species')
+iris_tidy_grouped = TidyGroupedDataFrame(iris.groupby('Species'))
 iris_tidy_grouped
 
 iris_tidy_grouped.get_info()
@@ -263,6 +263,8 @@ iris_tidy_grouped.get_colnames()
 iris_tidy_grouped.to_pandas()
 iris_tidy_grouped.to_dict()
 iris_tidy_grouped.to_series('Sepal.Length')
+
+iris_tidy.groupby(['Sepal.Length', 'Species']).to_dict()
 
 iris_tidy_grouped.select(['Sepal.Length']) # grouped columns are always kept
 iris_tidy_grouped.select(['Sepal.Length', 'Species'], include = False)

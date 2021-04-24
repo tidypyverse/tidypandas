@@ -16,17 +16,26 @@ from collections_extended import setlist
 class TidyDataFrame:
     '''
     TidyDataFrame class
-    A tidy dataframe is a wrapper over 'tidy' ungrouped pandas DataFrame object.
-    A pandas dataframe is said to be 'tidy' if:
-        1. Column names (x.columns) are an unnamed pd.Index object of unique strings.
-        2. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0 and step = 1.
+    A tidy dataframe is a wrapper over 'simple' ungrouped pandas DataFrame object.
     
-    Methods constitute a grammar of data manipulation mostly returning a 'tidy' dataframe as a result. The other class TidyGroupedDataFrame defines similarly named methods which provide similar functionality for grouped tidy dataframes. Methods 'to_pandas' and 'to_series' convert into pandas dataframe or series.
+    Notes
+    -----
+    
+    A pandas dataframe is said to be 'simple' if:
+    
+    1. Column names (x.columns) are an unnamed pd.Index object of unique strings.
+    2. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0 and step = 1.
+    
+    * Methods constitute a grammar of data manipulation mostly returning a 'simple' dataframe as a result. 
+    * When a method returns a tidy un/grouped dataframe, it always returns a copy and not a view.
+    * The other class `TidyGroupedDataFrame` defines identically named methods which provide similar functionality for grouped tidy dataframes. 
+    * Methods 'to_pandas' and 'to_series' convert into pandas dataframe or series.
+    * The only attribute of the class is the underlying pandas dataframe. This cannot be accessed by the user. Please use 'to_pandas' method to obtain a copy of the underlying pandas dataframe.
     
     Methods
     -------
     init
-        Creates a tidy dataframe from a 'tidy' pandas dataframe
+        Creates a tidy dataframe from a 'simple' pandas dataframe
         
     'to' methods:
         to_pandas
@@ -138,46 +147,48 @@ class TidyDataFrame:
     '''
     # init method
     def __init__(self, x, check = True):
+        '''
+        init
+        Create tidy dataframe from a 'simple' ungrouped pandas dataframe
+
+        Parameters
+        ----------
+        x : 'simple' pandas dataframe
+        check : bool, optional, Default is True
+            Whether to check if the input pandas dataframe is 'simple'. It is advised to set this to True in user level code.
+
+        Raises
+        ------
+        Exception if the input pandas dataframe is not simple and warning messages pin point to the precise issue so that user can make necessary changes to the input pandas dataframe. 
         
+        Notes
+        -----
+        A pandas dataframe is said to be 'simple' if:
+        1. Column names (x.columns) are an unnamed pd.Index object of unique strings.
+        2. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0 and step = 1.
+        
+        Returns
+        -------
+        TidyDataFrame
+        
+        Examples
+        --------
+        from nycflights13 import flights
+        flights_tidy = TidyDataFrame(flights)
+        flights_tidy
+        '''
+        assert isinstance(check, bool)
         if check:
-            assert isinstance(x, pd.DataFrame)
-            row_flag = not isinstance(x.index, pd.MultiIndex)
-            columns  = list(x.columns)
-            col_flag = not isinstance(columns, pd.MultiIndex)
-            # check if row index is rangeIndex
-            flag_no_index = False
-            if isinstance(x.index, pd.RangeIndex):
-                if x.index.start == 0 and x.index.step == 1:
-                    flag_no_index = True           
-            # check if all column names are strings
-            str_flag = all([isinstance(y, str) for y in columns])
-            # check if column names are unique
-            if len(set(columns)) == len(columns):
-                unique_flag = True
-            else:
-                unique_flag = False
-            
-            flag = all([row_flag, col_flag, flag_no_index, str_flag, unique_flag])
-            if not flag:
-                if not row_flag:
-                    warnings.warn("Row index should not be a MultiIndex object.")
-                if not col_flag:
-                    warnings.warn("Column index should not be a MultiIndex object.")
-                if not flag_no_index:
-                    warnings.warn("Row index is not a RangeIndex with start = 0 and step = 1.")
-                if not str_flag:
-                    warnings.warn("Column index should be string column names.")
-                if not unique_flag:
-                    warnings.warn("Column names(index) should be unique.")
-                
-                # raise the error After informative warnings
-                raise Exception(("Input pandas dataframe is not tidy."
+            flag_simple = is_simple(x, verbose = True)
+            if not flag_simple:    
+            # raise the error After informative warnings
+                raise Exception(("Input pandas dataframe is not 'simple'."
                                  " See to above warnings."
-                                 " Try the 'tidy' function."
-                                 " ex: tidy(untidy pandas dataframe) --> tidy pandas dataframe."
+                                 " Try the 'simplify' function."
+                                 " ex: simplify(not simple pandas dataframe) --> simple pandas dataframe."
                                 ))
                                
-        self.__data = copy.copy(x)
+        self.__data = copy.deepcopy(x)
         return None
     
     # repr method
@@ -196,70 +207,218 @@ class TidyDataFrame:
         
         return tidy_string
     
+    ##########################################################################
+    # to pandas methods
+    ##########################################################################
+    
     # pandas copy method
     def to_pandas(self):
+        '''
+        to_pandas
+        Return (a copy) underlying pandas dataframe
+        
+        Returns
+        -------
+        pandas dataframe
+        
+        Examples
+        --------
+        from nycflights13 import flights
+        flights_tidy = TidyDataFrame(flights)
+        flights_tidy.to_pandas()
+        '''
         return copy.copy(self.__data)
     
     # series copy method
     def to_series(self, column_name):
+        '''
+        to_series
+        Returns (a copy) a column as pandas series
+        
+        Parameters
+        ----------
+        column_name : str
+            Name of the column to be returned as pandas series
+
+        Returns
+        -------
+        pandas series
+        
+        Examples
+        --------
+        from nycflights13 import flights
+        flights_tidy = TidyDataFrame(flights)
+        flights_tidy.to_series("origin")
+        '''
         
         assert isinstance(column_name, str), "Input column names should be a string"
         assert column_name in self.get_colnames()
         
-        return self.select(column_name).to_pandas().loc[:, column_name]
+        res = (self.select(column_name)
+                   .to_pandas()
+                   .loc[:, column_name]
+                   )
+        return res
+    
+    ##########################################################################
+    # pipe methods
+    ##########################################################################
     
     # pipe method
     def pipe(self, func):
+        '''
+        pipe
+        Returns func(self)
+
+        Parameters
+        ----------
+        func : callable
+
+        Returns
+        -------
+        Depends on the return type of `func`
+        '''
         return func(self)
     
     # pipe pandas method
     def pipe_pandas(self, func, as_tidy = True):
-        assert isinstance(is_tidy, bool)
+        '''
+        pipe_pandas (alias pipe2)
+        Returns func(self.to_pandas())
+
+        Parameters
+        ----------
+        func : callable
+            func should accept the underlying pandas dataframe as input
+        as_tidy : bool, optional, default is True
+            When True and the result of func(self.to_pandas()) is a pandas dataframe, the result is simplified with 'simplify' function and converted to a tidyDataframe or a tidyGroupedDataFrame. 
+
+        Returns
+        -------
+        Depends on the return type of `func`
+        
+        Notes
+        -----
+        Expected usage is when you have to apply a pandas code chunk to a tidy dataframe and convert it back to tidy format.
+        
+        Examples
+        --------
+        from nycflights13 import flights
+        flights_tidy = TidyDataFrame(flights).arrange('dep_time')
+        flights_tidy
+
+        flights_tidy.pipe2(lambda x: x.sort_values('hour'))
+        flights_tidy.pipe2(lambda x: x.shape)
+        '''
+        assert isinstance(as_tidy, bool)
         res = func(self.__data)
         if isinstance(res, (pd.DataFrame
                             , pd.core.groupby.DataFrameGroupBy
                             )
                       ):
-            res = tidy(res)
             if as_tidy:
                 if isinstance(res, pd.DataFrame):
+                    if not is_simple(res):
+                        res = simplify(res)
                     res = TidyDataFrame(res, check = False)
                 else:
+                    if not is_simple(res):
+                        res = simplify(res)
                     res = TidyGroupedDataFrame(res, check = False)
+        
         return res
     
     # alias for pipe_pandas
     pipe2 = pipe_pandas    
     
+    ##########################################################################
     # get methods
-    def get_info(self):
-        print('Tidy dataframe with shape: {shape}'\
-              .format(shape = self.__data.shape))
-        return self.__data.info()
-        
+    ##########################################################################
+            
     def get_nrow(self):
+        '''
+        get_nrow
+        Get the number of rows
+        
+        Returns
+        -------
+        int
+        '''
         return self.__data.shape[0]
     
     def get_ncol(self):
+        '''
+        get_ncol
+        Get the number of columns
+        
+        Returns
+        -------
+        int
+        '''
         return self.__data.shape[1]
         
     def get_shape(self):
+        '''
+        get_shape (alias get_dim)
+        Get the number of rows and columns
+        
+        Returns
+        -------
+        tuple
+            Number of rows and Number of columns
+        '''
         return self.__data.shape
         
-    def get_dim(self):
-        return self.__data.shape
+    dget_dim = get_shape
         
     def get_colnames(self):
+        '''
+        get_colnames
+        Get the column names of the dataframe
+
+        Returns
+        -------
+        list
+            List of unique strings that form the column index of the underlying pandas dataframe
+
+        '''
         return list(self.__data.columns)
     
-    # groupby method
+    ##########################################################################
+    # grouby methods
+    ##########################################################################
+
     def group_by(self, column_names):
+        '''
+        group_by
+        Returns a tidy grouped dataframe by grouping across input column names
         
-        assert is_string_or_string_list(column_names)
-        column_names = enlist(column_names)
-        assert len(column_names) > 0
-        cols = self.get_colnames()
-        assert all([x in cols for x in column_names])
+        Parameters
+        ----------
+        column_names : str or list of strings
+            Names of the columns to be grouped by
+
+        Returns
+        -------
+        TidyGroupedDataFrame
+        
+        Notes
+        -----
+        Tidy grouped dataframes does not remember the order of grouping variables. Grouping variables form a set.
+        
+        Examples
+        --------
+        from nycflights13 import flights
+        # group by 'dest' and 'origin'
+        TidyDataFrame(flights).group_by(['dest', 'origin'])
+        '''
+        
+        assert is_string_or_string_list(column_names),\
+            "'column_names' should be a string or list of strings"
+        column_names = list(set(enlist(column_names)))
+        cns = self.get_colnames()
+        assert set(cns).issuperset(column_names),\
+            "'column_names'(columns to groupby) should be a subset of existing column names"
         
         res = self.__data.groupby(column_names)
         return TidyGroupedDataFrame(res, check = False)
@@ -268,37 +427,109 @@ class TidyDataFrame:
     groupby = group_by
     
     # ungroup method
-    # just a placeholder
-    def ungroup(self):
-        return self
+    def ungroup(self, column_names = None):
+        '''
+        ungroup
+        Returns the input tidy ungrouped dataframe
+
+        Parameters
+        ----------
+        column_names : None or str or a list of strings, optional
+            This should always be None for a tidy ungrouped dataframe. This argument is included to raise an informative exception.
+
+        Raises
+        ------
+        Exception
+            When columnflights_tidy_grouped_names is not None
+        
+        Notes
+        -----
+        ungroup does not make sense for a tidy ungrouped dataframe. It is kept for coding convenience of a user. When column_names is None, ungroup method returns the input tidy ungrouped dataframe. 
+        
+        Returns
+        -------
+        TidyDataFrame
+        '''
+        if column_names is not None:
+            raise Exception("'column_names' should be None for a ungrouped tidy dataframe")
+        return copy.copy(self)
     
-    # basic verbs  
+    ##########################################################################
+    # basic verbs
+    ##########################################################################
+    
+    
+    ##########################################################################
+    # select
+    ##########################################################################
+    
     def select(self, column_names = None, predicate = None, include = True):
+        '''
+        select
+        Select a subset of columns by name or predicate
+
+        Parameters
+        ----------
+        column_names : list, optional
+            list of column names(strings) to be selected. The default is None.
+        predicate : callable, optional
+            function which returns a bool. The default is None.
+        include : bool, optional
+            Whether the columns are to be selected or not. The default is True.
+
+        Returns
+        -------
+        TidyDataFrame
+        
+        Notes
+        -----
+        1. Select works by either specifying column names or a predicate, not both.
+        2. When predicate is used, predicate should accept a pandas series and return a bool. Each column is passed to the predicate and the result indicates whether the column should be selected or not.
+        3. When include is False, we select the remaining columns.
+        
+        Examples
+        --------
+        from nycflights13 import flights
+        flights_tidy = TidyDataFrame(flights)
+        flights_tidy
+        
+        # select with names
+        flights_tidy.select(['origin', 'dest'])
+        
+        # select using a predicate: only non-numeric columns
+        flights_tidy.select(predicate = lambda x: x.dtype == "object")
+        
+        # select columns ending with 'time'
+        flights_tidy.select(predicate = lambda x: bool(re.match(".*time$", x.name)))
+        
+        # invert the selection
+        flights_tidy.select(['origin', 'dest'], include = False)
+        '''
+        
         if (column_names is None) and (predicate is None):
-            raise Exception('Exactly one among "column_names" and "predicate" should not be None')
+            raise Exception('Exactly one among `column_names` and `predicate` should not be None')
         if (column_names is not None) and (predicate is not None):
-            raise Exception('Exactly one among "column_names" and "predicate" should not be None')
+            raise Exception('Exactly one among `column_names` and `predicate` should not be None')
         
         if column_names is None:
-            assert callable(predicate)
-            col_bool_list = list(self.__data.apply(predicate, axis = 0))
+            assert callable(predicate), "`predicate` should be a function"
+            col_bool_list = np.array(list(self.__data.apply(predicate, axis = "index")))
             column_names = list(np.array(self.get_colnames())[col_bool_list])
-            assert len(column_names) > 0
         else:
-            assert is_string_or_string_list(column_names)
-            column_names = enlist(column_names)
-            assert len(column_names) > 0
+            assert is_string_or_string_list(column_names),\
+                "column names to select should be a list of strings"
+            column_names = list(setlist(enlist(column_names)))
             cols = self.get_colnames()
-            assert all([x in cols for x in column_names])
+            assert set(cols).issuperset(column_names),\
+                "Atleast one string in `column_names` is not an existing column name"
         
         if not include:
-            column_names = set(cols).difference(set(column_names))
-            column_names = list(column_names)
-            if len(column_names) == 0:
-                raise Exception("Removing all columns is not allowed")
+            column_names = list(setlist(cols).difference(set(column_names)))
         
+        if len(column_names) == 0:
+            warnings.warn("None of the columns are selected")
+            
         res = self.__data.loc[:, column_names]
-        
         return TidyDataFrame(res, check = False)
     
     def relocate(self, column_names, before = None, after = None):
@@ -348,7 +579,6 @@ class TidyDataFrame:
         res = self.__data.loc[:, new_colnames]
         return TidyDataFrame(res, check = False)
     
-
     def rename(self, old_new_dict):
         col_names = self.get_colnames()
         assert isinstance(old_new_dict, dict)
