@@ -628,17 +628,27 @@ class TidyPandasDataFrame:
     
     # repr method
     def __repr__(self):
-        header_line   = '-- Tidy dataframe with shape: {shape}'\
-              .format(shape = self.__data.shape)
-        few_rows_line = '-- First few rows:'
+        shape = self.__data.shape
+        header_line   = '# A tidy dataframe: {nrow} X {ncol}'\
+              .format(nrow = shape[0], ncol = shape[1])
         pandas_str    = self.__data.head(10).__str__()
-    
-        tidy_string = (header_line + 
-                       '\n' +
-                       few_rows_line + 
-                       '\n' +
-                       pandas_str
-                       )
+        pandas_str    = '\n'.join(pandas_str.split('\n')[:-1])
+        
+        left_over = shape[0] - 10
+        if left_over > 0:
+            leftover_str = "# ... with {left_over} more rows".format(left_over = left_over)
+        
+            tidy_string = (header_line + 
+                           '\n' +
+                           pandas_str +
+                           '\n' +
+                           leftover_str
+                           )
+        else:
+            tidy_string = (header_line + 
+                           '\n' +
+                           pandas_str
+                           )
         
         return tidy_string
     
@@ -789,15 +799,15 @@ class TidyPandasDataFrame:
     def skim(self):
         return skim(self.to_pandas())
     
-    def add_rowid(self, name = 'rowid', by = None):
+    def add_row_number(self, name = 'row_number', by = None):
         '''
-        add_rowid
-        Add a rowid column to TidyPandasDataFrame
+        add_row_number
+        Add a row number column to TidyPandasDataFrame
         
         Parameters
         ----------
         name : str
-            Name for the rowid column
+            Name for the row number column
         by : str or list of strings
             Columns to group by
         
@@ -840,7 +850,9 @@ class TidyPandasDataFrame:
                        .drop(columns = "rn__")
                        )
         
-        return TidyPandasDataFrame(res, check = False)
+        return TidyPandasDataFrame(res, check = False).relocate(name)
+    
+    rowid_to_column = add_row_number
     
     def _validate_by(self, by):
         by = enlist(by)
@@ -1347,28 +1359,87 @@ class TidyPandasDataFrame:
         res = res.reset_index(drop = True)     
         return TidyPandasDataFrame(res, check = False)
         
-    def distinct(self, column_names = None, keep = 'first', retain_all_columns = False):
+    def distinct(self, column_names = None, keep_all = False, by = None):
+        '''
+        distinct
+        subset unique rows from the dataframe
         
+        Parameters
+        ----------
+        column_names: string or a list of strings
+            Names of the column for distinct
+        keep_all: bool
+            Whether to keep all the columns or only the 'column_names'
+        by: Optional, string or a list of strings
+            Column names to groupby
+        
+        Returns
+        -------
+        TidyPandasDataFrame
+        
+        Notes
+        -----
+        1. distinct preserves the order of the rows of the input dataframe.
+        2. 'column_names' and 'by' should not have common column names.
+        
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        tidy_penguins = tidy(load_penguins())
+        
+        tidy_penguins.distinct('species')                  # keep only 'distinct' columns
+        tidy_penguins.distinct('species', keep_all = True) # keep all columns
+        
+        tidy_penguins.distinct(['bill_length_mm', 'bill_depth_mm'])
+        # distinct per group
+        tidy_penguins.distinct(['bill_length_mm', 'bill_depth_mm'], by = 'species')
+        '''
+        
+        cn = self.get_colnames()
         if column_names is not None:
-            assert is_string_or_string_list(column_names)
-            column_names = enlist(column_names)
-            cols = self.get_colnames()
-            assert set(column_names).issubset(cols)
+            assert is_string_or_string_list(column_names),\
+                "arg 'column_names' should be a string or a list of strings"
+            column_names = list(setlist(enlist(column_names)))
+            assert set(column_names).issubset(cn),\
+                "arg 'column_names' should contain valid column names"
         else:
-            column_names = self.get_colnames()
-        assert isinstance(retain_all_columns, bool)
+            column_names = cn
+        assert isinstance(keep_all, bool)
         
-        res = (self.__data
-                   .drop_duplicates(subset = column_names
-                                    , keep = keep
-                                    , ignore_index = True
-                                    )
-                   )
+        if by is None:
+            res = (self.__data
+                       .drop_duplicates(subset = column_names
+                                        , keep = "first"
+                                        , ignore_index = True
+                                        )
+                       )
+            res = TidyPandasDataFrame(res, check = False)
+
+        else:
+            self._validate_by(by)
+            by = enlist(by)
+            inter_cols_by = set(column_names).intersection(by)
+            if  len(inter_cols_by) > 1:
+                raise Exception("'column_names' and 'by' should not have common column names")
+            res = (self.apply_over_groups(lambda chunk: chunk.drop_duplicates(subset = column_names
+                                                                              , keep = "first"
+                                                                              , ignore_index = True
+                                                                              )
+                                          , by = by
+                                          , is_pandas_udf = True
+                                          , preserve_row_order = True
+                                          )
+                       )
         
-        if not retain_all_columns:
-            res = res.loc[:, column_names]
+        if not keep_all:
+            if by is None:
+                columns_to_select = column_names
+            else:
+                columns_to_select = list(set(column_names).union(by))
+                columns_to_select = list(setlist(cn).intersection(columns_to_select))
+            res = res.select(columns_to_select)
         
-        return TidyPandasDataFrame(res, check = False)
+        return res
 
     def mutate(self, dictionary=None, func=None, column_names = None, predicate = None, prefix = ""):
         if dictionary is None and func is None:
