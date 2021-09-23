@@ -242,6 +242,18 @@ def is_unique_list(x):
     assert isinstance(x, list)
     return len(set(x)) == len(x)
 
+def generate_new_string(strings):
+    
+    assert isinstance(strings, list)
+    assert all([isinstance(x, str) for x in strings])
+    
+    while True:
+        random_string = "".join(np.random.choice(list(string.ascii_letters), 20))
+        if random_string not in strings:
+            break
+    
+    return random_string
+
 def simplify(pdf
              , drop_range_index = True
              , sep = "__"
@@ -438,10 +450,12 @@ def tidy(pdf
          , drop_range_index = True
          , sep = "__"
          , verbose = False
-         , check = True
+         , **kwargs
          ):
     
-    res = TidyPandasDataFrame(simplify(pdf, drop_range_index, sep, verbose), check)
+    res = TidyPandasDataFrame(simplify(pdf, drop_range_index, sep, verbose)
+                              , **kwargs
+                              )
     return res
 
 # -----------------------------------------------------------------------------
@@ -449,7 +463,7 @@ def tidy(pdf
 # Find the dev version here: https://github.com/talegari/tidypandas
 # -----------------------------------------------------------------------------
 
-import copy
+import copy as util_copy
 import numpy as np
 import pandas as pd
 import warnings
@@ -457,6 +471,7 @@ import re
 from functools import reduce
 from collections_extended import setlist
 from skimpy import skim
+import string as string
 
 class TidyPandasDataFrame:
     '''
@@ -581,7 +596,7 @@ class TidyPandasDataFrame:
     
     '''
     # init method
-    def __init__(self, x, check = True):
+    def __init__(self, x, check = True, copy = True):
         '''
         init
         Create tidy dataframe from a 'simple' ungrouped pandas dataframe
@@ -589,18 +604,19 @@ class TidyPandasDataFrame:
         Parameters
         ----------
         x : 'simple' pandas dataframe
-        check : bool, optional, Default is True
-            Whether to check if the input pandas dataframe is 'simple'. It is advised to set this to True in user level code.
+        check : bool, Default is True
+            Whether to check if the input pandas dataframe is 'simple'
+        copy: bool, Default is True
+            Whether the TidyPandasDataFrame object to be created should refer to a copy of the input pandas dataframe or the input itself
 
-        Raises
-        ------
-        Exception if the input pandas dataframe is not simple and warning messages pin point to the precise issue so that user can make necessary changes to the input pandas dataframe. 
-        
         Notes
         -----
-        A pandas dataframe is said to be 'simple' if:
-        1. Column names (x.columns) are an unnamed pd.Index object of unique strings.
-        2. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0 and step = 1.
+        1. A pandas dataframe is said to be 'simple' if:
+            a. Column names (x.columns) are an unnamed pd.Index object of unique strings.
+            b. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0 and step = 1.
+        2. Unless you are sure, in general usage:
+            a. set arg 'check' to `True`.
+            b. set arg `copy` to `True`.
         
         Returns
         -------
@@ -608,9 +624,10 @@ class TidyPandasDataFrame:
         
         Examples
         --------
-        from nycflights13 import flights
-        flights_tidy = TidyPandasDataFrame(flights)
-        flights_tidy
+        from palmerpenguins import load_penguins
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+        penguins_tidy
         '''
         assert isinstance(check, bool)
         if check:
@@ -622,8 +639,11 @@ class TidyPandasDataFrame:
                                  " Try the 'simplify' function."
                                  " ex: simplify(not simple pandas dataframe) --> simple pandas dataframe."
                                 ))
-                               
-        self.__data = copy.copy(x)
+        
+        if copy:                       
+            self.__data = util_copy.copy(x)
+        else:
+            self.__data = x
         return None
     
     # repr method
@@ -632,7 +652,7 @@ class TidyPandasDataFrame:
         header_line   = '# A tidy dataframe: {nrow} X {ncol}'\
               .format(nrow = shape[0], ncol = shape[1])
         pandas_str    = self.__data.head(10).__str__()
-        pandas_str    = '\n'.join(pandas_str.split('\n')[:-1])
+        # pandas_str    = '\n'.join(pandas_str.split('\n')[:-1])
         
         left_over = shape[0] - 10
         if left_over > 0:
@@ -657,10 +677,15 @@ class TidyPandasDataFrame:
     ##########################################################################
     
     # pandas copy method
-    def to_pandas(self):
+    def to_pandas(self, copy = True):
         '''
         to_pandas
-        Return (a copy) underlying pandas dataframe
+        Return copy of underlying pandas dataframe
+        
+        Parameters
+        ----------
+        copy: bool, default is True
+            Whether to return a copy of pandas dataframe held by TidyPandasDataFrame object or to return the underlying pandas dataframe itself
         
         Returns
         -------
@@ -668,17 +693,23 @@ class TidyPandasDataFrame:
         
         Examples
         --------
-        from nycflights13 import flights
-        flights_tidy = TidyPandasDataFrame(flights)
-        flights_tidy.to_pandas()
+        from palmerpenguins import load_penguins
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+        penguins_tidy.to_pandas()
         '''
-        return copy.copy(self.__data)
+        if copy:
+            res = util_copy.copy(self.__data)
+        else:
+            res = self.__data
+            
+        return res
     
     # series copy method
-    def to_series(self, column_name):
+    def pull(self, column_name, copy = True):
         '''
-        to_series
-        Returns (a copy) a column as pandas series
+        pull
+        Returns a copy of column as pandas series
         
         Parameters
         ----------
@@ -691,9 +722,10 @@ class TidyPandasDataFrame:
         
         Examples
         --------
-        from nycflights13 import flights
-        flights_tidy = TidyPandasDataFrame(flights)
-        flights_tidy.to_series("origin")
+        from palmerpenguins import load_penguins
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+        penguins_tidy.pull("species")
         '''
         
         assert isinstance(column_name, str),\
@@ -701,7 +733,10 @@ class TidyPandasDataFrame:
         assert column_name in list(self.__data.columns), \
             "column_name is not an existing column name"
         
-        res = self.__data[column_name]
+        if copy:
+            res = util_copy.copy(self.__data[column_name])
+        else:
+            res = self.__data[column_name]
         return res
     
     ##########################################################################
@@ -741,7 +776,6 @@ class TidyPandasDataFrame:
         func(self)
         return self
     
-    # TODO, implement pipe_tee for side-effects
     
     ##########################################################################
     # get methods
@@ -815,15 +849,22 @@ class TidyPandasDataFrame:
         -------
         TidyPandasDataFrame
         
+        Notes
+        -----
+        1. Row order is preserved.
+        2. Column indicating row number is added as the first column (to the left).
+        3. Alias: rowid_to_column
+        
         Examples
         --------
-        from nycflights13 import planes
+        from palmerpenguins import load_penguins
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
 
-        tidy(planes).select(['tailnum', 'seats']).add_rowid()
+        penguins_tidy.add_row_number() # equivalently penguins_tidy.add_rowid()
         
-        # add rowid column grouped by 'seats' column
-        # row order is preserved
-        tidy(planes).select(['tailnum', 'seats']).add_rowid(by = 'seats')
+        # add row number per group in the order of appearance
+        penguins_tidy.add_row_number(by = 'sex')
         '''
         assert isinstance(name, str)
         if name[-2:] == "__":
@@ -838,9 +879,7 @@ class TidyPandasDataFrame:
             res = self.__data.assign(**{name : np.arange(nr)})
         else:
             by = enlist(by)
-            assert is_string_or_string_list(by)
-            assert set(self.get_colnames()).issuperset(by),\
-                "'by' should be a list of valid column names"
+            self.validate_by(by)
             res = (self.__data
                        .assign(**{"rn__" : np.arange(nr)})
                        .groupby(by, sort = False, dropna = False)
@@ -849,8 +888,9 @@ class TidyPandasDataFrame:
                        .sort_values("rn__", ignore_index = True)
                        .drop(columns = "rn__")
                        )
-        
-        return TidyPandasDataFrame(res, check = False).relocate(name)
+            
+        res = TidyPandasDataFrame(res, check = False, copy = False).relocate(name)
+        return res
     
     rowid_to_column = add_row_number
     
@@ -916,18 +956,24 @@ class TidyPandasDataFrame:
                     res = res.drop(columns = by_left)
                 for col in by:
                     res[col] = chunk[col].iloc[0]
-                return res
+                
+                cols_in_order = util_copy.copy(by)
+                cols_in_order.extend(set(res.columns).difference(by))
+                return res.loc[:, cols_in_order]
         else:
             def wrapper_func(chunk, **kwargs):
                 # i/o are pdfs
-                chunk_tidy = TidyPandasDataFrame(chunk, check = False)
-                res        = func(chunk_tidy, **kwargs).to_pandas()
+                chunk_tidy = TidyPandasDataFrame(chunk, check = False, copy = False)
+                res        = func(chunk_tidy, **kwargs).to_pandas(copy = False)
                 by_left    = list(set(by).intersection(list(res.columns)))
                 if len(by_left) > 0:
                     res = res.drop(columns = by_left)
                 for col in by:
                     res[col] = chunk[col].iloc[0]
-                return res
+                
+                cols_in_order = util_copy.copy(by)
+                cols_in_order.extend(set(res.columns).difference(by))
+                return res.loc[:, cols_in_order]
         
         nr = self.get_nrow()
         if preserve_row_order:
@@ -939,7 +985,9 @@ class TidyPandasDataFrame:
                         )
 
             if row_order_column_name in list(res.columns):
-                res = (res.sort_values(row_order_column_name, ignore_index = True)
+                res = (res.sort_values(row_order_column_name
+                                       , ignore_index = True
+                                       )
                           .drop(columns = row_order_column_name)
                           )
             else:
@@ -954,7 +1002,7 @@ class TidyPandasDataFrame:
         if (not is_simple(res)) and is_pandas_udf:
             raise Exception("Resulting dataframe after apply should be 'simple', examine the pandas UDF")
             
-        return TidyPandasDataFrame(res, check = False)
+        return TidyPandasDataFrame(res, check = False, copy = False)
     
     ##########################################################################
     # basic verbs
@@ -999,7 +1047,7 @@ class TidyPandasDataFrame:
         flights_tidy.select(['origin', 'dest'])
         
         # select using a predicate: only non-numeric columns
-        flights_tidy.select(predicate = lambda x: x.dtype == "object")
+        flights_tidy.select(predicate = lambda x: x.dtype != "object")
         
         # select columns ending with 'time'
         flights_tidy.select(predicate = lambda x: bool(re.match(".*time$", x.name)))
@@ -1032,7 +1080,8 @@ class TidyPandasDataFrame:
             warnings.warn("None of the columns are selected")
             
         res = self.__data.loc[:, column_names]
-        return TidyPandasDataFrame(res, check = False)
+        # return a copy due to loc
+        return TidyPandasDataFrame(res, check = False, copy = True)
     
     def relocate(self, column_names, before = None, after = None):
         '''
@@ -1095,14 +1144,14 @@ class TidyPandasDataFrame:
             
         # case 1: relocate to start when both before and after are None
         if (before is None) and (after is None):
-            new_colnames = copy.copy(column_names)
+            new_colnames = util_copy.copy(column_names)
             new_colnames.extend(list(cc_trunc_setlist))
         elif (before is not None):
             # case 2: before is not None
             pos_before   = int(np.where([x == before for x in cc_trunc_setlist])[0])
             cc_left      = list(cc_trunc_setlist[ :pos_before])
             cc_right     = list(cc_trunc_setlist[pos_before: ])
-            new_colnames = copy.copy(cc_left)
+            new_colnames = util_copy.copy(cc_left)
             new_colnames.extend(column_names)
             new_colnames.extend(cc_right)
         else:
@@ -1110,12 +1159,13 @@ class TidyPandasDataFrame:
             pos_after    = int(np.where([x == after for x in cc_trunc_setlist])[0])      
             cc_left      = list(cc_trunc_setlist[ :(pos_after + 1)])
             cc_right     = list(cc_trunc_setlist[(pos_after + 1): ])
-            new_colnames = copy.copy(cc_left)
+            new_colnames = util_copy.copy(cc_left)
             new_colnames.extend(column_names)
             new_colnames.extend(cc_right)
       
         res = self.__data.loc[:, new_colnames]
-        return TidyPandasDataFrame(res, check = False)
+        # return a copy due to loc
+        return TidyPandasDataFrame(res, check = False, copy = True)
     
     def rename(self, old_new_dict):
         '''
@@ -1128,15 +1178,15 @@ class TidyPandasDataFrame:
         
         Returns
         -------
-        tidy pandas dataframe
+        TidyPandasDataFrame
         
         Examples
         --------
-        from nycflights13 import flights
-        flights_tidy = TidyPandasDataFrame(simplify(flights))
-        flights_tidy
+        from palmerpenguins import load_penguins
+        penguins_tidy = tidy(load_penguins().convert_dtypes())
+        penguins_tidy
 
-        flights_tidy.rename({'year': "Year", 'month': "montH"})
+        flights_tidy.rename({'species': 'species_2'})
         '''
         col_names = self.get_colnames()
         assert isinstance(old_new_dict, dict)
@@ -1149,7 +1199,7 @@ class TidyPandasDataFrame:
         assert len(remaining.intersection(old_new_dict.values())) == 0
         
         res = self.__data.rename(columns = old_new_dict)
-        return TidyPandasDataFrame(res, check = False)
+        return TidyPandasDataFrame(res, check = False, copy = False)
     
     def slice(self, row_numbers, by = None):
         '''
@@ -1158,7 +1208,7 @@ class TidyPandasDataFrame:
         
         Parameters
         ----------
-        row_numbers : list or 1-D numpy array 
+        row_numbers : int or list or 1-D numpy array of positive integers
             list/array of row numbers.
         by : list of strings, optional
             Column names to groupby. The default is None.
@@ -1167,46 +1217,60 @@ class TidyPandasDataFrame:
         -------
         TidyPandasDataFrame
         
+        Notes
+        -----
+        1. Grouped slice preserves the row order.
+        
         Examples
         --------
-        from nycflights13 import flights
+        from palmerpenguins import load_penguins
+        penguins_tidy = tidy(load_penguins().convert_dtypes())
 
-        flights_tidy = tidy(flights)
-        flights_tidy
-        
         # pick first three rows of the dataframe
-        flights_tidy.slice(np.arange(3))
+        penguins_tidy.slice(np.arange(3))
         
         # pick these row numbers: [0, 3, 8]
-        flights_tidy.slice([0, 3, 8])
+        penguins_tidy.slice([0, 3, 8])
         
-        # pick first three rows for each month
-        flights_tidy.slice([0,1,2], by = "month")
+        # pick first three rows per specie
+        penguins_tidy.slice([0,1,2], by = "species")
         
-        # pick first three rows for each month and day
-        flights_tidy.slice(np.arange(3), by = ["month", "day"])
+        # pick first three rows for each species and sex combination
+        penguins_tidy.slice(np.arange(3), by = ["species", "sex"])
         '''
+        
+        if isinstance(row_numbers, int):
+            row_numbers = enlist(row_numbers)
+        
         if by is None:
             minval = np.min(row_numbers)
             maxval = np.max(row_numbers)
             assert minval >= 0 and maxval <= self.get_nrow()
             
-            res = self.__data.take(row_numbers).reset_index(drop = True)
+            res = self.__data.iloc[row_numbers,:].reset_index(drop = True)
         else:
             by = enlist(by)
-            assert is_string_or_string_list(by)
-            assert set(self.get_colnames()).issuperset(by),\
-                "'by' should be a list of valid column names"
+            self._validate_by(by)
+            
+            min_group_size = (self.__data
+                                  .groupby(by, sort = False, dropna = False)
+                                  .size()
+                                  .min()
+                                  )
+            if np.max(row_numbers) > min_group_size:
+                print("Minimum group size is: ", min_group_size)
+                raise Exception("Maximum row number to slice per group should not exceed the number of rows of the group")
+            
             res = (self.__data
+                       .assign(**{"rn__": lambda x: np.arange(x.shape[0])})
                        .groupby(by, sort = False, dropna = False)
-                       .apply(lambda chunk: (chunk.take(row_numbers)
-                                                  .reset_index(drop = True)
-                                                  )
-                              )
+                       .apply(lambda chunk: chunk.iloc[row_numbers,:])
                        .reset_index(drop = True)
+                       .sort_values("rn__", ignore_index = True)
+                       .drop(columns = "rn__")
                        )
         
-        return TidyPandasDataFrame(res, check = False)
+        return TidyPandasDataFrame(res, check = False, copy = False)
         
     def arrange(self
                 , column_names
@@ -1304,7 +1368,47 @@ class TidyPandasDataFrame:
         return TidyPandasDataFrame(res, check = False)
         
     def filter(self, query = None, mask = None, by = None):
+        '''
+        filter
+        subset some rows
         
+        Parameters
+        ----------
+        query: str or a function
+            when str, query string parsable by pandas eval
+            when function, should output an array of booleans
+              of length equal to numbers of rows of the input dataframe
+        mask: list of booleans or
+              numpy array or pandas Series of booleans
+              of length equal to numbers of rows of the input dataframe
+        by: Optional, str or list of strings
+            column names to group by 
+        
+        Returns
+        -------
+        TidyPandasDataFrame
+        
+        Notes
+        -----
+        1. Exactly one arg among 'query' and 'mask' should be provided
+        
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        penguins_tidy = tidy(load_penguins().convert_dtypes())
+        
+        # query with pandas eval. pandas eval does not support complicated expressions.
+        penguins_tidy.filter("body_mass_g > 4000")
+        
+        # subset with a mask -- list or array or pandas Series of precomputed booleans
+        penguins_tidy.filter(mask = penguins_tidy.pull("year") == 2007)
+        
+        # use complex expressions as a lambda function and filter
+        penguins_tidy.filter(lambda x: x['bill_length_mm'] > np.mean(x['bill_length_mm']))
+        
+        # per group filter retains the row order
+        penguins_tidy.filter(lambda x: x['bill_length_mm'] > np.mean(x['bill_length_mm']), by = 'sex')
+        '''
         if query is None and mask is None:
             raise Exception("Both 'query' and 'mask' cannot be None")
         if query is not None and mask is not None:
@@ -1321,9 +1425,7 @@ class TidyPandasDataFrame:
         # validate 'by'
         if by is not None:
             by = enlist(by)
-            assert is_string_or_string_list(by)
-            assert set(self.get_colnames()).issuperset(by),\
-                "'by' should be a list of valid column names"
+            self._validate_by(by)
         
         if query is not None and mask is None:
             if by is None:
@@ -1338,12 +1440,16 @@ class TidyPandasDataFrame:
             else: # grouped case
                 if isinstance(query, str):
                     res = (self.__data
+                               .assign(**{"rn__": lambda x: np.array(x.shape[0])})
                                .groupby(by, sort = False, dropna = False)
                                .apply(lambda chunk: chunk.query(query))
                                .reset_index(drop = True)
+                               .sort_values("rn__", ignore_index = True)
+                               .drop(columns = "rn__")
                                )
                 else:
                     res = (self.__data
+                               .assign(**{"rn__": lambda x: np.arange(x.shape[0])})
                                .groupby(by, sort = False, dropna = False)
                                .apply(lambda chunk: (chunk.assign(**{"mask__": query})
                                                           .query("mask__")
@@ -1351,15 +1457,17 @@ class TidyPandasDataFrame:
                                                           )
                                      )
                                .reset_index(drop = True)
+                               .sort_values("rn__", ignore_index = True)
+                               .drop(columns = "rn__")
                                ) 
         
         if query is None and mask is not None:
-            res = self.__data.iloc[mask, :]
+            res = self.__data.loc[mask, :]
         
         res = res.reset_index(drop = True)     
         return TidyPandasDataFrame(res, check = False)
         
-    def distinct(self, column_names = None, keep_all = False, by = None):
+    def distinct(self, column_names = None, keep_all = False):
         '''
         distinct
         subset unique rows from the dataframe
@@ -1387,12 +1495,12 @@ class TidyPandasDataFrame:
         from palmerpenguins import load_penguins
         tidy_penguins = tidy(load_penguins())
         
+        tidy_penguins.distinct() # distinct over all columns
+        
         tidy_penguins.distinct('species')                  # keep only 'distinct' columns
         tidy_penguins.distinct('species', keep_all = True) # keep all columns
         
         tidy_penguins.distinct(['bill_length_mm', 'bill_depth_mm'])
-        # distinct per group
-        tidy_penguins.distinct(['bill_length_mm', 'bill_depth_mm'], by = 'species')
         '''
         
         cn = self.get_colnames()
@@ -1406,50 +1514,63 @@ class TidyPandasDataFrame:
             column_names = cn
         assert isinstance(keep_all, bool)
         
-        if by is None:
-            res = (self.__data
-                       .drop_duplicates(subset = column_names
-                                        , keep = "first"
-                                        , ignore_index = True
-                                        )
-                       )
-            res = TidyPandasDataFrame(res, check = False)
+        res = (self.__data
+                   .drop_duplicates(subset = column_names
+                                    , keep = "first"
+                                    , ignore_index = True
+                                    )
+                   )
+        
+        if not keep_all:
+            res = res.loc[:, column_names]
+                       
+        return TidyPandasDataFrame(res, check = False)
 
+    def mutate(self
+               , dictionary = None
+               , func = None
+               , column_names = None
+               , predicate = None
+               , prefix = ""
+               , by = None
+               ):
+        if dictionary is None and func is None:
+            raise Exception("Either dictionary or func with predicate/column_names should be provided.")
+        if by is None:
+            if dictionary is not None:
+                res = self._mutate(dictionary)
+            else:
+                res = self._mutate_across(func
+                                          , column_names = column_names
+                                          , predicate = predicate
+                                          , prefix = prefix
+                                          )
         else:
             self._validate_by(by)
             by = enlist(by)
-            inter_cols_by = set(column_names).intersection(by)
-            if  len(inter_cols_by) > 1:
-                raise Exception("'column_names' and 'by' should not have common column names")
-            res = (self.apply_over_groups(lambda chunk: chunk.drop_duplicates(subset = column_names
-                                                                              , keep = "first"
-                                                                              , ignore_index = True
-                                                                              )
-                                          , by = by
-                                          , is_pandas_udf = True
-                                          , preserve_row_order = True
-                                          )
-                       )
-        
-        if not keep_all:
-            if by is None:
-                columns_to_select = column_names
+            cn = self.get_colnames()
+            if dictionary is not None:
+                res = self.apply_over_groups(func = lambda chunk: chunk._mutate(dictionary)
+                                             , by = by
+                                             , preserve_row_order = True
+                                             , row_order_column_name = generate_new_string(cn)
+                                             , is_pandas_udf = False
+                                             )
             else:
-                columns_to_select = list(set(column_names).union(by))
-                columns_to_select = list(setlist(cn).intersection(columns_to_select))
-            res = res.select(columns_to_select)
-        
+                res = self.apply_over_groups(
+                    func = lambda chunk: chunk._mutate_across(func
+                                                              , column_names = column_names
+                                                              , predicate = predicate
+                                                              , prefix = prefix
+                                                              )
+                    , by = by
+                    , preserve_row_order = True
+                    , row_order_column_name = generate_new_string(cn)
+                    , is_pandas_udf = False
+                    )
+
         return res
-
-    def mutate(self, dictionary=None, func=None, column_names = None, predicate = None, prefix = ""):
-        if dictionary is None and func is None:
-            raise Exception("Either dictionary or func with predicate/column_names should be provided.")
-
-        if dictionary is not None:
-            return self._mutate(dictionary)
-        else:
-            return self._mutate_across(func, column_names=column_names, predicate=predicate, prefix=prefix)
-
+        
     def _mutate(self, dictionary):
         '''
         {"hp": [lambda x, y: x - y.mean(), ['a', 'b']]
@@ -1460,43 +1581,133 @@ class TidyPandasDataFrame:
             1. assign multiple columns at once case
             2. grouped version
         '''
-        mutated = copy.deepcopy(self.__data)
-
+        nr = self.get_nrow()
+        cn = self.get_colnames()
+        mutated = util_copy.copy(self.__data)
+        
+        # akey is a column name to assign to
+        # res should be a pandas series, 1D numpy array or a scalar
+        def assign_column(df, akey, res):
+            if isinstance(res, (pd.Series, np.ndarray)):
+                if isinstance(res, np.ndarray):
+                    assert res.ndim == 1,\
+                        "When result of RHS for key '{akey}' is a numpy array, it should be a 1D array"
+                assert len(res) == 1 or len(res) == df.shape[0],\
+                    f"When a pandas series or numpy array, result of RHS for key '{akey}' should be 1 or equal to number of rows of the dataframe"
+                df[akey] = res
+            elif np.isscalar(res):
+                df[akey] = res
+            else:
+                raise Exception(f"Result of RHS  for key '{akey}' should be a pandas series, numpy array or a scalar")
+            return None
+            
+            
         for akey in dictionary:
-
-            # lambda function case
-            if callable(dictionary[akey]):
-                # assigning to single column
-                if isinstance(akey, str):
-                    mutated[akey] = dictionary[akey](mutated)
-
-            # simple function case
-            if isinstance(dictionary[akey], (list, tuple)):
-                cn = set(mutated.columns)
-
-                # case 1: only simple function
-                if len(dictionary[akey]) == 1:
-                    assert callable(dictionary[akey][0])
-
-                    # assign to a single column
-                    # column should pre-exist
-                    assert set([akey]).issubset(cn)
-                    mutated[akey] = dictionary[akey][0](mutated[akey])
-
-                # case2: function with required columns
-                elif len(dictionary[akey]) == 2:
-                    assert callable(dictionary[akey][0])
-                    assert isinstance(dictionary[akey][1], (list, tuple, str))
-                    if not isinstance(dictionary[akey][1], (list, tuple)):
-                        colnames_to_use = [dictionary[akey][1]]
+            
+            assert isinstance(akey, (str, tuple)),\
+                "LHS (dict keys) should be a string or a tuple of strings"
+            assert is_string_or_string_list(list(akey)),\
+                "LHS (dict keys) should be a string or a tuple of strings"
+            
+            rhs = dictionary[akey]
+            
+            # akey is a string or a list of strings
+            # no longer a tuple
+            if isinstance(akey, tuple):
+                if len(akey) == 1:
+                    akey = akey[0]
+                else:
+                    assert len(akey) == len(set(akey)),\
+                        "LHS should have unique strings"
+                    akey = list(akey)
+         
+            if isinstance(akey, str):
+                # three cases:
+                #   1. direct assign
+                #   2. assign via function
+                #   3. assign via simple function
+                #       3a. assign a preexisting column
+                #       3b. assign with column args
+                
+                # 1. direct assign
+                if isinstance(rhs, (pd.Series, np.ndarray)) or np.isscalar(rhs):
+                    assign_column(mutated, akey, rhs)
+                
+                # 2. assign via function
+                elif callable(rhs):
+                    assign_column(mutated, akey, rhs(mutated))
+                
+                # 3. assign via simple function
+                elif isinstance(rhs, tuple):
+                    assert len(rhs) > 0 and len(rhs) <= 2,\
+                        f"When RHS is a tuple, RHS should not have more than two elements"
+                    assert callable(rhs[0]),\
+                        f"When RHS is a tuple, first element of RHS should be a function"
+                    # 3a. assign a preexisting column
+                    if len(rhs) == 1:
+                        assert akey in list(mutated.columns),\
+                            f"When RHS is a tuple with function alone, {akey} should be an exisiting column"
+                        assign_column(mutated, akey, rhs[0](mutated[akey]))
+                    # 3b. assign with column args
                     else:
-                        colnames_to_use = dictionary[akey][1]
-                    assert set(colnames_to_use).issubset(cn)
-
-                    input_list = [mutated[colname] for colname in colnames_to_use]
-                    mutated[akey] = dictionary[akey][0](*input_list)
-
-        return TidyPandasDataFrame(mutated, check=False)
+                        assert is_string_or_string_list(rhs[1]),\
+                            f"When RHS tuple has two elements, the second element should be a string or a list of strings"
+                        cols = enlist(rhs[1])
+                        assert set(cols).issubset(list(mutated.columns)),\
+                            f"RHS should contain valid columns for LHS '{akey}'"
+                        assign_column(mutated
+                                      , akey
+                                      , rhs[0](*[mutated[x] for x in cols])
+                                      )
+                else:
+                    raise Exception(f"RHS for key '{akey}' should be in some standard form")
+            
+            # multiple assignments
+            else:
+                # 1. direct assign is not supported for multi assignment
+                
+                # 2. assign via function
+                if callable(rhs):
+                    rhs_res = rhs(mutated)
+                    assert isinstance(rhs_res, list) and len(rhs_res) == len(akey),\
+                        "RHS should output a list of length equal to length of LHS for key: {akey}"
+                    for apair in zip(akey, rhs_res):
+                        assign_column(mutated, apair[0], apair[1])
+                        
+                # 3. assign via simple function
+                elif isinstance(rhs, tuple):
+                    assert len(rhs) > 0 and len(rhs) <= 2,\
+                        f"When RHS is a tuple, RHS should not have more than two elements"
+                    assert callable(rhs[0]),\
+                        f"When RHS is a tuple, first element of RHS should be a function"
+                    # 3a. assign a preexisting columns
+                    if len(rhs) == 1:
+                        assert set(akey).issubset(list(mutated.columns)),\
+                            f"When RHS is a tuple with function alone, {akey} should be an exisiting columns"
+                        rhs_res = rhs[0](*[mutated[acol] for acol in akey])
+                        assert isinstance(rhs_res, list) and len(rhs_res) == len(akey),\
+                            "RHS should output a list of length equal to length of LHS for key: {akey}"
+                        for apair in zip(akey, rhs_res):
+                            assign_column(mutated, apair[0], apair[1])
+                    # 3b. assign with column args
+                    else:
+                        assert is_string_or_string_list(rhs[1]),\
+                            f"When RHS tuple has two elements, the second element should be a string or a list of strings"
+                        cols = enlist(rhs[1])
+                        assert set(cols).issubset(list(mutated.columns)),\
+                            f"RHS should contain valid columns for LHS '{akey}'"
+                        rhs_res = rhs[0](*[mutated[x] for x in cols])
+                        assert isinstance(rhs_res, list) and len(rhs_res) == len(akey),\
+                            "RHS should output a list of length equal to length of LHS for key: {akey}"
+                        for apair in zip(akey, rhs_res):
+                            assign_column(mutated, apair[0], apair[1])
+                else:
+                    raise Exception(f"RHS for key '{akey}' should be in some standard form")
+        
+        col_order = util_copy.copy(cn)
+        col_order.extend(list(set(list(mutated.columns)).difference(cn)))
+                
+        return TidyPandasDataFrame(mutated.loc[:, col_order], check = False, copy = False)
 
     # basic extensions    
     def _mutate_across(self, func, column_names = None, predicate = None, prefix = ""):
@@ -1504,7 +1715,7 @@ class TidyPandasDataFrame:
         assert callable(func)
         assert isinstance(prefix, str)
 
-        mutated = copy.deepcopy(self.__data)
+        mutated = util_copy.copy(self.__data)
         
         if (column_names is not None) and (predicate is not None):
             raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
@@ -1793,22 +2004,30 @@ class TidyPandasDataFrame:
     
     # binding methods
     def cbind(self, y):
-        # number of rows should match
-        assert self.get_nrow() == y.get_nrow()
+        assert isinstance(y, TidyPandasDataFrame)
         # column names should differ
-        assert len(set(self.get_colnames()).intersection(y.get_colnames())) == 0
-        
-        res = pd.concat([self.__data, y.ungroup().to_pandas()]
+        assert len(set(self.get_colnames()).intersection(y.get_colnames())) == 0,\
+            "Column names among the dataframes should not be common. Did you intend to `cross_join` instead of `cbind`?"
+                # number of rows should match
+        assert self.get_nrow() == y.get_nrow(),\
+            "Both dataframes should have same number of rows"
+            
+        res = (pd.concat([self.__data, y.to_pandas()]
                         , axis = 1
                         , ignore_index = False # not to loose column names
                         )
+                 .reset_index(drop = True)
+                 .convert_dtypes()
+                 )
         return TidyPandasDataFrame(res, check = False)
     
     def rbind(self, y):
-        res = pd.concat([self.__data, y.ungroup().to_pandas()]
-                        , axis = 0
-                        , ignore_index = True # loose row indexes
-                        )
+        res = (pd.concat([self.__data, y.to_pandas()]
+                         , axis = 0
+                         , ignore_index = True
+                         )
+                 .convert_dtypes()
+                 )
         return TidyPandasDataFrame(res, check = False)
     
     # count
@@ -2075,6 +2294,8 @@ class TidyPandasDataFrame:
             
         return res
     
+    head = slice_head
+    
     def slice_tail(self
                    , n = None
                    , prop = None
@@ -2189,6 +2410,8 @@ class TidyPandasDataFrame:
                     ))
             
         return res
+    
+    tail = slice_tail
     
     def slice_sample(self
                      , n            = None
@@ -2376,6 +2599,8 @@ class TidyPandasDataFrame:
                       )
             
         return TidyPandasDataFrame(res, check = False)
+    
+    sample = slice_sample
     
     def slice_min(self
                   , n = None
@@ -2582,29 +2807,33 @@ class TidyPandasDataFrame:
         return self.join_anti(y, on = self.get_colnames())
     
     # na handling methods
+    def any_na(self):
+        res = (self.__data
+                   .isna() # same dim as input
+                   .any()  # series of booleans per column
+                   .any()  # single value
+                   )
+        return bool(res)
+    
     def replace_na(self, column_replace_dict):
         
         assert isinstance(column_replace_dict, dict)
-        cns = self.get_colnames()
+        cn = self.get_colnames()
+        self_copy = util_copy.copy(self.__data)
         for akey in column_replace_dict:
-            if akey in cns:
-                self = self.mutate({akey : (lambda x: np.where(x.isna()
-                                                               , column_replace_dict[akey]
-                                                               , x)
-                                            ,
-                                            )
-                                    }
-                                   )
-        return self
+            self_copy[akey] = self_copy[akey].fillna(column_replace_dict[akey])
+        
+        return TidyPandasDataFrame(self_copy)
     
     def drop_na(self, column_names = None):
         
+        cn = self.get_colnames()
         if column_names is not None:
             assert is_string_or_string_list(column_names)
             column_names = enlist(column_names)
-            assert set(column_names).issubset(self.get_colnames())
+            assert set(column_names).issubset(cn)
         else:
-            column_names = self.get_colnames()
+            column_names = cn
         
         res = (self.__data
                    .dropna(axis = "index"
@@ -2712,8 +2941,8 @@ class TidyPandasDataFrame:
     
     def nest(self, by, column_name = 'data'):
         
-        self._validate_by(by)
         by = enlist(by)
+        self._validate_by(by)
         
         cn = self.get_colnames()
         assert column_name not in cn,\
