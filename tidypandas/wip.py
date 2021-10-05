@@ -5,9 +5,9 @@
 
 import pandas as pd
 
-def is_string_or_string_list(x):
+def _is_string_or_string_list(x):
     '''
-    is_string_or_string_list(x)
+    _is_string_or_string_list(x)
     
     Check whether the input is a string or a list of strings
 
@@ -23,10 +23,10 @@ def is_string_or_string_list(x):
     
     Examples
     --------
-    is_string_or_string_list("bar")      # True
-    is_string_or_string_list(["bar"])    # True
-    is_string_or_string_list(("bar",))   # False
-    is_string_or_string_list(["bar", 1]) # False
+    _is_string_or_string_list("bar")      # True
+    _is_string_or_string_list(["bar"])    # True
+    _is_string_or_string_list(("bar",))   # False
+    _is_string_or_string_list(["bar", 1]) # False
     '''
     res = False
     if isinstance(x, str):
@@ -39,9 +39,9 @@ def is_string_or_string_list(x):
     
     return res
     
-def enlist(x):
+def _enlist(x):
     '''
-    enlist(x)
+    _enlist(x)
     
     Returns the input in a list (as first element of the list) unless input itself is a list
 
@@ -57,18 +57,18 @@ def enlist(x):
     
     Examples
     --------
-    enlist(["a"]) # ["a"]
-    enlist("a")   # ["a"]
-    enlist((1, )) # [(1, )]
+    _enlist(["a"]) # ["a"]
+    _enlist("a")   # ["a"]
+    _enlist((1, )) # [(1, )]
     '''
     if not isinstance(x, list):
         x = [x]
     
     return x
 
-def get_unique_names(strings):
+def _get_unique_names(strings):
     '''
-    get_unique_names(strings)
+    _get_unique_names(strings)
     
     Returns a list of same length as the input such that elements are unique. This is done by adding '_1'. The resulting list does not alter nth element if the nth element occurs for the first time in the input list starting from left.
     
@@ -83,12 +83,12 @@ def get_unique_names(strings):
     
     Examples
     --------
-    get_unique_names(['a', 'b'])               # ['a', 'b']
-    get_unique_names(['a', 'a'])               # ['a', 'a_1']
-    get_unique_names(['a', 'a', 'a_1'])        # ['a', 'a_1_1', 'a_1']
+    _get_unique_names(['a', 'b'])               # ['a', 'b']
+    _get_unique_names(['a', 'a'])               # ['a', 'a_1']
+    _get_unique_names(['a', 'a', 'a_1'])        # ['a', 'a_1_1', 'a_1']
     '''
-    assert is_string_or_string_list(strings)
-    strings = enlist(strings)
+    assert _is_string_or_string_list(strings)
+    strings = _enlist(strings)
 
     new_list = []
     old_set = set(strings)
@@ -119,9 +119,9 @@ def get_unique_names(strings):
         
     return new_list
 
-def get_unique_sublist(x):
+def _get_unique_sublist(x):
     '''
-    get_unique_sublist
+    _get_unique_sublist
     Get unique elements of the list in their order of appearance
     
     Parameters
@@ -134,7 +134,7 @@ def get_unique_sublist(x):
     
     Examples
     --------
-    get_unique_sublist([2,1,2,0,2,3])
+    _get_unique_sublist([2,1,2,0,2,3])
     '''
     ell = []
     S = set([])
@@ -146,9 +146,9 @@ def get_unique_sublist(x):
     
     return ell
 
-def reorder_set_by_list(set_obj, list_obj):
+def _reorder_set_by_list(set_obj, list_obj):
     '''
-    reorder_set_by_list
+    _reorder_set_by_list
     Reorder elements of a set according to their order(first appearance) in a list
 
     Parameters
@@ -167,67 +167,19 @@ def reorder_set_by_list(set_obj, list_obj):
     
     Examples
     --------
-    reorder_set_by_list(set([1, 3, 2]), [1,2,3,1])
+    _reorder_set_by_list(set([1, 3, 2]), [1,2,3,1])
     '''
     
-    list_obj = get_unique_sublist(list_obj)
+    list_obj = _get_unique_sublist(list_obj)
     new_list = []
     for ele in list_obj:
         if ele in set_obj:
             new_list.append(ele)
     return new_list
 
-def is_pdf(x):
+def _is_unique_list(x):
     '''
-    is_pdf(x)
-    
-    Returns True if the input is a grouped or ungrouped pandas dataframe
-
-    Parameters
-    ----------
-    x : any python object
-
-    Returns
-    -------
-    bool
-    '''
-    return isinstance(x, (pd.DataFrame, pd.core.groupby.DataFrameGroupBy))
-
-def is_ungrouped_pdf(x):
-    '''
-    is_ungrouped_pdf(x)
-    
-    Returns True if the input is an ungrouped pandas dataframe
-
-    Parameters
-    ----------
-    x : any python object
-
-    Returns
-    -------
-    bool
-    '''
-    return isinstance(x, pd.DataFrame)
-
-def is_grouped_pdf(x):
-    '''
-    is_grouped_pdf(x)
-    
-    Returns True if the input is a grouped pandas dataframe
-
-    Parameters
-    ----------
-    x : any python object
-
-    Returns
-    -------
-    bool
-    '''
-    return isinstance(x, pd.core.groupby.DataFrameGroupBy)
-
-def is_unique_list(x):
-    '''
-    is_unique_list(x)
+    _is_unique_list(x)
     
     Returns True if input list does not have duplicates
 
@@ -242,7 +194,18 @@ def is_unique_list(x):
     assert isinstance(x, list)
     return len(set(x)) == len(x)
 
-def generate_new_string(strings):
+def _get_dtype_dict(pdf):
+    assert isinstance(pdf, pd.DataFrame)
+    
+    dtf = (pd.DataFrame(pdf.dtypes)
+             .reset_index(drop = False)
+             .rename(columns = {'index': "column_name", 0: "dtype"})
+             .assign(dtype = lambda x: x['dtype'].astype('string'))
+             )
+    
+    return dict(zip(dtf['column_name'], dtf['dtype']))
+
+def _generate_new_string(strings):
     
     assert isinstance(strings, list)
     assert all([isinstance(x, str) for x in strings])
@@ -327,13 +290,13 @@ def simplify(pdf
             # a__b,a__c, d__e
             lol = list(map(list, list(pdf.columns)))
             cns = list(map(lambda x: sep.join(map(str, x)).rstrip(sep), lol))
-            pdf.columns = get_unique_names(cns)
+            pdf.columns = _get_unique_names(cns)
         else:
             if verbose:
                 print("Detected a simple column index")
             # avoid column index from having some name
             pdf.columns.name = None
-            pdf.columns = get_unique_names(list(pdf.columns))
+            pdf.columns = _get_unique_names(list(pdf.columns))
     except:
         if verbose:
             raise Exception("Unable to simplify: column index or multiindex")
@@ -378,8 +341,14 @@ def simplify(pdf
         if verbose:
             raise Exception("Unable to simplify: row index or multiindex")
     
-    # ensure column namemes and strigs and unique
-    pdf.columns = get_unique_names(list(map(str, pdf.columns)))
+    # ensure column names are strings and unique
+    pdf.columns = _get_unique_names(list(map(str, pdf.columns)))
+    
+    # column names should not start from an underscore
+    if any([acol[0] == "_" for acol in list(pdf.columns)]):
+        raise Exception("Unable to simplify as one of the columns starts from " 
+                        "an underscore"
+                        )
             
     if verbose:
         print("Successfully simplified!")
@@ -424,12 +393,17 @@ def is_simple(pdf, verbose = False):
     str_flag = all([isinstance(y, str) for y in columns])
     # check if column names are unique
     
-    if is_unique_list(columns):
+    if _is_unique_list(columns):
         unique_flag = True
     else:
         unique_flag = False
     
-    flag = all([row_flag, col_flag, flag_no_index, str_flag, unique_flag])
+    underscore_flag = False    
+    if not any([acol[0] == "_" for acol in columns]):
+        underscore_flag = True
+    
+    flag = all([row_flag, col_flag, flag_no_index, str_flag
+                , unique_flag, underscore_flag])
     
     if verbose and not flag:
         if not row_flag:
@@ -442,6 +416,8 @@ def is_simple(pdf, verbose = False):
             warnings.warn("Column index should be string column names.")
         if not unique_flag:
             warnings.warn("Column names(index) should be unique.")
+        if not unique_flag:
+            warnings.warn("Column names(index) should not start with an underscore.")
             
     return flag
 
@@ -479,24 +455,33 @@ from functools import reduce
 from collections_extended import setlist
 from skimpy import skim
 import string as string
+from collections import namedtuple
 
 class TidyPandasDataFrame:
     '''
     TidyPandasDataFrame class
-    A tidy pandas dataframe is a wrapper over 'simple' ungrouped pandas DataFrame object.
+    A tidy pandas dataframe is a wrapper over 'simple' ungrouped pandas 
+    DataFrame object.
     
     Notes
     -----
     
     A pandas dataframe is said to be 'simple' if:
     
-    1. Column names (x.columns) are an unnamed pd.Index object of unique strings.
-    2. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0 and step = 1.
+    1. Column names (x.columns) are an unnamed pd.Index object of unique 
+       strings.
+    2. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0
+       and step = 1.
     
-    * Methods constitute a grammar of data manipulation mostly returning a 'simple' dataframe as a result. 
-    * When a method returns a tidy dataframe, it always returns a copy and not a view. 
-    * Methods 'to_pandas' and 'to_series' convert into pandas dataframe or series.
-    * The only attribute of the class is the underlying pandas dataframe. This cannot be accessed by the user. Please use 'to_pandas' method to obtain a copy of the underlying pandas dataframe.
+    * Methods constitute a grammar of data manipulation mostly returning a 
+      tidy dataframe as a result. 
+    * When a method returns a tidy dataframe, it returns a copy and not 
+      a view, unless copy is set to False.
+    * Methods 'to_pandas' and 'to_series' convert into pandas dataframe or 
+      series.
+    * The only attribute of the class is the underlying pandas dataframe. This 
+      cannot be accessed by the user. Please use 'to_pandas' method to obtain 
+      a copy of the underlying pandas dataframe.
     
     Methods
     -------
@@ -556,14 +541,17 @@ class TidyPandasDataFrame:
             
     'missing value' methods:
         drop_na
-            Returns a dataframe by dropping rows which have mssing values in selected columns
+            Returns a dataframe by dropping rows which have mssing values in
+            selected columns
         relapce_na
             Returns a dataframe by replacing missing values in selected columns
         fill_na
-            Returns a dataframe by filling missing values from up, down or both directions for selected columns
+            Returns a dataframe by filling missing values from up, down or 
+            both directions for selected columns
     'string' methods:
         separate
-            Returns a dataframe by splitting a string column into multiple columns
+            Returns a dataframe by splitting a string column into multiple 
+            columns
         unite
             Returns a dataframe by combining multiple string columns 
         separate_rows
@@ -572,7 +560,8 @@ class TidyPandasDataFrame:
         expand
             Returns a dataframe with combinations of columns
         complete
-            Returns a dataframe by creating additional rows with some comninations of columns 
+            Returns a dataframe by creating additional rows with some 
+            comninations of columns 
         slice extensions:
     
     'slice' extensions:
@@ -581,9 +570,11 @@ class TidyPandasDataFrame:
         slice_tail
             Returns a dataframe with last few rows of the input
         slice_max
-            Returns a dataframe with few rows corrsponding to maximum values of some columns
+            Returns a dataframe with few rows corrsponding to maximum values of
+            some columns
         slice_min
-            Returns a dataframe with few rows corrsponding to maximum values of some columns
+            Returns a dataframe with few rows corrsponding to maximum values of
+            some columns
         slice_sample
             Returns a dataframe with a sample of rows
     
@@ -592,17 +583,23 @@ class TidyPandasDataFrame:
             Returns a joined dataframe of a pair of dataframes
     'set operations' methods:
         union, intersection, setdiff:
-            Returns a dataframe after set like operations over a pair of dataframes
+            Returns a dataframe after set like operations over a pair of 
+            dataframes
     'bind' methods:
         rbind, cbind:
-            Returns a dataframe by rowwise or column wise binding of a pair of dataframes
+            Returns a dataframe by rowwise or column wise binding of a pair of 
+            dataframes
     
     'misc' methods:
         add_rowid:
             Returns a dataframe with rowids added
     
     '''
-    # init method
+    
+    ##########################################################################
+    # init
+    ##########################################################################
+    
     def __init__(self, x, check = True, copy = True):
         '''
         init
@@ -614,13 +611,16 @@ class TidyPandasDataFrame:
         check : bool, Default is True
             Whether to check if the input pandas dataframe is 'simple'
         copy: bool, Default is True
-            Whether the TidyPandasDataFrame object to be created should refer to a copy of the input pandas dataframe or the input itself
+            Whether the TidyPandasDataFrame object to be created should refer 
+            to a copy of the input pandas dataframe or the input itself
 
         Notes
         -----
         1. A pandas dataframe is said to be 'simple' if:
-            a. Column names (x.columns) are an unnamed pd.Index object of unique strings.
-            b. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0 and step = 1.
+            a. Column names (x.columns) are an unnamed pd.Index object of 
+               unique strings.
+            b. Row names (x.index) are an unnamed pd.RangeIndex object with 
+               start = 0 and step = 1.
         2. Unless you are sure, in general usage:
             a. set arg 'check' to `True`.
             b. set arg `copy` to `True`.
@@ -633,10 +633,11 @@ class TidyPandasDataFrame:
         --------
         from palmerpenguins import load_penguins
         penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
+        penguins_tidy = TidyPandasDataFrame(penguins)
         penguins_tidy
         '''
-        assert isinstance(check, bool)
+        assert isinstance(check, bool),\
+            "arg 'check' should be a bool"
         if check:
             flag_simple = is_simple(x, verbose = True)
             if not flag_simple:    
@@ -644,7 +645,8 @@ class TidyPandasDataFrame:
                 raise Exception(("Input pandas dataframe is not 'simple'."
                                  " See to above warnings."
                                  " Try the 'simplify' function."
-                                 " ex: simplify(not simple pandas dataframe) --> simple pandas dataframe."
+                                 " ex: simplify(not simple pandas dataframe) "
+                                 " --> simple pandas dataframe."
                                 ))
         
         if copy:                       
@@ -653,37 +655,45 @@ class TidyPandasDataFrame:
             self.__data = x
         return None
     
-    # repr method
+    ##########################################################################
+    # repr
+    ##########################################################################
     def __repr__(self):
-        shape = self.__data.shape
-        header_line   = '# A tidy dataframe: {nrow} X {ncol}'\
-              .format(nrow = shape[0], ncol = shape[1])
-        pandas_str    = self.__data.head(10).__str__()
-        # pandas_str    = '\n'.join(pandas_str.split('\n')[:-1])
         
-        left_over = shape[0] - 10
+        nr = self.get_nrow()
+        nc = self.get_ncol()
+        
+        header_line   = f"# A tidy dataframe: {nr} X {nc}"
+    
+        dtype_dict = _get_dtype_dict(self.__data)
+        for akey in dtype_dict:
+            dtype_dict[akey] = akey +  " (" + dtype_dict[akey] + ")"
+
+        head_10 = self.__data.head(10).rename(columns = dtype_dict)
+        pandas_str = head_10.__str__()
+
+        left_over = nr - 10
         if left_over > 0:
-            leftover_str = "# ... with {left_over} more rows".format(left_over = left_over)
-        
-            tidy_string = (header_line + 
+            leftover_str = f"# ... with {left_over} more rows"
+
+            tidy_string = (header_line +
                            '\n' +
                            pandas_str +
                            '\n' +
                            leftover_str
                            )
         else:
-            tidy_string = (header_line + 
+            tidy_string = (header_line +
                            '\n' +
                            pandas_str
                            )
-        
+
         return tidy_string
     
     ##########################################################################
-    # to pandas methods
+    # to_pandas methods
     ##########################################################################
     
-    # pandas copy method
     def to_pandas(self, copy = True):
         '''
         to_pandas
@@ -710,6 +720,8 @@ class TidyPandasDataFrame:
         
         penguins.equals(penguins_tidy.to_pandas())
         '''
+        assert isinstance(copy, bool),\
+            "arg 'copy' should be a bool"
         if copy:
             res = util_copy.copy(self.__data)
         else:
@@ -717,16 +729,20 @@ class TidyPandasDataFrame:
             
         return res
     
-    # series copy method
+    ##########################################################################
+    # to_series or pull
+    ##########################################################################
     def pull(self, column_name, copy = True):
         '''
-        pull
+        pull (aka to_series)
         Returns a copy of column as pandas series
         
         Parameters
         ----------
         column_name : str
             Name of the column to be returned as pandas series
+        copy: bool, default is True
+            Whether to return a copy of the pandas series object
 
         Returns
         -------
@@ -741,9 +757,11 @@ class TidyPandasDataFrame:
         '''
         
         assert isinstance(column_name, str),\
-            "Input column names should be a string"
+            "arg 'column_name'should be a string"
         assert column_name in list(self.__data.columns), \
-            "column_name is not an existing column name"
+            "arg 'column_name' should be an existing column name"
+        assert isinstance(copy, bool),\
+            "arg 'copy' should be a bool"
         
         if copy:
             res = util_copy.copy(self.__data[column_name])
@@ -751,11 +769,13 @@ class TidyPandasDataFrame:
             res = self.__data[column_name]
         return res
     
+    to_series = pull
+    
     ##########################################################################
     # pipe methods
     ##########################################################################
     
-    # pipe method
+    # pipe
     def pipe(self, func, **kwargs):
         '''
         pipe
@@ -769,6 +789,9 @@ class TidyPandasDataFrame:
         -------
         Depends on the return type of `func`
         '''
+        assert callable(func),\
+            "arg 'func' should be callable"
+        
         return func(self, **kwargs)
     
     # pipe_tee
@@ -785,7 +808,11 @@ class TidyPandasDataFrame:
         -------
         TidyPandasDataFrame
         '''
-        func(self, **kwargs)
+        assert callable(func),\
+            "arg 'func' should be callable"
+            
+        func(self, **kwargs) # side-effect
+        
         return self
     
     
@@ -837,17 +864,124 @@ class TidyPandasDataFrame:
         Returns
         -------
         list
-            List of unique strings that form the column index of the underlying pandas dataframe
+            List of unique strings that form the column index of the underlying 
+            pandas dataframe
 
         '''
         return list(self.__data.columns)
     
-    def skim(self):
-        return skim(self.to_pandas())
+    ##########################################################################
+    # summarizers -- skim, glimpse
+    ##########################################################################
     
+    def skim(self, return_self = False):
+        '''
+        Skim the tidy dataframe
+        Provides a meaningful summary of the dataframe
+        
+        Parameters
+        ----------
+        return_self: bool (default is False)
+            Whether to return the input
+            This is helpful while piping the input to next method while skim is
+            a side-effect
+            
+        Returns
+        -------
+        None when return_self is False, input otherwise
+        
+        Notes
+        -----
+        1. skim is done via 'skimpy' package is expected to be installed.
+        '''
+        # TODO: Implement package check
+        
+        skim(self.to_pandas())
+        
+        if return_self:
+            return self
+        else:
+            return None
+        
+        
+    def glimpse(self, return_self = False):
+        '''
+        Glimpse the tidy dataframe
+        Provides a transposed view of the dataframe helpful when there are 
+        large number of columns
+        
+        Parameters
+        ----------
+        return_self: bool (default is False)
+            Whether to return the input
+            This is helpful while piping the input to next method while glimpse
+            is a side-effect
+            
+        Returns
+        -------
+        None when return_self is False, input otherwise
+        
+        '''
+        dtype_dict = _get_dtype_dict(self.to_pandas(copy = False))
+        for akey in dtype_dict:
+            dtype_dict[akey] = akey + " (" + dtype_dict[akey] + ")"
+        
+        tr = self.head(6).to_pandas().rename(columns = dtype_dict).T
+        tr.columns = [""] * len(tr.columns)
+        tr = tr.__str__()
+        
+        nr = self.get_nrow()
+        nc = self.get_ncol()
+        
+        print(f"Rows: {nr}")  
+        print(f"Columns: {nc}")
+        print(tr)
+        
+        if return_self:
+            return self
+        else:
+            return None
+    
+    ##########################################################################
+    # validators
+    ##########################################################################
+    
+    def _validate_by(self, by):
+        
+        assert _is_string_or_string_list(by),\
+            "arg 'by' should be a string or a list of strings"
+            
+        by = _enlist(by)
+        
+        assert len(set(by)) == len(by),\
+            "arg 'by' should have unique strings"
+        
+        assert set(self.get_colnames()).issuperset(by),\
+            "arg 'by' should contain valid column names"
+            
+        return None
+    
+    def _validate_column_names(self, column_names):
+        
+        assert _is_string_or_string_list(column_names),\
+            "arg 'column_names' should be a string or a list of strings"
+            
+        column_names = _enlist(column_names)
+        
+        assert len(set(column_names)) == len(column_names),\
+            "arg 'column_names' should have unique strings"
+        
+        assert set(self.get_colnames()).issuperset(column_names),\
+            "arg 'column_names' should contain valid column names"
+        
+        return None
+    
+    ##########################################################################
+    # add_row_number
+    ##########################################################################
     def add_row_number(self, name = 'row_number', by = None):
         '''
-        add_row_number
+        add_row_number (aka rowid_to_column)
         Add a row number column to TidyPandasDataFrame
         
         Parameters
@@ -864,7 +998,8 @@ class TidyPandasDataFrame:
         Notes
         -----
         1. Row order is preserved.
-        2. Column indicating row number is added as the first column (to the left).
+        2. Column indicating row number is added as the first column 
+           (to the left).
         3. Alias: rowid_to_column
         
         Examples
@@ -878,13 +1013,14 @@ class TidyPandasDataFrame:
         # add row number per group in the order of appearance
         penguins_tidy.add_row_number(by = 'sex')
         '''
+        
         nr = self.get_nrow()
         cn = self.get_colnames()
         
         assert isinstance(name, str),\
             "arg 'name' should be a string"
-        if name[-2:] == "__":
-            raise Exception("'name' should not be ending with '__'.")
+        if name[0] == "_":
+            raise Exception("'name' should not start with an underscore")
         
         if name in cn:
             raise Expection("'name' should not be an existing column name.")
@@ -893,19 +1029,18 @@ class TidyPandasDataFrame:
             res = self.__data.assign(**{name : np.arange(nr)})
         else:
             self._validate_by(by)
-            by = enlist(by)
+            by = _enlist(by)
             res = (self
                    .__data
-                   .assign(**{"rn__" : np.arange(nr)})
+                   .assign(**{"_rn" : np.arange(nr)})
                    .groupby(by, sort = False, dropna = False)
                    .apply(lambda x: x.assign(**{name : np.arange(x.shape[0])}))
                    .reset_index(drop = True)
-                   .sort_values("rn__", ignore_index = True)
-                   .drop(columns = "rn__")
+                   .sort_values("_rn", ignore_index = True)
+                   .drop(columns = "_rn")
                    )
         
-        col_order = [name]
-        col_order.extend(cn)
+        col_order = [name] + cn
         
         return TidyPandasDataFrame(res.loc[:, col_order]
                                    , check = False
@@ -914,55 +1049,29 @@ class TidyPandasDataFrame:
     
     rowid_to_column = add_row_number
     
-    def _validate_by(self, by):
-        
-        assert is_string_or_string_list(by),\
-            "arg 'by' should be a string or a list of strings"
-            
-        by = enlist(by)
-        
-        assert len(set(by)) == len(by),\
-            "arg 'by' should have unique strings"
-        
-        assert set(self.get_colnames()).issuperset(by),\
-            "arg 'by' should contain valid column names"
-            
-        return None
-    
-    def _validate_column_names(self, column_names):
-        
-        assert is_string_or_string_list(column_names),\
-            "arg 'column_names' should be a string or a list of strings"
-            
-        column_names = enlist(column_names)
-        
-        assert len(set(column_names)) == len(column_names),\
-            "arg 'column_names' should have unique strings"
-        
-        assert set(self.get_colnames()).issuperset(column_names),\
-            "arg 'column_names' should contain valid column names"
-        
-        return None
-    
-    def apply_over_groups(self
-                          , func
-                          , by
-                          , preserve_row_order = False
-                          , row_order_column_name = "rowid_temp"
-                          , is_pandas_udf = False
-                          , **kwargs
-                          ):
+
+    ##########################################################################
+    # group_modify
+    ##########################################################################
+    def group_modify(self
+                      , func
+                      , by
+                      , preserve_row_order = False
+                      , row_order_column_name = "rowid_temp"
+                      , is_pandas_udf = False
+                      , **kwargs
+                      ):
         '''
-        Split by some columns, apply a function per chunk
-        which returns a dataframe and
-        then combine it back into a single dataframe
+        group_modify
+        Split by some columns, apply a function per chunk which returns a 
+        dataframe and combine it back into a single dataframe
         
         Parameters
         ----------
         func: callable
             Type 1. A function: TidyDataFrame --> TidyDataFrame
             Type 2. A function: simple pandas df --> simple pandas df
-            In latter case, set 'is_pandas_udf' to True.
+            In latter case, set 'is_pandas_udf' to True
         
         by: string or list of strings
             Column names to group by
@@ -985,7 +1094,7 @@ class TidyPandasDataFrame:
         2. If grouping columns are found in output of 'func', then they are
            removed and replaced with value in input chunk.
         3. When 'preserve_row_order' is True, a temporary column is added
-           to each chunk. Its should be retained and not tampered with.
+           to each chunk. udf should pass it through without modification.
         
         Examples
         --------
@@ -993,40 +1102,46 @@ class TidyPandasDataFrame:
         penguins_tidy = tidy(load_penguins().convert_dtypes())
         
         # pick a sample of rows per chunk defined by 'species'
-        penguins_tidy.apply_over_groups(lambda x: x.sample(n = 3)
-                                        , by = 'species'
-                                        )
+        penguins_tidy.group_modify(lambda x: x.sample(n = 3)
+                                    , by = 'species'
+                                    )
         
         # apply a pandas udf per chunk defined by 'species'
         # groupby columns are always added
-        penguins_tidy.apply_over_groups(lambda x: x.loc[:, ['year']]
-                                        , by = ['species', 'sex']
-                                        , is_pandas_udf = True
-                                        )
+        penguins_tidy.group_modify(lambda x: x.loc[:, ['year']]
+                                    , by = ['species', 'sex']
+                                    , is_pandas_udf = True
+                                    )
                                         
         # preserve row order
         # a temporary column (default: 'rowid_temp') is added to each chunk
         # udf should not meddle with the temporary column
         (penguins_tidy
-          .select('sex')
-          # add 'row_number' column to illustrate row preservation
-          .add_row_number()
-          # print the output of each chunk
-          # sample 2 rows
-          .apply_over_groups(lambda x: x.pipe_tee(print).sample(2)
-                             , by = 'sex'
-                             , preserve_row_order = True
-                             )
+            .select('sex')
+            # add 'row_number' column to illustrate row preservation
+            .add_row_number()
+            # print the output of each chunk
+            # sample 2 rows
+            .group_modify(lambda x: x.pipe_tee(print).sample(2)
+                          , by = 'sex'
+                          , preserve_row_order = True
+                          )
           )
         '''
-        assert callable(func)
         
-        by = enlist(by)
+        nr = self.get_nrow()
+        assert callable(func),\
+            "arg 'func' should be callable"
+        
         self._validate_by(by)
+        by = _enlist(by)
         
-        assert isinstance(preserve_row_order, bool)
-        assert isinstance(row_order_column_name, str)
-        assert row_order_column_name not in self.get_colnames()
+        assert isinstance(preserve_row_order, bool),\
+            "arg 'preserve_row_order' should be a bool"
+        assert isinstance(row_order_column_name, str),\
+            "arg 'row_order_column_name' should be a string"
+        assert row_order_column_name not in self.get_colnames(),\
+            "arg 'row_order_column_name' should not be a existing column name"
         
         if is_pandas_udf:
             def wrapper_func(chunk, **kwargs):
@@ -1058,7 +1173,7 @@ class TidyPandasDataFrame:
                 cols_in_order.extend(set(res.columns).difference(by))
                 return res.loc[:, cols_in_order]
         
-        nr = self.get_nrow()
+        
         if preserve_row_order:
             res = (self.__data
                         .assign(**{row_order_column_name: np.arange(nr)})
@@ -1074,9 +1189,10 @@ class TidyPandasDataFrame:
                           .drop(columns = row_order_column_name)
                           )
             else:
-                raise Exception(("'row_order_column_name' in each chunk should "
-                                 "be retained, when preserve_row_order is True"
-                                 ))
+                raise Exception(
+                    ("'row_order_column_name' in each chunk should "
+                     "be retained, when 'preserve_row_order' is True"
+                     ))
         else:
             res = (self.__data
                         .groupby(by, sort = False, dropna = False)
@@ -1086,7 +1202,7 @@ class TidyPandasDataFrame:
         
         if (not is_simple(res)) and is_pandas_udf:
             raise Exception(("Resulting dataframe after apply should be "
-                             "'simple', examine the pandas UDF"))
+                             "'simple', examine your pandas UDF"))
             
         return TidyPandasDataFrame(res.convert_dtypes()
                                    , check = False
@@ -1109,12 +1225,12 @@ class TidyPandasDataFrame:
 
         Parameters
         ----------
-        column_names : list, optional
-            list of column names(strings) to be selected. The default is None.
-        predicate : callable, optional
-            function which returns a bool. The default is None.
-        include : bool, optional
-            Whether the columns are to be selected or not. The default is True.
+        column_names : str or a list of strings
+            list of column names to be selected
+        predicate : callable, series --> bool
+            function which returns a bool
+        include : bool, default is True
+            When True, column_names are selected, else dropped
 
         Returns
         -------
@@ -1122,9 +1238,11 @@ class TidyPandasDataFrame:
         
         Notes
         -----
-        1. Select works by either specifying column names or a predicate, not both.
-        2. When predicate is used, predicate should accept a pandas series and return a bool. Each column is passed to the predicate and the result indicates whether the column should be selected or not.
-        3. When include is False, we select the remaining columns.
+        1. Select works by either specifying column names or a predicate,
+           not both.
+        2. When predicate is used, predicate should accept a pandas series and
+           return a bool. Each column is passed to the predicate and the result
+           indicates whether the column should be selected or not.
         
         Examples
         --------
@@ -1146,7 +1264,9 @@ class TidyPandasDataFrame:
         '''
         
         if (column_names is None) and (predicate is None):
-            raise Exception('Exactly one among `column_names` and `predicate` should not be None')
+            raise Exception(("Exactly one among `column_names` and `predicate` 
+                             "should not be None")
+                            )
         if (column_names is not None) and (predicate is not None):
             raise Exception('Exactly one among `column_names` and `predicate` should not be None')
         
@@ -1155,9 +1275,9 @@ class TidyPandasDataFrame:
             col_bool_list = np.array(list(self.__data.apply(predicate, axis = "index")))
             column_names = list(np.array(self.get_colnames())[col_bool_list])
         else:
-            assert is_string_or_string_list(column_names),\
+            assert _is_string_or_string_list(column_names),\
                 "column names to select should be a list of strings"
-            column_names = list(setlist(enlist(column_names)))
+            column_names = list(setlist(_enlist(column_names)))
             cols = self.get_colnames()
             assert set(cols).issuperset(column_names),\
                 "Atleast one string in `column_names` is not an existing column name"
@@ -1210,9 +1330,9 @@ class TidyPandasDataFrame:
         flights_tidy.relocate(["distance", "month"], after = "day")
         '''
         
-        assert is_string_or_string_list(column_names)
-        column_names = enlist(column_names)
-        assert is_unique_list(column_names) # assert if column_names are unique
+        assert _is_string_or_string_list(column_names)
+        column_names = _enlist(column_names)
+        assert _is_unique_list(column_names) # assert if column_names are unique
         current_colnames = self.get_colnames()
          
         assert (before is None) or (after is None) # at least one of them is None
@@ -1280,7 +1400,7 @@ class TidyPandasDataFrame:
         col_names = self.get_colnames()
         assert isinstance(old_new_dict, dict)
         assert set(col_names).issuperset(old_new_dict.keys()) # old names should be there
-        assert is_unique_list(list(old_new_dict.values())) # new names should be unique
+        assert _is_unique_list(list(old_new_dict.values())) # new names should be unique
         # TODO some more checks on column names are required
         
         # new names should not intersect with 'remaining' names
@@ -1329,7 +1449,7 @@ class TidyPandasDataFrame:
         '''
         
         if isinstance(row_numbers, int):
-            row_numbers = enlist(row_numbers)
+            row_numbers = _enlist(row_numbers)
         
         if by is None:
             minval = np.min(row_numbers)
@@ -1338,7 +1458,7 @@ class TidyPandasDataFrame:
             
             res = self.__data.iloc[row_numbers,:].reset_index(drop = True)
         else:
-            by = enlist(by)
+            by = _enlist(by)
             self._validate_by(by)
             
             min_group_size = (self.__data
@@ -1426,7 +1546,7 @@ class TidyPandasDataFrame:
         '''
         
         self._validate_column_names(column_names)
-        column_names = enlist(column_names)
+        column_names = _enlist(column_names)
         if not isinstance(ascending, list):
             assert isinstance(ascending, bool),\
                 "when arg 'ascending' is not a list, it should be a bool"
@@ -1508,7 +1628,7 @@ class TidyPandasDataFrame:
             
         # validate 'by'
         if by is not None:
-            by = enlist(by)
+            by = _enlist(by)
             self._validate_by(by)
         
         if query is not None and mask is None:
@@ -1590,9 +1710,9 @@ class TidyPandasDataFrame:
         
         cn = self.get_colnames()
         if column_names is not None:
-            assert is_string_or_string_list(column_names),\
+            assert _is_string_or_string_list(column_names),\
                 "arg 'column_names' should be a string or a list of strings"
-            column_names = list(setlist(enlist(column_names)))
+            column_names = list(setlist(_enlist(column_names)))
             assert set(column_names).issubset(cn),\
                 "arg 'column_names' should contain valid column names"
         else:
@@ -1634,19 +1754,19 @@ class TidyPandasDataFrame:
                                           )
         else:
             self._validate_by(by)
-            by = enlist(by)
+            by = _enlist(by)
             cn = self.get_colnames()
             
             if dictionary is not None:
-                res = self.apply_over_groups(
+                res = self.group_modify(
                     func = lambda chunk: chunk._mutate(dictionary)
                     , by = by
                     , preserve_row_order = True
-                    , row_order_column_name = generate_new_string(cn)
+                    , row_order_column_name = _generate_new_string(cn)
                     , is_pandas_udf = False
                     )
             else:
-                res = self.apply_over_groups(
+                res = self.group_modify(
                     func = lambda chunk: (
                         chunk._mutate_across(func
                                              , column_names = column_names
@@ -1656,55 +1776,23 @@ class TidyPandasDataFrame:
                         )
                     , by = by
                     , preserve_row_order = True
-                    , row_order_column_name = generate_new_string(cn)
+                    , row_order_column_name = _generate_new_string(cn)
                     , is_pandas_udf = False
                     )
 
         return res
         
     def _mutate(self, dictionary):
-        '''
-        {"hp": [lambda x, y: x - y.mean(), ['a', 'b']]
-           , "new" : lambda x: x.hp - x.mp.mean() + x.shape[1]
-           , "existing" : [lambda x: x + 1]
-           }
-        TODO:
-            1. assign multiple columns at once case
-            2. grouped version
-        '''
+        
         nr = self.get_nrow()
         cn = self.get_colnames()
         mutated = util_copy.copy(self.__data)
         
-        # akey is a column name to assign to
-        # res should be a pandas series, 1D numpy array or a scalar
-        def assign_column(df, akey, res):
-            if isinstance(res, (pd.Series, np.ndarray)):
-                if isinstance(res, np.ndarray):
-                    assert res.ndim == 1,\
-                        ("When result of RHS for key '{akey}' is a numpy" 
-                         "it should be a 1D array"
-                         )
-                assert len(res) == 1 or len(res) == df.shape[0],\
-                    (f"When a pandas series or numpy array, result of RHS "
-                     "for key '{akey}' should be 1 or equal to number of rows"
-                     " of the dataframe"
-                     )
-                df[akey] = res
-            elif np.isscalar(res):
-                df[akey] = res
-            else:
-                raise Exception((f"Result of RHS  for key '{akey}' should be "
-                                 "a pandas series, numpy array or a scalar"
-                                ))
-            return None
-            
-            
         for akey in dictionary:
             
             assert isinstance(akey, (str, tuple)),\
                 "LHS (dict keys) should be a string or a tuple of strings"
-            assert is_string_or_string_list(list(akey)),\
+            assert _is_string_or_string_list(list(akey)),\
                 "LHS (dict keys) should be a string or a tuple of strings"
             
             rhs = dictionary[akey]
@@ -1730,42 +1818,72 @@ class TidyPandasDataFrame:
                 # 1. direct assign
                 if isinstance(rhs, ((pd.Series, np.ndarray)) 
                                     or np.isscalar(rhs)):
-                    assign_column(mutated, akey, rhs)
+                    mutated[akey] = rhs
                 
                 # 2. assign via function
-                elif callable(rhs):
-                    assign_column(mutated, akey, rhs(mutated))
-                
+                elif callable(rhs) or isinstance(rhs, str):
+                    if callable(rhs):
+                        mutated[akey] = rhs(mutated)
+                    else:
+                        rhs = eval("lambda x: " + rhs, globals(), locals())
+                        mutated[akey] = rhs(mutated)
+                                 
                 # 3. assign via simple function
                 elif isinstance(rhs, tuple):
                     assert len(rhs) > 0 and len(rhs) <= 2,\
                         (f"When RHS is a tuple, RHS should not have more than "
                          "two elements"
                          )
-                    assert callable(rhs[0]),\
+                    assert callable(rhs[0]) or isinstance(rhs[0], str),\
                         (f"When RHS is a tuple, first element of RHS should be "
-                         "a function"
+                         "a function or a string which can be enclosed in a "
+                         "lambda function and evaluated"
                          )
                     # 3a. assign a preexisting column
                     if len(rhs) == 1:
-                        assert akey in list(mutated.columns),\
-                            (f"When RHS is a tuple with function alone, {akey} "
-                             "should be an exisiting column"
-                             )
-                        assign_column(mutated, akey, rhs[0](mutated[akey]))
+                        if callable(rhs[0]):
+                            assert akey in list(mutated.columns),\
+                                (f"When RHS is a tuple with function alone, "
+                                 "{akey} should be an exisiting column"
+                                 )
+                            mutated[akey] = rhs[0](mutated[akey])
+                        else:
+                            # string case
+                            fun = eval("lambda x: "+ rhs[0]
+                                       , globals()
+                                       , locals()
+                                       )
+                            mutated[akey] = fun(mutated[akey])
                     # 3b. assign with column args
                     else:
-                        assert is_string_or_string_list(rhs[1]),\
+                        assert _is_string_or_string_list(rhs[1]),\
                             (f"When RHS tuple has two elements, the second "
                              "element should be a string or a list of strings"
                              )
-                        cols = enlist(rhs[1])
+                        cols = _enlist(rhs[1])
                         assert set(cols).issubset(list(mutated.columns)),\
                             f"RHS should contain valid columns for LHS '{akey}'"
-                        assign_column(mutated
-                                      , akey
-                                      , rhs[0](*[mutated[x] for x in cols])
-                                      )
+                        if callable(rhs[0]):
+                            mutated[akey] = (
+                                rhs[0](*[mutated[acol] for acol in cols])
+                                )
+                        else:
+                            # string case
+                            chars = list(string.ascii_lowercase[-3:] 
+                                         + string.ascii_lowercase[:-3]
+                                         )[:len(cols)]
+                            fun = eval(("lambda " 
+                                        + ", ".join(chars) 
+                                        + ": " 
+                                        + rhs[0]
+                                        )
+                                       , globals()
+                                       , locals()
+                                       )
+                            
+                            mutated[akey] = (
+                                fun(*[mutated[acol] for acol in cols])
+                                )
                 else:
                     raise Exception((f"RHS for key '{akey}' should be in some "
                                      "standard form"
@@ -1776,16 +1894,22 @@ class TidyPandasDataFrame:
                 # 1. direct assign is not supported for multi assignment
                 
                 # 2. assign via function
-                if callable(rhs):
-                    rhs_res = rhs(mutated)
+                if callable(rhs) or isinstance(rhs, str):
+                    if callable(rhs):
+                        rhs_res = rhs(mutated)
+                    else:
+                        rhs = eval("lambda x: " + rhs, globals(), locals())
+                        rhs_res = rhs(mutated)
+                        
                     assert (isinstance(rhs_res, list) 
                             and len(rhs_res) == len(akey)
                             ),\
                         ("RHS should output a list of length equal to "
                          "length of LHS for key: {akey}"
                          )
+                         
                     for apair in zip(akey, rhs_res):
-                        assign_column(mutated, apair[0], apair[1])
+                        mutated[apair[0]] = apair[1]
                         
                 # 3. assign via simple function
                 elif isinstance(rhs, tuple):
@@ -1793,9 +1917,10 @@ class TidyPandasDataFrame:
                         (f"When RHS is a tuple, RHS should not have more "
                          "than two elements"
                          )
-                    assert callable(rhs[0]),\
-                        (f"When RHS is a tuple, first element of RHS should "
-                         "be a function"
+                    assert callable(rhs[0]) or isinstance(rhs[0], str),\
+                        (f"When RHS is a tuple, first element of RHS should be "
+                         "a function or a string which can be enclosed in a "
+                         "lambda function and evaluated"
                          )
                     # 3a. assign a preexisting columns
                     if len(rhs) == 1:
@@ -1803,7 +1928,22 @@ class TidyPandasDataFrame:
                             (f"When RHS is a tuple with function alone, {akey}"
                              "should be an exisiting columns"
                              )
-                        rhs_res = rhs[0](*[mutated[acol] for acol in akey])
+                        if callable(rhs[0]):
+                            rhs_res = rhs[0](*[mutated[acol] for acol in akey])
+                        else:
+                            chars = list(string.ascii_lowercase[-3:] 
+                                         + string.ascii_lowercase[:-3]
+                                         )[:len(akey)]
+                            fun = eval(("lambda " 
+                                        + ", ".join(chars) 
+                                        + ": " 
+                                        + rhs[0]
+                                        )
+                                       , globals()
+                                       , locals()
+                                       )  
+                            rhs_res = fun(*[mutated[acol] for acol in akey])
+                            
                         assert (isinstance(rhs_res, list)
                                 and len(rhs_res) == len(akey)
                                 ),\
@@ -1811,17 +1951,33 @@ class TidyPandasDataFrame:
                              "to length of LHS for key: {akey}"
                              )
                         for apair in zip(akey, rhs_res):
-                            assign_column(mutated, apair[0], apair[1])
+                            mutated[apair[0]] = apair[1]
                     # 3b. assign with column args
                     else:
-                        assert is_string_or_string_list(rhs[1]),\
+                        assert _is_string_or_string_list(rhs[1]),\
                             (f"When RHS tuple has two elements, the second "
                              "element should be a string or a list of strings"
                              )
-                        cols = enlist(rhs[1])
+                        cols = _enlist(rhs[1])
                         assert set(cols).issubset(list(mutated.columns)),\
                             f"RHS should contain valid columns for LHS '{akey}'"
-                        rhs_res = rhs[0](*[mutated[x] for x in cols])
+                        
+                        if callable(rhs[0]):
+                            rhs_res = rhs[0](*[mutated[x] for x in cols])
+                        else:
+                            chars = list(string.ascii_lowercase[-3:] 
+                                         + string.ascii_lowercase[:-3]
+                                         )[:len(cols)]
+                            fun = eval(("lambda " 
+                                        + ", ".join(chars) 
+                                        + ": " 
+                                        + rhs[0]
+                                        )
+                                       , globals()
+                                       , locals()
+                                       )  
+                            rhs_res = fun(*[mutated[x] for x in cols])
+                        
                         assert (isinstance(rhs_res, list) 
                                 and len(rhs_res) == len(akey)
                                 ),\
@@ -1829,7 +1985,7 @@ class TidyPandasDataFrame:
                              "to length of LHS for key: {akey}"
                              )
                         for apair in zip(akey, rhs_res):
-                            assign_column(mutated, apair[0], apair[1])
+                            mutated[apair[0]] = apair[1]
                 else:
                     raise Exception((f"RHS for key '{akey}' should be in some "
                                      "standard form"
@@ -1851,17 +2007,23 @@ class TidyPandasDataFrame:
                        , prefix = ""
                        ):
 
-        assert callable(func),\
-            "arg 'func' should be a function"
+        assert callable(func) or isinstance(func, str),\
+            ("arg 'func' should be a function or a string which is convertible "
+             "to a lambda function"
+             )
         assert isinstance(prefix, str)
 
         mutated = util_copy.copy(self.__data)
         
         if (column_names is not None) and (predicate is not None):
-            raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
+            raise Exception(("Exactly one among 'column_names' and 'predicate' "
+                             "should be None")
+                             )
         
         if (column_names is None) and (predicate is None):
-            raise Exception("Exactly one among 'column_names' and 'predicate' should be None")
+            raise Exception("Exactly one among 'column_names' and 'predicate' "
+                            "should be None"
+                            )
         
         # use column_names
         if column_names is not None:
@@ -1875,11 +2037,21 @@ class TidyPandasDataFrame:
         
         # make a copy of the dataframe and apply mutate in order
         for acol in column_names:
-            mutated[prefix + acol] = func(mutated[acol])
+            if isinstance(func, str):
+                func = eval("lambda x: " + func, globals(), locals())
+                mutated[prefix + acol] = func(mutated[acol])
+            else:
+                mutated[prefix + acol] = func(mutated[acol])
             
-        return TidyPandasDataFrame(mutated, check = False)
+        return TidyPandasDataFrame(mutated, check = False, copy = False)
     
-    def summarise(self, dictionary=None, func=None, column_names=None, predicate=None, prefix = ""):
+    def summarise(self
+                  , dictionary = None
+                  , func = None
+                  , column_names = None
+                  , predicate = None
+                  , prefix = ""
+                  ):
         """
 
         Parameters
@@ -2080,17 +2252,17 @@ class TidyPandasDataFrame:
                 ("When arg 'on' is None, " 
                  "both args'on_x' and 'on_y' should not be None"
                  )
-            assert is_string_or_string_list(on_x),\
+            assert _is_string_or_string_list(on_x),\
                 "arg 'on_x' should be a string or a list of strings"
-            assert is_string_or_string_list(on_y),\
+            assert _is_string_or_string_list(on_y),\
                 "arg 'on_y' should be a string or a list of strings"
             
-            on_x = enlist(on_x)
-            on_y = enlist(on_y)
+            on_x = _enlist(on_x)
+            on_y = _enlist(on_y)
             
-            assert is_unique_list(on_x),\
+            assert _is_unique_list(on_x),\
                 "arg 'on_x' should not have duplicates"
-            assert is_unique_list(on_y),\
+            assert _is_unique_list(on_y),\
                 "arg 'on_y' should not have duplicates"    
             assert set(on_x).issubset(cn_x),\
                 "arg 'on_x' should be a subset of column names of x"
@@ -2103,10 +2275,10 @@ class TidyPandasDataFrame:
                 ("When arg 'on' is not None, " 
                  "both args'on_x' and 'on_y' should be None"
                  )
-            assert is_string_or_string_list(on),\
+            assert _is_string_or_string_list(on),\
                 "arg 'on' should be a string or a list of strings"
-            on = enlist(on)
-            assert is_unique_list(on),\
+            on = _enlist(on)
+            assert _is_unique_list(on),\
                 "arg 'on' should not have duplicates"
             assert set(on).issubset(cn_x),\
                 "arg 'on' should be a subset of column names of x"
@@ -2153,19 +2325,19 @@ class TidyPandasDataFrame:
         
         # degenerate case
         if on is None:
-            on_x = enlist(on_x)
-            on_y = enlist(on_y)
+            on_x = _enlist(on_x)
+            on_y = _enlist(on_y)
             if on_x == on_y:
                 on = util_copy.copy(on_x)
                 on_x = None
                 on_y = None
         
         if on is None:
-            on_x = enlist(on_x)
-            on_y = enlist(on_y)
+            on_x = _enlist(on_x)
+            on_y = _enlist(on_y)
             new_colnames = cn_x + list(setlist(cn_y).difference(on_y))
         else:
-            on = enlist(on)
+            on = _enlist(on)
             new_colnames = cn_x + list(setlist(cn_y).difference(on))
         
         if sort:
@@ -2397,7 +2569,7 @@ class TidyPandasDataFrame:
                             , suffix_y = suffix_y
                             )
         
-        string = generate_new_string(y.get_colnames())
+        string = _generate_new_string(y.get_colnames())
         
         if on is None:
             on_value = on_y
@@ -2454,12 +2626,12 @@ class TidyPandasDataFrame:
               ):
         
         assert (column_names is None
-                or is_string_or_string_list(column_names)
+                or _is_string_or_string_list(column_names)
                 ),\
             "arg 'column_names' is either None or a list of strings"
         if column_names is not None:
             self._validate_column_names(column_names)
-            column_names = enlist(column_names)
+            column_names = _enlist(column_names)
         assert isinstance(count_column_name, str),\
             "arg 'count_column_name' should a string"
         assert isinstance(ascending, bool),\
@@ -2525,8 +2697,6 @@ class TidyPandasDataFrame:
                     , values_fill = None
                     , values_fn = None
                     , id_cols = None
-                    , drop_na = True
-                    , retain_levels = False
                     , sep = "__"
                     ):
         '''
@@ -2552,22 +2722,108 @@ class TidyPandasDataFrame:
             not kept in a list
         
         id_cols: string or list of strings, default is None
+            Names of the columns that should uniquely identify an observation 
+            (row) after widening (columns of the original dataframe that are
+            supposed to stay put)
             
+        sep: string
+            seperator to use while creating resulting column names
+            
+        Returns
+        -------
+        TidyPandasDataFrame
+        
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+        
+        import numpy as np
+        
+        # generic widening leads to list-columns
+        penguins_tidy.pivot_wider(id_cols       = "island"
+                                  , names_from  = "sex"
+                                  , values_from = "bill_length_mm"
+                                  )
+        
+        # aggregate with a function
+        penguins_tidy.pivot_wider(id_cols       = "island"
+                                  , names_from  = "sex"
+                                  , values_from = "bill_length_mm"
+                                  , values_fn   = np.mean
+                                  )
+                                  
+        # choose different aggregation logic for value_from columns
+        penguins_tidy.pivot_wider(
+          id_cols       = "island"
+          , names_from  = "species"
+          , values_from = ["bill_length_mm", "bill_depth_mm"]
+          , values_fn   = {"bill_length_mm" : np.mean, "bill_depth_mm" : list}
+          )
+                                  
+        # aggregate with almost any function
+        penguins_tidy.pivot_wider(
+          id_cols       = "island"
+          , names_from  = "species"
+          , values_from = "sex"
+          , values_fn   = lambda x: dict(pd.Series(x).value_counts())
+          )
+        
+        # All three inputs: 'id_cols', 'names_from', 'values_from' can be lists
+        penguins_tidy.pivot_wider(
+            id_cols       = ["island", "sex"]
+            , names_from  = "species"
+            , values_from = "bill_length_mm"
+            )
+                                  
+        penguins_tidy.pivot_wider(
+            id_cols       = ["island", "sex"]
+            , names_from  = "species"
+            , values_from = ["bill_length_mm", "bill_depth_mm"]
+            )
+        
+        penguins_tidy.pivot_wider(id_cols       = ["island", "sex"]
+                                  , names_from  = ["species", "year"]
+                                  , values_from = "bill_length_mm"
+                                  )
+                                  
+        penguins_tidy.pivot_wider(
+            id_cols       = ["island", "sex"]
+            , names_from  = ["species", "year"]
+            , values_from = ["bill_length_mm", "bill_depth_mm"]
+            )
+        
+        # when id_cols is empty, all columns except the columns from
+        # `names_from` and `values_from` are considered as id_cols
+        (penguins_tidy
+         .select(['flipper_length_mm', 'body_mass_g'], include = False)
+         .pivot_wider(names_from    = ["species", "year"]
+                      , values_from = ["bill_length_mm", "bill_depth_mm"]
+                      )
+         )
+                                  
+        # fill the missing values with something
+        penguins_tidy.pivot_wider(id_cols       = "island"
+                                  , names_from  = "species"
+                                  , values_from = "bill_length_mm"
+                                  , values_fill = 0
+                                  )
         '''
         
         cn = self.get_colnames()
         
-        assert is_string_or_string_list(names_from),\
+        assert _is_string_or_string_list(names_from),\
             "arg 'names_from' should be string or a list of strings"
-        names_from = enlist(names_from)
-        assert is_unique_list(names_from),\
+        names_from = _enlist(names_from)
+        assert _is_unique_list(names_from),\
             "arg 'names_from' should have unique strings"
         assert set(names_from).issubset(cn),\
             "arg 'names_from' should be a subset of existing column names"
         
-        assert is_string_or_string_list(values_from),\
+        assert _is_string_or_string_list(values_from),\
             "arg 'values_from' should be string or a list of strings"
-        values_from = enlist(values_from)
+        values_from = _enlist(values_from)
         assert set(values_from).issubset(cn),\
             "arg 'names_from' should have unique strings"
         assert len(set(values_from).intersection(names_from)) == 0,\
@@ -2587,10 +2843,10 @@ class TidyPandasDataFrame:
             else:
                 print("'id_cols' chosen: " + str(id_cols))
         else:
-            assert is_string_or_string_list(id_cols),\
+            assert _is_string_or_string_list(id_cols),\
                 "arg 'id_cols' should be string or a list of strings"
-            id_cols = enlist(id_cols)
-            assert is_unique_list(id_cols),\
+            id_cols = _enlist(id_cols)
+            assert _is_unique_list(id_cols),\
                 "arg 'id_cols' should have unique strings"
             assert len(set(id_cols).intersection(names_values_from)) == 0,\
                 ("arg 'id_cols' should not have common names with either "
@@ -2629,10 +2885,6 @@ class TidyPandasDataFrame:
         else:
             pass
         
-        assert isinstance(drop_na, bool),\
-            "arg 'drop_na' should be a bool"
-        assert isinstance(retain_levels, bool),\
-            "arg 'retain_levels' should be a bool"
         assert isinstance(sep, str),\
             "arg 'sep' should be a string"
         
@@ -2647,8 +2899,8 @@ class TidyPandasDataFrame:
                              , fill_value = values_fill
                              , aggfunc    = values_fn
                              , margins    = False
-                             , dropna     = drop_na
-                             , observed   = retain_levels
+                             , dropna     = False
+                             , observed   = True
                              )
                              
         return tidy(res, sep = sep, verbose = False, copy = False)
@@ -2659,10 +2911,12 @@ class TidyPandasDataFrame:
                      , values_to = "value"
                      , include = True
                      ):
+        '''
         
+        '''
         # assertions
         cn = self.get_colnames()
-        assert is_string_or_string_list(cols),\
+        assert _is_string_or_string_list(cols),\
             "arg 'cols' should be a string or a list of strings"
         assert set(cols).issubset(cn),\
             "arg 'cols' should be a subset of exisiting column names"
@@ -2774,7 +3028,7 @@ class TidyPandasDataFrame:
             res = TidyPandasDataFrame(self.__data.head(n), check = False)
         else:
             self._validate_by(by)
-            by = enlist(by)
+            by = _enlist(by)
             if not case_prop:
                 min_group_size = (self.__data
                                       .groupby(by, sort = False, dropna = False)
@@ -2786,7 +3040,7 @@ class TidyPandasDataFrame:
                 assert n <= min_group_size,\
                     "arg 'n' should not exceed the size of any chunk after grouping"
                  
-                res = (self.apply_over_groups(lambda x: x.head(n)
+                res = (self.group_modify(lambda x: x.head(n)
                                              , by = by
                                              , is_pandas_udf = True
                                              , preserve_row_order = True
@@ -2805,7 +3059,7 @@ class TidyPandasDataFrame:
                 else:
                     roundf = np.floor
                     
-                res = (self.apply_over_groups(
+                res = (self.group_modify(
                     lambda x: x.head(int(roundf(x.shape[0] * prop)))
                     , by = by
                     , is_pandas_udf      = True
@@ -2889,7 +3143,7 @@ class TidyPandasDataFrame:
                                       )
         else:
             self._validate_by(by)
-            by = enlist(by)
+            by = _enlist(by)
             if not case_prop:
                 min_group_size = (self.__data
                                       .groupby(by, sort = False, dropna = False)
@@ -2901,7 +3155,7 @@ class TidyPandasDataFrame:
                 assert n <= min_group_size,\
                     "arg 'n' should not exceed the size of any chunk after grouping"
                  
-                res = (self.apply_over_groups(lambda x: x.tail(n).reset_index(drop = True)
+                res = (self.group_modify(lambda x: x.tail(n).reset_index(drop = True)
                                              , by = by
                                              , is_pandas_udf = True
                                              , preserve_row_order = True
@@ -2920,7 +3174,7 @@ class TidyPandasDataFrame:
                 else:
                     roundf = np.floor
                     
-                res = (self.apply_over_groups(
+                res = (self.group_modify(
                     lambda x: (x.tail(int(roundf(x.shape[0] * prop)))
                                 .reset_index(drop = True)
                                 )
@@ -3049,7 +3303,7 @@ class TidyPandasDataFrame:
                            .reset_index(drop = True)
                            )
         else:
-            by = enlist(by)
+            by = _enlist(by)
             self._validate_by(by)
             n_groups = (self.__data
                             .groupby(by, sort = False, dropna = False)
@@ -3171,7 +3425,7 @@ class TidyPandasDataFrame:
                        )
         else:
             self._validate_by(by)
-            by = enlist(by)
+            by = _enlist(by)
             if case_prop:
                 
                 assert isinstance(rounding_type, str),\
@@ -3187,7 +3441,7 @@ class TidyPandasDataFrame:
                     roundf = np.ceil
                 else:
                     roundf = np.floor
-                res = self.apply_over_groups(
+                res = self.group_modify(
                     lambda x: x.nsmallest(int(roundf(x.shape[0] * prop))
                                           , columns = order_by
                                           , keep = ties_method
@@ -3209,7 +3463,7 @@ class TidyPandasDataFrame:
                      "size of any chunk after grouping"
                     )
                 
-                res = self.apply_over_groups(
+                res = self.group_modify(
                     lambda x: x.nsmallest(n
                                           , columns = order_by
                                           , keep = ties_method
@@ -3268,7 +3522,7 @@ class TidyPandasDataFrame:
                        )
         else:
             self._validate_by(by)
-            by = enlist(by)
+            by = _enlist(by)
             if case_prop:
                 
                 assert isinstance(rounding_type, str),\
@@ -3282,7 +3536,7 @@ class TidyPandasDataFrame:
                     roundf = np.ceil
                 else:
                     roundf = np.floor
-                res = self.apply_over_groups(lambda x: x.nlargest(int(roundf(x.shape[0] * prop))
+                res = self.group_modify(lambda x: x.nlargest(int(roundf(x.shape[0] * prop))
                                                                    , columns = order_by
                                                                    , keep = ties_method
                                                                    )
@@ -3301,7 +3555,7 @@ class TidyPandasDataFrame:
                 assert n <= min_group_size,\
                     "arg 'n' should not exceed the size of any chunk after grouping"
                 
-                res = self.apply_over_groups(lambda x: x.nlargest(n
+                res = self.group_modify(lambda x: x.nlargest(n
                                                                    , columns = order_by
                                                                    , keep = ties_method
                                                                    )
@@ -3357,8 +3611,8 @@ class TidyPandasDataFrame:
         
         cn = self.get_colnames()
         if column_names is not None:
-            assert is_string_or_string_list(column_names)
-            column_names = enlist(column_names)
+            assert _is_string_or_string_list(column_names)
+            column_names = _enlist(column_names)
             assert set(column_names).issubset(cn)
         else:
             column_names = cn
@@ -3465,30 +3719,52 @@ class TidyPandasDataFrame:
         
         return TidyPandasDataFrame(res, check = False)
     
-    # nest and unnest ----
+    ##########################################################################
+    # nest and unnest
+    ##########################################################################
     
-    def nest(self
-             , column_names = None
-             , by = None
-             , nest_column_name = 'data'
-             ):
+    
+    ##########################################################################
+    # nest_by
+    ##########################################################################
+    def nest_by(self
+                , by = None
+                , nest_column_name = 'data'
+                ):
+        '''
+        nest_by
+        Nest all columns of tidy dataframe with respect to 'by' columns
         
+        Parameters
+        ----------
+        by: str or list of strings
+            Columns to stay, rest of them are nested
+        nest_column_name: str
+            Name of the resulting nested column (pandas Series)
+        
+        Returns
+        -------
+        TidyPandasDataFrame
+        
+        Notes
+        -----
+        1. 'by' should not contain all column names (some columns should be left
+           for nesting)
+           
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+
+        penguins_tidy.nest_by(by = 'species')
+        penguins_tidy.nest_by(by = ['species', 'sex'])
+        '''
         cn = self.get_colnames()
-        
-        if (((column_names is None) and (by is None))
-            or ((column_names is not None) and (by is not None))):
-            raise Exception(("Exactly one arg among 'column_names' and 'by' "
-                             "should be None"
-                             ))
-        if by is not None:
-            self._validate_by(by)
-            by = enlist(by)
-        else:
-            self._validate_column_names(column_names)
-            column_names = enlist(column_names)
-            by = list(setlist(cn).difference(column_names))
-        
-        # work with by from here on 
+        self._validate_by(by)
+        by = _enlist(by)
+        assert len(by) < len(cn),\
+            "arg 'by' should not contain all exisiting column names"
         
         assert nest_column_name not in cn,\
             "arg 'nest_column_name' should not be an exisiting column name"
@@ -3515,9 +3791,108 @@ class TidyPandasDataFrame:
                                                       , check = False
                                                       ))
         
-        return TidyPandasDataFrame(res, check = False, copy = False)
-    
+        return TidyPandasDataFrame(res.convert_dtypes()
+                                   , check = False
+                                   , copy = False
+                                   )
+                                   
+    ##########################################################################
+    # nest
+    ##########################################################################                               
+    def nest(self
+             , column_names = None
+             , nest_column_name = 'data'
+             , include = True
+             ):
+        '''
+        nest
+        Nest columns of tidy dataframe
+        
+        Parameters
+        ----------
+        column_names: str or list of strings
+            Columns to be nested
+        nest_column_name: str
+            Name of the resulting nested column (pandas Series)
+        
+        Returns
+        -------
+        TidyPandasDataFrame
+        
+        Notes
+        -----
+        1. 'column_names' should not contain all column names.
+           
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+        
+        penguins_tidy.nest(['bill_length_mm', 'bill_depth_mm',
+                            'flipper_length_mm', 'body_mass_g']
+                           )
+        penguins_tidy.nest(['species', 'sex'], include = False)
+        '''
+        
+        cn = self.get_colnames()
+        self._validate_column_names(column_names)
+        column_names = _enlist(column_names)
+        if not include:
+            column_names = list(setlist(cn).difference(column_names))
+        by = list(setlist(cn).difference(column_names))
+        assert len(by) > 0,\
+            "arg 'column_names' should not have all existing column names"
+            
+        return self.nest_by(by = by, nest_column_name = nest_column_name)
+        
+    ##########################################################################
+    # unnest
+    ##########################################################################    
     def unnest(self, nest_column_name = 'data'):
+        '''
+        unnest
+        Unnest a nested column of a tidy dataframe
+        
+        Parameters
+        ----------
+        nest_column_name: str
+            Name of the column to be unnested
+        
+        Returns
+        -------
+        TidyPandasDataFrame
+        
+        Notes
+        -----
+        1. unnest does not support a mix of nested lists and dataframe in the
+           same column
+        
+        Examples
+        --------
+        import pandas as pd
+        nested_pdf = pd.DataFrame({"A": [1,2,3, 4],
+                                   "B": pd.Series([[10, 20, 30],
+                                                   [40, 50],
+                                                   [60],
+                                                   70
+                                                  ]
+                                                 )
+                          })
+        nested_pdf
+        
+        # unnest nested lists
+        tidy(nested_pdf).unnest('B')
+        
+        from palmerpenguins import load_penguins
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+        pen_nested_by_species = penguins_tidy.nest_by('species')
+        pen_nested_by_species
+        
+        # unnest nested dataframes
+        pen_nested_by_species.unnest('data')
+        '''
         
         nr = self.get_nrow()
         cn = self.get_colnames()
@@ -3571,4 +3946,50 @@ class TidyPandasDataFrame:
                        .reset_index(drop = True)
                        )
                 
-        return TidyPandasDataFrame(res, check = False, copy = False)
+        return TidyPandasDataFrame(res.convert_dtypes()
+                                   , check = False
+                                   , copy = False
+                                   )
+    
+    ##########################################################################
+    # split (group_split)
+    ##########################################################################
+    def split(self, by, as_dict = False):
+        
+        self._validate_by(by)
+        by = _enlist(by)
+        assert isinstance(as_dict, bool),\
+            "arg 'as_dict' should be a bool"
+        
+        if as_dict:
+            nt = namedtuple("group", by)
+            
+            # unpacking required when first element is a tuple
+            if len(by) == 1:
+                create_kv = lambda x: (nt(x[0])
+                                       , (x[1].reset_index(drop = True)
+                                              .pipe(TidyPandasDataFrame)
+                                              )
+                                       )
+            else:
+                create_kv = lambda x: (nt(*x[0])
+                                       , (x[1].reset_index(drop = True)
+                                              .pipe(TidyPandasDataFrame)
+                                              )
+                                       )
+            
+            res = dict((create_kv(x) for x in 
+                tuple(self.__data.groupby(by, dropna = False, sort = False))
+                ))
+        else:
+            res = [x[1] for x in tuple((self.__data
+                                            .groupby(by
+                                                     , dropna = False
+                                                     , sort = False
+                                                     )
+                                            ))]
+            
+        return res
+    
+    group_split = split
+    
