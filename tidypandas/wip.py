@@ -8,12 +8,15 @@ import inspect
 
 def _is_kwargable(func):
   
-  res = False
-  spec = inspect.getfullargspec(func)
-  if spec.varkw is not None:
-      res = True
-  return res
+    res = False
+    spec = inspect.getfullargspec(func)
+    if spec.varkw is not None:
+        res = True
+    return res
 
+def _is_valid_colname(string):
+    return isinstance(string, str) and len(string) != 0 and string[0] != "_"
+  
 def _is_string_or_string_list(x):
     '''
     _is_string_or_string_list(x)
@@ -225,7 +228,22 @@ def _generate_new_string(strings):
             break
     
     return random_string
-  
+
+
+def _expand_flat(pdf, column_names):
+    # tuple <-> nesting
+    if isinstance(column_names, tuple):
+        res = (pdf.loc[:, column_names]
+                  .drop_duplicates(ignore_index = True)
+                  .copy()
+                  )
+    # list <-> crossing
+    else:
+        res = functools.reduce(lambda x, y: pd.merge(x, y, how = "cross")
+                               , [pdf.loc[:, (x)].drop_duplicates() for x in column_names]
+                               )
+    return res                           
+        
 def simplify(pdf
              , sep = "__"
              , verbose = False
@@ -297,7 +315,7 @@ def simplify(pdf
         "input should be a pandas dataframe"
     assert isinstance(sep, str),\
         "arg 'sep' should be a string"
-    pdf = util_copy.copy(pdf)
+    pdf = pdf.copy()
     
     # handle column multiindex
     try:
@@ -517,7 +535,7 @@ import numpy as np
 import pandas as pd
 import warnings
 import re
-from functools import reduce
+import functools
 from collections_extended import setlist
 from skimpy import skim
 import string as string
@@ -548,6 +566,13 @@ class TidyPandasDataFrame:
     * The only attribute of the class is the underlying pandas dataframe. This 
       cannot be accessed by the user. Please use 'to_pandas' method to obtain 
       a copy of the underlying pandas dataframe.
+    
+    Attributes
+    ----------
+    nrow: Number of rows
+    ncol: Number of columns
+    shape(alias dim): tuple of number of rows and number of columns
+    colnames: list of column names
     
     Methods
     -------
@@ -716,7 +741,10 @@ class TidyPandasDataFrame:
                                 ))
         
         if copy:                       
-            self.__data = util_copy.copy(x.convert_dtypes().fillna(pd.NA))
+            self.__data = (x.copy()
+                            .convert_dtypes()
+                            .fillna(pd.NA)
+                            )
         else:
             self.__data = x
         return None
@@ -789,7 +817,7 @@ class TidyPandasDataFrame:
         assert isinstance(copy, bool),\
             "arg 'copy' should be a bool"
         if copy:
-            res = util_copy.copy(self.__data)
+            res = self.__data.copy()
         else:
             res = self.__data
             
@@ -830,7 +858,7 @@ class TidyPandasDataFrame:
             "arg 'copy' should be a bool"
         
         if copy:
-            res = util_copy.copy(self.__data[column_name])
+            res = self.__data[column_name].copy()
         else:
             res = self.__data[column_name]
         return res
@@ -897,6 +925,10 @@ class TidyPandasDataFrame:
         '''
         return self.__data.shape[0]
     
+    @property
+    def nrow(self):
+        return self.__data.shape[0]
+    
     def get_ncol(self):
         '''
         get_ncol
@@ -907,6 +939,10 @@ class TidyPandasDataFrame:
         int
         '''
         return self.__data.shape[1]
+    
+    @property
+    def ncol(self):
+        return self.__data.shape[0]
         
     def get_shape(self):
         '''
@@ -921,6 +957,14 @@ class TidyPandasDataFrame:
         return self.__data.shape
         
     get_dim = get_shape
+    
+    @property
+    def shape(self):
+        return self.__data.shape
+      
+    @property
+    def dim(self):
+        return self.__data.shape
         
     def get_colnames(self):
         '''
@@ -936,6 +980,10 @@ class TidyPandasDataFrame:
         '''
         return list(self.__data.columns)
     
+    @property
+    def colnames(self):
+        return list(self.__data.columns)
+    
     ##########################################################################
     # summarizers -- skim, glimpse
     ##########################################################################
@@ -944,7 +992,7 @@ class TidyPandasDataFrame:
         '''
         Skim the tidy dataframe
         Provides a meaningful summary of the dataframe
-        
+        yo
         Parameters
         ----------
         return_self: bool (default is False)
@@ -962,7 +1010,7 @@ class TidyPandasDataFrame:
         '''
         # TODO: Implement package check
         
-        skim(self.to_pandas())
+        skim(self.__data)
         
         if return_self:
             return self
@@ -988,16 +1036,18 @@ class TidyPandasDataFrame:
         None when return_self is False, input otherwise
         
         '''
+        nr = self.get_nrow()
+        nc = self.get_ncol()
+        
         dtype_dict = _get_dtype_dict(self.to_pandas(copy = False))
         for akey in dtype_dict:
             dtype_dict[akey] = akey + " (" + dtype_dict[akey] + ")"
         
-        tr = self.head(6).to_pandas().rename(columns = dtype_dict).T
+        head_nr = int(np.minimum(nr, 6))
+        
+        tr = self.head(head_nr).to_pandas().rename(columns = dtype_dict).T
         tr.columns = [""] * len(tr.columns)
         tr = tr.__str__()
-        
-        nr = self.get_nrow()
-        nc = self.get_ncol()
         
         print(f"Rows: {nr}")  
         print(f"Columns: {nc}")
@@ -1040,6 +1090,21 @@ class TidyPandasDataFrame:
         assert set(self.get_colnames()).issuperset(column_names),\
             "arg 'column_names' should contain valid column names"
         
+        return None
+      
+    def _validate_order_by(self, order_by):
+        
+        assert _is_string_or_string_list(order_by),\
+            "arg 'order_by' should be a string or a list of strings"
+            
+        order_by = _enlist(order_by)
+        
+        assert len(set(order_by)) == len(order_by),\
+            "arg 'order_by' should have unique strings"
+        
+        assert set(self.get_colnames()).issuperset(order_by),\
+            "arg 'order_by' should contain valid column names"
+            
         return None
     
     ##########################################################################
@@ -1841,17 +1906,17 @@ class TidyPandasDataFrame:
     # filter
     ##########################################################################
         
-    def filter(self, func = None, mask = None, by = None, **kwargs):
+    def filter(self, query = None, mask = None, by = None):
         '''
         filter
         subset some rows
         
         Parameters
         ----------
-        func: str or a function
-            when str, a lambda function is created
+        query: str or a function
+            when str, query string parsable by pandas eval
             when function, should output an array of booleans
-              of length equal to numbers of rows of the input dataframe
+            of length equal to numbers of rows of the input dataframe
         mask: list of booleans or
               numpy array or pandas Series of booleans
               of length equal to numbers of rows of the input dataframe
@@ -1864,41 +1929,35 @@ class TidyPandasDataFrame:
         
         Notes
         -----
-        1. Exactly one arg among 'func' and 'mask' should be provided
+        1. Exactly one arg among 'query' and 'mask' should be provided
         
         Examples
         --------
         from palmerpenguins import load_penguins
         penguins_tidy = tidy(load_penguins().convert_dtypes())
         
-        # filter rows using func
-        penguins_tidy.filter(lambda x: x.body_mass_g > 5000)
-        penguins_tidy.filter("x.body_mass_g > 5000") # same as above
-        # use kwargs
-        penguins_tidy.filter("x.body_mass_g > (5000 - kwargs['thou'])", thou = 1000)
-        
-        penguins_tidy.filter(lambda x: x['bill_length_mm'] > np.mean(x['bill_length_mm']))
-        penguins_tidy.filter("x['bill_length_mm'] > np.mean(x['bill_length_mm'])")
+        # query with pandas eval. pandas eval does not support complicated expressions.
+        penguins_tidy.filter("body_mass_g > 4000")
         
         # subset with a mask -- list or array or pandas Series of precomputed booleans
-        penguins_tidy.filter(mask = penguins_tidy.pull("year") == 2007)
+        penguins_tidy.filter(mask = (penguins_tidy.pull("year") == 2007))
+        # equivalently:
+        # penguins_tidy.filter(lambda x: x.year == 2007)
+        
+        # use complex expressions as a lambda function and filter
+        penguins_tidy.filter(lambda x: x['bill_length_mm'] > np.mean(x['bill_length_mm']))
         
         # per group filter retains the row order
-        penguins_tidy.filter(lambda x: x['bill_length_mm'] > np.mean(x['bill_length_mm']),
-                             by = 'sex'
-                             )
+        penguins_tidy.filter(lambda x: x['bill_length_mm'] > np.mean(x['bill_length_mm']), by = 'sex')
         '''
-        if func is None and mask is None:
-            raise Exception("Both 'func' and 'mask' cannot be None")
-        if func is not None and mask is not None:
-            raise Exception("One among 'func' and 'mask' should be None")
+        if query is None and mask is None:
+            raise Exception("Both 'query' and 'mask' cannot be None")
+        if query is not None and mask is not None:
+            raise Exception("One among 'query' and 'mask' should be None")
         
         # validate query
-        if func is not None:
-            assert callable(func) or isinstance(func, str),\
-                "arg 'func' should be a function or a string"
-            if isinstance(func, str):
-                func = eval("lambda x, **kwargs: " + func)
+        if query is not None:
+            assert callable(query) or isinstance(query, str)
             
         # validate mask
         if mask is not None:
@@ -1906,36 +1965,45 @@ class TidyPandasDataFrame:
             
         # validate 'by'
         if by is not None:
-            self._validate_by(by)
             by = _enlist(by)
+            self._validate_by(by)
         
-        if func is not None and mask is None:
+        if query is not None and mask is None:
             if by is None:
-                if _is_kwargable(func):
-                    res = self.__data.loc[func(self.__data, **kwargs), :]
+                if isinstance(query, str):
+                    res = self.__data.query(query)
                 else:
-                    res = self.__data.loc[func(self.__data), :]
+                    res = (self.__data
+                               .assign(**{"mask__": query})
+                               .query("mask__")
+                               .drop(columns = "mask__")
+                               )
             else: # grouped case
-                if _is_kwargable(func):
+                if isinstance(query, str):
                     res = (self.__data
-                               .assign(**{"rn__": lambda x: np.arange(x.shape[0])})
-                               .groupby(by, sort = False, dropna = False)
-                               .apply(lambda chunk: chunk.loc[func(chunk, **kwargs), :])
-                               .reset_index(drop = True)
-                               .sort_values("rn__", ignore_index = True)
-                               .drop(columns = "rn__")
-                               )
+                           .assign(**{"rn__": lambda x: np.array(x.shape[0])})
+                           .groupby(by, sort = False, dropna = False)
+                           .apply(lambda chunk: chunk.query(query))
+                           .reset_index(drop = True)
+                           .sort_values("rn__", ignore_index = True)
+                           .drop(columns = "rn__")
+                           )
                 else:
                     res = (self.__data
-                               .assign(**{"rn__": lambda x: np.arange(x.shape[0])})
-                               .groupby(by, sort = False, dropna = False)
-                               .apply(lambda chunk: chunk.loc[func(chunk), :])
-                               .reset_index(drop = True)
-                               .sort_values("rn__", ignore_index = True)
-                               .drop(columns = "rn__")
-                               )
+                           .assign(**{"rn__": lambda x: np.arange(x.shape[0])})
+                           .groupby(by, sort = False, dropna = False)
+                           .apply(lambda chunk: (
+                               chunk.assign(**{"mask__": query})
+                                    .query("mask__")
+                                    .drop(columns = "mask__")
+                                    )
+                                 )
+                           .reset_index(drop = True)
+                           .sort_values("rn__", ignore_index = True)
+                           .drop(columns = "rn__")
+                           ) 
         
-        if func is None and mask is not None:
+        if query is None and mask is not None:
             res = self.__data.loc[mask, :]
         
         res = res.reset_index(drop = True)     
@@ -2012,35 +2080,47 @@ class TidyPandasDataFrame:
         
         nr = self.get_nrow()
         cn = self.get_colnames()
+        
+        # strategy
+        # created 'mutated' copy and keep adding/modifying columns
+        
+        # handle 'order_by':
+        # Orders the dataframe for 'mutate' and keeps a row order column
+        # at the end of mutate operation, the dataframe is sorted in original 
+        # order and row order column is deleted
         if order_by is not None:
-            ro_name = _generate_new_string(cn)
+            # ex: {'col_a': True, 'col_b': False} # ascending or not
             if isinstance(order_by, dict):
-                self._validate_by(list(order_by.keys()))
+                self._validate_order_by(list(order_by.keys()))
                 assert all([isinstance(x, bool) for x in list(order_by.values())]),\
                     "When 'order_by' is a dict, values should be booleans"
-                mutated = (util_copy
-                           .copy(self.__data)
-                           .assign(**{ro_name: lambda x: np.arange(x.shape[0])})
-                           .sort_values(by = list(order_by.keys()),
-                                        ascending = list(order_by.values())
-                                        )
-                           )
+                mutated = (self.__data
+                               .copy()
+                               .assign(**{"_rn": lambda x: np.arange(x.shape[0])})
+                               .sort_values(by = list(order_by.keys()),
+                                            ascending = list(order_by.values())
+                                            )
+                               )
             else:
-                self._validate_by(order_by)
+                self._validate_order_by(order_by)
                 order_by = _enlist(order_by)
-                mutated = (util_copy.copy(self.__data)
-                                    .assign(**{ro_name: lambda x: np.arange(x.shape[0])})
-                                    .sort_values(order_by)
-                                    )
+                mutated = (self.__data
+                               .copy()
+                               .assign(**{"_rn": lambda x: np.arange(x.shape[0])})
+                               .sort_values(order_by)
+                               )
         else:
-            mutated = util_copy.copy(self.__data)
-                                
+            mutated = self.__data.copy()
+        
         keys = dictionary.keys()
+        # ensure new column names to be created are valid (do not start with '_')
         keys_flattened = list(
           np.concatenate([[x] if np.isscalar(x) else list(x) for x in keys])
           )
-        if not _is_unique_list(keys_flattened):
-            raise Exception("keys of the dictionary should be unique")
+        assert np.all([_is_valid_colname(x) for x in keys_flattened]),\
+          (f"column names to be created/modified should be valid column names. "
+           "A valid column name should be a string not starting from '_'"
+           )
         
         for akey in dictionary:
             
@@ -2074,7 +2154,7 @@ class TidyPandasDataFrame:
                                     or np.isscalar(rhs)):
                     mutated[akey] = rhs
                 
-                # 2. assign via function
+                # 2. assign via function -- pandas style UDF
                 elif callable(rhs) or isinstance(rhs, str):
                     if callable(rhs):
                         if _is_kwargable(rhs):
@@ -2257,14 +2337,14 @@ class TidyPandasDataFrame:
                                      ))
         
         if order_by is not None:
-            mutated = mutated.sort_values(ro_name).drop(columns = [ro_name])
+            mutated = mutated.sort_values("_rn").drop(columns = ["_rn"])
               
         return TidyPandasDataFrame(mutated
                                    , check = False
                                    , copy = False
                                    )
 
-    # basic extensions    
+    # mutate_across    
     def _mutate_across(self
                        , func
                        , column_names = None
@@ -2286,22 +2366,23 @@ class TidyPandasDataFrame:
                 self._validate_by(list(order_by.keys()))
                 assert all([isinstance(x, bool) for x in list(order_by.values())]),\
                     "When 'order_by' is a dict, values should be booleans"
-                mutated = (util_copy
-                           .copy(self.__data)
-                           .assign(**{ro_name: lambda x: np.arange(x.shape[0])})
-                           .sort_values(by = list(order_by.keys()),
-                                        ascending = list(order_by.values())
-                                        )
-                           )
+                mutated = (self.__data
+                               .copy()
+                               .assign(**{ro_name: lambda x: np.arange(x.shape[0])})
+                               .sort_values(by = list(order_by.keys()),
+                                            ascending = list(order_by.values())
+                                            )
+                               )
             else:
                 self._validate_by(order_by)
                 order_by = _enlist(order_by)
-                mutated = (util_copy.copy(self.__data)
-                                    .assign(**{ro_name: lambda x: np.arange(x.shape[0])})
-                                    .sort_values(order_by)
-                                    )
+                mutated = (self.__data
+                               .copy()
+                               .assign(**{ro_name: lambda x: np.arange(x.shape[0])})
+                               .sort_values(order_by)
+                               )
         else:
-            mutated = util_copy.copy(self.__data)
+            mutated = self.__data.copy()
         
         if (column_names is not None) and (predicate is not None):
             raise Exception(("Exactly one among 'column_names' and 'predicate' "
@@ -2349,19 +2430,168 @@ class TidyPandasDataFrame:
                , order_by = None
                , **kwargs
                ):
+        '''
+        mutate
+        Add or modify some columns
+        
+        Parameters
+        ----------
+        dictionary: dict
+            A dictionary of mutating operations. This supports multiple 
+            styles, see the examples
+        func: callable
+            A function to apply on the 'column_names' or the columns chosen by
+            the 'predicate'.
+        column_names: string or a list of strings
+            Names of the columns to apply 'func' on
+        predicate: callable
+            A function to choose columns. Input: pandas series, output: bool
+        prefix: string
+            Prefix the resulting summarization column after applying 'func'
+        by: string or a list of strings
+            column names to group by
+        order_by: string or a list of strings
+            Names of columns to order by, before applying the mutating function
+        **kwargs
+            for lambda functions in dictionary or func
+          
+        Returns
+        -------
+        TidyPandasDataFrame
+        
+        Notes
+        -----
+        1. mutate works in two modes:
+            a. direct assign: A series or 1-D array is assignged as a column
+            b. dictionary mode: A key should be a resulting column name. Value
+                should be a specification of the mutating operation. See the 
+                examples for various sytles.
+            c. across mode: A function is applied across a set of columns or 
+                columns selected by a predicate function.
+        2. mutate preserves row order.
+        3. 'by'(groupby) and 'order_by' columns should not be mutated.
+        
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        import pandas.api.types as dtypes
+        penguins_tidy = tidy(load_penguins())
+        
+        # mutate with dict
+        penguins_tidy.mutate({
+          # 1. direct assign
+          'ind' : np.arange(344), 
+          
+          # 2. using pandas style lambda function
+          "yp1": lambda x: x['year'] + 1,
+          
+          # 2a. pass the content of lambda function as a string
+          "yp1_string": "x['year'] + 1",
+          
+          # 3. pass a tuple of function and column list
+          "yp1_abstract": (lambda x: x + 1, "year"),
+          
+          # 3a. pass the tuple of function content as string and the column list
+          "yp2_abstract": ("x + 1", "year"),
+          
+          # 4. pass multiple columns
+          "x_plus_y": ("x + y", ["bill_length_mm", "bill_depth_mm"]),
+          # the above is equivalent to:
+          # "x_plus_y": (lambda x, y: x + y, ["bill_length_mm", "bill_depth_mm"]),
+          
+          # 5. output multiple columns as a list
+          ('x', 'y'): lambda x: [x['year'] - 1, x['year'] + 1],
+          # the above is equivalent to:
+          # ('x2', 'y2'): "[x['year'] - 1, x['year'] + 1]",
+          
+          # change an existing column: add one to 'bill_length_mm'
+          'bill_length_mm': ("x + 1", ),
+          # the above is equivalent to these:
+          # 'bill_length_mm': ("x + 1", 'bill_length_mm'),
+          # 'bill_length_mm': (lambda x: x + 1, 'bill_length_mm'),
+          
+          # use a mutated column for the subsequent key
+          'ind_minus_1': ("x - 1", 'ind')
+          })
+            
+        # mutate with dict and groupby    
+        penguins_tidy.mutate({'x' : "x['year'] + np.mean(x['year']) - 4015"}
+                             , by = 'sex'
+                             )
+        
+        # mutate can use columns created in the dict before
+        (penguins_tidy.select('year')
+                      .mutate({'yp1': ("x + 1", 'year'),
+                               'yp1m1': ("x - 1", 'yp1')
+                              })
+                      )
+                                
+        # use kwargs
+        (penguins_tidy
+         .select('year')
+         .mutate({'yp1': ("x + kwargs['akwarg']", 'year')}, akwarg = 10)
+         )
+        
+        # 'order_by' some column before the mutate opeation
+        # order_by column 'bill_length_mm' before computing cumsum over 'year' columns
+        # row order is preserved
+        cumsum_df = (penguins_tidy.select(['year', 'species', 'bill_length_mm'])
+                                  .mutate({'year_cumsum': (np.cumsum, 'year')},
+                                          order_by = 'bill_length_mm'
+                                          )
+                                  )
+        cumsum_df
+        # confirm the computation:
+        # pick five rows ordered by 'bill_length_mm' (asc order)
+        cumsum_df.slice_min(n = 5,
+                            order_by = 'bill_length_mm',
+                            with_ties = False
+                            )
+        
+        # across mode with column names
+        (penguins_tidy.select(['bill_length_mm', 'body_mass_g'])
+                      .mutate(column_names = ['bill_length_mm', 'body_mass_g']
+                              , func = lambda x: x - np.mean(x)
+                              , prefix = "demean_"
+                              )
+                      )
+                      
+        # grouped across with column names
+        (penguins_tidy.select(['bill_length_mm', 'body_mass_g', 'species'])
+                      .mutate(column_names = ['bill_length_mm', 'body_mass_g'],
+                              func = lambda x: x - np.mean(x),
+                              prefix = "demean_",
+                              by = 'species'
+                              )
+                      )
+          
+        # across mode with predicate
+        penguins_tidy.mutate(func = lambda x: x - np.mean(x),
+                             predicate = dtypes.is_numeric_dtype,
+                             prefix = "demean_"
+                             )
+          
+        # grouped across with predicate without prefix
+        # this will return a copy with columns changed without changing names
+        penguins_tidy.mutate(func = lambda x: x - np.mean(x),
+                             predicate = dtypes.is_numeric_dtype,
+                             by = 'species'
+                             )
+        '''
         if dictionary is None and func is None:
             raise Exception(("Either dictionary or func with "
                              "predicate/column_names should be provided."
                             ))
         if by is None:
             if dictionary is not None:
-                res = self._mutate(dictionary, order_by = order_by)
+                res = self._mutate(dictionary, order_by = order_by, **kwargs)
             else:
                 res = self._mutate_across(func
                                           , column_names = column_names
                                           , predicate = predicate
                                           , prefix = prefix
                                           , order_by = order_by
+                                          , **kwargs
                                           )
         else:
             self._validate_by(by)
@@ -2480,6 +2710,8 @@ class TidyPandasDataFrame:
                                  
                 # 2. assign via simple function
                 elif isinstance(rhs, tuple):
+                    if len(rhs) == 1:
+                        rhs = (rhs[0], akey)
                     assert len(rhs) == 2,\
                         f"When RHS is a tuple, RHS should have two elements"
                     assert callable(rhs[0]) or isinstance(rhs[0], str),\
@@ -2668,6 +2900,9 @@ class TidyPandasDataFrame:
             # pass a tuple of function and column list
             "a_median": (np.median, "year"),
             
+            # pass a tuple of function to retain same column name
+            "year": (np.median, ),
+            
             # pass multiple columns as a string
             "x_plus_y_mean": ("np.mean(x + y)", ["bill_length_mm", "bill_depth_mm"]),
             
@@ -2684,7 +2919,7 @@ class TidyPandasDataFrame:
             })
             
         # grouped summarise in dict mode
-        penguins_tidy.summarise({"a_mean": lambda x: x['year'].mean()},
+        penguins_tidy.summarise({"a_mean": lambda x: (np.mean, 'year')},
                                 by = ['species', 'sex']
                                 )
                                 
@@ -2806,14 +3041,14 @@ class TidyPandasDataFrame:
                         # case: {'col': (np.mean, )}
                         if len(anitem[1]) == 1:
                             res = (self.__data
-                                       .groupby(by)[anitem[0]]
+                                       .groupby(by, dropna = False, sort = False)[anitem[0]]
                                        .agg(anitem[1][0])
                                        .reset_index()
                                        )
                         else:
                         # case: {'new_col': (np.mean, 'col')}
                             res = (self.__data
-                                       .groupby(by)[anitem[1][1]]
+                                       .groupby(by, dropna = False, sort = False)[anitem[1][1]]
                                        .agg(anitem[1][0])
                                        .reset_index()
                                        .rename(columns = {anitem[1][1]: anitem[0]})
@@ -2828,13 +3063,13 @@ class TidyPandasDataFrame:
                                                , aggs
                                                )
                     res = TidyPandasDataFrame(res, check = False, copy = False)
-                else:
+                else: # regular case
                     lam = lambda chunk: chunk._summarise(dictionary, **kwargs)
                     res = self.group_modify(func = lam, by = by)
                     
                 # set the column order
                 # by columns come first
-                # agreagated columns come next
+                # aggreagated columns come next
                 col_order = by + keys_flattened
                 res = res.select(col_order)
             else:
@@ -2984,9 +3219,9 @@ class TidyPandasDataFrame:
             if on is not None:
                 res = (self
                        .__data
-                       .assign(**{"rn_x__": np.arange(nr_x)})
+                       .assign(**{"__rn_x": np.arange(nr_x)})
                        .merge(right = (y.to_pandas(copy = False)
-                                        .assign(**{"rn_y__": nr_y})
+                                        .assign(**{"__rn_y": nr_y})
                                         )
                               , how = how
                               , on = on
@@ -2998,17 +3233,17 @@ class TidyPandasDataFrame:
                               , indicator = False
                               , validate = None
                               )
-                       .sort_values(by = ["rn_x__", "rn_y__"]
+                       .sort_values(by = ["__rn_x", "__rn_y"]
                                     , ignore_index = True
                                     )
-                       .drop(columns = ["rn_x__", "rn_y__"])
+                       .drop(columns = ["__rn_x", "__rn_y"])
                        )
             else:
                 res = (self
                        .__data
-                       .assign(**{"rn_x__": np.arange(nr_x)})
+                       .assign(**{"__rn_x": np.arange(nr_x)})
                        .merge(right = (y.to_pandas(copy = False)
-                                        .assign(**{"rn_y__": nr_y})
+                                        .assign(**{"__rn_y": nr_y})
                                         )
                               , how = how
                               , left_on = on_x
@@ -3021,10 +3256,10 @@ class TidyPandasDataFrame:
                               , indicator = False
                               , validate = None
                               )
-                       .sort_values(by = ["rn_x__", "rn_y__"]
+                       .sort_values(by = ["__rn_x", "__rn_y"]
                                     , ignore_index = True
                                     )
-                       .drop(columns = ["rn_x__", "rn_y__"])
+                       .drop(columns = ["__rn_x", "__rn_y"])
                        )
                 # remove the right keys
                 on_y_with_suffix = [x + suffix_y for x in on_y]
@@ -3084,6 +3319,50 @@ class TidyPandasDataFrame:
                    , sort = False
                    , suffix_y = "_y"
                    ):
+        '''
+        inner_join
+        Joins columns of y to self by matching rows
+        Includes only matching keys
+        
+        Parameters
+        ----------
+        y: TidyPandasDataFrame
+        on: string or a list of strings
+            Common column names to match
+        on_x:
+            Column names of self to be matched with arg 'on_y'
+        on_y:
+            Column names of y to be matched with arg 'on_x'
+        sort: bool
+            Whether to sort by row order of self and row order of y
+        suffix_y: string
+            suffix to append the columns of y which have same names as self's 
+            column names
+          
+        Returns
+        -------
+        TidyPandasDataFrame
+        
+        Notes
+        -----
+        1. Column names of self will not have a suffix.
+        
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        import pandas.api.types as dtypes
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+        
+        penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+                                         .select(['species', 'bill_length_mm', 'island'])
+                                         )
+        penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+                                         .select(['species', 'island', 'bill_depth_mm'])
+                                         )
+                                         
+        penguins_tidy_s1.inner_join(penguins_tidy_s2, on = 'island')
+        '''
                        
         res = self._join(y = y
                         , how = "inner"
@@ -3104,7 +3383,50 @@ class TidyPandasDataFrame:
                    , sort = False
                    , suffix_y = "_y"
                    ):
-                       
+        '''
+        outer_join
+        Joins columns of y to self by matching rows
+        Includes all keys
+        
+        Parameters
+        ----------
+        y: TidyPandasDataFrame
+        on: string or a list of strings
+            Common column names to match
+        on_x:
+            Column names of self to be matched with arg 'on_y'
+        on_y:
+            Column names of y to be matched with arg 'on_x'
+        sort: bool
+            Whether to sort by row order of self and row order of y
+        suffix_y: string
+            suffix to append the columns of y which have same names as self's 
+            column names
+          
+        Returns
+        -------
+        TidyPandasDataFrame
+        
+        Notes
+        -----
+        1. Column names of self will not have a suffix.
+        
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        import pandas.api.types as dtypes
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+        
+        penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+                                         .select(['species', 'bill_length_mm', 'island'])
+                                         )
+        penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+                                         .select(['species', 'island', 'bill_depth_mm'])
+                                         )
+                                         
+        penguins_tidy_s1.outer_join(penguins_tidy_s2, on = 'island')
+        '''               
         res = self._join(y = y
                         , how = "outer"
                         , on = on
@@ -3125,7 +3447,50 @@ class TidyPandasDataFrame:
                    , sort = False
                    , suffix_y = "_y"
                    ):
-                       
+        '''
+        left_join
+        Joins columns of y to self by matching rows
+        Includes all keys in self
+        
+        Parameters
+        ----------
+        y: TidyPandasDataFrame
+        on: string or a list of strings
+            Common column names to match
+        on_x:
+            Column names of self to be matched with arg 'on_y'
+        on_y:
+            Column names of y to be matched with arg 'on_x'
+        sort: bool
+            Whether to sort by row order of self and row order of y
+        suffix_y: string
+            suffix to append the columns of y which have same names as self's 
+            column names
+          
+        Returns
+        -------
+        TidyPandasDataFrame
+        
+        Notes
+        -----
+        1. Column names of self will not have a suffix.
+        
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        import pandas.api.types as dtypes
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+        
+        penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+                                         .select(['species', 'bill_length_mm', 'island'])
+                                         )
+        penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+                                         .select(['species', 'island', 'bill_depth_mm'])
+                                         )
+                                         
+        penguins_tidy_s1.left_join(penguins_tidy_s2, on = 'island')
+        '''               
         res = self._join(y = y
                         , how = "left"
                         , on = on
@@ -3144,7 +3509,50 @@ class TidyPandasDataFrame:
                    , sort = False
                    , suffix_y = "_y"
                    ):
-                       
+        '''
+        right_join
+        Joins columns of y to self by matching rows
+        Includes all keys in y
+        
+        Parameters
+        ----------
+        y: TidyPandasDataFrame
+        on: string or a list of strings
+            Common column names to match
+        on_x:
+            Column names of self to be matched with arg 'on_y'
+        on_y:
+            Column names of y to be matched with arg 'on_x'
+        sort: bool
+            Whether to sort by row order of self and row order of y
+        suffix_y: string
+            suffix to append the columns of y which have same names as self's 
+            column names
+          
+        Returns
+        -------
+        TidyPandasDataFrame
+        
+        Notes
+        -----
+        1. Column names of self will not have a suffix.
+        
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        import pandas.api.types as dtypes
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+        
+        penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+                                         .select(['species', 'bill_length_mm', 'island'])
+                                         )
+        penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+                                         .select(['species', 'island', 'bill_depth_mm'])
+                                         )
+                                         
+        penguins_tidy_s1.right_join(penguins_tidy_s2, on = 'island')
+        '''               
         res = self._join(y = y
                         , how = "right"
                         , on = on
@@ -3164,7 +3572,50 @@ class TidyPandasDataFrame:
                    , sort = False
                    , suffix_y = "_y"
                    ):
+        '''
+        semi_join
+        Joins columns of y to self by matching rows
+        Includes keys in self if present in y
         
+        Parameters
+        ----------
+        y: TidyPandasDataFrame
+        on: string or a list of strings
+            Common column names to match
+        on_x:
+            Column names of self to be matched with arg 'on_y'
+        on_y:
+            Column names of y to be matched with arg 'on_x'
+        sort: bool
+            Whether to sort by row order of self and row order of y
+        suffix_y: string
+            suffix to append the columns of y which have same names as self's 
+            column names
+          
+        Returns
+        -------
+        TidyPandasDataFrame
+        
+        Notes
+        -----
+        1. Column names of self will not have a suffix.
+        
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        import pandas.api.types as dtypes
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+        
+        penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+                                         .select(['species', 'bill_length_mm', 'island'])
+                                         )
+        penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+                                         .select(['species', 'island', 'bill_depth_mm'])
+                                         )
+                                         
+        penguins_tidy_s2.semi_join(penguins_tidy_s1, on = 'island')
+        '''
         self._validate_join(y = y
                             , how = "inner" # this has no significance
                             , on = on
@@ -3199,7 +3650,50 @@ class TidyPandasDataFrame:
                    , sort = False
                    , suffix_y = "_y"
                    ):
+        '''
+        anti_join
+        Joins columns of y to self by matching rows
+        Includes keys in self if not present in y
         
+        Parameters
+        ----------
+        y: TidyPandasDataFrame
+        on: string or a list of strings
+            Common column names to match
+        on_x:
+            Column names of self to be matched with arg 'on_y'
+        on_y:
+            Column names of y to be matched with arg 'on_x'
+        sort: bool
+            Whether to sort by row order of self and row order of y
+        suffix_y: string
+            suffix to append the columns of y which have same names as self's 
+            column names
+          
+        Returns
+        -------
+        TidyPandasDataFrame
+        
+        Notes
+        -----
+        1. Column names of self will not have a suffix.
+        
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        import pandas.api.types as dtypes
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+        
+        penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+                                         .select(['species', 'bill_length_mm', 'island'])
+                                         )
+        penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+                                         .select(['species', 'island', 'bill_depth_mm'])
+                                         )
+                                         
+        penguins_tidy_s2.anti_join(penguins_tidy_s1, on = 'island')
+        '''
         self._validate_join(y = y
                             , how = "inner" # not significant
                             , on = on
@@ -3229,9 +3723,117 @@ class TidyPandasDataFrame:
                     .select(string, include = False)
                     )
         return res
-
-    # binding methods
+    
+    # cross join
+    def cross_join(self, y, sort = False, suffix_y = "_y"):
+        '''
+        cross_join
+        Joins columns of y to self by matching rows
+        Includes all cartersian product
+        
+        Parameters
+        ----------
+        y: TidyPandasDataFrame
+        sort: bool
+            Whether to sort by row order of self and row order of y
+        suffix_y: string
+            suffix to append the columns of y which have same names as self's 
+            column names
+          
+        Returns
+        -------
+        TidyPandasDataFrame
+        
+        Notes
+        -----
+        1. Column names of self will not have a suffix.
+        
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        import pandas.api.types as dtypes
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+        
+        penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+                                         .select(['species', 'bill_length_mm', 'island'])
+                                         )
+        penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+                                         .select(['species', 'island', 'bill_depth_mm'])
+                                         )
+                                         
+        penguins_tidy_s2.cross_join(penguins_tidy_s1)
+        '''
+        
+        assert isinstance(y, TidyPandasDataFrame),\
+          "arg 'y' should be a TidyPandasDataFrame"
+          
+        assert isinstance(sort, bool),\
+          "arg 'sort' should be a bool"
+        
+        assert isinstance(suffix_y, str),\
+          "arg 'suffix_y' should be a string"
+        
+        assert suffix_y != "",\
+          "arg 'suffix_y' should not be an empty string"
+        
+        if sort:
+            res = (pd.merge(self.__data.assign({"__rn_x": lambda x: np.arange(x.shape[0])})
+                            , y.to_pandas(copy = False).assign({"__rn_y": lambda x: np.arange(x.shape[0])})
+                            , how = "cross"
+                            , left_index = False
+                            , right_index = False
+                            , suffixes = ["", suffix_y]
+                            )
+                     .sort_values(by = ["__rn_x", "__rn_y"]
+                                      , ignore_index = True
+                                      )
+                     .drop(columns = ["__rn_x", "__rn_y"])
+                     )
+        else:  
+            res = pd.merge(self.__data
+                           , y.to_pandas(copy = False)
+                           , how = "cross"
+                           , left_index = False
+                           , right_index = False
+                           , suffixes = ["", suffix_y]
+                           )
+        
+        return TidyPandasDataFrame(res, check = False, copy = False)
+    
+    ##########################################################################
+    # bind methods
+    ##########################################################################  
+      
     def cbind(self, y):
+        '''
+        cbind
+        bind columns of y to self
+        
+        Parameters
+        ----------
+        y: a TidyPandasDataFrame with same number of rows
+        
+        Returns
+        -------
+        TidyPandasDataFrame
+        
+        Notes
+        -----
+        1. The TidyPandasDataFrame to be binded should same same number of rows.
+        2. Column names of the TidyPandasDataFrame should be different from self.
+        
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        import pandas.api.types as dtypes
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+        
+        (penguins_tidy.select(['species', 'island'])
+                      .cbind(penguins_tidy.select(['bill_length_mm', 'bill_depth_mm']))
+                      )
+        '''
         assert isinstance(y, TidyPandasDataFrame)
         # column names should differ
         assert len(set(self.get_colnames()).intersection(y.get_colnames())) == 0,\
@@ -3246,15 +3848,46 @@ class TidyPandasDataFrame:
                         )
                  .reset_index(drop = True)
                  .convert_dtypes()
+                 .fillna(pd.NA)
                  )
         return TidyPandasDataFrame(res, check = False)
     
     def rbind(self, y):
+        '''
+        rbind
+        bind rows of y to self
+        
+        Parameters
+        ----------
+        y: a TidyPandasDataFrame
+        
+        Returns
+        -------
+        TidyPandasDataFrame
+        
+        Notes
+        -----
+        1. Result will have union of column names of self and y.
+        2. Missing values are created when a column name is present in one
+           dataframe and not in the other.
+        
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        import pandas.api.types as dtypes
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+        
+        (penguins_tidy.select(['species', 'island'])
+                      .rbind(penguins_tidy.select(['island', 'bill_length_mm', 'bill_depth_mm']))
+                      )
+        '''
         res = (pd.concat([self.__data, y.to_pandas()]
                          , axis = 0
                          , ignore_index = True
                          )
                  .convert_dtypes()
+                 .fillna(pd.NA)
                  )
         return TidyPandasDataFrame(res, check = False)
     
@@ -3268,6 +3901,40 @@ class TidyPandasDataFrame:
               , ascending = False
               , wt = None
               ):
+        '''
+        count
+        count rows by groups
+        
+        Parameters
+        ----------
+        column_names: None or string or a list of strings
+            Column names to groupby before counting the rows. 
+            When None, counts all rows.
+        count_column_name: string (default: 'n')
+            Column name of the resulting count column
+        ascending: bool (default is False)
+            Whether to sort the result in ascending order of the count column
+        wt: None or string
+            When a string, should be a column name with numeric dtype. 
+            When wt is None, rows are counted.
+            When wt is present, then wt column is summed up.
+            
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        import pandas.api.types as dtypes
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+        
+        # count rows
+        penguins_tidy.count()
+        
+        # count number of rows of 'sex' column
+        penguins_tidy.count('sex')
+        
+        # sum up a column (weighted sum of rows)
+        penguins_tidy.count(['sex', 'species'], wt = 'year')
+        '''
         
         assert (column_names is None
                 or _is_string_or_string_list(column_names)
@@ -3343,19 +4010,58 @@ class TidyPandasDataFrame:
                   , wt = None
                   ):
         
+        '''
+        add_count
+        adds counts of rows by groups as a column
+        
+        Parameters
+        ----------
+        column_names: None or string or a list of strings
+            Column names to groupby before counting the rows. 
+            When None, counts all rows.
+        count_column_name: string (default: 'n')
+            Column name of the resulting count column
+        ascending: bool (default is False)
+            Whether to sort the result in ascending order of the count column
+        wt: None or string
+            When a string, should be a column name with numeric dtype. 
+            When wt is None, rows are counted.
+            When wt is present, then wt column is summed up.
+            
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        import pandas.api.types as dtypes
+        penguins = load_penguins().convert_dtypes()
+        penguins_tidy = tidy(penguins)
+        
+        # count rows
+        penguins_tidy.add_count()
+        
+        # count number of rows of 'sex' column
+        penguins_tidy.add_count('sex')
+        
+        # sum up a column (weighted sum of rows)
+        penguins_tidy.add_count(['sex', 'species'], wt = 'year')
+        '''
+        
+        if column_names is not None:
+            assert isinstance(count_column_name, str),\
+                "arg 'count_column_name' should be a string"
+            assert count_column_name not in self.colnames,\
+                "arg 'count_column_name' should not be an existing column name"
+        
         count_frame = self.count(column_names = column_names
                                  , count_column_name = count_column_name
                                  , ascending = ascending
+                                 , wt = wt
                                  )
                                  
         if column_names is None:
-            res = self.mutate(
-                {count_column_name : (count_frame.to_pandas(copy = False)
-                                                 .iloc[0,0]
-                                                 )}
-                )
+            count_value = int(count_frame.to_pandas().iloc[0, 0])
+            res = self.mutate({count_column_name: np.array(count_value)})
         else:
-            res = self.inner_join(count_frame, on = column_names)
+            res = self.left_join(count_frame, on = column_names, sort = True)
         
         return res
     
@@ -3405,7 +4111,7 @@ class TidyPandasDataFrame:
         Examples
         --------
         from palmerpenguins import load_penguins
-        penguins = load_penguins().convert_dtypes()
+        penguins = load_penguins().convert_dtypes().fillna(pd.NA)
         penguins_tidy = tidy(penguins)
         
         import numpy as np
@@ -3476,6 +4182,7 @@ class TidyPandasDataFrame:
         penguins_tidy.pivot_wider(id_cols       = "island"
                                   , names_from  = "species"
                                   , values_from = "bill_length_mm"
+                                  , values_fn   = np.mean
                                   , values_fill = 0
                                   )
         '''
@@ -3571,14 +4278,16 @@ class TidyPandasDataFrame:
                              , dropna     = False
                              , observed   = True
                              )
+        res = simplify(res)
                              
-        return tidy(res, sep = sep, verbose = False, copy = False)
+        return TidyPandasDataFrame(res, check = False, copy = False)
     
     def pivot_longer(self
                      , cols
                      , names_to = "name"
                      , values_to = "value"
                      , include = True
+                     , values_drop_na = False
                      ):
         '''
         
@@ -3587,8 +4296,9 @@ class TidyPandasDataFrame:
         cn = self.get_colnames()
         assert _is_string_or_string_list(cols),\
             "arg 'cols' should be a string or a list of strings"
+        cols = _enlist(cols)
         assert set(cols).issubset(cn),\
-            "arg 'cols' should be a subset of exisiting column names"
+            "arg 'cols' should be a subset of existing column names"
         assert isinstance(include, bool),\
             "arg 'include' should be a bool"
         if not include:
@@ -3606,6 +4316,7 @@ class TidyPandasDataFrame:
         assert values_to not in id_vars,\
             "arg 'values_to' should not match a id column"
         
+      
         # core operation
         res = (self.__data
                    .melt(id_vars         = id_vars
@@ -3614,12 +4325,16 @@ class TidyPandasDataFrame:
                          , value_name    = values_to
                          , ignore_index  = True
                          )
+                   .convert_dtypes()
+                   .fillna(pd.NA)
                    )
+                   
+        res = TidyPandasDataFrame(res, check = False, copy = False)
         
-        return TidyPandasDataFrame(res.convert_dtypes()
-                                   , check = False
-                                   , copy = False
-                                   )
+        if values_drop_na:
+            res = res.drop_na(values_to)
+        
+        return res
     
     # slice extensions
     def slice_head(self
@@ -3709,15 +4424,10 @@ class TidyPandasDataFrame:
                 assert n <= min_group_size,\
                     "arg 'n' should not exceed the size of any chunk after grouping"
                  
-                res = (self.group_modify(lambda x: x.slice(range(n))
+                res = (self.group_modify(lambda x: x.slice(np.arange(n))
                                          , by = by
                                          , preserve_row_order = True
                                          )
-                           )
-                           
-                           
-                res = (self.__data
-                           .assign(**{"_rn": lambda x: np.arange(x)})
                            )
             else:
                 assert isinstance(rounding_type, str),\
@@ -4291,13 +5001,19 @@ class TidyPandasDataFrame:
         return res
     
     # expand and complete utilities
-    def expand(self, l):
-        # TODO
+    
+    def expand(self, column_names):
+        assert isinstance(column_names, [list, tuple])
+        flattened = flatten(list(column_names)) # get correct syntax
+        assert _is_unique_list(flattened)
+        
+        
+        
         return None
             
     def complete(self, l):
         expanded = df.expand(l)
-        return expanded.join_left(df, on = expanded.get_colnames())
+        return expanded.left_join(df, on = expanded.get_colnames())
     
     # set like methods
     def union(self, y):
@@ -4453,7 +5169,7 @@ class TidyPandasDataFrame:
 
         def fill_chunk(x, cdd):
             
-            chunk = util_copy.copy(x)
+            chunk = x.copy()
             
             for akey in cdd:
                 method = cdd[akey]
@@ -4882,4 +5598,21 @@ class TidyPandasDataFrame:
         return res
     
     group_split = split
+    
+    ##########################################################################
+    # getitem and setitem based on pandas loc
+    ##########################################################################
+    
+    def __getitem__(self, key):
+      res = (self.to_pandas(copy = True)
+                 .loc[key[0], key[1]]
+                 .reset_index(drop = True)
+                 .pipe(TidyPandasDataFrame)
+                 )
+      return res
+    
+    def __setitem__(self, key, value):
+      self.to_pandas(copy = False).loc[key[0], key[1]] = value
+      return self
+    
     
