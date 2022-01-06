@@ -174,8 +174,10 @@ def _reorder_set_by_list(set_obj, list_obj):
     
     Notes
     -----
-    1. If the set contains an element not present in the list, then the output list will not contain the element.
-    2. If the list contains an element not present in the set, then the output list will not contain the element.
+    1. If the set contains an element not present in the list, 
+    then the output list will not contain the element.
+    2. If the list contains an element not present in the set, 
+    then the output list will not contain the element.
     
     Examples
     --------
@@ -395,8 +397,8 @@ def simplify(pdf
     if verbose:
         print("Successfully simplified!")
     
+    # simplify dtypes and maintain standard NAs
     pdf = pdf.convert_dtypes().fillna(pd.NA)
-    
     return pdf
 
 def is_simple(pdf, verbose = False):
@@ -942,7 +944,7 @@ class TidyPandasDataFrame:
     
     @property
     def ncol(self):
-        return self.__data.shape[0]
+        return self.__data.shape[1]
         
     def get_shape(self):
         '''
@@ -3178,7 +3180,7 @@ class TidyPandasDataFrame:
               , on = None
               , on_x = None
               , on_y = None
-              , sort = False
+              , sort = True
               , suffix_y = "_y"
               , validate = True
               ):
@@ -3316,7 +3318,7 @@ class TidyPandasDataFrame:
                    , on = None
                    , on_x = None
                    , on_y = None
-                   , sort = False
+                   , sort = True
                    , suffix_y = "_y"
                    ):
         '''
@@ -3380,7 +3382,7 @@ class TidyPandasDataFrame:
                    , on = None
                    , on_x = None
                    , on_y = None
-                   , sort = False
+                   , sort = True
                    , suffix_y = "_y"
                    ):
         '''
@@ -3444,7 +3446,7 @@ class TidyPandasDataFrame:
                    , on = None
                    , on_x = None
                    , on_y = None
-                   , sort = False
+                   , sort = True
                    , suffix_y = "_y"
                    ):
         '''
@@ -3506,7 +3508,7 @@ class TidyPandasDataFrame:
                    , on = None
                    , on_x = None
                    , on_y = None
-                   , sort = False
+                   , sort = True
                    , suffix_y = "_y"
                    ):
         '''
@@ -3569,7 +3571,7 @@ class TidyPandasDataFrame:
                    , on = None
                    , on_x = None
                    , on_y = None
-                   , sort = False
+                   , sort = True
                    , suffix_y = "_y"
                    ):
         '''
@@ -3647,7 +3649,7 @@ class TidyPandasDataFrame:
                    , on = None
                    , on_x = None
                    , on_y = None
-                   , sort = False
+                   , sort = True
                    , suffix_y = "_y"
                    ):
         '''
@@ -3725,7 +3727,7 @@ class TidyPandasDataFrame:
         return res
     
     # cross join
-    def cross_join(self, y, sort = False, suffix_y = "_y"):
+    def cross_join(self, y, sort = True, suffix_y = "_y"):
         '''
         cross_join
         Joins columns of y to self by matching rows
@@ -3897,7 +3899,7 @@ class TidyPandasDataFrame:
     
     def count(self
               , column_names = None
-              , count_column_name = 'n'
+              , name = 'n'
               , ascending = False
               , wt = None
               ):
@@ -3910,7 +3912,7 @@ class TidyPandasDataFrame:
         column_names: None or string or a list of strings
             Column names to groupby before counting the rows. 
             When None, counts all rows.
-        count_column_name: string (default: 'n')
+        name: string (default: 'n')
             Column name of the resulting count column
         ascending: bool (default is False)
             Whether to sort the result in ascending order of the count column
@@ -3930,7 +3932,7 @@ class TidyPandasDataFrame:
         penguins_tidy.count()
         
         # count number of rows of 'sex' column
-        penguins_tidy.count('sex')
+        penguins_tidy.count('sex', name = "cnt")
         
         # sum up a column (weighted sum of rows)
         penguins_tidy.count(['sex', 'species'], wt = 'year')
@@ -3943,8 +3945,8 @@ class TidyPandasDataFrame:
         if column_names is not None:
             self._validate_column_names(column_names)
             column_names = _enlist(column_names)
-        assert isinstance(count_column_name, str),\
-            "arg 'count_column_name' should a string"
+        assert isinstance(name, str),\
+            "arg 'name' should a string"
         assert isinstance(ascending, bool),\
             "arg 'ascending' should be a boolean"
         if wt is not None:
@@ -3956,10 +3958,10 @@ class TidyPandasDataFrame:
                 f"'wt' column '{wt}' should be of numeric dtype"
         
         if column_names is not None:
-            assert isinstance(count_column_name, str),\
-                "arg 'count_column_name' should be a string"
-            assert count_column_name not in column_names,\
-                ("arg 'count_column_name' should not be an element of arg "
+            assert isinstance(name, str),\
+                "arg 'name' should be a string"
+            assert name not in column_names,\
+                ("arg 'name' should not be an element of arg "
                  "'column_names'"
                  )
             
@@ -3971,8 +3973,8 @@ class TidyPandasDataFrame:
                                     )
                            .size()
                            .reset_index(drop = False)
-                           .rename(columns = {0: count_column_name})
-                           .sort_values(by = count_column_name
+                           .rename(columns = {0: name})
+                           .sort_values(by = name
                                         , axis         = 0
                                         , ascending    = ascending
                                         , inplace      = False
@@ -3984,20 +3986,20 @@ class TidyPandasDataFrame:
                 res = TidyPandasDataFrame(res, check = False, copy = False)
             else:
                 res = (self.summarise(
-                              {count_column_name: (np.sum, wt)}
+                              {name: (np.sum, wt)}
                                , by = column_names
                                , wt = wt
                                )
-                           .arrange(count_column_name, ascending = ascending)
+                           .arrange(name, ascending = ascending)
                            )
         else:
             if wt is None:
-                res = pd.DataFrame({count_column_name : self.get_nrow()}
+                res = pd.DataFrame({name : self.get_nrow()}
                                    , index = [0]
                                    )
                 res = TidyPandasDataFrame(res, check = False, copy = False)
             else:
-                res = self.summarise({count_column_name: "np.sum(x[kwargs['wt']])"}
+                res = self.summarise({name: "np.sum(x[kwargs['wt']])"}
                                      , wt = wt
                                      )
               
@@ -4005,7 +4007,7 @@ class TidyPandasDataFrame:
 
     def add_count(self
                   , column_names = None
-                  , count_column_name = 'n'
+                  , name = 'n'
                   , ascending = False
                   , wt = None
                   ):
@@ -4019,7 +4021,7 @@ class TidyPandasDataFrame:
         column_names: None or string or a list of strings
             Column names to groupby before counting the rows. 
             When None, counts all rows.
-        count_column_name: string (default: 'n')
+        name: string (default: 'n')
             Column name of the resulting count column
         ascending: bool (default is False)
             Whether to sort the result in ascending order of the count column
@@ -4039,27 +4041,27 @@ class TidyPandasDataFrame:
         penguins_tidy.add_count()
         
         # count number of rows of 'sex' column
-        penguins_tidy.add_count('sex')
+        penguins_tidy.add_count('sex', name = "cnt")
         
         # sum up a column (weighted sum of rows)
         penguins_tidy.add_count(['sex', 'species'], wt = 'year')
         '''
         
         if column_names is not None:
-            assert isinstance(count_column_name, str),\
-                "arg 'count_column_name' should be a string"
-            assert count_column_name not in self.colnames,\
-                "arg 'count_column_name' should not be an existing column name"
+            assert isinstance(name, str),\
+                "arg 'name' should be a string"
+            assert name not in self.colnames,\
+                "arg 'name' should not be an existing column name"
         
         count_frame = self.count(column_names = column_names
-                                 , count_column_name = count_column_name
+                                 , name = name
                                  , ascending = ascending
                                  , wt = wt
                                  )
                                  
         if column_names is None:
             count_value = int(count_frame.to_pandas().iloc[0, 0])
-            res = self.mutate({count_column_name: np.array(count_value)})
+            res = self.mutate({name: np.array(count_value)})
         else:
             res = self.left_join(count_frame, on = column_names, sort = True)
         
@@ -4090,11 +4092,11 @@ class TidyPandasDataFrame:
             A value to fill the missing values with
             When None, missing values are left as-is
         
-        values_fn: function or a dict of functions, default is None
+        values_fn: function or a dict of functions (default is None)
             A function to handle multiple values per row in the result.
             When a dict, keys should be same as arg 'values_from'
             When None, multiple values are in kept a list and a single value is
-            not kept in a list
+            not kept in a list (will be a scalar)
         
         id_cols: string or list of strings, default is None
             Names of the columns that should uniquely identify an observation 
@@ -4290,7 +4292,58 @@ class TidyPandasDataFrame:
                      , values_drop_na = False
                      ):
         '''
+        Pivot from wide to long
+        aka melt
         
+        Parameters
+        ----------
+        cols: list of strings
+          Column names to be melted.
+          The dtypes of the columns should match.
+          Leftover columns are considered as 'id' columns.
+          When include is False, 'cols' refers to leftover columns.
+        names_to: string (default: 'name')
+          Name of the resulting column which will hold the names of the columns
+          to be melted
+        values_to: string (default: 'value')
+          Name of the resulting column which will hold the values of the columns
+          to be melted
+        include: bool
+          If True, cols are used to melt. Else, cols are considered as 'id'
+          columns
+        values_drop_na: bool
+          Whether to drop the rows corresponding to missing value in the result
+          
+        Returns
+        -------
+        TidyPandasDataFrame
+        
+        Examples
+        --------
+        from palmerpenguins import load_penguins
+        penguins = load_penguins().convert_dtypes().fillna(pd.NA)
+        penguins_tidy = tidy(penguins)
+        
+        # pivot to bring values from columns ending with 'mm'
+        cns = ['species'
+               , 'bill_length_mm'
+               , 'bill_depth_mm'
+               , 'flipper_length_mm'
+               ]
+        (penguins_tidy.select(cns)
+                      .pivot_longer(cols = ['bill_length_mm',
+                                            'bill_depth_mm',
+                                            'flipper_length_mm']
+                                    )
+                      )
+                      
+        # pivot by specifying 'id' columns to obtain the same result as above
+        # this is helpful when there are many columns to melt
+        (penguins_tidy.select(cns)
+                      .pivot_longer(cols = 'species',
+                                    include = False
+                                    )
+                      )
         '''
         # assertions
         cn = self.get_colnames()
@@ -4316,7 +4369,6 @@ class TidyPandasDataFrame:
         assert values_to not in id_vars,\
             "arg 'values_to' should not match a id column"
         
-      
         # core operation
         res = (self.__data
                    .melt(id_vars         = id_vars
@@ -4336,7 +4388,10 @@ class TidyPandasDataFrame:
         
         return res
     
+    ##########################################################################
     # slice extensions
+    ##########################################################################
+    
     def slice_head(self
                    , n = None
                    , prop = None
@@ -4588,14 +4643,15 @@ class TidyPandasDataFrame:
         n: int
             Number of rows to sample, should be atleast 1
         prop: float
-            proportion of rows to subset, should be non-negative
+            Proportion of rows to subset, should be non-negative
         replace: bool, default is False
             Whether to sampling should be done with replacement
-        weights: string, pandas series, numpy array
+        weights: string, pandas series, numpy array (Default is None)
             When a string, it should be an column of numeric dtype
-            Default is None
-        random_state: positive integer
-            seed to keep the sampling reproducible
+            When None, no weights are used
+        random_state: positive integer (Default is None)
+            Seed to keep the sampling reproducible
+            When None, a pseudorandom seed is chosen
         by: string or list of strings
             column names to group by
         
@@ -4614,15 +4670,18 @@ class TidyPandasDataFrame:
         penguins = load_penguins()
         penguins_tidy = tidy(penguins)
         
+        # swor: sample without replacement
+        # swr: sample with replacement
+        
         # sample by specifiying count
-        penguins_tidy.slice_sample(n = 5)                    # sample without replacement
-        penguins_tidy.slice_sample(n = 5, replace = True)    # sample with replacement, smaller than input
-        penguins_tidy.slice_sample(n = 1000, replace = True) # sample with replacement, larger than input
+        penguins_tidy.slice_sample(n = 5)                    # swor
+        penguins_tidy.slice_sample(n = 5, replace = True)    # swr, smaller than input
+        penguins_tidy.slice_sample(n = 1000, replace = True) # swr, larger than input
         
         # sample by specifiying proportion of number of rows of the input
-        penguins_tidy.slice_sample(prop = 0.3) # sample without replacement
-        penguins_tidy.slice_sample(prop = 0.3) # sample with replacement, smaller than input
-        penguins_tidy.slice_sample(prop = 1.1) # sample with replacement, larger than input
+        penguins_tidy.slice_sample(prop = 0.3)                 # swor
+        penguins_tidy.slice_sample(prop = 0.3, replace = True) # swr, smaller than input
+        penguins_tidy.slice_sample(prop = 1.1, replace = True) # swr, larger than input
         
         # sample with weights
         penguins_tidy.slice_sample(prop = 0.3, weights = 'year')
@@ -4713,7 +4772,7 @@ class TidyPandasDataFrame:
                     "arg 'n' should not exceed the size of any chunk after grouping"
                 
                 def sample_chunk_n(x):
-                    rs = x['seed__'].iloc[0]
+                    rs = x['__seed'].iloc[0]
                     res = (x.sample(n              = n
                                     , axis         = "index"
                                     , replace      = replace
@@ -4729,11 +4788,11 @@ class TidyPandasDataFrame:
                            .groupby(by, sort = False, dropna = False)
                            .apply(sample_chunk_n)
                            .reset_index(drop = True)
-                           .drop(columns = "seed__")
+                           .drop(columns = "__seed")
                            )
             else:
                 def sample_chunk_prop(x):
-                    rs = x['seed__'].iloc[0]
+                    rs = x['__seed'].iloc[0]
                     res = (x.sample(frac           = prop
                                     , axis         = "index"
                                     , replace      = replace
@@ -4749,7 +4808,7 @@ class TidyPandasDataFrame:
                            .groupby(by, sort = False, dropna = False)
                            .apply(sample_chunk_prop)
                            .reset_index(drop = True)
-                           .drop(columns = "seed__")
+                           .drop(columns = "__seed")
                            )
             
             res = (res.sample(frac = 1, random_state = random_state)
@@ -4760,6 +4819,10 @@ class TidyPandasDataFrame:
     
     sample = slice_sample
     
+    ##########################################################################
+    # slice min/max
+    ##########################################################################
+    
     def slice_min(self
                   , n = None
                   , prop = None
@@ -4768,9 +4831,14 @@ class TidyPandasDataFrame:
                   , rounding_type = "round"
                   , by = None
                   ):
+        '''
+        slice_min
+        Subset some rows ordered by some columns
         
-        nr = self.get_nrow()
-        cn = self.get_colnames()
+        # WIP subset 3 rows corresponding to 'bill_length_mm'
+        '''
+        nr = self.nrow
+        cn = self.colnames
 
         # exactly one of then should be none
         assert not ((n is None) and (prop is None)),\
@@ -4795,6 +4863,7 @@ class TidyPandasDataFrame:
         
         if order_by is None:
             raise Exception("arg 'order_by' should not be None")
+        self._validate_order_by(order_by)
           
         assert isinstance(with_ties, bool),\
             "arg 'with_ties' should be a bool"
@@ -4808,7 +4877,6 @@ class TidyPandasDataFrame:
             res = (self.__data
                        .nsmallest(n, columns = order_by, keep = keep_value)
                        .reset_index(drop = True)
-                       .convert_dtypes()
                        .loc[:, cn]
                        .pipe(lambda x: TidyPandasDataFrame(x, check = False))
                        )
@@ -5145,7 +5213,7 @@ class TidyPandasDataFrame:
         '''
         cn = self.get_colnames()
         assert isinstance(column_direction_dict, dict),\
-            "arg 'column_direction_dict' should be a dict"
+            "arg 'column_direction_dict' shoulgithubd be a dict"
         assert set(column_direction_dict.keys()).issubset(cn),\
             ("keys of 'column_direction_dict' should be a subset of existing "
              "column names"
@@ -5604,15 +5672,194 @@ class TidyPandasDataFrame:
     ##########################################################################
     
     def __getitem__(self, key):
-      res = (self.to_pandas(copy = True)
+      '''
+      Subset some and columns of the dataframe
+      Always returns a copy and not a view
+      
+      Parameters
+      ----------
+      key: tuple of x and y subset operations
+      
+      Returns
+      -------
+      TidyPandasDataFrame
+      
+      Notes
+      -----
+      1. Rows can be subset by specifying integer positions 
+      (as int, list, slice and range objects) or by providing a boolean mask.
+      
+      2. Columns can be subset by specifiying integer positions 
+      (as int, list, slice and range objects) or by specifying a list of unique 
+      column names or by providing a boolean mask.
+      
+      3. Any combination of row and column specifications work together.
+      
+      Examples
+      --------
+      from palmerpenguins import load_penguins
+      penguins = load_penguins().convert_dtypes()
+      penguins_tidy = tidy(penguins)
+      
+      # Rows can be subset with integer indexes with slice objects
+      # right end is not included in slice objects
+      # first four rows
+      penguins_tidy[0:4,:]
+      
+      # a row can be subset with a single integer
+      # moreover subsetting always returns a dataframe
+      penguins_tidy[10, :]
+      
+      # Rows can be subset with a boolean mask 
+      penguins_tidy[penguins_tidy.pull('bill_length_mm') > 40, :]
+      
+      # Columns can be subset using column names
+      penguins_tidy[0:5, ["species", "year"]]
+      
+      # A single column can be subset by specifying column name as a string
+      # moreover subsetting always returns a dataframe 
+      penguins_tidy[0:5, "species"] # same as: penguins_tidy[0:5, ["species"]]
+      
+      # columns can be subset by integer position
+      penguins_tidy[[7, 6, 5], 0:3]
+      
+      # row and columns can be subset with different types of specifications
+      penguins_tidy[0:2, 1] # same as: penguins_tidy[[0, 1], 'island']
+      '''
+      cn = self.colnames
+      key = list(key)
+      
+      # handle a single integer for row
+      if isinstance(key[0], int):
+        key[0] = [key[0]]
+      # slice should work like regular python (right end is not included)
+      elif isinstance(key[0], slice):
+        key[0] = range(self.nrow)[key[0]]
+        
+      # handle integer indexing for columns
+      is_int = isinstance(key[1], int)
+      is_int_list = (isinstance(key[1], list) 
+                     and 
+                     all([isinstance(x, int) for x in key[1]])
+                     )
+      if (is_int or is_int_list):
+        key[1] = _enlist(key[1])
+        assert _is_unique_list(key[1]),\
+            "Integer index for columns should be unique"
+        assert np.min(key[1]) >= 0,\
+            "Integer index for columns should be non-negative"
+        assert np.max(key[1]) < self.ncol,\
+            "Integer index for columns is beyond the range"
+        
+        key[1] = [cn[x] for x in key[1]]
+      # slice should work like regular python (right end is not included)
+      elif isinstance(key[1], slice):
+        key[1] = cn[key[1]]
+      # handle single string column index
+      elif isinstance(key[1], str):
+        key[1] = _enlist(key[1])
+      
+      res = (self.to_pandas(copy = False)
                  .loc[key[0], key[1]]
                  .reset_index(drop = True)
-                 .pipe(TidyPandasDataFrame)
                  )
-      return res
+      return TidyPandasDataFrame(res, check = False, copy = True)
     
     def __setitem__(self, key, value):
-      self.to_pandas(copy = False).loc[key[0], key[1]] = value
-      return self
+      '''
+      Change a subset of the dataframe in-place
+      
+      Parameters
+      ----------
+      key: tuple of x and y subset operations
+      value: value to be assigned
+      
+      Returns
+      -------
+      TidyPandasDataFrame
+      
+      Notes
+      -----
+      1. Rows can be subset by specifying integer positions 
+      (as int, list, slice and range objects) or by providing a boolean mask.
+      
+      2. Columns can be subset by specifiying integer positions 
+      (as int, list, slice and range objects) or by specifying a list of unique 
+      column names or by providing a boolean mask.
+      
+      3. Any combination of row and column specifications work together.
+      
+      4. Assignment is done by "pdf.loc[exp1, exp2] = value". Incompatible value
+      assignment exceptions are handled by this method and they will cascade.
+      
+      Examples
+      --------
+      from palmerpenguins import load_penguins
+      penguins = load_penguins().convert_dtypes()
+      penguins_tidy = tidy(penguins)
+      
+      # assign a single value with correct type
+      penguins_tidy[0,0] = "a"
+      penguins_tidy[0:5, :]
+      
+      # assign a multiple values with correct type
+      penguins_tidy[0:3,0] = "b"
+      penguins_tidy[0:5, :]
+      
+      # assign a row partially by a list of appropriate types
+      penguins_tidy[0, ['species', 'bill_length_mm']] = ['c', 1]
+      penguins_tidy[0:5, :]
+      
+      # assign a subset with another TidyPandasDataFrame
+      penguins_tidy[0:2, 0:2] = pd.DataFrame({'species': ['d', 'e']
+                                              , 'island': ['f', 'g']
+                                              }).pipe(tidy)
+      penguins_tidy[0:5, :]
+      '''
+      cn = self.colnames
+      key = list(key)
+      
+      # handle a single integer for row
+      if isinstance(key[0], int):
+        key[0] = [key[0]]
+      # slice should work like regular python (right end is not included)
+      elif isinstance(key[0], slice):
+        key[0] = range(self.nrow)[key[0]]
+        
+      # handle integer indexing for columns
+      is_int = isinstance(key[1], int)
+      is_int_list = (isinstance(key[1], list) 
+               and 
+               all([isinstance(x, int) for x in key[1]])
+               )
+      if (is_int or is_int_list):
+        key[1] = _enlist(key[1])
+        assert _is_unique_list(key[1]),\
+            "Integer index for columns should be unique"
+        assert np.min(key[1]) >= 0,\
+            "Integer index for columns should be non-negative"
+        assert np.max(key[1]) < self.ncol,\
+            "Integer index for columns is beyond the range"
+        
+        key[1] = [cn[x] for x in key[1]]
+      # slice should work like regular python (right end is not included)
+      elif isinstance(key[1], slice):
+        key[1] = cn[key[1]]
+      # handle single string column index
+      elif isinstance(key[1], str):
+        key[1] = _enlist(key[1])
+      
+      # handle the case when value is a pandas dataframe
+      if isinstance(value, (pd.DataFrame
+                            , pd.core.groupby.generic.DataFrameGroupBy
+                            )):
+        msg = ("When arg 'value' is a dataframe, then it should be a "
+               "TidyPandasDataFrame and not a pandas dataframe")
+        raise Exception(msg)
+      
+      # handle when value is a tidy pdf
+      if isinstance(value, TidyPandasDataFrame):
+        self.to_pandas(copy = False).loc[key[0], key[1]] = value.to_pandas()
+      # nothing to return as this is an inplace operation
     
     
