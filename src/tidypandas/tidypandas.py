@@ -4,15 +4,34 @@
 # -----------------------------------------------------------------------------
 
 import copy as util_copy
-import numpy as np
-import pandas as pd
 import warnings
 import re
 import functools
-from collections_extended import setlist
-from skimpy import skim
 import string as string
 from collections import namedtuple
+
+import numpy as np
+import pandas as pd
+from pandas.io.formats import format as fmt
+from pandas._config import get_option
+from collections_extended import setlist
+from skimpy import skim
+
+from tidypandas.tidy_helpers import *
+from tidypandas._unexported_utils import (
+                                            _is_kwargable, 
+                                            _is_valid_colname,
+                                            _is_string_or_string_list,
+                                            _enlist,
+                                            _get_unique_names,
+                                            _is_unique_list,
+                                            _get_dtype_dict,
+                                            _generate_new_string,
+                                            _coerce_series,
+                                            _coerce_pdf
+                                        )
+import tidypandas.format as tidy_fmt
+
 
 class tidyframe:
     '''
@@ -209,40 +228,117 @@ class tidyframe:
     ##########################################################################
     # repr
     ##########################################################################
-    def __repr__(self):
+    # def __repr__(self):
         
+    #     nr = self.nrow
+    #     nc = self.ncol
+        
+    #     header_line   = f"# A tidy dataframe: {nr} X {nc}"
+    #     head_10 = self.__data.head(10)
+    #     # dtype_dict = _get_dtype_dict(self.__data)
+    #     # for akey in dtype_dict:
+    #     #     dtype_dict[akey] = akey +  " (" + dtype_dict[akey][0:3] + ")"
+    #     # 
+    #     # head_10 = self.__data.head(10).rename(columns = dtype_dict)
+    #     pandas_str = head_10.__str__()
+
+    #     left_over = nr - 10
+    #     if left_over > 0:
+    #         leftover_str = f"# ... with {left_over} more rows"
+
+    #         tidy_string = (header_line +
+    #                        '\n' +
+    #                        pandas_str +
+    #                        '\n' +
+    #                        leftover_str
+    #                        )
+    #     else:
+    #         tidy_string = (header_line +
+    #                        '\n' +
+    #                        pandas_str
+    #                        )
+
+    #     return tidy_string
+
+    def __repr__(self) -> str:
+        """
+        Return a string representation for a particular DataFrame.
+        """
+        # if self._info_repr():
+        #     buf = StringIO()
+        #     self.info(buf=buf)
+        #     return buf.getvalue()
+
+        repr_params = fmt.get_dataframe_repr_params()
+        # return self.to_string(**repr_params)
+
         nr = self.nrow
         nc = self.ncol
         
         header_line   = f"# A tidy dataframe: {nr} X {nc}"
-        head_10 = self.__data.head(10)
-        # dtype_dict = _get_dtype_dict(self.__data)
-        # for akey in dtype_dict:
-        #     dtype_dict[akey] = akey +  " (" + dtype_dict[akey][0:3] + ")"
-        # 
-        # head_10 = self.__data.head(10).rename(columns = dtype_dict)
-        pandas_str = head_10.__str__()
 
-        left_over = nr - 10
-        if left_over > 0:
-            leftover_str = f"# ... with {left_over} more rows"
+        from pandas import option_context
 
-            tidy_string = (header_line +
-                           '\n' +
-                           pandas_str +
-                           '\n' +
-                           leftover_str
-                           )
-        else:
-            tidy_string = (header_line +
-                           '\n' +
-                           pandas_str
-                           )
+        with option_context("display.max_colwidth",repr_params["max_colwidth"]):
+            formatter = tidy_fmt.TidyDataFrameFormatter(
+                self.__data,
+                min_rows=repr_params["min_rows"],
+                max_rows=repr_params["max_rows"],
+                max_cols=repr_params["max_cols"],
+                # show_dimensions=repr_params["show_dimensions"]
+            )
+            formatted_str = header_line + "\n" + fmt.DataFrameRenderer(formatter)\
+                                               .to_string(line_width=repr_params["line_width"])
 
-        return tidy_string
-      
+            return formatted_str
+
+    # def _repr_html_(self):
+    #     return self.__data._repr_html_()
+
     def _repr_html_(self):
-        return self.__data._repr_html_()
+        """
+        Return a html representation for a particular DataFrame.
+        Mainly for IPython notebook.
+        """
+        # if self._info_repr():
+        #     buf = StringIO()
+        #     self.info(buf=buf)
+        #     # need to escape the <class>, should be the first line.
+        #     val = buf.getvalue().replace("<", r"&lt;", 1)
+        #     val = val.replace(">", r"&gt;", 1)
+        #     return "<pre>" + val + "</pre>"
+        
+        if get_option("display.notebook_repr_html"):
+            max_rows = get_option("display.max_rows")
+            min_rows = get_option("display.min_rows")
+            max_cols = get_option("display.max_columns")
+            show_dimensions = get_option("display.show_dimensions")
+
+            formatter = tidy_fmt.TidyDataFrameFormatter(
+                self.__data,
+                columns=None,
+                col_space=None,
+                na_rep="<NA>",
+                formatters=None,
+                float_format=None,
+                sparsify=None,
+                justify=None,
+                index_names=True,
+                header=True,
+                index=True,
+                bold_rows=True,
+                escape=True,
+                max_rows=max_rows,
+                min_rows=min_rows,
+                max_cols=max_cols,
+                show_dimensions=show_dimensions,
+                decimal=".",
+            )
+            return tidy_fmt.TidyDataFrameRenderer(formatter).to_html(notebook=True)
+        else:
+            return None
+
+
     
     ##########################################################################
     # to_pandas methods

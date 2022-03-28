@@ -1,97 +1,25 @@
 # tidypandas
-`make pandas talk dplyr`
 
-**Under Construction**
+A tidyverse inspired wrapper over Pandas Dataframe
 
-Implementation notes (for the developer team):
+## Installation
 
-## Basic Verbs (one-table)
+```bash
+$ pip install tidypandas
+```
 
-- [x] select
-- [x] group_by
-- [x] ungroup
-- [x] mutate
-- [x] arrange
-- [x] filter
-- [x] distinct
-- [x] summarise
-- [x] slice
+## Usage
 
-## class methods
+- TODO
 
-- [x] init
-- [x] repr
-- [x] to_pandas
-- [x] get_nrow
-- [x] get_ncol
-- [x] get_colnames
-- [x] get_shape
-- [x] get_dim
-- [x] get_groupvars for tidy grouped
-- [x] to_dict for tidy grouped
-- [x] pipe
-- [x] pipe2 (or pipe_pandas)
-- [x] to_series
+## Contributing
 
-## join methods
+Interested in contributing? Check out the contributing guidelines. Please note that this project is released with a Code of Conduct. By contributing to this project, you agree to abide by its terms.
 
-- [x] join method for tidy (inner, outer, left, right, anti are special cases)
-- [x] join method for tidy grouped
+## License
 
-## bind methods
+`tidypandas` was created by Srikanth K S. It is licensed under the terms of the MIT license.
 
-- [x] cbind
-- [x] rbind
+## Credits
 
-## util methods
-
-- [x] count
-- [x] add_count
- 
-## pivot methods
-
-- [x] pivot_longer
-- [x] pivot_wider
-
-## slice methods
-
-- [x] slice_head
-- [x] slice_tail
-- [x] slice_sample
-- [x] slice_bootstrap
-- [x] slice_min
-- [x] slice_max
-
-## apply methods
-
-- [x] group_modify
-
-## set-like methods (for ungrouped only)
-
-- [x] union
-- [x] intersect
-- [x] setdiff
-
-## completing methods
-
-- [ ] expand
-- [ ] complete
-
-## na methods
-
-- [x] fill_na
-- [x] replace_na
-- [x] drop_na
-
-## character column helper methods
-
-- [x] separate
-- [x] unite
-- [x] separate_rows
-
-## functions
-
-- [x] bind_rows
-- [x] bind_cols
-
-
+`tidypandas` was created with [`cookiecutter`](https://cookiecutter.readthedocs.io/en/latest/) and the `py-pkgs-cookiecutter` [template](https://github.com/py-pkgs/py-pkgs-cookiecutter).
