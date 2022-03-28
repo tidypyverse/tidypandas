@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "tidypandas"
+version = "0.1.0"
+description = "A tidyverse inspired wrapper over Pandas Dataframe"
+authors = ["Srikanth K S"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pandas = "^1.2.3"
+collections-extended = "^2.0.2"
+skimpy = "^0.0.5"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
