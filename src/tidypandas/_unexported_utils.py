@@ -8,7 +8,6 @@ import inspect
 import pandas.api.types as dtypes
 
 def _is_kwargable(func):
-  
     res = False
     spec = inspect.getfullargspec(func)
     if spec.varkw is not None:
@@ -16,7 +15,8 @@ def _is_kwargable(func):
     return res
 
 def _is_valid_colname(string):
-    return isinstance(string, str) and len(string) != 0 and string[0] != "_"
+    res = (isinstance(string, str)) and (len(string) != 0) and (string[0] != "_")
+    return res
   
 def _is_string_or_string_list(x):
     '''
@@ -207,6 +207,7 @@ def _coerce_series(aseries):
         ser = aseries.astype(dt)
     
     return ser
+
 
 def _coerce_pdf(pdf):
     for acol in list(pdf.columns):

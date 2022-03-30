@@ -13,6 +13,8 @@ collections-extended = "^2.0.2"
 skimpy = "^0.0.5"
 
 [tool.poetry.dev-dependencies]
+myst-nb = {version = "^0.13.2", python = "^3.9"}
+sphinx-autoapi = "^1.8.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

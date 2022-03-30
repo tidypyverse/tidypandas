@@ -3,6 +3,10 @@
 # Find the dev version here: https://github.com/talegari/tidypandas
 # -----------------------------------------------------------------------------
 
+# -----------------------------------------------------------------------------
+# simplify
+# -----------------------------------------------------------------------------
+
 def simplify(pdf
              , sep = "__"
              , verbose = False
@@ -160,6 +164,10 @@ def simplify(pdf
     pdf = _coerce_pdf(pdf)
     return pdf
 
+# -----------------------------------------------------------------------------
+# is_simple
+# -----------------------------------------------------------------------------
+
 def is_simple(pdf, verbose = False):
     '''
     is_simple
@@ -236,6 +244,10 @@ def is_simple(pdf, verbose = False):
             print("Column names should not start with an underscore.")
             
     return flag
+
+# -----------------------------------------------------------------------------
+# tidy
+# -----------------------------------------------------------------------------
 
 # shorthand to convert a non-simple pandas dataframe to a tidyframe
 def tidy(pdf

@@ -17,7 +17,7 @@ from pandas._config import get_option
 from collections_extended import setlist
 from skimpy import skim
 
-from tidypandas.tidy_helpers import *
+from tidypandas.tidy_helpers import simplify, is_simple
 from tidypandas._unexported_utils import (
                                             _is_kwargable, 
                                             _is_valid_colname,
@@ -36,8 +36,8 @@ import tidypandas.format as tidy_fmt
 class tidyframe:
     '''
     tidyframe class
-    A tidy pandas dataframe is a wrapper over 'simple' ungrouped pandas 
-    DataFrame object.
+    A tidy pandas dataframe is a wrapper over 'simple' pandas 
+    DataFrame object with method similar to tidyverse.
     
     Notes
     -----
