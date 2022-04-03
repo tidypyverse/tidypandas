@@ -2,7 +2,9 @@
 # This file is a part of tidypandas python package
 # Find the dev version here: https://github.com/talegari/tidypandas
 # -----------------------------------------------------------------------------
+import string
 
+import numpy as np
 import pandas as pd
 import inspect
 import pandas.api.types as dtypes
@@ -36,10 +38,10 @@ def _is_string_or_string_list(x):
     
     Examples
     --------
-    _is_string_or_string_list("bar")      # True
-    _is_string_or_string_list(["bar"])    # True
-    _is_string_or_string_list(("bar",))   # False
-    _is_string_or_string_list(["bar", 1]) # False
+    >>> _is_string_or_string_list("bar")      # True
+    >>> _is_string_or_string_list(["bar"])    # True
+    >>> _is_string_or_string_list(("bar",))   # False
+    >>> _is_string_or_string_list(["bar", 1]) # False
     '''
     res = False
     if isinstance(x, str):
@@ -70,9 +72,9 @@ def _enlist(x):
     
     Examples
     --------
-    _enlist(["a"]) # ["a"]
-    _enlist("a")   # ["a"]
-    _enlist((1, )) # [(1, )]
+    >>> _enlist(["a"]) # ["a"]
+    >>> _enlist("a")   # ["a"]
+    >>> _enlist((1, )) # [(1, )]
     '''
     if not isinstance(x, list):
         x = [x]
@@ -96,9 +98,9 @@ def _get_unique_names(strings):
     
     Examples
     --------
-    _get_unique_names(['a', 'b'])               # ['a', 'b']
-    _get_unique_names(['a', 'a'])               # ['a', 'a_1']
-    _get_unique_names(['a', 'a', 'a_1'])        # ['a', 'a_1_1', 'a_1']
+    >>> _get_unique_names(['a', 'b'])               # ['a', 'b']
+    >>> _get_unique_names(['a', 'a'])               # ['a', 'a_1']
+    >>> _get_unique_names(['a', 'a', 'a_1'])        # ['a', 'a_1_1', 'a_1']
     '''
     assert _is_string_or_string_list(strings)
     strings = _enlist(strings)

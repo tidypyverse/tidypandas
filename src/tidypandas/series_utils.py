@@ -25,8 +25,8 @@ def _extend(aseries, length):
     
     Examples
     --------
-    ser = pd.Series([1,2,3])
-    _extend(ser, 5)
+    >>> ser = pd.Series([1,2,3])
+    >>> _extend(ser, 5)
     '''
     assert isinstance(aseries, pd.Series)
     assert isinstance(length, int)
@@ -71,11 +71,11 @@ def ifelse(condition, yes, no):
     
     Examples
     --------
-    x = pd.Series([1,pd.NA,3]).astype('Int64')
-    y = pd.Series([4,5,6]).astype('Int64')
-    z = pd.Series([7,8,9]).astype('Int64')
-    
-    ifelse(x > 2, y + 1, z - 1)
+    >>> x = pd.Series([1,pd.NA,3]).astype('Int64')
+    >>> y = pd.Series([4,5,6]).astype('Int64')
+    >>> z = pd.Series([7,8,9]).astype('Int64')
+    >>> 
+    >>> ifelse(x > 2, y + 1, z - 1)
     '''
     cond = _coerce_series(pd.Series(condition))
     if not isinstance(yes, pd.Series):
@@ -120,12 +120,12 @@ def coalesce(list_of_series):
     
     Examples
     --------
-    x = pd.Series([1, pd.NA, pd.NA])
-    y = pd.Series([4, 5    , pd.NA])
-    z = pd.Series([7, 8    , pd.NA])
-    a = 10
-    
-    coalesce([x, y, z, a])
+    >>> x = pd.Series([1, pd.NA, pd.NA])
+    >>> y = pd.Series([4, 5    , pd.NA])
+    >>> z = pd.Series([7, 8    , pd.NA])
+    >>> a = 10
+    >>> 
+    >>> coalesce([x, y, z, a])
     '''
     assert isinstance(list_of_series, list)
     assert all([isinstance(x, pd.Series) or np.isscalar(x) for x in list_of_series])
@@ -177,10 +177,10 @@ def case_when(list_of_tuples, default = pd.NA):
     
     Examples
     --------
-    x = pd.Series([3, 5 , pd.NA, 4]).astype('Int64')
-    
-    case_when([(x >= 5, 500), (x >= 4, 400), (pd.isna(x), 1)])
-    case_when([(x >= 5, 500), (x >= 4, 400)], default = 100)
+    >>> x = pd.Series([3, 5 , pd.NA, 4]).astype('Int64')
+    >>> 
+    >>> case_when([(x >= 5, 500), (x >= 4, 400), (pd.isna(x), 1)])
+    >>> case_when([(x >= 5, 500), (x >= 4, 400)], default = 100)
     '''
     assert isinstance(list_of_tuples, list)
     assert all([isinstance(atuple, tuple) for atuple in list_of_tuples])
@@ -228,8 +228,8 @@ def _order_series(x, na_position = "last"):
     
     Examples
     --------
-    ser = pd.Series([3, 1, 2, pd.NA]).astype('Int64')
-    _order_series(ser)
+    >>> ser = pd.Series([3, 1, 2, pd.NA]).astype('Int64')
+    >>> _order_series(ser)
     '''
     assert isinstance(x, pd.Series)
     assert isinstance(na_position, str)
@@ -264,11 +264,11 @@ def order(x, ascending = True, na_position = "last"):
     
     Examples
     --------
-    ser = pd.Series([3, 1, 2, pd.NA]).astype('Int64')
-    order(ser)
-    
-    sers = [pd.Series([1, 1]).astype('Int64'), pd.Series([2, 1]).astype('Int64')]
-    order(sers)
+    >>> ser = pd.Series([3, 1, 2, pd.NA]).astype('Int64')
+    >>> order(ser)
+    >>> 
+    >>> sers = [pd.Series([1, 1]).astype('Int64'), pd.Series([2, 1]).astype('Int64')]
+    >>> order(sers)
     '''
     assert isinstance(x, (pd.Series, list)),\
         "x should be a pandas series or a list of series"
@@ -337,11 +337,11 @@ def _rank(x, type, ascending = True, percent = False):
     
     Examples
     --------
-    ser = pd.Series([3, 1, 2, pd.NA]).astype('Int64')
-    _rank(ser, "first")
-    
-    sers = [pd.Series([1, 1]).astype('Int64'), pd.Series([2, 1]).astype('Int64')]
-    _rank(sers, "min")
+    >>> ser = pd.Series([3, 1, 2, pd.NA]).astype('Int64')
+    >>> _rank(ser, "first")
+    >>> 
+    >>> sers = [pd.Series([1, 1]).astype('Int64'), pd.Series([2, 1]).astype('Int64')]
+    >>> _rank(sers, "min")
     '''
     assert isinstance(x, (pd.Series, list)),\
         "x should be a series or a list of pandas series"
@@ -420,8 +420,8 @@ def min_rank(x, ascending = True):
     
     Examples
     --------
-    ser = pd.Series([3, 1, 2, 1, 3, pd.NA, 2]).astype('Int64')
-    min_rank(ser)
+    >>> ser = pd.Series([3, 1, 2, 1, 3, pd.NA, 2]).astype('Int64')
+    >>> min_rank(ser)
     '''
     return _rank(x, "min", ascending)
     
@@ -450,8 +450,8 @@ def row_number(x, ascending = True):
     
     Examples
     --------
-    ser = pd.Series([3, 1, 2, 1, 3, pd.NA, 2]).astype('Int64')
-    row_number(ser)
+    >>> ser = pd.Series([3, 1, 2, 1, 3, pd.NA, 2]).astype('Int64')
+    >>> row_number(ser)
     '''
     return _rank(x, "first", ascending)
 
@@ -480,8 +480,8 @@ def dense_rank(x, ascending = True):
     
     Examples
     --------
-    ser = pd.Series([4, 1, 2, 1, 3, pd.NA, 2]).astype('Int64')
-    dense_rank(ser)
+    >>> ser = pd.Series([4, 1, 2, 1, 3, pd.NA, 2]).astype('Int64')
+    >>> dense_rank(ser)
     '''
     return _rank(x, "dense", ascending)
 
@@ -510,8 +510,8 @@ def percent_rank(x, ascending = True):
     
     Examples
     --------
-    ser = pd.Series([3, 1, 2, 1, 3, pd.NA, 2]).astype('Int64')
-    percent_rank(ser)
+    >>> ser = pd.Series([3, 1, 2, 1, 3, pd.NA, 2]).astype('Int64')
+    >>> percent_rank(ser)
     '''
     return _rank(x, "min", ascending, True)
 
@@ -540,7 +540,7 @@ def cume_dist(x, ascending = True):
     
     Examples
     --------
-    ser = pd.Series([3, 1, 2, 1, 3, pd.NA, 2]).astype('Int64')
-    cume_dist(ser)
+    >>> ser = pd.Series([3, 1, 2, 1, 3, pd.NA, 2]).astype('Int64')
+    >>> cume_dist(ser)
     '''
     return _rank(x, "max", ascending, True)
