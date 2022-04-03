@@ -439,15 +439,16 @@ class tidyframe:
     ##########################################################################
     # to_series or pull
     ##########################################################################
-    def pull(self, column_name, copy = True):
+    def pull(self, column_name = None, copy = True):
         '''
         pull (aka to_series)
         Returns a copy of column as pandas series
         
         Parameters
         ----------
-        column_name : str
-            Name of the column to be returned as pandas series
+        column_name : str or None
+            Name of the column to be returned as pandas series. When there is
+            only one column, it can be None.
         copy: bool, default is True
             Whether to return a copy of the pandas series object
 
@@ -463,8 +464,16 @@ class tidyframe:
         >>> penguins_tidy.pull("species")
         '''
         
-        assert isinstance(column_name, str),\
-            "arg 'column_name'should be a string"
+        if column_name is not None:
+            assert isinstance(column_name, str),\
+                "arg 'column_name'should be a string"
+        if self.ncol > 1:
+            assert isinstance(column_name, str),\
+                "Column to pull should be specified"
+        else:
+            if column_name is None:
+                column_name = self.colnames[0]
+        
         assert column_name in list(self.__data.columns), \
             "arg 'column_name' should be an existing column name"
         assert isinstance(copy, bool),\
