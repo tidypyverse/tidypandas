@@ -1,1 +1,1 @@
-from tidypandas.tidypandas import tidyframe
+from tidypandas.tidypandas import tidyframe, tidy

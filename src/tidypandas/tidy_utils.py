@@ -2,6 +2,12 @@
 # This file is a part of tidypandas python package
 # Find the dev version here: https://github.com/talegari/tidypandas
 # -----------------------------------------------------------------------------
+import numpy as np
+import pandas as pd
+from tidypandas._unexported_utils import (
+                                          _get_unique_names, 
+                                          _coerce_pdf
+                                         )
 
 # -----------------------------------------------------------------------------
 # simplify
@@ -50,28 +56,28 @@ def simplify(pdf
     
     Examples
     --------
-    from nycflights13 import flights
-    ex1 = flights.groupby('dest').apply(lambda x: x.head(2))
-    ex1
-    simplify(ex1)
-    
-    ex2 = pd.crosstab(flights['origin'], flights['dest'])
-    ex2
-    simplify(ex2)
-    
-    ex3 = (flights.value_counts(['origin', 'dest', 'month', 'hour'])
-                  .reset_index()
-                  .rename(columns = {0 : 'n'})
-                  .pipe(lambda  x: pd.pivot_table(x
-                                                  , index = ['origin', 'month']
-                                                  , columns = ['dest', 'hour']
-                                                  , values = 'n'
-                                                  , fill_value = 0
-                                                  )
-                        )
-                  )
-    ex3
-    simplify(ex3)
+    >>> from nycflights13 import flights
+    >>> ex1 = flights.groupby('dest').apply(lambda x: x.head(2))
+    >>> ex1
+    >>> simplify(ex1)
+    >>> 
+    >>> ex2 = pd.crosstab(flights['origin'], flights['dest'])
+    >>> ex2
+    >>> simplify(ex2)
+    >>> 
+    >>> ex3 = (flights.value_counts(['origin', 'dest', 'month', 'hour'])
+    >>>               .reset_index()
+    >>>               .rename(columns = {0 : 'n'})
+    >>>               .pipe(lambda  x: pd.pivot_table(x
+    >>>                                               , index = ['origin', 'month']
+    >>>                                               , columns = ['dest', 'hour']
+    >>>                                               , values = 'n'
+    >>>                                               , fill_value = 0
+    >>>                                               )
+    >>>                     )
+    >>>               )
+    >>> ex3
+    >>> simplify(ex3)
     '''
     
     assert isinstance(pdf, pd.DataFrame),\
@@ -194,12 +200,12 @@ def is_simple(pdf, verbose = False):
     
     Examples
     --------
-    from palmerpenguins import load_penguins
-    penguins = load_penguins().convert_dtypes()
-    ex1 = penguins.groupby('species').apply(lambda x: x.head(2))
-    ex1
-    
-    is_simple(ex1, verbose = True)
+    >>> from palmerpenguins import load_penguins
+    >>> penguins = load_penguins().convert_dtypes()
+    >>> ex1 = penguins.groupby('species').apply(lambda x: x.head(2))
+    >>> ex1
+    >>> 
+    >>> is_simple(ex1, verbose = True)
     '''
     assert isinstance(pdf, pd.DataFrame),\
         "input should be a pandas dataframe"
@@ -244,56 +250,3 @@ def is_simple(pdf, verbose = False):
             print("Column names should not start with an underscore.")
             
     return flag
-
-# -----------------------------------------------------------------------------
-# tidy
-# -----------------------------------------------------------------------------
-
-# shorthand to convert a non-simple pandas dataframe to a tidyframe
-def tidy(pdf
-         , sep = "__"
-         , verbose = False
-         , copy = True
-         , **kwargs
-         ):
-    '''
-    tidy
-    Utility function to convert a not simple pandas dataframe to a 
-    tidyframe
-    
-    Parameters
-    ----------
-    pdf : Pandas dataframe
-    sep: str (default: "__")
-        String separator to be used while concatenating column multiindex
-    verbose: bool (default: False)
-        Whether to print the progress of simpliying process
-    copy: bool, Default is True
-            Whether the tidyframe object to be created should refer 
-            to a copy of the input pandas dataframe or the input itself
-    kwargs: Optinal arguments for tidyframe init method
-    
-    Notes
-    -----
-    Input is attempted to be simplified using 'simplify'. Some notorious 
-    pandas dataframes may not be simplified, in which case an exception is
-    raised.
-    
-    Examples
-    --------
-    from palmerpenguins import load_penguins
-    penguins = load_penguins().convert_dtypes()
-    ex1 = penguins.groupby('species').apply(lambda x: x.head(2))
-    ex1
-    
-    tidy(ex1)
-    '''
-    res = tidyframe(simplify(pdf
-                             , sep = sep
-                             , verbose = verbose
-                             )
-                    , copy = copy
-                    , check = False
-                    , **kwargs
-                    )
-    return res

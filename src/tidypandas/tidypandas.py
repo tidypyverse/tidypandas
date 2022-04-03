@@ -17,7 +17,7 @@ from pandas._config import get_option
 from collections_extended import setlist
 from skimpy import skim
 
-from tidypandas.tidy_helpers import simplify, is_simple
+from tidypandas.tidy_utils import simplify, is_simple
 from tidypandas._unexported_utils import (
                                             _is_kwargable,
                                             _is_valid_colname,
@@ -31,6 +31,64 @@ from tidypandas._unexported_utils import (
                                             _coerce_pdf
                                         )
 import tidypandas.format as tidy_fmt
+
+
+# -----------------------------------------------------------------------------
+# tidy
+# -----------------------------------------------------------------------------
+
+# shorthand to convert a non-simple pandas dataframe to a tidyframe
+def tidy(pdf
+         , sep = "__"
+         , verbose = False
+         , copy = True
+         , **kwargs
+         ):
+    '''
+    Utility function to convert a not simple pandas dataframe to a 
+    tidyframe
+    
+    Parameters
+    ----------
+    pdf : Pandas dataframe
+    sep: str (default: "__")
+        String separator to be used while concatenating column multiindex
+    verbose: bool (default: False)
+        Whether to print the progress of simpliying process
+    copy: bool, Default is True
+            Whether the tidyframe object to be created should refer 
+            to a copy of the input pandas dataframe or the input itself
+    kwargs: Optinal arguments for tidyframe init method
+
+    Returns
+    -------
+    tidyframe
+    
+    Notes
+    -----
+    Input is attempted to be simplified using 'simplify'. Some notorious 
+    pandas dataframes may not be simplified, in which case an exception is
+    raised.
+    
+    Examples
+    --------
+    >>> from palmerpenguins import load_penguins
+    >>> penguins = load_penguins().convert_dtypes()
+    >>> ex1 = penguins.groupby('species').apply(lambda x: x.head(2))
+    >>> ex1
+    >>>
+    >>> tidy(ex1)
+    '''
+    res = tidyframe(simplify(pdf
+                             , sep = sep
+                             , verbose = verbose
+                             )
+                    , copy = copy
+                    , check = False
+                    , **kwargs
+                    )
+    return res
+
 
 
 class tidyframe:
@@ -197,10 +255,10 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidyframe(penguins)
-        penguins_tidy
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidyframe(penguins)
+        >>> penguins_tidy
         '''
         assert isinstance(check, bool),\
             "arg 'check' should be a bool"
@@ -260,7 +318,7 @@ class tidyframe:
 
     #     return tidy_string
 
-    # def __repr__(self) -> str:
+    def __repr__(self) -> str:
         """
         Return a string representation for a particular DataFrame.
         """
@@ -346,7 +404,6 @@ class tidyframe:
     
     def to_pandas(self, copy = True):
         '''
-        to_pandas
         Return copy of underlying pandas dataframe
         
         Parameters
@@ -362,13 +419,13 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
         
-        penguins_tidy.to_pandas()
-        # check whether the dataframes are same
-        penguins.equals(penguins_tidy.to_pandas())
+        >>> penguins_tidy.to_pandas()
+        >>> # check whether the dataframes are same
+        >>> penguins.equals(penguins_tidy.to_pandas())
         '''
         assert isinstance(copy, bool),\
             "arg 'copy' should be a bool"
@@ -400,10 +457,10 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        penguins_tidy.pull("species")
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy.pull("species")
         '''
         
         assert isinstance(column_name, str),\
@@ -428,7 +485,6 @@ class tidyframe:
     # pipe
     def pipe(self, func, *args, **kwargs):
         '''
-        pipe
         Returns func(self)
 
         Parameters
@@ -447,7 +503,6 @@ class tidyframe:
     # pipe_tee
     def pipe_tee(self, func, *args, **kwargs):
         '''
-        pipe_tee
         pipe for side-effect
 
         Parameters
@@ -496,12 +551,12 @@ class tidyframe:
     
     def skim(self, return_self = False):
         '''
-        Skim the tidy dataframe
+        Skim the tidy dataframe.
         Provides a meaningful summary of the dataframe
-        yo
+
         Parameters
         ----------
-        return_self: bool (default is False)
+        return_self : bool (default is False)
             Whether to return the input
             This is helpful while piping the input to next method while skim is
             a side-effect
@@ -627,14 +682,14 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
 
-        penguins_tidy.add_row_number() # equivalently penguins_tidy.add_rowid()
+        >>> penguins_tidy.add_row_number() # equivalently penguins_tidy.add_rowid()
         
-        # add row number per group in the order of appearance
-        penguins_tidy.add_row_number(by = 'sex')
+        >>> # add row number per group in the order of appearance
+        >>> penguins_tidy.add_row_number(by = 'sex')
         '''
         
         nr = self.nrow
@@ -677,7 +732,6 @@ class tidyframe:
     ##########################################################################
     def add_group_number(self, by = None, name = 'group_number'):
         '''
-        add_group_number
         Add a group number column to tidyframe
         
         Parameters
@@ -701,11 +755,11 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
 
-        penguins_tidy.add_group_number(by = 'sex')
+        >>> penguins_tidy.add_group_number(by = 'sex')
         '''
         
         nr = self.nrow
@@ -757,7 +811,6 @@ class tidyframe:
                      , **kwargs
                      ):
         '''
-        group_modify
         Split by some columns, apply a function per chunk which returns a 
         dataframe and combine it back into a single dataframe
         
@@ -793,40 +846,40 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins_tidy = tidy(load_penguins().convert_dtypes())
-        
-        # pick a sample of rows per chunk defined by 'species'
-        penguins_tidy.group_modify(lambda x: x.sample(n = 3)
-                                    , by = 'species'
-                                    )
-        
-        # apply a pandas udf per chunk defined by 'species'
-        # groupby columns are always added to the left
-        penguins_tidy.group_modify(lambda x: x.select('year')
-                                    , by = ['species', 'sex']
-                                    )
-                                        
-        # preserve row order
-        # a temporary column (default: 'rowid_temp') is added to each chunk
-        # udf should not meddle with the temporary column
-        (penguins_tidy
-            .select('sex')
-            # add 'row_number' column to illustrate row preservation
-            .add_row_number()
-            # print the output of each chunk
-            # sample 2 rows
-            .group_modify(lambda x: x.pipe_tee(print).sample(2)
-                          , by = 'sex'
-                          , preserve_row_order = True
-                          )
-          )
-          
-        # use kwargs
-        penguins_tidy.group_modify(lambda x, **kwargs: x.sample(n = kwargs['size'])
-                                    , by = 'species'
-                                    , size = 3
-                                    )
+        >>> from palmerpenguins import load_penguins
+        >>> penguins_tidy = tidy(load_penguins().convert_dtypes())
+        >>> 
+        >>> # pick a sample of rows per chunk defined by 'species'
+        >>> penguins_tidy.group_modify(lambda x: x.sample(n = 3)
+        >>>                             , by = 'species'
+        >>>                             )
+        >>> 
+        >>> # apply a pandas udf per chunk defined by 'species'
+        >>> # groupby columns are always added to the left
+        >>> penguins_tidy.group_modify(lambda x: x.select('year')
+        >>>                             , by = ['species', 'sex']
+        >>>                             )
+        >>>                                 
+        >>> # preserve row order
+        >>> # a temporary column (default: 'rowid_temp') is added to each chunk
+        >>> # udf should not meddle with the temporary column
+        >>> (penguins_tidy
+        >>>     .select('sex')
+        >>>     # add 'row_number' column to illustrate row preservation
+        >>>     .add_row_number()
+        >>>     # print the output of each chunk
+        >>>     # sample 2 rows
+        >>>     .group_modify(lambda x: x.pipe_tee(print).sample(2)
+        >>>                   , by = 'sex'
+        >>>                   , preserve_row_order = True
+        >>>                   )
+        >>>   )
+        >>>   
+        >>> # use kwargs
+        >>> penguins_tidy.group_modify(lambda x, **kwargs: x.sample(n = kwargs['size'])
+        >>>                             , by = 'species'
+        >>>                             , size = 3
+        >>>                             )
         '''
         self._validate_by(by)
         by = _enlist(by)
@@ -895,6 +948,7 @@ class tidyframe:
                         .groupby(group_cn, sort = False, dropna = False)
                         .apply(wrapper_func, **kwargs)
                         )
+            # return res
             try:
                 res = (res.pipe(simplify)
                           .drop(columns = group_cn)
@@ -946,7 +1000,6 @@ class tidyframe:
     
     def select(self, column_names = None, predicate = None, include = True):
         '''
-        select
         Select a subset of columns by name or predicate
 
         Parameters
@@ -972,24 +1025,24 @@ class tidyframe:
         
         Examples
         --------
-        import re
-        from palmerpenguins import load_penguins
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        
-        # select with names
-        penguins_tidy.select(['sex', 'species'])
-        
-        # select using a predicate: only non-numeric columns
-        penguins_tidy.select(predicate = lambda x: x.dtype != "string")
-        
-        # select columns ending with 'mm'
-        penguins_tidy.select(
-            predicate = lambda x: bool(re.match(".*mm$", x.name))
-            )
-        
-        # invert the selection
-        penguins_tidy.select(['sex', 'species'], include = False)
+        >>> import re
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> # select with names
+        >>> penguins_tidy.select(['sex', 'species'])
+        >>> 
+        >>> # select using a predicate: only non-numeric columns
+        >>> penguins_tidy.select(predicate = lambda x: x.dtype != "string")
+        >>> 
+        >>> # select columns ending with 'mm'
+        >>> penguins_tidy.select(
+        >>>     predicate = lambda x: bool(re.match(".*mm$", x.name))
+        >>>     )
+        >>> 
+        >>> # invert the selection
+        >>> penguins_tidy.select(['sex', 'species'], include = False)
         '''
         
         cn = self.colnames
@@ -1031,7 +1084,6 @@ class tidyframe:
     
     def relocate(self, column_names, before = None, after = None):
         '''
-        relocate
         relocate the columns of the tidy pandas dataframe
 
         Parameters
@@ -1043,29 +1095,30 @@ class tidyframe:
         after : TYPE, optional
             column after which the column are to be moved. The default is None.
         
+        
+        Returns
+        -------
+        tidyframe
+
         Notes
         -----
         Only one among 'before' and 'after' can be not None. When both are None,
         the columns are added to the begining of the dataframe (leftmost)
         
-        Returns
-        -------
-        tidyframe
-        
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins_tidy = tidy(load_penguins())
-        penguins_tidy
-        
-        # move "island" and "species" columns to the left of the dataframe
-        penguins_tidy.relocate(["island", "species"])
-        
-        # move "sex" and "year" columns to the left of "island" column
-        penguins_tidy.relocate(["sex", "year"], before = "island")
-        
-        # move "island" and "species" columns to the right of "year" column
-        penguins_tidy.relocate(["island", "species"], after = "year")
+        >>> from palmerpenguins import load_penguins
+        >>> penguins_tidy = tidy(load_penguins())
+        >>> penguins_tidy
+        >>> 
+        >>> # move "island" and "species" columns to the left of the dataframe
+        >>> penguins_tidy.relocate(["island", "species"])
+        >>> 
+        >>> # move "sex" and "year" columns to the left of "island" column
+        >>> penguins_tidy.relocate(["sex", "year"], before = "island")
+        >>> 
+        >>> # move "island" and "species" columns to the right of "year" column
+        >>> penguins_tidy.relocate(["island", "species"], after = "year")
         '''
         
         self._validate_column_names(column_names) 
@@ -1122,7 +1175,6 @@ class tidyframe:
     
     def rename(self, old_new_dict):
         '''
-        rename
         Rename columns of the tidy pandas dataframe
         
         Parameters
@@ -1135,11 +1187,11 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins_tidy = tidy(load_penguins().convert_dtypes())
-        penguins_tidy
+        >>> from palmerpenguins import load_penguins
+        >>> penguins_tidy = tidy(load_penguins().convert_dtypes())
+        >>> penguins_tidy
 
-        penguins_tidy.rename({'species': 'species_2'})
+        >>> penguins_tidy.rename({'species': 'species_2'})
         '''
         cn = self.colnames
         
@@ -1168,7 +1220,6 @@ class tidyframe:
     
     def slice(self, row_numbers, by = None):
         '''
-        slice
         Subset rows of a tidyframe
         
         Parameters
@@ -1188,20 +1239,20 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins_tidy = tidy(load_penguins())
+        >>> from palmerpenguins import load_penguins
+        >>> penguins_tidy = tidy(load_penguins())
 
-        # pick first three rows of the dataframe
-        penguins_tidy.slice(np.arange(3))
-        
-        # pick these row numbers: [0, 3, 8]
-        penguins_tidy.slice([0, 3, 8])
-        
-        # pick first three rows per specie
-        penguins_tidy.slice([0,1,2], by = "species")
-        
-        # pick first three rows for each species and sex combination
-        penguins_tidy.slice(np.arange(3), by = ["species", "sex"])
+        >>> # pick first three rows of the dataframe
+        >>> penguins_tidy.slice(np.arange(3))
+        >>> 
+        >>> # pick these row numbers: [0, 3, 8]
+        >>> penguins_tidy.slice([0, 3, 8])
+        >>> 
+        >>> # pick first three rows per specie
+        >>> penguins_tidy.slice([0,1,2], by = "species")
+        >>> 
+        >>> # pick first three rows for each species and sex combination
+        >>> penguins_tidy.slice(np.arange(3), by = ["species", "sex"])
         '''
         
         if isinstance(row_numbers, int):
@@ -1262,7 +1313,6 @@ class tidyframe:
                 , by = None
                 ):
         '''
-        arrange
         Orders the rows by the values of selected columns
         
         Parameters
@@ -1282,41 +1332,41 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins_tidy = tidy(load_penguins())
-        
-        # arrange by ascending order of column 'bill_length_mm'
-        penguins_tidy.arrange('bill_length_mm')
-        # equivalent to below:
-        # penguins_tidy.arrange([('bill_length_mm', 'asc')])
-        
-        # arrange by descding order of column 'bill_length_mm'
-        penguins_tidy.arrange([('bill_length_mm', 'desc')])
-        
-        # arrange by ascending order of column 'body_mass_g' and break ties with
-        # ascending order to 'bill_length_mm'
-        penguins_tidy.arrange([('body_mass_g', 'asc'), ('bill_length_mm', 'asc')])
-        # equivalent to below:
-        # penguins_tidy.arrange(['body_mass_g', 'bill_length_mm'])
-        
-        # arrange by ascending order of column 'body_mass_g' and break ties with
-        # descending order to 'bill_length_mm'
-        penguins_tidy.arrange([('body_mass_g', 'asc'), ('bill_length_mm', 'desc')])
-        # equivalent to below:
-        penguins_tidy.arrange(['body_mass_g', ('bill_length_mm', 'desc')])
-        
-        # determine where NA has to appear
-        penguins_tidy.arrange('sex', na_position = 'first')
-        
-        # grouped arrange: rearranges within the group
-        penguins_tidy
-        penguins_tidy.arrange('bill_length_mm', by = 'sex')
-        # notice that order of 'sex' column does not change while row corresponding
-        # to 'bill_length_mm' per group is sorted in ascending order
-        # This preserves the relative position of groups
-        # If you intend to not preserve the row order, then simply
-        # include the grouping variable(s) in order
-        # ex: penguins_tidy.arrange(['sex', 'bill_length_mm'])
+        >>> from palmerpenguins import load_penguins
+        >>> penguins_tidy = tidy(load_penguins())
+        >>> 
+        >>> # arrange by ascending order of column 'bill_length_mm'
+        >>> penguins_tidy.arrange('bill_length_mm')
+        >>> # equivalent to below:
+        >>> # penguins_tidy.arrange([('bill_length_mm', 'asc')])
+        >>> 
+        >>> # arrange by descding order of column 'bill_length_mm'
+        >>> penguins_tidy.arrange([('bill_length_mm', 'desc')])
+        >>> 
+        >>> # arrange by ascending order of column 'body_mass_g' and break ties with
+        >>> # ascending order to 'bill_length_mm'
+        >>> penguins_tidy.arrange([('body_mass_g', 'asc'), ('bill_length_mm', 'asc')])
+        >>> # equivalent to below:
+        >>> # penguins_tidy.arrange(['body_mass_g', 'bill_length_mm'])
+        >>> 
+        >>> # arrange by ascending order of column 'body_mass_g' and break ties with
+        >>> # descending order to 'bill_length_mm'
+        >>> penguins_tidy.arrange([('body_mass_g', 'asc'), ('bill_length_mm', 'desc')])
+        >>> # equivalent to below:
+        >>> penguins_tidy.arrange(['body_mass_g', ('bill_length_mm', 'desc')])
+        >>> 
+        >>> # determine where NA has to appear
+        >>> penguins_tidy.arrange('sex', na_position = 'first')
+        >>> 
+        >>> # grouped arrange: rearranges within the group
+        >>> penguins_tidy
+        >>> penguins_tidy.arrange('bill_length_mm', by = 'sex')
+        >>> # notice that order of 'sex' column does not change while row corresponding
+        >>> # to 'bill_length_mm' per group is sorted in ascending order
+        >>> # This preserves the relative position of groups
+        >>> # If you intend to not preserve the row order, then simply
+        >>> # include the grouping variable(s) in order
+        >>> # ex: penguins_tidy.arrange(['sex', 'bill_length_mm'])
         
         Notes
         -----
@@ -1406,7 +1456,6 @@ class tidyframe:
         
     def filter(self, query = None, mask = None, by = None, **kwargs):
         '''
-        filter
         subset some rows
         
         Parameters
@@ -1431,27 +1480,27 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins_tidy = tidy(load_penguins())
-        
-        # query with pandas eval. pandas eval does not support complicated expressions.
-        penguins_tidy.filter("body_mass_g > 4000")
-        
-        # subset with a mask -- list or array or pandas Series of precomputed booleans
-        penguins_tidy.filter(mask = (penguins_tidy.pull("year") == 2007))
-        # equivalently:
-        # penguins_tidy.filter(lambda x: x.year == 2007)
-        
-        # use complex expressions as a lambda function and filter
-        penguins_tidy.filter(lambda x: x['bill_length_mm'] > np.mean(x['bill_length_mm']))
-        
-        # per group filter retains the row order
-        penguins_tidy.filter(lambda x: x['bill_length_mm'] > np.mean(x['bill_length_mm']), by = 'sex')
-        
-        # using kwargs
-        penguins_tidy.filter(lambda x, **kwargs: x.year == kwargs['some_kwarg'],
-                             some_kwarg = 2009
-                             )
+        >>> from palmerpenguins import load_penguins
+        >>> penguins_tidy = tidy(load_penguins())
+        >>> 
+        >>> # query with pandas eval. pandas eval does not support complicated expressions.
+        >>> penguins_tidy.filter("body_mass_g > 4000")
+        >>> 
+        >>> # subset with a mask -- list or array or pandas Series of precomputed booleans
+        >>> penguins_tidy.filter(mask = (penguins_tidy.pull("year") == 2007))
+        >>> # equivalently:
+        >>> # penguins_tidy.filter(lambda x: x.year == 2007)
+        >>> 
+        >>> # use complex expressions as a lambda function and filter
+        >>> penguins_tidy.filter(lambda x: x['bill_length_mm'] > np.mean(x['bill_length_mm']))
+        >>> 
+        >>> # per group filter retains the row order
+        >>> penguins_tidy.filter(lambda x: x['bill_length_mm'] > np.mean(x['bill_length_mm']), by = 'sex')
+        >>> 
+        >>> # using kwargs
+        >>> penguins_tidy.filter(lambda x, **kwargs: x.year == kwargs['some_kwarg'],
+        >>>                      some_kwarg = 2009
+        >>>                      )
         '''
         if query is None and mask is None:
             raise Exception("Both 'query' and 'mask' cannot be None")
@@ -1540,7 +1589,6 @@ class tidyframe:
         
     def distinct(self, column_names = None, keep_all = False):
         '''
-        distinct
         subset unique rows from the dataframe
         
         Parameters
@@ -1561,19 +1609,19 @@ class tidyframe:
         1. distinct preserves the order of the rows of the input dataframe.
         2. 'column_names' and 'by' should not have common column names.
         3. When keep_all is True, first rows corresponding a unique combination
-        is preserved.
+           is preserved.
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        tidy_penguins = tidy(load_penguins())
-        
-        tidy_penguins.distinct() # distinct over all columns
-        
-        tidy_penguins.distinct('species') # keep only 'distinct' columns
-        tidy_penguins.distinct('species', keep_all = True) # keep all columns
-        
-        tidy_penguins.distinct(['bill_length_mm', 'bill_depth_mm'])
+        >>> from palmerpenguins import load_penguins
+        >>> tidy_penguins = tidy(load_penguins())
+        >>> 
+        >>> tidy_penguins.distinct() # distinct over all columns
+        >>> 
+        >>> tidy_penguins.distinct('species') # keep only 'distinct' columns
+        >>> tidy_penguins.distinct('species', keep_all = True) # keep all columns
+        >>> 
+        >>> tidy_penguins.distinct(['bill_length_mm', 'bill_depth_mm'])
         '''
         
         cn = self.colnames
@@ -1948,7 +1996,6 @@ class tidyframe:
                , **kwargs
                ):
         '''
-        mutate
         Add or modify some columns
         
         Parameters
@@ -1990,103 +2037,103 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        import pandas.api.types as dtypes
-        penguins_tidy = tidy(load_penguins())
-        
-        # mutate with dict
-        penguins_tidy.mutate({
-          # 1. direct assign
-          'ind' : np.arange(344), 
-          
-          # 2. using pandas style lambda function
-          "yp1": lambda x: x['year'] + 1,
-          
-          # 2a. pass the content of lambda function as a string
-          "yp1_string": "x['year'] + 1",
-          
-          # 3. pass a tuple of function and column list
-          "yp1_abstract": (lambda x: x + 1, "year"),
-          
-          # 3a. pass the tuple of function content as string and the column list
-          "yp2_abstract": ("x + 1", "year"),
-          
-          # 4. pass multiple columns
-          "x_plus_y": ("x + y", ["bill_length_mm", "bill_depth_mm"]),
-          # the above is equivalent to:
-          # "x_plus_y": (lambda x, y: x + y, ["bill_length_mm", "bill_depth_mm"]),
-          
-          # 5. output multiple columns as a list
-          ('x', 'y'): lambda x: [x['year'] - 1, x['year'] + 1],
-          # the above is equivalent to:
-          # ('x2', 'y2'): "[x['year'] - 1, x['year'] + 1]",
-          
-          # change an existing column: add one to 'bill_length_mm'
-          'bill_length_mm': ("x + 1", )
-          # the above is equivalent to these:
-          # 'bill_length_mm': ("x + 1", 'bill_length_mm'),
-          # 'bill_length_mm': (lambda x: x + 1, 'bill_length_mm')
-          })
-            
-        # mutate with dict and groupby    
-        penguins_tidy.mutate({'x' : "x['year'] + np.mean(x['year']) - 4015"}
-                             , by = 'sex'
-                             )
-        
-        # mutate can use columns created in the dict before
-        (penguins_tidy.select('year')
-                      .mutate({'yp1': ("x + 1", 'year'),
-                               'yp1m1': ("x - 1", 'yp1')
-                              })
-                      )
-                                
-        # use kwargs
-        (penguins_tidy
-         .select('year')
-         .mutate({'yp1': ("x + kwargs['akwarg']", 'year')}, akwarg = 10)
-         )
-        
-        # 'order_by' some column before the mutate opeation
-        # order_by column 'bill_length_mm' before computing cumsum over 'year' columns
-        # row order is preserved
-        cumsum_df = (penguins_tidy.select(['year', 'species', 'bill_length_mm'])
-                                  .mutate({'year_cumsum': (np.cumsum, 'year')},
-                                          order_by = 'bill_length_mm'
-                                          )
-                                  )
-        cumsum_df
-        # confirm the computation:
-        cumsum_df.arrange('bill_length_mm')
-        
-        # across mode with column names
-        (penguins_tidy.select(['bill_length_mm', 'body_mass_g'])
-                      .mutate(column_names = ['bill_length_mm', 'body_mass_g']
-                              , func = lambda x: x - np.mean(x)
-                              , prefix = "demean_"
-                              )
-                      )
-                      
-        # grouped across with column names
-        (penguins_tidy.select(['bill_length_mm', 'body_mass_g', 'species'])
-                      .mutate(column_names = ['bill_length_mm', 'body_mass_g'],
-                              func = lambda x: x - np.mean(x),
-                              prefix = "demean_",
-                              by = 'species'
-                              )
-                      )
-          
-        # across mode with predicate
-        penguins_tidy.mutate(func = lambda x: x - np.mean(x),
-                             predicate = dtypes.is_numeric_dtype,
-                             prefix = "demean_"
-                             )
-          
-        # grouped across with predicate without prefix
-        # this will return a copy with columns changed without changing names
-        penguins_tidy.mutate(func = lambda x: x - np.mean(x),
-                             predicate = dtypes.is_numeric_dtype,
-                             by = 'species'
-                             )
+        >>> from palmerpenguins import load_penguins
+        >>> import pandas.api.types as dtypes
+        >>> penguins_tidy = tidy(load_penguins())
+        >>> 
+        >>> # mutate with dict
+        >>> penguins_tidy.mutate({
+        >>>   # 1. direct assign
+        >>>   'ind' : np.arange(344), 
+        >>>   
+        >>>   # 2. using pandas style lambda function
+        >>>   "yp1": lambda x: x['year'] + 1,
+        >>>   
+        >>>   # 2a. pass the content of lambda function as a string
+        >>>   "yp1_string": "x['year'] + 1",
+        >>>   
+        >>>   # 3. pass a tuple of function and column list
+        >>>   "yp1_abstract": (lambda x: x + 1, "year"),
+        >>>   
+        >>>   # 3a. pass the tuple of function content as string and the column list
+        >>>   "yp2_abstract": ("x + 1", "year"),
+        >>>   
+        >>>   # 4. pass multiple columns
+        >>>   "x_plus_y": ("x + y", ["bill_length_mm", "bill_depth_mm"]),
+        >>>   # the above is equivalent to:
+        >>>   # "x_plus_y": (lambda x, y: x + y, ["bill_length_mm", "bill_depth_mm"]),
+        >>>   
+        >>>   # 5. output multiple columns as a list
+        >>>   ('x', 'y'): lambda x: [x['year'] - 1, x['year'] + 1],
+        >>>   # the above is equivalent to:
+        >>>   # ('x2', 'y2'): "[x['year'] - 1, x['year'] + 1]",
+        >>>   
+        >>>   # change an existing column: add one to 'bill_length_mm'
+        >>>   'bill_length_mm': ("x + 1", )
+        >>>   # the above is equivalent to these:
+        >>>   # 'bill_length_mm': ("x + 1", 'bill_length_mm'),
+        >>>   # 'bill_length_mm': (lambda x: x + 1, 'bill_length_mm')
+        >>>   })
+        >>>     
+        >>> # mutate with dict and groupby    
+        >>> penguins_tidy.mutate({'x' : "x['year'] + np.mean(x['year']) - 4015"}
+        >>>                      , by = 'sex'
+        >>>                      )
+        >>> 
+        >>> # mutate can use columns created in the dict before
+        >>> (penguins_tidy.select('year')
+        >>>               .mutate({'yp1': ("x + 1", 'year'),
+        >>>                        'yp1m1': ("x - 1", 'yp1')
+        >>>                       })
+        >>>               )
+        >>>                         
+        >>> # use kwargs
+        >>> (penguins_tidy
+        >>>  .select('year')
+        >>>  .mutate({'yp1': ("x + kwargs['akwarg']", 'year')}, akwarg = 10)
+        >>>  )
+        >>> 
+        >>> # 'order_by' some column before the mutate opeation
+        >>> # order_by column 'bill_length_mm' before computing cumsum over 'year' columns
+        >>> # row order is preserved
+        >>> cumsum_df = (penguins_tidy.select(['year', 'species', 'bill_length_mm'])
+        >>>                           .mutate({'year_cumsum': (np.cumsum, 'year')},
+        >>>                                   order_by = 'bill_length_mm'
+        >>>                                   )
+        >>>                           )
+        >>> cumsum_df
+        >>> # confirm the computation:
+        >>> cumsum_df.arrange('bill_length_mm')
+        >>> 
+        >>> # across mode with column names
+        >>> (penguins_tidy.select(['bill_length_mm', 'body_mass_g'])
+        >>>               .mutate(column_names = ['bill_length_mm', 'body_mass_g']
+        >>>                       , func = lambda x: x - np.mean(x)
+        >>>                       , prefix = "demean_"
+        >>>                       )
+        >>>               )
+        >>>               
+        >>> # grouped across with column names
+        >>> (penguins_tidy.select(['bill_length_mm', 'body_mass_g', 'species'])
+        >>>               .mutate(column_names = ['bill_length_mm', 'body_mass_g'],
+        >>>                       func = lambda x: x - np.mean(x),
+        >>>                       prefix = "demean_",
+        >>>                       by = 'species'
+        >>>                       )
+        >>>               )
+        >>>   
+        >>> # across mode with predicate
+        >>> penguins_tidy.mutate(func = lambda x: x - np.mean(x),
+        >>>                      predicate = dtypes.is_numeric_dtype,
+        >>>                      prefix = "demean_"
+        >>>                      )
+        >>>   
+        >>> # grouped across with predicate without prefix
+        >>> # this will return a copy with columns changed without changing names
+        >>> penguins_tidy.mutate(func = lambda x: x - np.mean(x),
+        >>>                      predicate = dtypes.is_numeric_dtype,
+        >>>                      by = 'species'
+        >>>                      )
         '''
         if dictionary is None and func is None:
             raise Exception(("Either dictionary or func with "
@@ -2356,7 +2403,6 @@ class tidyframe:
                   , **kwargs
                   ):
         '''
-        summarise
         Creates one row per group summarising the input dataframe
         
         Parameters
@@ -2394,79 +2440,79 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        import pandas.api.types as dtypes
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        
-        # summarise in dict mode
-        penguins_tidy.summarise({
-            # using pandas style lambda function
-            "a_mean": lambda x: x['year'].mean(),
-            
-            # pass the content of lambda function as a string
-            "b_mean": "x['year'].mean()",
-            
-            # pass a tuple of function and column list
-            "a_median": (np.median, "year"),
-            
-            # pass a tuple of function to retain same column name
-            "year": (np.median, ),
-            
-            # pass multiple columns as a string
-            "x_plus_y_mean": ("np.mean(x + y)", ["bill_length_mm", "bill_depth_mm"]),
-            
-            # output multiple columns as a list (pandas style)
-            ('x', 'y'): lambda x: list(np.quantile(x['year'], [0.25, 0.75])),
-            
-            # same as above in string style
-            ('x2', 'y2'): "list(np.quantile(x['year'], [0.25, 0.75]))",
-            
-            # tuple style with multiple output
-            ('A', 'B'): ("[np.mean(x + y), np.mean(x - y)]"
-                         , ["bill_length_mm", "bill_depth_mm"]
-                         )
-            })
-            
-        # grouped summarise in dict mode
-        penguins_tidy.summarise({"a_mean": (np.mean, 'year')},
-                                by = ['species', 'sex']
-                                )
-                                
-        # use kwargs
-        penguins_tidy.summarise(
-          {"a_mean": lambda x, **kwargs: x['year'].mean() + kwargs['leap']},
-          by = ['species', 'sex'],
-          leap = 4
-          )
-        
-        # equivalently:
-        penguins_tidy.summarise(
-          {"a_mean": "x['year'].mean() + kwargs['leap']"},
-          by = ['species', 'sex'],
-          leap = 4
-          )
-        
-        # across mode with column names
-        penguins_tidy.summarise(
-          func = np.mean,
-          column_names = ['bill_length_mm', 'bill_depth_mm']
-          )
-          
-        # across mode with predicate
-        penguins_tidy.summarise(
-          func = np.mean,
-          predicate = dtypes.is_numeric_dtype,
-          prefix = "avg_"
-          )
-          
-        # grouped across with predicate
-        penguins_tidy.summarise(
-          func = np.mean,
-          predicate = dtypes.is_numeric_dtype,
-          prefix = "avg_",
-          by = ['species', 'sex']
-          )
+        >>> from palmerpenguins import load_penguins
+        >>> import pandas.api.types as dtypes
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> # summarise in dict mode
+        >>> penguins_tidy.summarise({
+        >>>     # using pandas style lambda function
+        >>>     "a_mean": lambda x: x['year'].mean(),
+        >>>     
+        >>>     # pass the content of lambda function as a string
+        >>>     "b_mean": "x['year'].mean()",
+        >>>     
+        >>>     # pass a tuple of function and column list
+        >>>     "a_median": (np.median, "year"),
+        >>>     
+        >>>     # pass a tuple of function to retain same column name
+        >>>     "year": (np.median, ),
+        >>>     
+        >>>     # pass multiple columns as a string
+        >>>     "x_plus_y_mean": ("np.mean(x + y)", ["bill_length_mm", "bill_depth_mm"]),
+        >>>     
+        >>>     # output multiple columns as a list (pandas style)
+        >>>     ('x', 'y'): lambda x: list(np.quantile(x['year'], [0.25, 0.75])),
+        >>>     
+        >>>     # same as above in string style
+        >>>     ('x2', 'y2'): "list(np.quantile(x['year'], [0.25, 0.75]))",
+        >>>     
+        >>>     # tuple style with multiple output
+        >>>     ('A', 'B'): ("[np.mean(x + y), np.mean(x - y)]"
+        >>>                  , ["bill_length_mm", "bill_depth_mm"]
+        >>>                  )
+        >>>     })
+        >>>     
+        >>> # grouped summarise in dict mode
+        >>> penguins_tidy.summarise({"a_mean": (np.mean, 'year')},
+        >>>                         by = ['species', 'sex']
+        >>>                         )
+        >>>                         
+        >>> # use kwargs
+        >>> penguins_tidy.summarise(
+        >>>   {"a_mean": lambda x, **kwargs: x['year'].mean() + kwargs['leap']},
+        >>>   by = ['species', 'sex'],
+        >>>   leap = 4
+        >>>   )
+        >>> 
+        >>> # equivalently:
+        >>> penguins_tidy.summarise(
+        >>>   {"a_mean": "x['year'].mean() + kwargs['leap']"},
+        >>>   by = ['species', 'sex'],
+        >>>   leap = 4
+        >>>   )
+        >>> 
+        >>> # across mode with column names
+        >>> penguins_tidy.summarise(
+        >>>   func = np.mean,
+        >>>   column_names = ['bill_length_mm', 'bill_depth_mm']
+        >>>   )
+        >>>   
+        >>> # across mode with predicate
+        >>> penguins_tidy.summarise(
+        >>>   func = np.mean,
+        >>>   predicate = dtypes.is_numeric_dtype,
+        >>>   prefix = "avg_"
+        >>>   )
+        >>>   
+        >>> # grouped across with predicate
+        >>> penguins_tidy.summarise(
+        >>>   func = np.mean,
+        >>>   predicate = dtypes.is_numeric_dtype,
+        >>>   prefix = "avg_",
+        >>>   by = ['species', 'sex']
+        >>>   )
         '''
         
         if dictionary is None and func is None:
@@ -2830,7 +2876,6 @@ class tidyframe:
                    , suffix_y = "_y"
                    ):
         '''
-        inner_join
         Joins columns of y to self by matching rows
         Includes only matching keys
         
@@ -2859,19 +2904,19 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        import pandas.api.types as dtypes
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        
-        penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
-                                         .select(['species', 'bill_length_mm', 'island'])
-                                         )
-        penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
-                                         .select(['species', 'island', 'bill_depth_mm'])
-                                         )
-                                         
-        penguins_tidy_s1.inner_join(penguins_tidy_s2, on = 'island')
+        >>> from palmerpenguins import load_penguins
+        >>> import pandas.api.types as dtypes
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+        >>>                                  .select(['species', 'bill_length_mm', 'island'])
+        >>>                                  )
+        >>> penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+        >>>                                  .select(['species', 'island', 'bill_depth_mm'])
+        >>>                                  )
+        >>>                                  
+        >>> penguins_tidy_s1.inner_join(penguins_tidy_s2, on = 'island')
         '''
                        
         res = self._join(y = y
@@ -2894,7 +2939,6 @@ class tidyframe:
                    , suffix_y = "_y"
                    ):
         '''
-        outer_join
         Joins columns of y to self by matching rows
         Includes all keys
         
@@ -2923,19 +2967,19 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        import pandas.api.types as dtypes
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        
-        penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
-                                         .select(['species', 'bill_length_mm', 'island'])
-                                         )
-        penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
-                                         .select(['species', 'island', 'bill_depth_mm'])
-                                         )
-                                         
-        penguins_tidy_s1.outer_join(penguins_tidy_s2, on = 'island')
+        >>> from palmerpenguins import load_penguins
+        >>> import pandas.api.types as dtypes
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+        >>>                                  .select(['species', 'bill_length_mm', 'island'])
+        >>>                                  )
+        >>> penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+        >>>                                  .select(['species', 'island', 'bill_depth_mm'])
+        >>>                                  )
+        >>>                     
+        >>> penguins_tidy_s1.outer_join(penguins_tidy_s2, on = 'island')
         '''               
         res = self._join(y = y
                         , how = "outer"
@@ -2958,7 +3002,6 @@ class tidyframe:
                    , suffix_y = "_y"
                    ):
         '''
-        left_join
         Joins columns of y to self by matching rows
         Includes all keys in self
         
@@ -2987,19 +3030,19 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        import pandas.api.types as dtypes
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        
-        penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
-                                         .select(['species', 'bill_length_mm', 'island'])
-                                         )
-        penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
-                                         .select(['species', 'island', 'bill_depth_mm'])
-                                         )
-                                         
-        penguins_tidy_s1.left_join(penguins_tidy_s2, on = 'island')
+        >>> from palmerpenguins import load_penguins
+        >>> import pandas.api.types as dtypes
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+        >>>                                  .select(['species', 'bill_length_mm', 'island'])
+        >>>                                  )
+        >>> penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+        >>>                                  .select(['species', 'island', 'bill_depth_mm'])
+        >>>                                  )
+        >>>                                  
+        >>> penguins_tidy_s1.left_join(penguins_tidy_s2, on = 'island')
         '''               
         res = self._join(y = y
                         , how = "left"
@@ -3020,7 +3063,6 @@ class tidyframe:
                    , suffix_y = "_y"
                    ):
         '''
-        right_join
         Joins columns of y to self by matching rows
         Includes all keys in y
         
@@ -3049,19 +3091,19 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        import pandas.api.types as dtypes
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        
-        penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
-                                         .select(['species', 'bill_length_mm', 'island'])
-                                         )
-        penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
-                                         .select(['species', 'island', 'bill_depth_mm'])
-                                         )
-                                         
-        penguins_tidy_s1.right_join(penguins_tidy_s2, on = 'island')
+        >>> from palmerpenguins import load_penguins
+        >>> import pandas.api.types as dtypes
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+        >>>                                  .select(['species', 'bill_length_mm', 'island'])
+        >>>                                  )
+        >>> penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+        >>>                                  .select(['species', 'island', 'bill_depth_mm'])
+        >>>                                  )
+        >>>                                  
+        >>> penguins_tidy_s1.right_join(penguins_tidy_s2, on = 'island')
         '''               
         res = self._join(y = y
                         , how = "right"
@@ -3083,7 +3125,6 @@ class tidyframe:
                    , suffix_y = "_y"
                    ):
         '''
-        semi_join
         Joins columns of y to self by matching rows
         Includes keys in self if present in y
         
@@ -3112,19 +3153,19 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        import pandas.api.types as dtypes
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        
-        penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
-                                         .select(['species', 'bill_length_mm', 'island'])
-                                         )
-        penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
-                                         .select(['species', 'island', 'bill_depth_mm'])
-                                         )
-                                         
-        penguins_tidy_s2.semi_join(penguins_tidy_s1, on = 'island')
+        >>> from palmerpenguins import load_penguins
+        >>> import pandas.api.types as dtypes
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+        >>>                                  .select(['species', 'bill_length_mm', 'island'])
+        >>>                                  )
+        >>> penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+        >>>                                  .select(['species', 'island', 'bill_depth_mm'])
+        >>>                                  )
+        >>>                                  
+        >>> penguins_tidy_s2.semi_join(penguins_tidy_s1, on = 'island')
         '''
         self._validate_join(y = y
                             , how = "inner" # this has no significance
@@ -3161,7 +3202,6 @@ class tidyframe:
                    , suffix_y = "_y"
                    ):
         '''
-        anti_join
         Joins columns of y to self by matching rows
         Includes keys in self if not present in y
         
@@ -3190,19 +3230,19 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        import pandas.api.types as dtypes
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        
-        penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
-                                         .select(['species', 'bill_length_mm', 'island'])
-                                         )
-        penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
-                                         .select(['species', 'island', 'bill_depth_mm'])
-                                         )
-                                         
-        penguins_tidy_s2.anti_join(penguins_tidy_s1, on = 'island')
+        >>> from palmerpenguins import load_penguins
+        >>> import pandas.api.types as dtypes
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+        >>>                                  .select(['species', 'bill_length_mm', 'island'])
+        >>>                                  )
+        >>> penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+        >>>                                  .select(['species', 'island', 'bill_depth_mm'])
+        >>>                                  )
+        >>>                                  
+        >>> penguins_tidy_s2.anti_join(penguins_tidy_s1, on = 'island')
         '''
         self._validate_join(y = y
                             , how = "inner" # not significant
@@ -3237,7 +3277,6 @@ class tidyframe:
     # cross join
     def cross_join(self, y, sort = True, suffix_y = "_y"):
         '''
-        cross_join
         Joins columns of y to self by matching rows
         Includes all cartersian product
         
@@ -3260,19 +3299,19 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        import pandas.api.types as dtypes
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        
-        penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
-                                         .select(['species', 'bill_length_mm', 'island'])
-                                         )
-        penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
-                                         .select(['species', 'island', 'bill_depth_mm'])
-                                         )
-                                         
-        penguins_tidy_s2.cross_join(penguins_tidy_s1)
+        >>> from palmerpenguins import load_penguins
+        >>> import pandas.api.types as dtypes
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+        >>>                                  .select(['species', 'bill_length_mm', 'island'])
+        >>>                                  )
+        >>> penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+        >>>                                  .select(['species', 'island', 'bill_depth_mm'])
+        >>>                                  )
+        >>>                                  
+        >>> penguins_tidy_s2.cross_join(penguins_tidy_s1)
         '''
         
         assert isinstance(y, tidyframe),\
@@ -3320,7 +3359,6 @@ class tidyframe:
       
     def cbind(self, y):
         '''
-        cbind
         bind columns of y to self
         
         Parameters
@@ -3338,14 +3376,14 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        import pandas.api.types as dtypes
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        
-        (penguins_tidy.select(['species', 'island'])
-                      .cbind(penguins_tidy.select(['bill_length_mm', 'bill_depth_mm']))
-                      )
+        >>> from palmerpenguins import load_penguins
+        >>> import pandas.api.types as dtypes
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> (penguins_tidy.select(['species', 'island'])
+        >>>               .cbind(penguins_tidy.select(['bill_length_mm', 'bill_depth_mm']))
+        >>>               )
         '''
         assert isinstance(y, tidyframe)
         # column names should differ
@@ -3367,7 +3405,6 @@ class tidyframe:
     
     def rbind(self, y):
         '''
-        rbind
         bind rows of y to self
         
         Parameters
@@ -3386,14 +3423,14 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        import pandas.api.types as dtypes
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        
-        (penguins_tidy.select(['species', 'island'])
-                      .rbind(penguins_tidy.select(['island', 'bill_length_mm', 'bill_depth_mm']))
-                      )
+        >>> from palmerpenguins import load_penguins
+        >>> import pandas.api.types as dtypes
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> (penguins_tidy.select(['species', 'island'])
+        >>>               .rbind(penguins_tidy.select(['island', 'bill_length_mm', 'bill_depth_mm']))
+        >>>               )
         '''
         res = (pd.concat([self.__data, y.to_pandas()]
                          , axis = 0
@@ -3415,7 +3452,6 @@ class tidyframe:
               , wt = None
               ):
         '''
-        count
         count rows by groups
         
         Parameters
@@ -3434,21 +3470,21 @@ class tidyframe:
             
         Examples
         --------
-        from palmerpenguins import load_penguins
-        import pandas.api.types as dtypes
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        
-        # count rows
-        penguins_tidy.count()
-        
-        # count number of rows of 'sex' column
-        # count column is always ordered in descending order unless decreasing is False
-        penguins_tidy.count('sex', name = "cnt")
-        penguins_tidy.count('sex', name = "cnt", decreasing = False)
-        
-        # sum up a column (weighted sum of rows)
-        penguins_tidy.count(['sex', 'species'], wt = 'year')
+        >>> from palmerpenguins import load_penguins
+        >>> import pandas.api.types as dtypes
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> # count rows
+        >>> penguins_tidy.count()
+        >>> 
+        >>> # count number of rows of 'sex' column
+        >>> # count column is always ordered in descending order unless decreasing is False
+        >>> penguins_tidy.count('sex', name = "cnt")
+        >>> penguins_tidy.count('sex', name = "cnt", decreasing = False)
+        >>> 
+        >>> # sum up a column (weighted sum of rows)
+        >>> penguins_tidy.count(['sex', 'species'], wt = 'year')
         '''
         
         assert (column_names is None
@@ -3530,7 +3566,6 @@ class tidyframe:
                   ):
         
         '''
-        add_count
         adds counts of rows by groups as a column
         
         Parameters
@@ -3547,19 +3582,19 @@ class tidyframe:
             
         Examples
         --------
-        from palmerpenguins import load_penguins
-        import pandas.api.types as dtypes
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        
-        # count rows
-        penguins_tidy.add_count()
-        
-        # count number of rows of 'sex' column
-        penguins_tidy.add_count('sex', name = "cnt")
-        
-        # sum up a column (weighted sum of rows)
-        penguins_tidy.add_count(['sex', 'species'], wt = 'year')
+        >>> from palmerpenguins import load_penguins
+        >>> import pandas.api.types as dtypes
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> # count rows
+        >>> penguins_tidy.add_count()
+        >>> 
+        >>> # count number of rows of 'sex' column
+        >>> penguins_tidy.add_count('sex', name = "cnt")
+        >>> 
+        >>> # sum up a column (weighted sum of rows)
+        >>> penguins_tidy.add_count(['sex', 'species'], wt = 'year')
         '''
         
         if column_names is not None:
@@ -3626,81 +3661,81 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins = load_penguins().convert_dtypes().fillna(pd.NA)
-        penguins_tidy = tidy(penguins)
-        
-        import numpy as np
-        
-        # generic widening leads to list-columns
-        penguins_tidy.pivot_wider(id_cols       = "island"
-                                  , names_from  = "sex"
-                                  , values_from = "bill_length_mm"
-                                  )
-        
-        # aggregate with a function
-        penguins_tidy.pivot_wider(id_cols       = "island"
-                                  , names_from  = "sex"
-                                  , values_from = "bill_length_mm"
-                                  , values_fn   = np.mean
-                                  )
-                                  
-        # choose different aggregation logic for value_from columns
-        penguins_tidy.pivot_wider(
-          id_cols       = "island"
-          , names_from  = "species"
-          , values_from = ["bill_length_mm", "bill_depth_mm"]
-          , values_fn   = {"bill_length_mm" : np.mean, "bill_depth_mm" : list}
-          )
-                                  
-        # aggregate with almost any function
-        penguins_tidy.pivot_wider(
-          id_cols       = "island"
-          , names_from  = "species"
-          , values_from = "sex"
-          , values_fn   = lambda x: dict(pd.Series(x).value_counts())
-          )
-        
-        # All three inputs: 'id_cols', 'names_from', 'values_from' can be lists
-        penguins_tidy.pivot_wider(
-            id_cols       = ["island", "sex"]
-            , names_from  = "species"
-            , values_from = "bill_length_mm"
-            )
-                                  
-        penguins_tidy.pivot_wider(
-            id_cols       = ["island", "sex"]
-            , names_from  = "species"
-            , values_from = ["bill_length_mm", "bill_depth_mm"]
-            )
-        
-        penguins_tidy.pivot_wider(id_cols       = ["island", "sex"]
-                                  , names_from  = ["species", "year"]
-                                  , values_from = "bill_length_mm"
-                                  )
-                                  
-        penguins_tidy.pivot_wider(
-            id_cols       = ["island", "sex"]
-            , names_from  = ["species", "year"]
-            , values_from = ["bill_length_mm", "bill_depth_mm"]
-            )
-        
-        # when id_cols is empty, all columns except the columns from
-        # `names_from` and `values_from` are considered as id_cols
-        (penguins_tidy
-         .select(['flipper_length_mm', 'body_mass_g'], include = False)
-         .pivot_wider(names_from    = ["species", "year"]
-                      , values_from = ["bill_length_mm", "bill_depth_mm"]
-                      )
-         )
-                                  
-        # fill the missing values with something
-        penguins_tidy.pivot_wider(id_cols       = "island"
-                                  , names_from  = "species"
-                                  , values_from = "bill_length_mm"
-                                  , values_fn   = np.mean
-                                  , values_fill = 0
-                                  )
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins().convert_dtypes().fillna(pd.NA)
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> import numpy as np
+        >>> 
+        >>> # generic widening leads to list-columns
+        >>> penguins_tidy.pivot_wider(id_cols       = "island"
+        >>>                           , names_from  = "sex"
+        >>>                           , values_from = "bill_length_mm"
+        >>>                           )
+        >>> 
+        >>> # aggregate with a function
+        >>> penguins_tidy.pivot_wider(id_cols       = "island"
+        >>>                           , names_from  = "sex"
+        >>>                           , values_from = "bill_length_mm"
+        >>>                           , values_fn   = np.mean
+        >>>                           )
+        >>>                           
+        >>> # choose different aggregation logic for value_from columns
+        >>> penguins_tidy.pivot_wider(
+        >>>   id_cols       = "island"
+        >>>   , names_from  = "species"
+        >>>   , values_from = ["bill_length_mm", "bill_depth_mm"]
+        >>>   , values_fn   = {"bill_length_mm" : np.mean, "bill_depth_mm" : list}
+        >>>   )
+        >>>                           
+        >>> # aggregate with almost any function
+        >>> penguins_tidy.pivot_wider(
+        >>>   id_cols       = "island"
+        >>>   , names_from  = "species"
+        >>>   , values_from = "sex"
+        >>>   , values_fn   = lambda x: dict(pd.Series(x).value_counts())
+        >>>   )
+        >>> 
+        >>> # All three inputs: 'id_cols', 'names_from', 'values_from' can be lists
+        >>> penguins_tidy.pivot_wider(
+        >>>     id_cols       = ["island", "sex"]
+        >>>     , names_from  = "species"
+        >>>     , values_from = "bill_length_mm"
+        >>>     )
+        >>>                           
+        >>> penguins_tidy.pivot_wider(
+        >>>     id_cols       = ["island", "sex"]
+        >>>     , names_from  = "species"
+        >>>     , values_from = ["bill_length_mm", "bill_depth_mm"]
+        >>>     )
+        >>> 
+        >>> penguins_tidy.pivot_wider(id_cols       = ["island", "sex"]
+        >>>                           , names_from  = ["species", "year"]
+        >>>                           , values_from = "bill_length_mm"
+        >>>                           )
+        >>>                           
+        >>> penguins_tidy.pivot_wider(
+        >>>     id_cols       = ["island", "sex"]
+        >>>     , names_from  = ["species", "year"]
+        >>>     , values_from = ["bill_length_mm", "bill_depth_mm"]
+        >>>     )
+        >>> 
+        >>> # when id_cols is empty, all columns except the columns from
+        >>> # `names_from` and `values_from` are considered as id_cols
+        >>> (penguins_tidy
+        >>>  .select(['flipper_length_mm', 'body_mass_g'], include = False)
+        >>>  .pivot_wider(names_from    = ["species", "year"]
+        >>>               , values_from = ["bill_length_mm", "bill_depth_mm"]
+        >>>               )
+        >>>  )
+        >>>                           
+        >>> # fill the missing values with something
+        >>> penguins_tidy.pivot_wider(id_cols       = "island"
+        >>>                           , names_from  = "species"
+        >>>                           , values_from = "bill_length_mm"
+        >>>                           , values_fn   = np.mean
+        >>>                           , values_fill = 0
+        >>>                           )
         '''
         
         cn = self.colnames
@@ -3834,30 +3869,30 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins = load_penguins().convert_dtypes().fillna(pd.NA)
-        penguins_tidy = tidy(penguins)
-        
-        # pivot to bring values from columns ending with 'mm'
-        cns = ['species'
-               , 'bill_length_mm'
-               , 'bill_depth_mm'
-               , 'flipper_length_mm'
-               ]
-        (penguins_tidy.select(cns)
-                      .pivot_longer(cols = ['bill_length_mm',
-                                            'bill_depth_mm',
-                                            'flipper_length_mm']
-                                    )
-                      )
-                      
-        # pivot by specifying 'id' columns to obtain the same result as above
-        # this is helpful when there are many columns to melt
-        (penguins_tidy.select(cns)
-                      .pivot_longer(cols = 'species',
-                                    include = False
-                                    )
-                      )
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins().convert_dtypes().fillna(pd.NA)
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> # pivot to bring values from columns ending with 'mm'
+        >>> cns = ['species'
+        >>>        , 'bill_length_mm'
+        >>>        , 'bill_depth_mm'
+        >>>        , 'flipper_length_mm'
+        >>>        ]
+        >>> (penguins_tidy.select(cns)
+        >>>               .pivot_longer(cols = ['bill_length_mm',
+        >>>                                     'bill_depth_mm',
+        >>>                                     'flipper_length_mm']
+        >>>                             )
+        >>>               )
+        >>>               
+        >>> # pivot by specifying 'id' columns to obtain the same result as above
+        >>> # this is helpful when there are many columns to melt
+        >>> (penguins_tidy.select(cns)
+        >>>               .pivot_longer(cols = 'species',
+        >>>                             include = False
+        >>>                             )
+        >>>               )
         '''
         # assertions
         cn = self.colnames
@@ -3913,7 +3948,6 @@ class tidyframe:
                    , by = None
                    ):
         '''
-        slice_head
         Subset first few rows
         
         Parameters
@@ -3940,15 +3974,15 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins = load_penguins()
-        penguins_tidy = tidy(penguins)
-        
-        penguins_tidy.slice_head(n = 3)
-        penguins_tidy.slice_head(prop = 0.01)
-        
-        penguins_tidy.slice_head(n = 1, by = 'species')
-        penguins_tidy.slice_head(prop = 0.01, by = 'species')
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> penguins_tidy.slice_head(n = 3)
+        >>> penguins_tidy.slice_head(prop = 0.01)
+        >>> 
+        >>> penguins_tidy.slice_head(n = 1, by = 'species')
+        >>> penguins_tidy.slice_head(prop = 0.01, by = 'species')
         '''
         nr = self.nrow
 
@@ -4030,7 +4064,6 @@ class tidyframe:
                    , by = None
                    ):
         '''
-        slice_tail
         Subset last few rows
         
         Parameters
@@ -4056,15 +4089,15 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins = load_penguins()
-        penguins_tidy = tidy(penguins)
-        
-        penguins_tidy.slice_tail(n = 3)
-        penguins_tidy.slice_tail(prop = 0.01)
-        
-        penguins_tidy.slice_tail(n = 1, by = 'species')
-        penguins_tidy.slice_tail(prop = 0.01, by = 'species')
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> penguins_tidy.slice_tail(n = 3)
+        >>> penguins_tidy.slice_tail(prop = 0.01)
+        >>> 
+        >>> penguins_tidy.slice_tail(n = 1, by = 'species')
+        >>> penguins_tidy.slice_tail(prop = 0.01, by = 'species')
         '''
         nr = self.nrow
 
@@ -4149,7 +4182,6 @@ class tidyframe:
                      , by           = None
                      ):
         '''
-        slice_sample
         Sample a few rows
         
         Parameters
@@ -4180,31 +4212,31 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins = load_penguins()
-        penguins_tidy = tidy(penguins)
-        
-        # swor: sample without replacement
-        # swr: sample with replacement
-        
-        # sample by specifiying count
-        penguins_tidy.slice_sample(n = 5)                    # swor
-        penguins_tidy.slice_sample(n = 5, replace = True)    # swr, smaller than input
-        penguins_tidy.slice_sample(n = 1000, replace = True) # swr, larger than input
-        
-        # sample by specifiying proportion of number of rows of the input
-        penguins_tidy.slice_sample(prop = 0.3)                 # swor
-        penguins_tidy.slice_sample(prop = 0.3, replace = True) # swr, smaller than input
-        penguins_tidy.slice_sample(prop = 1.1, replace = True) # swr, larger than input
-        
-        # sample with weights
-        penguins_tidy.slice_sample(prop = 0.3, weights = 'year')
-        
-        # sampling is reproducible by setting a random state
-        penguins_tidy.slice_sample(n = 3, random_state = 42)
-        
-        # per group sampling
-        penguins_tidy.slice_sample(n = 5, by = 'species', random_state = 1)
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> # swor: sample without replacement
+        >>> # swr: sample with replacement
+        >>> 
+        >>> # sample by specifiying count
+        >>> penguins_tidy.slice_sample(n = 5)                    # swor
+        >>> penguins_tidy.slice_sample(n = 5, replace = True)    # swr, smaller than input
+        >>> penguins_tidy.slice_sample(n = 1000, replace = True) # swr, larger than input
+        >>> 
+        >>> # sample by specifiying proportion of number of rows of the input
+        >>> penguins_tidy.slice_sample(prop = 0.3)                 # swor
+        >>> penguins_tidy.slice_sample(prop = 0.3, replace = True) # swr, smaller than input
+        >>> penguins_tidy.slice_sample(prop = 1.1, replace = True) # swr, larger than input
+        >>> 
+        >>> # sample with weights
+        >>> penguins_tidy.slice_sample(prop = 0.3, weights = 'year')
+        >>> 
+        >>> # sampling is reproducible by setting a random state
+        >>> penguins_tidy.slice_sample(n = 3, random_state = 42)
+        >>> 
+        >>> # per group sampling
+        >>> penguins_tidy.slice_sample(n = 5, by = 'species', random_state = 1)
         '''
         nr = self.nrow
 
@@ -4346,7 +4378,6 @@ class tidyframe:
                   , by = None
                   ):
         '''
-        slice_min
         Subset top rows ordered by some columns
         
         Parameters
@@ -4377,37 +4408,37 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins_tidy = tidy(load_penguins())
-        
-        # subset atleast 4 rows corresponding to ascending 'body_mass_g'
-        penguins_tidy.slice_min(n = 4, order_by_column = 'body_mass_g')
-        
-        # subset exactly 4 rows corresponding to ascending 'body_mass_g'
-        # when more than 'n' rows exist, top n rows in the row order are chosen
-        penguins_tidy.slice_min(n = 4, order_by_column = 'body_mass_g', with_ties = False)
-        
-        # subset a fraction of rows corresponding to ascending 'body_mass_g'
-        penguins_tidy.slice_min(prop = 0.1, order_by_column = 'body_mass_g')
-        
-        # subset atleast 3 rows corresponding to ascending 'bill_length_mm' per each 'species'
-        penguins_tidy.slice_min(n = 2, order_by_column = 'bill_length_mm', by = 'sex')
-        
-        # subset atleast 1% corresponding to ascending 'bill_length_mm' per each 'species'
-        penguins_tidy.slice_min(prop = 0.01, order_by_column = 'bill_length_mm', by = 'sex')
-        
-        # order by column 'bill_length_mm' and break ties using 'bill_depth_mm'
-        # in decreasing order and then pick the min 5 rows
-        (penguins_tidy
-         .mutate({'rank': (lambda x, y: dense_rank([x, y],
-                                                   ascending = [True, False]
-                                                   ),
-                           ["bill_length_mm", "bill_depth_mm"]
-                           )
-                 })
-         .slice_min(n = 5, order_by_column = "rank")
-         .select("rank", include = False)
-         )
+        >>> from palmerpenguins import load_penguins
+        >>> penguins_tidy = tidy(load_penguins())
+        >>> 
+        >>> # subset atleast 4 rows corresponding to ascending 'body_mass_g'
+        >>> penguins_tidy.slice_min(n = 4, order_by_column = 'body_mass_g')
+        >>> 
+        >>> # subset exactly 4 rows corresponding to ascending 'body_mass_g'
+        >>> # when more than 'n' rows exist, top n rows in the row order are chosen
+        >>> penguins_tidy.slice_min(n = 4, order_by_column = 'body_mass_g', with_ties = False)
+        >>> 
+        >>> # subset a fraction of rows corresponding to ascending 'body_mass_g'
+        >>> penguins_tidy.slice_min(prop = 0.1, order_by_column = 'body_mass_g')
+        >>> 
+        >>> # subset atleast 3 rows corresponding to ascending 'bill_length_mm' per each 'species'
+        >>> penguins_tidy.slice_min(n = 2, order_by_column = 'bill_length_mm', by = 'sex')
+        >>> 
+        >>> # subset atleast 1% corresponding to ascending 'bill_length_mm' per each 'species'
+        >>> penguins_tidy.slice_min(prop = 0.01, order_by_column = 'bill_length_mm', by = 'sex')
+        >>> 
+        >>> # order by column 'bill_length_mm' and break ties using 'bill_depth_mm'
+        >>> # in decreasing order and then pick the min 5 rows
+        >>> (penguins_tidy
+        >>>  .mutate({'rank': (lambda x, y: dense_rank([x, y],
+        >>>                                            ascending = [True, False]
+        >>>                                            ),
+        >>>                    ["bill_length_mm", "bill_depth_mm"]
+        >>>                    )
+        >>>          })
+        >>>  .slice_min(n = 5, order_by_column = "rank")
+        >>>  .select("rank", include = False)
+        >>>  )
         '''
         nr = self.nrow
         cn = self.colnames
@@ -4533,7 +4564,6 @@ class tidyframe:
                   , by = None
                   ):
         '''
-        slice_max
         Subset top rows ordered by some columns
         
         Parameters
@@ -4564,37 +4594,37 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins_tidy = tidy(load_penguins())
-        
-        # subset atleast 4 rows corresponding to descending 'body_mass_g'
-        penguins_tidy.slice_max(n = 4, order_by_column = 'body_mass_g')
-        
-        # subset exactly 4 rows corresponding to descending 'body_mass_g'
-        # when more than 'n' rows exist, top n rows in the row order are chosen
-        penguins_tidy.slice_max(n = 4, order_by_column = 'body_mass_g', with_ties = False)
-        
-        # subset a fraction of rows corresponding to descending 'body_mass_g'
-        penguins_tidy.slice_max(prop = 0.1, order_by_column = 'body_mass_g')
-        
-        # subset atleast 3 rows corresponding to descending 'bill_length_mm' per each 'species'
-        penguins_tidy.slice_max(n = 2, order_by_column = 'bill_length_mm', by = 'sex')
-        
-        # subset atleast 1% corresponding to descending 'bill_length_mm' per each 'species'
-        penguins_tidy.slice_max(prop = 0.01, order_by_column = 'bill_length_mm', by = 'sex')
-        
-        # order by column 'bill_length_mm' and break ties using 'bill_depth_mm'
-        # in decreasing order and then pick the min 5 rows
-        (penguins_tidy
-         .mutate({'rank': (lambda x, y: dense_rank([x, y],
-                                                   ascending = [True, False]
-                                                   ),
-                           ["bill_length_mm", "bill_depth_mm"]
-                           )
-                 })
-         .slice_max(n = 5, order_by_column = "rank")
-         .select("rank", include = False)
-         )
+        >>> from palmerpenguins import load_penguins
+        >>> penguins_tidy = tidy(load_penguins())
+        >>> 
+        >>> # subset atleast 4 rows corresponding to descending 'body_mass_g'
+        >>> penguins_tidy.slice_max(n = 4, order_by_column = 'body_mass_g')
+        >>> 
+        >>> # subset exactly 4 rows corresponding to descending 'body_mass_g'
+        >>> # when more than 'n' rows exist, top n rows in the row order are chosen
+        >>> penguins_tidy.slice_max(n = 4, order_by_column = 'body_mass_g', with_ties = False)
+        >>> 
+        >>> # subset a fraction of rows corresponding to descending 'body_mass_g'
+        >>> penguins_tidy.slice_max(prop = 0.1, order_by_column = 'body_mass_g')
+        >>> 
+        >>> # subset atleast 3 rows corresponding to descending 'bill_length_mm' per each 'species'
+        >>> penguins_tidy.slice_max(n = 2, order_by_column = 'bill_length_mm', by = 'sex')
+        >>> 
+        >>> # subset atleast 1% corresponding to descending 'bill_length_mm' per each 'species'
+        >>> penguins_tidy.slice_max(prop = 0.01, order_by_column = 'bill_length_mm', by = 'sex')
+        >>> 
+        >>> # order by column 'bill_length_mm' and break ties using 'bill_depth_mm'
+        >>> # in decreasing order and then pick the min 5 rows
+        >>> (penguins_tidy
+        >>>  .mutate({'rank': (lambda x, y: dense_rank([x, y],
+        >>>                                            ascending = [True, False]
+        >>>                                            ),
+        >>>                    ["bill_length_mm", "bill_depth_mm"]
+        >>>                    )
+        >>>          })
+        >>>  .slice_max(n = 5, order_by_column = "rank")
+        >>>  .select("rank", include = False)
+        >>>  )
         '''
         nr = self.nrow
         cn = self.colnames
@@ -4714,7 +4744,6 @@ class tidyframe:
     # set like methods
     def union(self, y):
         '''
-        union
         Union of rows y with the self
         Equivalent to outer join over all columns
         
@@ -4728,11 +4757,11 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        
-        penguins_tidy[0:5, :].union(penguins_tidy[1:6, :])
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> penguins_tidy[0:5, :].union(penguins_tidy[1:6, :])
         '''
         assert set(self.colnames) == set(y.colnames),\
             "union expects the column names to match"
@@ -4744,7 +4773,6 @@ class tidyframe:
     
     def intersection(self, y):
         '''
-        intersection
         Intersection of rows y with the self
         Equivalent to inner join over all columns
         
@@ -4758,11 +4786,11 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        
-        penguins_tidy[0:5, :].intersection(penguins_tidy[1:6, :])
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> penguins_tidy[0:5, :].intersection(penguins_tidy[1:6, :])
         '''
         assert set(self.colnames) == set(y.colnames),\
             "intersection expects the column names to match"
@@ -4778,7 +4806,6 @@ class tidyframe:
       
     def setdiff(self, y):
         '''
-        setdiff
         Keep rows of self which are not in y
         Equivalent to anti join over all columns
         
@@ -4792,11 +4819,11 @@ class tidyframe:
         
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        
-        penguins_tidy[0:5, :].setdiff(penguins_tidy[1:6, :])
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> penguins_tidy[0:5, :].setdiff(penguins_tidy[1:6, :])
         '''
         assert set(self.colnames) == set(y.colnames),\
             "setdiff expects the column names to match"
@@ -4854,12 +4881,12 @@ class tidyframe:
             
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins = load_penguins()
-        penguins_tidy = tidy(penguins)
-        
-        penguins_tidy.replace_na({'sex': 'unknown'})
-        penguins_tidy.select(predicate = dtypes.is_numeric_dtype).replace_na(1)
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> penguins_tidy.replace_na({'sex': 'unknown'})
+        >>> penguins_tidy.select(predicate = dtypes.is_numeric_dtype).replace_na(1)
         '''
         return tidyframe(self.__data.fillna(value).fillna(pd.NA)
                           , copy = False
@@ -4868,7 +4895,6 @@ class tidyframe:
     
     def drop_na(self, column_names = None):
         '''
-        drop_na
         Drops rows if missing values are present in specified columns
         
         Parameters
@@ -4883,14 +4909,14 @@ class tidyframe:
             
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins = load_penguins()
-        penguins_tidy = tidy(penguins)
-        
-        penguins_tidy.drop_na() # remove a row if any column has a NA
-        # remove a row only if there is a missing value in 'bill_length_mm'
-        # column
-        penguins_tidy.drop_na('bill_length_mm')
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> penguins_tidy.drop_na() # remove a row if any column has a NA
+        >>> # remove a row only if there is a missing value in 'bill_length_mm'
+        >>> # column
+        >>> penguins_tidy.drop_na('bill_length_mm')
         '''
         cn = self.colnames
         if column_names is not None:
@@ -4922,7 +4948,6 @@ class tidyframe:
                 , by = None
                 ):
         '''
-        fill_na
         Fill missing values from neighboring values per column
         
         Paramaters
@@ -4950,26 +4975,26 @@ class tidyframe:
         
         Examples
         --------
-        df = tidy(pd.DataFrame({'A': [pd.NA, 1, 1, 2, 2, 3, pd.NA],
-                                'B': [pd.NA, pd.NA, 1, 2, pd.NA, pd.NA, 3],
-                                'C': [1, 2, 1, 2, 1, 2, 1]
-                               }
-                              )
-                 )
-        df
-        
-        df.fill_na({'B': 'up'})
-        df.fill_na({'B': 'down'})
-        df.fill_na({'B': 'downup'})
-        df.fill_na({'B': 'updown'})
-        
-        df.fill_na({'B': 'up'}, by = 'A')
-        df.fill_na({'B': 'down'}, by = 'A')
-        df.fill_na({'B': 'updown'}, by = 'A')
-        df.fill_na({'B': 'downup'}, by = 'A')
-        
-        df.fill_na({'B': 'updown'}, order_by = "C")
-        df.fill_na({'B': 'updown'}, order_by = "C", by = "A")
+        >>> df = tidy(pd.DataFrame({'A': [pd.NA, 1, 1, 2, 2, 3, pd.NA],
+        >>>                         'B': [pd.NA, pd.NA, 1, 2, pd.NA, pd.NA, 3],
+        >>>                         'C': [1, 2, 1, 2, 1, 2, 1]
+        >>>                        }
+        >>>                       )
+        >>>          )
+        >>> df
+        >>> 
+        >>> df.fill_na({'B': 'up'})
+        >>> df.fill_na({'B': 'down'})
+        >>> df.fill_na({'B': 'downup'})
+        >>> df.fill_na({'B': 'updown'})
+        >>> 
+        >>> df.fill_na({'B': 'up'}, by = 'A')
+        >>> df.fill_na({'B': 'down'}, by = 'A')
+        >>> df.fill_na({'B': 'updown'}, by = 'A')
+        >>> df.fill_na({'B': 'downup'}, by = 'A')
+        >>> 
+        >>> df.fill_na({'B': 'updown'}, order_by = "C")
+        >>> df.fill_na({'B': 'updown'}, order_by = "C", by = "A")
         '''
         cn = self.colnames
         assert isinstance(column_direction_dict, dict),\
@@ -5060,7 +5085,6 @@ class tidyframe:
                  ):
         
         '''
-        separate
         Split a string column into multiple string columns rowwise
         
         Parameters
@@ -5079,14 +5103,14 @@ class tidyframe:
             
         Examples
         --------
-        df = tidyframe(pd.DataFrame({'col': ["a_b", "c_d", "e_f_g"]}))
-        print(df)
-        
-        # separate into three columns
-        df.separate('col', into = ["col_1", "col_2", "col_3"], sep = "_")
-        
-        # separate into two columns and ignore the last piece
-        df.separate('col', into = ["col_1", "col_2"], sep = "_", strict = False)
+        >>> df = tidyframe(pd.DataFrame({'col': ["a_b", "c_d", "e_f_g"]}))
+        >>> print(df)
+        >>> 
+        >>> # separate into three columns
+        >>> df.separate('col', into = ["col_1", "col_2", "col_3"], sep = "_")
+        >>> 
+        >>> # separate into two columns and ignore the last piece
+        >>> df.separate('col', into = ["col_1", "col_2"], sep = "_", strict = False)
         '''
         
         assert isinstance(column_name, str),\
@@ -5136,7 +5160,6 @@ class tidyframe:
     
     def unite(self, column_names, into, sep = "_", keep = False):
         '''
-        unite
         Split a string column into multiple string columns rowwise
         
         Parameters
@@ -5155,16 +5178,16 @@ class tidyframe:
             
         Examples
         --------
-        df = tidyframe(pd.DataFrame({'col': ["a_b", "c_d", "e_f_g"]}))
-        print(df)
-        
-        # separate into three columns
-        (df.separate('col', into = ["col_1", "col_2", "col_3"], sep = "_")
-           .unite(column_names = ["col_1", "col_2", "col_3"], into = "united", sep = "_")
-           )
-        
-        # separate into two columns and ignore the last piece
-        df.separate('col', into = ["col_1", "col_2"], sep = "_", strict = False)
+        >>> df = tidyframe(pd.DataFrame({'col': ["a_b", "c_d", "e_f_g"]}))
+        >>> print(df)
+        >>> 
+        >>> # separate into three columns
+        >>> (df.separate('col', into = ["col_1", "col_2", "col_3"], sep = "_")
+        >>>    .unite(column_names = ["col_1", "col_2", "col_3"], into = "united", sep = "_")
+        >>>    )
+        >>> 
+        >>> # separate into two columns and ignore the last piece
+        >>> df.separate('col', into = ["col_1", "col_2"], sep = "_", strict = False)
         '''
         
         
@@ -5203,9 +5226,9 @@ class tidyframe:
         
         Examples
         --------
-        temp = tidy(pd.DataFrame({"A": ["hello;world", "hey,mister;o/mister"]}))
-        temp
-        temp.separate_rows('A', sep = ",|;")
+        >>> temp = tidy(pd.DataFrame({"A": ["hello;world", "hey,mister;o/mister"]}))
+        >>> temp
+        >>> temp.separate_rows('A', sep = ",|;")
         '''
         
         assert isinstance(column_name, str),\
@@ -5239,7 +5262,6 @@ class tidyframe:
                 , drop_by = True
                 ):
         '''
-        nest_by
         Nest all columns of tidy dataframe with respect to 'by' columns
         
         Parameters
@@ -5260,12 +5282,12 @@ class tidyframe:
            
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
 
-        penguins_tidy.nest_by(by = 'species')
-        penguins_tidy.nest_by(by = ['species', 'sex'])
+        >>> penguins_tidy.nest_by(by = 'species')
+        >>> penguins_tidy.nest_by(by = ['species', 'sex'])
         '''
         cn = self.colnames
         self._validate_by(by)
@@ -5342,7 +5364,6 @@ class tidyframe:
              , include = True
              ):
         '''
-        nest
         Nest columns of tidy dataframe
         
         Parameters
@@ -5362,14 +5383,14 @@ class tidyframe:
            
         Examples
         --------
-        from palmerpenguins import load_penguins
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        
-        penguins_tidy.nest(['bill_length_mm', 'bill_depth_mm',
-                            'flipper_length_mm', 'body_mass_g']
-                           )
-        penguins_tidy.nest(['species', 'sex'], include = False)
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> 
+        >>> penguins_tidy.nest(['bill_length_mm', 'bill_depth_mm',
+        >>>                     'flipper_length_mm', 'body_mass_g']
+        >>>                    )
+        >>> penguins_tidy.nest(['species', 'sex'], include = False)
         '''
         
         cn = self.colnames
@@ -5388,7 +5409,6 @@ class tidyframe:
     ##########################################################################    
     def unnest(self, nest_column_name = 'data'):
         '''
-        unnest
         Unnest a nested column of a tidy dataframe
         
         Parameters
@@ -5407,28 +5427,28 @@ class tidyframe:
         
         Examples
         --------
-        import pandas as pd
-        nested_pdf = pd.DataFrame({"A": [1,2,3, 4],
-                                   "B": pd.Series([[10, 20, 30],
-                                                   [40, 50],
-                                                   [60],
-                                                   70
-                                                  ]
-                                                 )
-                          })
-        nested_pdf
-        
-        # unnest nested lists
-        tidy(nested_pdf).unnest('B')
-        
-        from palmerpenguins import load_penguins
-        penguins = load_penguins().convert_dtypes()
-        penguins_tidy = tidy(penguins)
-        pen_nested_by_species = penguins_tidy.nest_by('species')
-        pen_nested_by_species
-        
-        # unnest nested dataframes
-        pen_nested_by_species.unnest('data')
+        >>> import pandas as pd
+        >>> nested_pdf = pd.DataFrame({"A": [1,2,3, 4],
+        >>>                            "B": pd.Series([[10, 20, 30],
+        >>>                                            [40, 50],
+        >>>                                            [60],
+        >>>                                            70
+        >>>                                           ]
+        >>>                                          )
+        >>>                   })
+        >>> nested_pdf
+        >>> 
+        >>> # unnest nested lists
+        >>> tidy(nested_pdf).unnest('B')
+        >>> 
+        >>> from palmerpenguins import load_penguins
+        >>> penguins = load_penguins().convert_dtypes()
+        >>> penguins_tidy = tidy(penguins)
+        >>> pen_nested_by_species = penguins_tidy.nest_by('species')
+        >>> pen_nested_by_species
+        >>> 
+        >>> # unnest nested dataframes
+        >>> pen_nested_by_species.unnest('data')
         '''
         
         nr = self.nrow
@@ -5533,44 +5553,44 @@ class tidyframe:
       Notes
       -----
       1. Rows can be subset by specifying integer positions 
-      (as int, list, slice and range objects) or by providing a boolean mask.
+         (as int, list, slice and range objects) or by providing a boolean mask.
       
       2. Columns can be subset by specifiying integer positions 
-      (as int, list, slice and range objects) or by specifying a list of unique 
-      column names or by providing a boolean mask.
+         (as int, list, slice and range objects) or by specifying a list of unique 
+         column names or by providing a boolean mask.
       
       3. Any combination of row and column specifications work together.
       
       Examples
       --------
-      from palmerpenguins import load_penguins
-      penguins = load_penguins().convert_dtypes()
-      penguins_tidy = tidy(penguins)
-      
-      # Rows can be subset with integer indexes with slice objects
-      # right end is not included in slice objects
-      # first four rows
-      penguins_tidy[0:4,:]
-      
-      # a row can be subset with a single integer
-      # moreover subsetting always returns a dataframe
-      penguins_tidy[10, :]
-      
-      # Rows can be subset with a boolean mask 
-      penguins_tidy[penguins_tidy.pull('bill_length_mm') > 40, :]
-      
-      # Columns can be subset using column names
-      penguins_tidy[0:5, ["species", "year"]]
-      
-      # A single column can be subset by specifying column name as a string
-      # moreover subsetting always returns a dataframe 
-      penguins_tidy[0:5, "species"] # same as: penguins_tidy[0:5, ["species"]]
-      
-      # columns can be subset by integer position
-      penguins_tidy[[7, 6, 5], 0:3]
-      
-      # row and columns can be subset with different types of specifications
-      penguins_tidy[0:2, 1] # same as: penguins_tidy[[0, 1], 'island']
+      >>> from palmerpenguins import load_penguins
+      >>> penguins = load_penguins().convert_dtypes()
+      >>> penguins_tidy = tidy(penguins)
+      >>> 
+      >>> # Rows can be subset with integer indexes with slice objects
+      >>> # right end is not included in slice objects
+      >>> # first four rows
+      >>> penguins_tidy[0:4,:]
+      >>> 
+      >>> # a row can be subset with a single integer
+      >>> # moreover subsetting always returns a dataframe
+      >>> penguins_tidy[10, :]
+      >>> 
+      >>> # Rows can be subset with a boolean mask 
+      >>> penguins_tidy[penguins_tidy.pull('bill_length_mm') > 40, :]
+      >>> 
+      >>> # Columns can be subset using column names
+      >>> penguins_tidy[0:5, ["species", "year"]]
+      >>> 
+      >>> # A single column can be subset by specifying column name as a string
+      >>> # moreover subsetting always returns a dataframe 
+      >>> penguins_tidy[0:5, "species"] # same as: penguins_tidy[0:5, ["species"]]
+      >>> 
+      >>> # columns can be subset by integer position
+      >>> penguins_tidy[[7, 6, 5], 0:3]
+      >>> 
+      >>> # row and columns can be subset with different types of specifications
+      >>> penguins_tidy[0:2, 1] # same as: penguins_tidy[[0, 1], 'island']
       '''
       cn = self.colnames
       key = list(key)
@@ -5627,40 +5647,40 @@ class tidyframe:
       Notes
       -----
       1. Rows can be subset by specifying integer positions 
-      (as int, list, slice and range objects) or by providing a boolean mask.
+         (as int, list, slice and range objects) or by providing a boolean mask.
       
       2. Columns can be subset by specifiying integer positions 
-      (as int, list, slice and range objects) or by specifying a list of unique 
-      column names or by providing a boolean mask.
+         (as int, list, slice and range objects) or by specifying a list of unique 
+         column names or by providing a boolean mask.
       
       3. Any combination of row and column specifications work together.
       
       4. Assignment is done by "pdf.loc[exp1, exp2] = value". Incompatible value
-      assignment exceptions are handled by this method and they will cascade.
+         assignment exceptions are handled by this method and they will cascade.
       
       Examples
       --------
-      from palmerpenguins import load_penguins
-      penguins = load_penguins().convert_dtypes()
-      penguins_tidy = tidy(penguins)
-      
-      # assign a single value with correct type
-      penguins_tidy[0,0] = "a"
-      penguins_tidy[0:5, :]
-      
-      # assign a multiple values with correct type
-      penguins_tidy[0:3,0] = "b"
-      penguins_tidy[0:5, :]
-      
-      # assign a row partially by a list of appropriate types
-      penguins_tidy[0, ['species', 'bill_length_mm']] = ['c', 1]
-      penguins_tidy[0:5, :]
-      
-      # assign a subset with another tidyframe
-      penguins_tidy[0:2, 0:2] = pd.DataFrame({'species': ['d', 'e']
-                                              , 'island': ['f', 'g']
-                                              }).pipe(tidy)
-      penguins_tidy[0:5, :]
+      >>> from palmerpenguins import load_penguins
+      >>> penguins = load_penguins().convert_dtypes()
+      >>> penguins_tidy = tidy(penguins)
+      >>> 
+      >>> # assign a single value with correct type
+      >>> penguins_tidy[0,0] = "a"
+      >>> penguins_tidy[0:5, :]
+      >>> 
+      >>> # assign a multiple values with correct type
+      >>> penguins_tidy[0:3,0] = "b"
+      >>> penguins_tidy[0:5, :]
+      >>> 
+      >>> # assign a row partially by a list of appropriate types
+      >>> penguins_tidy[0, ['species', 'bill_length_mm']] = ['c', 1]
+      >>> penguins_tidy[0:5, :]
+      >>> 
+      >>> # assign a subset with another tidyframe
+      >>> penguins_tidy[0:2, 0:2] = pd.DataFrame({'species': ['d', 'e']
+      >>>                                         , 'island': ['f', 'g']
+      >>>                                         }).pipe(tidy)
+      >>> penguins_tidy[0:5, :]
       '''
       cn = self.colnames
       key = list(key)
