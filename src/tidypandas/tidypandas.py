@@ -19,7 +19,7 @@ from skimpy import skim
 
 from tidypandas.tidy_helpers import simplify, is_simple
 from tidypandas._unexported_utils import (
-                                            _is_kwargable, 
+                                            _is_kwargable,
                                             _is_valid_colname,
                                             _is_string_or_string_list,
                                             _enlist,
@@ -260,7 +260,7 @@ class tidyframe:
 
     #     return tidy_string
 
-    def __repr__(self) -> str:
+    # def __repr__(self) -> str:
         """
         Return a string representation for a particular DataFrame.
         """
@@ -274,7 +274,7 @@ class tidyframe:
 
         nr = self.nrow
         nc = self.ncol
-        
+
         header_line   = f"# A tidy dataframe: {nr} X {nc}"
 
         from pandas import option_context
@@ -1611,15 +1611,26 @@ class tidyframe:
         # strategy
         # created 'mutated' copy and keep adding/modifying columns
         
+        keys = dictionary.keys()
+        # ensure new column names to be created are valid (do not start with '_')
+        keys_flattened = list(
+          np.concatenate([[x] if np.isscalar(x) else list(x) for x in keys])
+          )
+        assert np.all([_is_valid_colname(x) for x in keys_flattened]),\
+          (f"column names to be created/modified should be valid column names. "
+           "A valid column name should be a string not starting from '_'"
+           )
+        
         # handle 'order_by':
         # Orders the dataframe for 'mutate' and keeps a row order column
         # at the end of mutate operation, the dataframe is sorted in original 
         # order and row order column is deleted
+        rn_name = _generate_new_string(list(set(cn + keys_flattened)))
         if order_by is not None:
             order_by = self._clean_order_by(order_by)
             mutated = (self.__data
                            .copy()
-                           .assign(**{"_rn": lambda x: np.arange(x.shape[0])})
+                           .assign(**{rn_name: lambda x: np.arange(x.shape[0])})
                            .sort_values(by = [x[0] for x in order_by],
                                         ascending = [x[1] == "asc" for x in order_by]
                                         )
@@ -1852,7 +1863,7 @@ class tidyframe:
                                      ))
         
         if order_by is not None:
-            mutated = mutated.sort_values("_rn").drop(columns = ["_rn"])
+            mutated = mutated.sort_values(rn_name).drop(columns = [rn_name])
               
         return tidyframe(mutated
                           , check = False
@@ -1868,7 +1879,8 @@ class tidyframe:
                        , order_by = None
                        , **kwargs
                        ):
-
+        
+        cn = self.colnames
         assert callable(func) or isinstance(func, str),\
             ("arg 'func' should be a function or a string which is convertible "
              "to a lambda function"
@@ -1877,9 +1889,11 @@ class tidyframe:
 
         if order_by is not None:
             order_by = self._clean_order_by(order_by)
+            cn_prefix = [x + prefix for x in cn]
+            rn_name = _generate_new_string(list(set(cn + cn_prefix)))
             mutated = (self.__data
                            .copy()
-                           .assign(**{"_rn": lambda x: np.arange(x.shape[0])})
+                           .assign(**{rn_name: lambda x: np.arange(x.shape[0])})
                            .sort_values(by = [x[0] for x in order_by],
                                         ascending = [x[1] == "asc" for x in order_by]
                                         )
@@ -1919,7 +1933,7 @@ class tidyframe:
                 mutated[prefix + acol] = func(mutated[acol], **kwargs)
         
         if order_by is not None:
-            mutated = mutated.sort_values("_rn").drop(columns = ["_rn"])
+            mutated = mutated.sort_values(rn_name).drop(columns = [rn_name])
             
         return tidyframe(mutated, check = False, copy = False)
     
