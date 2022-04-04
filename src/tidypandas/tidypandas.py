@@ -33,64 +33,6 @@ from tidypandas._unexported_utils import (
 import tidypandas.format as tidy_fmt
 
 
-# -----------------------------------------------------------------------------
-# tidy
-# -----------------------------------------------------------------------------
-
-# shorthand to convert a non-simple pandas dataframe to a tidyframe
-def tidy(pdf
-         , sep = "__"
-         , verbose = False
-         , copy = True
-         , **kwargs
-         ):
-    '''
-    Utility function to convert a not simple pandas dataframe to a 
-    tidyframe
-    
-    Parameters
-    ----------
-    pdf : Pandas dataframe
-    sep: str (default: "__")
-        String separator to be used while concatenating column multiindex
-    verbose: bool (default: False)
-        Whether to print the progress of simpliying process
-    copy: bool, Default is True
-            Whether the tidyframe object to be created should refer 
-            to a copy of the input pandas dataframe or the input itself
-    kwargs: Optinal arguments for tidyframe init method
-
-    Returns
-    -------
-    tidyframe
-    
-    Notes
-    -----
-    Input is attempted to be simplified using 'simplify'. Some notorious 
-    pandas dataframes may not be simplified, in which case an exception is
-    raised.
-    
-    Examples
-    --------
-    >>> from palmerpenguins import load_penguins
-    >>> penguins = load_penguins().convert_dtypes()
-    >>> ex1 = penguins.groupby('species').apply(lambda x: x.head(2))
-    >>> ex1
-    >>>
-    >>> tidy(ex1)
-    '''
-    res = tidyframe(simplify(pdf
-                             , sep = sep
-                             , verbose = verbose
-                             )
-                    , copy = copy
-                    , check = False
-                    , **kwargs
-                    )
-    return res
-
-
-
 class tidyframe:
     '''
     tidyframe class
@@ -256,22 +198,21 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidyframe(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> penguins_tidy
         '''
         assert isinstance(check, bool),\
             "arg 'check' should be a bool"
+        assert isinstance(copy, bool),\
+            "arg 'copy' should be a bool"
         if check:
-            flag_simple = is_simple(x, verbose = True)
-            if not flag_simple:    
-            # raise the error After informative warnings
-                raise Exception(("Input pandas dataframe is not 'simple'."
-                                 " See to above warnings."
-                                 " Try the 'simplify' function."
-                                 " ex: simplify(not simple pandas dataframe) "
-                                 " --> simple pandas dataframe."
-                                ))
+            if not is_simple(x, verbose = True):
+                try:
+                    x = simplify(x, verbose = True)
+                except:
+                    raise Exception(("Input pandas dataframe could not be simplified"
+                                     " See to above warnings."
+                                    ))
         
         if copy:                       
             self.__data = (x.copy()
@@ -420,8 +361,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         
         >>> penguins_tidy.to_pandas()
         >>> # check whether the dataframes are same
@@ -459,8 +399,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> penguins_tidy.pull("species")
         '''
         
@@ -692,8 +631,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
 
         >>> penguins_tidy.add_row_number() # equivalently penguins_tidy.add_rowid()
         
@@ -765,8 +703,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
 
         >>> penguins_tidy.add_group_number(by = 'sex')
         '''
@@ -856,7 +793,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins_tidy = tidy(load_penguins().convert_dtypes())
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> # pick a sample of rows per chunk defined by 'species'
         >>> penguins_tidy.group_modify(lambda x: x.sample(n = 3)
@@ -1036,8 +973,7 @@ class tidyframe:
         --------
         >>> import re
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> # select with names
         >>> penguins_tidy.select(['sex', 'species'])
@@ -1117,8 +1053,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins_tidy = tidy(load_penguins())
-        >>> penguins_tidy
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> # move "island" and "species" columns to the left of the dataframe
         >>> penguins_tidy.relocate(["island", "species"])
@@ -1197,8 +1132,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins_tidy = tidy(load_penguins().convert_dtypes())
-        >>> penguins_tidy
+        >>> penguins_tidy = tidyframe(load_penguins())
 
         >>> penguins_tidy.rename({'species': 'species_2'})
         '''
@@ -1249,7 +1183,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins_tidy = tidy(load_penguins())
+        >>> penguins_tidy = tidyframe(load_penguins())
 
         >>> # pick first three rows of the dataframe
         >>> penguins_tidy.slice(np.arange(3))
@@ -1342,7 +1276,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins_tidy = tidy(load_penguins())
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> # arrange by ascending order of column 'bill_length_mm'
         >>> penguins_tidy.arrange('bill_length_mm')
@@ -1490,7 +1424,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins_tidy = tidy(load_penguins())
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> # query with pandas eval. pandas eval does not support complicated expressions.
         >>> penguins_tidy.filter("body_mass_g > 4000")
@@ -1623,7 +1557,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> tidy_penguins = tidy(load_penguins())
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> tidy_penguins.distinct() # distinct over all columns
         >>> 
@@ -2047,8 +1981,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> import pandas.api.types as dtypes
-        >>> penguins_tidy = tidy(load_penguins())
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> # mutate with dict
         >>> penguins_tidy.mutate({
@@ -2449,10 +2382,9 @@ class tidyframe:
         
         Examples
         --------
-        >>> from palmerpenguins import load_penguins
         >>> import pandas.api.types as dtypes
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> from palmerpenguins import load_penguins
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> # summarise in dict mode
         >>> penguins_tidy.summarise({
@@ -2914,9 +2846,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> import pandas.api.types as dtypes
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
         >>>                                  .select(['species', 'bill_length_mm', 'island'])
@@ -2977,9 +2907,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> import pandas.api.types as dtypes
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
         >>>                                  .select(['species', 'bill_length_mm', 'island'])
@@ -3040,9 +2968,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> import pandas.api.types as dtypes
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
         >>>                                  .select(['species', 'bill_length_mm', 'island'])
@@ -3101,9 +3027,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> import pandas.api.types as dtypes
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
         >>>                                  .select(['species', 'bill_length_mm', 'island'])
@@ -3163,9 +3087,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> import pandas.api.types as dtypes
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
         >>>                                  .select(['species', 'bill_length_mm', 'island'])
@@ -3240,9 +3162,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> import pandas.api.types as dtypes
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
         >>>                                  .select(['species', 'bill_length_mm', 'island'])
@@ -3309,9 +3229,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> import pandas.api.types as dtypes
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
         >>>                                  .select(['species', 'bill_length_mm', 'island'])
@@ -3386,9 +3304,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> import pandas.api.types as dtypes
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> (penguins_tidy.select(['species', 'island'])
         >>>               .cbind(penguins_tidy.select(['bill_length_mm', 'bill_depth_mm']))
@@ -3433,9 +3349,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> import pandas.api.types as dtypes
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> (penguins_tidy.select(['species', 'island'])
         >>>               .rbind(penguins_tidy.select(['island', 'bill_length_mm', 'bill_depth_mm']))
@@ -3480,9 +3394,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> import pandas.api.types as dtypes
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> # count rows
         >>> penguins_tidy.count()
@@ -3592,9 +3504,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> import pandas.api.types as dtypes
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> # count rows
         >>> penguins_tidy.add_count()
@@ -3671,8 +3581,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins().convert_dtypes().fillna(pd.NA)
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> import numpy as np
         >>> 
@@ -3879,8 +3788,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins().convert_dtypes().fillna(pd.NA)
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> # pivot to bring values from columns ending with 'mm'
         >>> cns = ['species'
@@ -3984,8 +3892,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> penguins_tidy.slice_head(n = 3)
         >>> penguins_tidy.slice_head(prop = 0.01)
@@ -4099,8 +4006,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> penguins_tidy.slice_tail(n = 3)
         >>> penguins_tidy.slice_tail(prop = 0.01)
@@ -4222,8 +4128,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> # swor: sample without replacement
         >>> # swr: sample with replacement
@@ -4418,7 +4323,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins_tidy = tidy(load_penguins())
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> # subset atleast 4 rows corresponding to ascending 'body_mass_g'
         >>> penguins_tidy.slice_min(n = 4, order_by_column = 'body_mass_g')
@@ -4604,7 +4509,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins_tidy = tidy(load_penguins())
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> # subset atleast 4 rows corresponding to descending 'body_mass_g'
         >>> penguins_tidy.slice_max(n = 4, order_by_column = 'body_mass_g')
@@ -4767,8 +4672,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> penguins_tidy[0:5, :].union(penguins_tidy[1:6, :])
         '''
@@ -4796,8 +4700,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> penguins_tidy[0:5, :].intersection(penguins_tidy[1:6, :])
         '''
@@ -4829,8 +4732,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> penguins_tidy[0:5, :].setdiff(penguins_tidy[1:6, :])
         '''
@@ -4891,8 +4793,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> penguins_tidy.replace_na({'sex': 'unknown'})
         >>> penguins_tidy.select(predicate = dtypes.is_numeric_dtype).replace_na(1)
@@ -4919,8 +4820,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> penguins_tidy.drop_na() # remove a row if any column has a NA
         >>> # remove a row only if there is a missing value in 'bill_length_mm'
@@ -4984,9 +4884,10 @@ class tidyframe:
         
         Examples
         --------
-        >>> df = tidy(pd.DataFrame({'A': [pd.NA, 1, 1, 2, 2, 3, pd.NA],
-        >>>                         'B': [pd.NA, pd.NA, 1, 2, pd.NA, pd.NA, 3],
-        >>>                         'C': [1, 2, 1, 2, 1, 2, 1]
+        >>> df = tidyframe(
+        >>>          pd.DataFrame({'A': [pd.NA, 1, 1, 2, 2, 3, pd.NA],
+        >>>                        'B': [pd.NA, pd.NA, 1, 2, pd.NA, pd.NA, 3],
+        >>>                        'C': [1, 2, 1, 2, 1, 2, 1]
         >>>                        }
         >>>                       )
         >>>          )
@@ -5235,7 +5136,7 @@ class tidyframe:
         
         Examples
         --------
-        >>> temp = tidy(pd.DataFrame({"A": ["hello;world", "hey,mister;o/mister"]}))
+        >>> temp = tidyframe(pd.DataFrame({"A": ["hello;world", "hey,mister;o/mister"]}))
         >>> temp
         >>> temp.separate_rows('A', sep = ",|;")
         '''
@@ -5292,8 +5193,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
 
         >>> penguins_tidy.nest_by(by = 'species')
         >>> penguins_tidy.nest_by(by = ['species', 'sex'])
@@ -5393,8 +5293,7 @@ class tidyframe:
         Examples
         --------
         >>> from palmerpenguins import load_penguins
-        >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(load_penguins())
         >>> 
         >>> penguins_tidy.nest(['bill_length_mm', 'bill_depth_mm',
         >>>                     'flipper_length_mm', 'body_mass_g']
@@ -5448,11 +5347,11 @@ class tidyframe:
         >>> nested_pdf
         >>> 
         >>> # unnest nested lists
-        >>> tidy(nested_pdf).unnest('B')
+        >>> tidyframe(nested_pdf).unnest('B')
         >>> 
         >>> from palmerpenguins import load_penguins
         >>> penguins = load_penguins().convert_dtypes()
-        >>> penguins_tidy = tidy(penguins)
+        >>> penguins_tidy = tidyframe(penguins)
         >>> pen_nested_by_species = penguins_tidy.nest_by('species')
         >>> pen_nested_by_species
         >>> 
@@ -5521,6 +5420,27 @@ class tidyframe:
     # split (group_split)
     ##########################################################################
     def split(self, by):
+        '''
+        split
+        split rows of a dataframe by groups
+        
+        Parameters
+        ----------
+        by: string or a list of strings
+            columns to group by
+        
+        Returns
+        -------
+        list of tidyframes
+        
+        Examples
+        --------
+        >>> from palmerpenguins import load_penguins
+        >>> penguins_tidy = tidyframe(load_penguins())
+        >>> penguins_tidy.split(by = "species")
+        
+        
+        '''
         
         self._validate_by(by)
         by = _enlist(by)
@@ -5573,8 +5493,7 @@ class tidyframe:
       Examples
       --------
       >>> from palmerpenguins import load_penguins
-      >>> penguins = load_penguins().convert_dtypes()
-      >>> penguins_tidy = tidy(penguins)
+      >>> penguins_tidy = tidyframe(load_penguins())
       >>> 
       >>> # Rows can be subset with integer indexes with slice objects
       >>> # right end is not included in slice objects
@@ -5670,8 +5589,7 @@ class tidyframe:
       Examples
       --------
       >>> from palmerpenguins import load_penguins
-      >>> penguins = load_penguins().convert_dtypes()
-      >>> penguins_tidy = tidy(penguins)
+      >>> penguins_tidy = tidyframe(load_penguins())
       >>> 
       >>> # assign a single value with correct type
       >>> penguins_tidy[0,0] = "a"

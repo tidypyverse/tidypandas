@@ -6,7 +6,18 @@
 import pandas as pd
 import numpy as np
 import functools
-from _unexported_utils import *
+from tidypandas._unexported_utils import (
+                                            _is_kwargable,
+                                            _is_valid_colname,
+                                            _is_string_or_string_list,
+                                            _enlist,
+                                            _get_unique_names,
+                                            _is_unique_list,
+                                            _get_dtype_dict,
+                                            _generate_new_string,
+                                            _coerce_series,
+                                            _coerce_pdf
+                                        )
 
 def _extend(aseries, length):
     '''

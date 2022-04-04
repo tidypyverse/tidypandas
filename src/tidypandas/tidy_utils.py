@@ -4,7 +4,7 @@
 # -----------------------------------------------------------------------------
 import numpy as np
 import pandas as pd
-from tidypandas._unexported_utils import (
+from tidypandas._unexported_utils import (_is_unique_list,
                                           _get_unique_names, 
                                           _coerce_pdf
                                          )
@@ -214,7 +214,7 @@ def is_simple(pdf, verbose = False):
     col_flag = not isinstance(pdf.columns, pd.MultiIndex)
     # check if row index is rangeIndex
     flag_no_index = False
-    if isinstance(pdf.index, (pd.RangeIndex, pd.Int64Index)):
+    if isinstance(pdf.index, pd.RangeIndex):
         if pdf.index.start == 0 and pdf.index.step == 1:
             flag_no_index = True 
             
