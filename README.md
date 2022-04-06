@@ -1,25 +1,58 @@
-# tidypandas
+## About
 
-A tidyverse inspired wrapper over Pandas Dataframe
+> `tidypandas` – A **grammar of data manipulation** for
+> [pandas](https://pandas.pydata.org/docs/index.html) inspired by
+> [tidyverse](https://tidyverse.tidyverse.org/)
 
-## Installation
+`tidypandas` python package provides *minimal, pythonic* API for common
+data manipulation tasks:
 
-```bash
-$ pip install tidypandas
-```
+-   `tidyframe` class (wrapper over pandas dataframe) provides a
+    dataframe with simplified index structure (no more resetting indexes
+    and multi indexes)
+-   Consistent ‘verbs’ (`select`, `arrange`, `distinct`, …) as methods
+    to `tidyframe` class which mostly return a `tidyframe`
+-   Unified interface for summarizing (aggregation) and mutate (assign)
+    operations across groups
+-   Utilites for pandas dataframes and series
+-   Uses of simple python data structures, No esoteric classes, No
+    pipes, No Non-standard evaluation
+-   No copy data conversion between `tidyframe` and pandas dataframes
+-   An accessor to apply `tidyframe` verbs to simple pandas datarames
+-   …
 
-## Usage
+## Example
 
-- TODO
+-   Example `tidypandas` code:
 
-## Contributing
+<!-- -->
 
-Interested in contributing? Check out the contributing guidelines. Please note that this project is released with a Code of Conduct. By contributing to this project, you agree to abide by its terms.
+    df.filter(lambda x: x['col_1'] > x['col_1'].mean(), by = 'col_2')
 
-## License
+-   equivalent pandas code:
 
-`tidypandas` was created by Srikanth K S. It is licensed under the terms of the MIT license.
+<!-- -->
 
-## Credits
+    (df.groupby('col2')
+       .apply(lambda x: x.loc(lambda y: y['col_1'] > y['col_1'].mean()))
+       .reset_index(drop = True)
+       )
 
-`tidypandas` was created with [`cookiecutter`](https://cookiecutter.readthedocs.io/en/latest/) and the `py-pkgs-cookiecutter` [template](https://github.com/py-pkgs/py-pkgs-cookiecutter).
+## Why use `tidypandas`
+
+`tidypandas` is for you if:
+
+-   you *frequently* write data manipulation code using pandas
+-   you prefer to have stay in pandas ecosystem (see accessor)
+-   you *prefer* to remember a [limited set of
+    methods](https://medium.com/dunder-data/minimally-sufficient-pandas-a8e67f2a2428)
+-   you do not want to write (or be surprised by)
+    [`reset_index`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.reset_index.html),
+    [`rename_axis`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rename_axis.html)
+    often
+-   you prefer writing free flowing, expressive code in
+    [dplyr](https://dplyr.tidyverse.org/) style
+
+**Caveat**: `tidypandas` does not replace the amazing `pandas` library,
+rather relies on it. It offers a consistent API with a different
+[philosophy](https://tidyverse.tidyverse.org/articles/manifesto.html).

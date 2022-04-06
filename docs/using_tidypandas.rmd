@@ -1,0 +1,168 @@
+---
+title: "Using tidypandas"
+date: "`r Sys.Date()`"
+output: 
+    md_document:
+        toc: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# you might need to set the virtualenv correctly in the next line
+reticulate::use_virtualenv("~/.cache/pypoetry/virtualenvs/tidypandas-cfuMUHaV-py3.8/"
+                           , required = TRUE
+                           )
+```
+
+# Using `tidypandas`
+
+## About
+
+> `tidypandas` -- A **grammar of data manipulation** for [pandas](https://pandas.pydata.org/docs/index.html) inspired by [tidyverse](https://tidyverse.tidyverse.org/) 
+
+`tidypandas` python package provides *minimal, pythonic* API for common data manipulation tasks:
+   
+   - `tidyframe` class (wrapper over pandas dataframe) provides a dataframe with simplified index structure (no more resetting indexes and multi indexes)
+   - Consistent 'verbs' (`select`, `arrange`, `distinct`, ...) as methods to `tidyframe` class which mostly return a `tidyframe`
+   - Unified interface for summarizing (aggregation) and mutate (assign) operations across groups
+   - Utilites for pandas dataframes and series
+   - Uses of simple python data structures, No esoteric classes, No pipes, No Non-standard evaluation
+   - No copy data conversion between `tidyframe` and pandas dataframes
+   - An accessor to apply `tidyframe` verbs to simple pandas datarames
+   - ...
+
+`tidypandas` is for you if:
+
+  - you *frequently* write data manipulation code using pandas
+  - you prefer to have stay in pandas ecosystem (see accessor)
+  - you *prefer* to remember a [limited set of methods](https://medium.com/dunder-data/minimally-sufficient-pandas-a8e67f2a2428)
+  - you do not want to write or be surprised by [`reset_index`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.reset_index.html), [`rename_axis`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rename_axis.html) often
+  - you prefer writing free flowing, expressive code in [dplyr](https://dplyr.tidyverse.org/) style
+ 
+**Caveat**: `tidypandas` does not replace the amazing `pandas` library, rather relies on it. It offers a consistent API with a different [philosophy](https://tidyverse.tidyverse.org/articles/manifesto.html).
+
+## Illustration
+
+> On penguins dataset, let 'length_depth_ratio' be ratio of 'bill_length_mm' and 'bill_depth_mm'  
+Among top 5% male and female birds by 'length_depth_ratio' per 'species',  
+compute mean 'body_mass_g' per 'species', 'sex', 'island',  
+and display in wide format with values from 'island' and 'sex' as columns
+
+```{python}
+from tidypandas import tidyframe
+from palmerpenguins import load_penguins
+import numpy as np
+
+penguins      = load_penguins() # pandas dataframe
+penguins_tidy = tidyframe(penguins) # create a tidyframe from pandas dataframe
+penguins_tidy
+```
+
+
+### tidypandas style
+
+```{python}
+(penguins_tidy
+    .drop_na('sex')
+    .mutate({'length_depth_ratio': (lambda x, y: x/y, ['bill_length_mm', 'bill_depth_mm'])})
+    .slice_max(prop = 0.05, order_by_column = 'length_depth_ratio', by = ['sex', 'species'])  
+    .summarize({'body_mass_g': (np.mean, )}, by = ['species', 'sex', 'island'])
+    .pivot_wider(id_cols = 'species', names_from = ['island', 'sex'], values_from = 'body_mass_g')
+    )
+```
+
+### pandas style
+
+```{python}
+(penguins
+  .dropna(subset = ['sex'])
+  .assign(length_depth_ratio = lambda x: x['bill_length_mm'] / x['bill_depth_mm'])
+  .groupby(['sex', 'species'])
+  .apply(lambda x: x.nlargest(n = int(np.round(0.05 * x.shape[0])),
+                               columns = 'length_depth_ratio'
+                               )
+        )
+  .reset_index(drop = True)
+  .groupby(['species', 'sex', 'island'])
+  .agg({'body_mass_g': np.mean})
+  .reset_index()
+  .pivot(index = 'species', columns = ['island', 'sex'], values = 'body_mass_g')
+  )
+```
+
+
+
+## Overview of tidypandas
+
+A pandas dataframe is said to be 'simple' if:
+    
+  1. Column names (x.columns) are an unnamed pd.Index object of unique strings.
+  2. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0 and step = 1.
+
+`tidypandas` provides the following utilities:
+
+  1. `tidyframe` class: A wrapper over a 'simple' pandas datadrame with verbs as methods.
+  2. `tidy_utils`: Functions `simplify`, `is_simple` to simplify as pandas dataframe.
+  3. `series_utils`: Functions like `coalesce`, `case_when`, `min_rank`.
+  4. `tp` accessor: Use `tidypandas` verbs directly on pandas dataframes with pandas dataframes as output.
+    
+## Installation
+
+```{python, eval = FALSE}
+pip install tidypandas
+```
+
+## Imports
+
+```{python}
+from tidypandas import tidyframe
+from tidypandas.tidy_utils import simplify
+from tidypandas.series_utils import *
+from tidypandas.tidy_accessor import tp
+```
+
+## Creating a `tidyframe`
+
+A `tidyframe` is created from an existing pandas dataframe (by default makes a copy).
+
+```{python}
+penguins      = load_penguins() # pandas dataframe
+penguins_tidy = tidyframe(penguins) # create a tidyframe from pandas dataframe
+penguins_tidy
+```
+
+## Working with `tidyframe`s
+
+The methods of `tidyframe` class are 'verbs' like:
+
+  - `select` (subset some columns)
+  - `filter` (subset some rows based on conditions)
+  - `arrange` (order the rows)
+  - `slice` (subset some rows)
+  - `distinct` (subset rows by distinct values of one or more columns)
+  - `mutate` (add or modify an existing column)
+  - `summarise` (aggregate some columns)
+
+and many more.
+
+Typically, a method call on a `tidyframe` object returns a new `tidyframe` object. Only `[` (`setitem`) method makes assignment in-place.
+
+An operation on a `tidyframe`(s) can be achieved by composition of methods or verbs.
+
+> example: Obtain count of birds per specie in the 'Dream' island
+
+```{python}
+penguins_tidy.filter("island == 'Dream'").count('species')
+```
+
+## Exporting a `tidyframe` to pandas
+
+A `tidyframe` can be exported as a pandas dataframe using `to_pandas` method.
+
+## Using accessor
+
+`tidypandas` provides the ability to use the 'verbs' directly on 'simple' pandas dataframes and get the result back as a pandas dataframe. The methods should be prepended by `tp` (short for `tidypandas`).
+
+```{python}
+penguins.tp.slice([0, 1], by = 'species')
+```

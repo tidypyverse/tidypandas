@@ -17,6 +17,7 @@ from pandas._config import get_option
 from collections_extended import setlist
 from skimpy import skim
 
+import pandas.api.types as dtypes
 from tidypandas.tidy_utils import simplify, is_simple
 from tidypandas._unexported_utils import (
                                             _is_kwargable,

@@ -5,9 +5,7 @@
 :maxdepth: 1
 :hidden:
 
-Introduction.ipynb
+using_tidypandas.md
 changelog.md
-contributing.md
-conduct.md
 autoapi/index
 ```

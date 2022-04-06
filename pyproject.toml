@@ -1,14 +1,14 @@
 [tool.poetry]
 name = "tidypandas"
 version = "0.1.0"
-description = "A tidyverse inspired wrapper over Pandas Dataframe"
-authors = ["Srikanth K S"]
+description = "A grammar of data manipulation for pandas inspired by tidyverse"
+authors = ["Srikanth Komala Sheshachala", "Ashish Raj"]
 license = "MIT"
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.8"
-pandas = "^1.2.3"
+pandas = "^1.0.0"
 collections-extended = "^2.0.2"
 skimpy = "^0.0.5"
 
@@ -18,7 +18,8 @@ sphinx-autoapi = "^1.8.4"
 pytest = "^7.1.1"
 palmerpenguins = "^0.1.4"
 numpydoc = "^1.2.1"
-sphinx-rtd-theme = "^1.0.0"
+pydata-sphinx-theme = "^0.8.0"
+nycflights13 = "^0.0.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
