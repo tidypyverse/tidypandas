@@ -16,81 +16,7 @@ reticulate::use_virtualenv("~/.cache/pypoetry/virtualenvs/tidypandas-cfuMUHaV-py
 
 # Using `tidypandas`
 
-## About
-
 > `tidypandas` -- A **grammar of data manipulation** for [pandas](https://pandas.pydata.org/docs/index.html) inspired by [tidyverse](https://tidyverse.tidyverse.org/) 
-
-`tidypandas` python package provides *minimal, pythonic* API for common data manipulation tasks:
-   
-   - `tidyframe` class (wrapper over pandas dataframe) provides a dataframe with simplified index structure (no more resetting indexes and multi indexes)
-   - Consistent 'verbs' (`select`, `arrange`, `distinct`, ...) as methods to `tidyframe` class which mostly return a `tidyframe`
-   - Unified interface for summarizing (aggregation) and mutate (assign) operations across groups
-   - Utilites for pandas dataframes and series
-   - Uses of simple python data structures, No esoteric classes, No pipes, No Non-standard evaluation
-   - No copy data conversion between `tidyframe` and pandas dataframes
-   - An accessor to apply `tidyframe` verbs to simple pandas datarames
-   - ...
-
-`tidypandas` is for you if:
-
-  - you *frequently* write data manipulation code using pandas
-  - you prefer to have stay in pandas ecosystem (see accessor)
-  - you *prefer* to remember a [limited set of methods](https://medium.com/dunder-data/minimally-sufficient-pandas-a8e67f2a2428)
-  - you do not want to write or be surprised by [`reset_index`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.reset_index.html), [`rename_axis`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rename_axis.html) often
-  - you prefer writing free flowing, expressive code in [dplyr](https://dplyr.tidyverse.org/) style
- 
-**Caveat**: `tidypandas` does not replace the amazing `pandas` library, rather relies on it. It offers a consistent API with a different [philosophy](https://tidyverse.tidyverse.org/articles/manifesto.html).
-
-## Illustration
-
-> On penguins dataset, let 'length_depth_ratio' be ratio of 'bill_length_mm' and 'bill_depth_mm'  
-Among top 5% male and female birds by 'length_depth_ratio' per 'species',  
-compute mean 'body_mass_g' per 'species', 'sex', 'island',  
-and display in wide format with values from 'island' and 'sex' as columns
-
-```{python}
-from tidypandas import tidyframe
-from palmerpenguins import load_penguins
-import numpy as np
-
-penguins      = load_penguins() # pandas dataframe
-penguins_tidy = tidyframe(penguins) # create a tidyframe from pandas dataframe
-penguins_tidy
-```
-
-
-### tidypandas style
-
-```{python}
-(penguins_tidy
-    .drop_na('sex')
-    .mutate({'length_depth_ratio': (lambda x, y: x/y, ['bill_length_mm', 'bill_depth_mm'])})
-    .slice_max(prop = 0.05, order_by_column = 'length_depth_ratio', by = ['sex', 'species'])  
-    .summarize({'body_mass_g': (np.mean, )}, by = ['species', 'sex', 'island'])
-    .pivot_wider(id_cols = 'species', names_from = ['island', 'sex'], values_from = 'body_mass_g')
-    )
-```
-
-### pandas style
-
-```{python}
-(penguins
-  .dropna(subset = ['sex'])
-  .assign(length_depth_ratio = lambda x: x['bill_length_mm'] / x['bill_depth_mm'])
-  .groupby(['sex', 'species'])
-  .apply(lambda x: x.nlargest(n = int(np.round(0.05 * x.shape[0])),
-                               columns = 'length_depth_ratio'
-                               )
-        )
-  .reset_index(drop = True)
-  .groupby(['species', 'sex', 'island'])
-  .agg({'body_mass_g': np.mean})
-  .reset_index()
-  .pivot(index = 'species', columns = ['island', 'sex'], values = 'body_mass_g')
-  )
-```
-
-
 
 ## Overview of tidypandas
 
@@ -126,6 +52,7 @@ from tidypandas.tidy_accessor import tp
 A `tidyframe` is created from an existing pandas dataframe (by default makes a copy).
 
 ```{python}
+from palmerpenguins import load_penguins
 penguins      = load_penguins() # pandas dataframe
 penguins_tidy = tidyframe(penguins) # create a tidyframe from pandas dataframe
 penguins_tidy
@@ -135,13 +62,13 @@ penguins_tidy
 
 The methods of `tidyframe` class are 'verbs' like:
 
-  - `select` (subset some columns)
-  - `filter` (subset some rows based on conditions)
-  - `arrange` (order the rows)
-  - `slice` (subset some rows)
-  - `distinct` (subset rows by distinct values of one or more columns)
-  - `mutate` (add or modify an existing column)
-  - `summarise` (aggregate some columns)
+- `select` (subset some columns)
+- `filter` (subset some rows based on conditions)
+- `arrange` (order the rows)
+- `slice` (subset some rows)
+- `distinct` (subset rows by distinct values of one or more columns)
+- `mutate` (add or modify an existing column)
+- `summarise` (aggregate some columns)
 
 and many more.
 
