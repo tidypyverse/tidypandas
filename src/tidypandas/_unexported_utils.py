@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import inspect
 import pandas.api.types as dtypes
+import warnings
 
 def _is_kwargable(func):
     res = False
