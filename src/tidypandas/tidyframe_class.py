@@ -7,6 +7,7 @@ import copy as util_copy
 import warnings
 import re
 import functools
+import importlib
 import string as string
 from collections import namedtuple
 
@@ -15,7 +16,6 @@ import pandas as pd
 from pandas.io.formats import format as fmt
 from pandas._config import get_option
 from collections_extended import setlist
-from skimpy import skim
 
 import pandas.api.types as dtypes
 from tidypandas.tidy_utils import simplify, is_simple
@@ -280,16 +280,25 @@ class tidyframe:
         from pandas import option_context
 
         with option_context("display.max_colwidth",repr_params["max_colwidth"]):
+            row_truncated = False
+            show_frame = self.__data
+            if repr_params["min_rows"] and self.__data.shape[0] > repr_params["min_rows"]:
+                row_truncated = True
+                show_frame = self.__data.iloc[:repr_params["min_rows"], :]
+
             formatter = tidy_fmt.TidyDataFrameFormatter(
-                self.__data,
-                min_rows=repr_params["min_rows"],
+                # self.__data,
+                show_frame,
+                # min_rows=repr_params["min_rows"],
                 max_rows=repr_params["max_rows"],
                 max_cols=repr_params["max_cols"],
                 # show_dimensions=repr_params["show_dimensions"]
             )
             formatted_str = header_line + "\n" + fmt.DataFrameRenderer(formatter)\
                                                .to_string(line_width=repr_params["line_width"])
-
+            if row_truncated:
+                footer_str = "#... with {} more rows".format(self.__data.shape[0]-repr_params["min_rows"])
+                formatted_str += "\n" + footer_str
             return formatted_str
 
     # def _repr_html_(self):
@@ -519,9 +528,10 @@ class tidyframe:
         1. skim is done via 'skimpy' package is expected to be installed.
         '''
         # TODO: Implement package check
-        
-        skim(self.__data)
-        
+        if importlib.util.find_spec("skimpy") is not None:
+            from skimpy import skim
+            skim(self.__data)
+
         if return_self:
             return self
         else:
