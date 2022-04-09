@@ -62,7 +62,7 @@ class TidyHTMLFormatter(HTMLFormatter):
     def _write_row_column_types(self, column_types):
         self.write_tr([""] + column_types
                       , header=False
-                      , tags={i: 'style="color:red;font-style:oblique;"' for i in range(len(column_types)+1)}
+                      , tags={i: 'style="color:#606060;font-style:oblique;"' for i in range(len(column_types)+1)}
                       )
 
 

@@ -10,7 +10,10 @@ readme = "README.md"
 python = "^3.8"
 pandas = "^1.0.0"
 collections-extended = "^2.0.2"
-skimpy = "^0.0.5"
+skimpy = {version = "^0.0.5", optional = true}
+
+[tool.poetry.extras]
+skimpy = ["skimpy"]
 
 [tool.poetry.dev-dependencies]
 myst-nb = {version = "^0.13.2", python = "^3.8"}
