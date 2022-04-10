@@ -3984,7 +3984,7 @@ class tidyframe:
                           , row_order_column_name = ro_name
                           )
             
-        return res
+        return res.relocate(cn)
     
     head = slice_head
     
@@ -4104,7 +4104,7 @@ class tidyframe:
                     , row_order_column_name = ro_name
                     ))
             
-        return res
+        return res.relocate(cn)
     
     tail = slice_tail
     
@@ -4297,7 +4297,7 @@ class tidyframe:
                       .reset_index(drop = True)
                       )
             
-        return tidyframe(res)
+        return tidyframe(res).relocate(cn)
     
     sample = slice_sample
     
@@ -4491,7 +4491,7 @@ class tidyframe:
                            .select(cn)
                            .arrange(order_by_column, by = by)
                            )
-        return res
+        return res.relocate(cn)
     
     def slice_max(self
                   , n = None
@@ -4679,7 +4679,7 @@ class tidyframe:
                            .select(cn)
                            .arrange(order_by_column, by = by)
                            )
-        return res
+        return res.relocate(cn)
     
     # set like methods
     def union(self, y):
@@ -5437,10 +5437,7 @@ class tidyframe:
                        .reset_index(drop = True)
                        )
                 
-        return tidyframe(res.convert_dtypes().fillna(pd.NA)
-                                   , check = False
-                                   , copy = False
-                                   )
+        return tidyframe(res)
     
     ##########################################################################
     # split (group_split)
