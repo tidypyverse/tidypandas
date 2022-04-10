@@ -6,9 +6,9 @@ output: md_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## About
+# `tidypandas`
 
-> `tidypandas` -- A **grammar of data manipulation** for [pandas](https://pandas.pydata.org/docs/index.html) inspired by [tidyverse](https://tidyverse.tidyverse.org/) 
+> `A **grammar of data manipulation** for [pandas](https://pandas.pydata.org/docs/index.html) inspired by [tidyverse](https://tidyverse.tidyverse.org/) 
 
 `tidypandas` python package provides *minimal, pythonic* API for common data manipulation tasks:
    
@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Example
 
-- Example `tidypandas` code:
+- `tidypandas` code:
 ```{python, eval = FALSE}
 df.filter(lambda x: x['col_1'] > x['col_1'].mean(), by = 'col_2')
 ```

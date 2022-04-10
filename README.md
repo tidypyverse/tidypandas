@@ -1,6 +1,6 @@
-## About
+# `tidypandas`
 
-> `tidypandas` – A **grammar of data manipulation** for
+> \`A **grammar of data manipulation** for
 > [pandas](https://pandas.pydata.org/docs/index.html) inspired by
 > [tidyverse](https://tidyverse.tidyverse.org/)
 
@@ -23,7 +23,7 @@ data manipulation tasks:
 
 ## Example
 
--   Example `tidypandas` code:
+-   `tidypandas` code:
 
 <!-- -->
 

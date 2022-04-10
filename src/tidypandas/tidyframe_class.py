@@ -566,8 +566,11 @@ class tidyframe:
         assert len(set(column_names)) == len(column_names),\
             "arg 'column_names' should have unique strings"
         
+        cols_not_found = list(set(column_names).difference(self.colnames))
         assert set(self.colnames).issuperset(column_names),\
-            "arg 'column_names' should contain valid column names"
+            (f"arg 'column_names' should contain valid column names"
+             f"These column(s) do not exist: {cols_not_found}"
+            )
         
         return None
       
@@ -783,6 +786,9 @@ class tidyframe:
         
         preserve_row_order: bool (default is False)
             Whether to preserve the row order of the input dataframe
+        
+        row_order_column_name: string
+            Temporary column name to be created to maintain row order
             
         is_pandas_udf: bool (default is False)
             Whether the 'func' argument is of type 2
@@ -865,7 +871,7 @@ class tidyframe:
                            )
                 by_left = list(set(by).intersection(list(res.columns)))
                 if len(by_left) > 0:
-                    res = res.drop(columns = by_left)
+                    res.drop(columns = by_left, inplace = True)
                 for col in by:
                     res[col] = chunk[col].iloc[0]
                 
@@ -884,7 +890,7 @@ class tidyframe:
                 res        = func(chunk_tidy, **kwargs).to_pandas(copy = False)
                 by_left    = list(set(by).intersection(list(res.columns)))
                 if len(by_left) > 0:
-                    res = res.drop(columns = by_left)
+                    res.drop(columns = by_left, inplace = True)
                 for col in by:
                     res[col] = chunk[col].iloc[0]
                 
@@ -905,7 +911,7 @@ class tidyframe:
                         .groupby(group_cn, sort = False, dropna = False)
                         .apply(wrapper_func, **kwargs)
                         )
-            # return res
+            
             try:
                 res = (res.pipe(simplify)
                           .drop(columns = group_cn)
@@ -1229,6 +1235,7 @@ class tidyframe:
             res = (self.__data
                        .iloc[row_numbers, :]
                        .reset_index(drop = True)
+                       .pipe(lambda x: tidyframe(x, copy = True, check = False))
                        )
         else:
             self._validate_by(by)
@@ -1246,16 +1253,16 @@ class tidyframe:
                                  "not exceed the number of rows of the group"
                                  ))
             
-            res = (self.__data
-                       .assign(**{"_rn": lambda x: np.arange(x.shape[0])})
-                       .groupby(by, sort = False, dropna = False)
-                       .apply(lambda chunk: chunk.iloc[row_numbers, :])
-                       .reset_index(drop = True)
-                       .sort_values("_rn", ignore_index = True)
-                       .drop(columns = "_rn")
+            res = (self.group_modify(lambda chunk: chunk.iloc[row_numbers, :]
+                                     , by = by
+                                     , is_pandas_udf = True
+                                     , preserve_row_order = True
+                                     , row_order_column_name = _generate_new_string(self.colnames)
+                                     )
+                       .relocate(self.colnames)
                        )
         
-        return tidyframe(res, check = False, copy = False)
+        return res
     
     ##########################################################################
     # arrange
@@ -1492,50 +1499,50 @@ class tidyframe:
                                .drop(columns = "__mask")
                                )
             else: # grouped case
+                ro_name = _generate_new_string(self.colnames)
                 if isinstance(query, str):
-                    res = (self.__data
-                           .assign(**{"__rn": lambda x: np.array(x.shape[0])})
-                           .groupby(by, sort = False, dropna = False)
-                           .apply(lambda chunk: chunk.query(query))
-                           .reset_index(drop = True)
-                           .sort_values("__rn", ignore_index = True)
-                           .drop(columns = "__rn")
-                           )
+                    res = (self.group_modify(lambda chunk: chunk.query(query)
+                                             , by = by
+                                             , is_pandas_udf = True
+                                             , preserve_row_order = True
+                                             , row_order_column_name = ro_name
+                                             )
+                               )
                 else:
                     if _is_kwargable(query):
-                        res = (self.__data
-                               .assign(**{"__rn": lambda x: np.arange(x.shape[0])})
-                               .groupby(by, sort = False, dropna = False)
-                               .apply(lambda chunk: (
-                                   chunk.assign(**{"__mask": lambda x: query(x, **kwargs)})
-                                        .query("__mask")
-                                        .drop(columns = "__mask")
-                                        )
-                                     )
-                               .reset_index(drop = True)
-                               .sort_values("__rn", ignore_index = True)
-                               .drop(columns = "__rn")
-                               ) 
+                        res = (self.group_modify(lambda chunk: (
+                                                     chunk.assign(**{"__mask": lambda x: query(x, **kwargs)})
+                                                          .query("__mask")
+                                                          .drop(columns = "__mask")
+                                                          )
+                                                 , by = by
+                                                 , is_pandas_udf = True
+                                                 , preserve_row_order = True
+                                                 , row_order_column_name = ro_name
+                                                 )
+                                   )
                     else:
-                        res = (self.__data
-                               .assign(**{"__rn": lambda x: np.arange(x.shape[0])})
-                               .groupby(by, sort = False, dropna = False)
-                               .apply(lambda chunk: (
-                                   chunk.assign(**{"__mask": query})
-                                        .query("__mask")
-                                        .drop(columns = "__mask")
-                                        )
-                                     )
-                               .reset_index(drop = True)
-                               .sort_values("__rn", ignore_index = True)
-                               .drop(columns = "__rn")
-                               )
+                        res = (self.group_modify(lambda chunk: (
+                                                     chunk.assign(**{"__mask": lambda x: query(x, **kwargs)})
+                                                          .query("__mask")
+                                                          .drop(columns = "__mask")
+                                                          )
+                                                 , by = by
+                                                 , is_pandas_udf = True
+                                                 , preserve_row_order = True
+                                                 , row_order_column_name = ro_name
+                                                 )
+                                   )
+                res = res.relocate(self.colnames)
         
-        if query is None and mask is not None:
-            res = self.__data.loc[mask, :]
-        
-        res = res.reset_index(drop = True)     
-        return tidyframe(res, check = False)
+        if isinstance(res, pd.DataFrame):
+            if query is None and mask is not None:
+                res = self.__data.loc[mask, :]
+            
+            res = res.reset_index(drop = True)     
+            return tidyframe(res, check = False)
+        else:
+            return res
     
     ##########################################################################
     # distinct
@@ -3329,15 +3336,13 @@ class tidyframe:
         assert self.nrow == y.nrow,\
             "Both dataframes should have same number of rows"
             
-        res = (pd.concat([self.__data, y.to_pandas()]
+        res = (pd.concat([self.__data, y.to_pandas(copy = False)]
                         , axis = 1
                         , ignore_index = False # not to loose column names
                         )
                  .reset_index(drop = True)
-                 .convert_dtypes()
-                 .fillna(pd.NA)
                  )
-        return tidyframe(res, check = False)
+        return tidyframe(res)
     
     def rbind(self, y):
         '''
@@ -3370,10 +3375,8 @@ class tidyframe:
                          , axis = 0
                          , ignore_index = True
                          )
-                 .convert_dtypes()
-                 .fillna(pd.NA)
                  )
-        return tidyframe(res, check = False)
+        return tidyframe(res)
     
     ##########################################################################
     # count and add_count
@@ -3758,9 +3761,7 @@ class tidyframe:
                              , dropna     = False
                              , observed   = True
                              )
-        res = simplify(res)
-                             
-        return tidyframe(res, check = False, copy = False)
+        return tidyframe(res)
     
     def pivot_longer(self
                      , cols
@@ -3854,11 +3855,9 @@ class tidyframe:
                          , value_name    = values_to
                          , ignore_index  = True
                          )
-                   .convert_dtypes()
-                   .fillna(pd.NA)
                    )
                    
-        res = tidyframe(res, check = False, copy = False)
+        res = tidyframe(res)
         
         if values_drop_na:
             res = res.drop_na(values_to)
@@ -3912,6 +3911,7 @@ class tidyframe:
         >>> penguins_tidy.slice_head(prop = 0.01, by = 'species')
         '''
         nr = self.nrow
+        cn = self.colnames
 
         # exactly one of then should be none
         assert not ((n is None) and (prop is None)),\
@@ -3953,10 +3953,12 @@ class tidyframe:
                     print("Minimum group size is ", min_group_size)
                 assert n <= min_group_size,\
                     "arg 'n' should not exceed the size of any chunk after grouping"
-                 
+                
+                ro_name = _generate_new_string(cn) 
                 res = (self.group_modify(lambda x: x.slice(np.arange(n))
                                          , by = by
                                          , preserve_row_order = True
+                                         , row_order_column_name = ro_name
                                          )
                            )
             else:
@@ -3973,11 +3975,13 @@ class tidyframe:
                     roundf = np.ceil
                 else:
                     roundf = np.floor
-                    
+                
+                ro_name = _generate_new_string(cn)    
                 res = self.group_modify(
                           lambda x: x.slice(range(int(roundf(x.shape[0] * prop))))
                           , by = by
                           , preserve_row_order = True
+                          , row_order_column_name = ro_name
                           )
             
         return res
@@ -4026,6 +4030,7 @@ class tidyframe:
         >>> penguins_tidy.slice_tail(prop = 0.01, by = 'species')
         '''
         nr = self.nrow
+        cn = self.colnames
 
         # exactly one of then should be none
         assert not ((n is None) and (prop is None)),\
@@ -4066,11 +4071,13 @@ class tidyframe:
                     print("Minimum group size is ", min_group_size)
                 assert n <= min_group_size,\
                     "arg 'n' should not exceed the size of any chunk after grouping"
-                 
+                
+                ro_name = _generate_new_string(cn) 
                 res = (self.group_modify(lambda x: x.tail(n).reset_index(drop = True)
                                              , by = by
                                              , is_pandas_udf = True
                                              , preserve_row_order = True
+                                             , row_order_column_name = ro_name
                                              )
                            )
             else:
@@ -4085,7 +4092,8 @@ class tidyframe:
                     roundf = np.ceil
                 else:
                     roundf = np.floor
-                    
+                
+                ro_name = _generate_new_string(cn)    
                 res = (self.group_modify(
                     lambda x: (x.tail(int(roundf(x.shape[0] * prop)))
                                 .reset_index(drop = True)
@@ -4093,6 +4101,7 @@ class tidyframe:
                     , by = by
                     , is_pandas_udf      = True
                     , preserve_row_order = True
+                    , row_order_column_name = ro_name
                     ))
             
         return res
@@ -4229,6 +4238,8 @@ class tidyframe:
             seeds = np.random.choice(n_groups * 100, n_groups, replace = False)
             
             groups_frame = self.__data.loc[:, by].drop_duplicates()
+            grp_name = _generate_new_string(self.colnames)
+            groups_frame[grp_name] = np.arange(groups_frame.shape[0]) 
             groups_frame["__seed"] = seeds
             
             if n is not None:
@@ -4256,10 +4267,10 @@ class tidyframe:
                 
                 res = (self.__data
                            .merge(groups_frame, on = by, how = 'left')
-                           .groupby(by, sort = False, dropna = False)
+                           .groupby(grp_name, sort = False, dropna = False)
                            .apply(sample_chunk_n)
                            .reset_index(drop = True)
-                           .drop(columns = "__seed")
+                           .drop(columns = ["__seed", grp_name])
                            )
             else:
                 def sample_chunk_prop(x):
@@ -4276,17 +4287,17 @@ class tidyframe:
                 
                 res = (self.__data
                            .merge(groups_frame, on = by, how = 'left')
-                           .groupby(by, sort = False, dropna = False)
+                           .groupby(grp_name, sort = False, dropna = False)
                            .apply(sample_chunk_prop)
                            .reset_index(drop = True)
-                           .drop(columns = "__seed")
+                           .drop(columns = ["__seed", grp_name])
                            )
             
             res = (res.sample(frac = 1, random_state = random_state)
                       .reset_index(drop = True)
                       )
             
-        return tidyframe(res, check = False)
+        return tidyframe(res)
     
     sample = slice_sample
     
@@ -4445,10 +4456,11 @@ class tidyframe:
                                         )
                               , by = by
                               , preserve_row_order = True
+                              , row_order_column_name = _generate_new_string(cn)
                               )
                            .select(cn)
                            .arrange(order_by_column, by = by)
-                      )
+                           )
             else: # grouped n
                 min_group_size = (self.__data
                                       .groupby(by, sort = False, dropna = False)
@@ -4474,6 +4486,7 @@ class tidyframe:
                                         )
                               , by = by
                               , preserve_row_order = True
+                              , row_order_column_name = _generate_new_string(cn)
                               )
                            .select(cn)
                            .arrange(order_by_column, by = by)
@@ -4631,6 +4644,7 @@ class tidyframe:
                                         )
                               , by = by
                               , preserve_row_order = True
+                              , row_order_column_name = _generate_new_string(cn)
                               )
                            .select(cn)
                            .arrange(order_by_column, by = by)
@@ -4660,6 +4674,7 @@ class tidyframe:
                                         )
                               , by = by
                               , preserve_row_order = True
+                              , row_order_column_name = _generate_new_string(cn)
                               )
                            .select(cn)
                            .arrange(order_by_column, by = by)
