@@ -1,0 +1,83 @@
+---
+title: "A tour of tidypandas"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# you might need to set the virtualenv correctly in the next line
+reticulate::use_virtualenv("~/.cache/pypoetry/virtualenvs/tidypandas-cfuMUHaV-py3.8/"
+                           , required = TRUE
+                           )
+```
+
+The intent of this document is to illustrate some standard data manipulation exercises
+ using `tidypandas`. We use the `nycflights13` data.
+
+`nycflights13` contains information about all flights that departed from NYC (e.g. EWR, JFK and LGA) to destinations in the United States, Puerto Rico, and the American Virgin Islands) in 2013: 336,776 flights in total. To help understand what causes delays, it also includes a number of other useful datasets.
+    
+  - flights: all flights that departed from NYC in 2013
+  - weather: hourly meterological data for each airport
+  - planes: construction information about each plane
+  - airports: airport names and locations
+  - airlines: translation between two letter carrier codes and names
+
+> `tidypandas` -- A **grammar of data manipulation** for [pandas](https://pandas.pydata.org/docs/index.html) inspired by [tidyverse](https://tidyverse.tidyverse.org/)
+
+```{python}
+from tidypandas import tidyframe
+from tidypandas.series_utils import *
+```
+
+```{python}
+from nycflights13 import flights
+flights_tidy = tidyframe(flights)
+flights_tidy
+```
+
+```{python}
+flights_tidy.skim()
+```
+
+## Exercise: `filter`
+> Exercise: Find all flights that arrived more than two hours late, but didn’t leave late.
+
+```{python}
+(flights_tidy.filter("dep_delay <= 0 and arr_delay > 120")
+             .select(['flight', 'dep_delay', 'arr_delay'])
+             )
+```
+## Exercise: `arrange`
+> Exercise: Sort flights to find the fastest flights
+
+```{python}
+(flights_tidy.mutate({'speed': (lambda x, y: x/y, ['distance', 'air_time'])})
+             .arrange([('speed', 'desc')])
+             .select(['flight', 'dep_delay', 'arr_delay', 'speed'])
+             )
+```
+
+
+Problem: For each destination, compute the total minutes of delay. For each flight, compute the proportion  of the total delay for its destination.
+
+```{python}
+flights_tidy.summarise({'total_delay': (lambda x, y: np.sum(x) + np.sum(y),
+                                        ["arr_delay", "dep_delay"]
+                                        )
+                       },
+                       by = 'dest'
+                       )
+```
+
+```{python, results = 'markup'}
+(flights_tidy.filter("arr_delay > 0")
+             .mutate({'total_arr_delay': (np.sum, 'arr_delay'),
+                      'total_delay_prop': ("x/y", ['arr_delay', 'total_arr_delay'])
+                     },
+                     by = 'dest'
+                     )
+             .select(['dest', 'flight', 'total_arr_delay', 'total_delay_prop'])
+             .arrange([('total_delay_prop', 'desc')])
+             #.pipe(print)
+             )
+```

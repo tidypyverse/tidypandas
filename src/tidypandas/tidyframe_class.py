@@ -1481,6 +1481,11 @@ class tidyframe:
             by = _enlist(by)
             self._validate_by(by)
         
+        def handle_mask(ser):
+            ser = ser.tolist()
+            res = [False if pd.isna(x) else x for x in ser]
+            return np.array(res)
+        
         if query is not None and mask is None:
             if by is None:
                 if isinstance(query, str):
@@ -1488,13 +1493,13 @@ class tidyframe:
                 else:
                     if _is_kwargable(query):
                         res = (self.__data
-                                   .assign(**{"__mask": lambda x: query(x, **kwargs)})
+                                   .assign(**{"__mask": lambda x: handle_mask(query(x, **kwargs))})
                                    .query("__mask")
                                    .drop(columns = "__mask")
                                    )
                     else:
                         res = (self.__data
-                               .assign(**{"__mask": query})
+                               .assign(**{"__mask": lambda x: handle_mask(query(x))})
                                .query("__mask")
                                .drop(columns = "__mask")
                                )
@@ -1511,7 +1516,7 @@ class tidyframe:
                 else:
                     if _is_kwargable(query):
                         res = (self.group_modify(lambda chunk: (
-                                                     chunk.assign(**{"__mask": lambda x: query(x, **kwargs)})
+                                                     chunk.assign(**{"__mask": lambda x: handle_mask(query(x, **kwargs))})
                                                           .query("__mask")
                                                           .drop(columns = "__mask")
                                                           )
@@ -1523,7 +1528,7 @@ class tidyframe:
                                    )
                     else:
                         res = (self.group_modify(lambda chunk: (
-                                                     chunk.assign(**{"__mask": lambda x: query(x, **kwargs)})
+                                                     chunk.assign(**{"__mask": lambda x: handle_mask(query(x))})
                                                           .query("__mask")
                                                           .drop(columns = "__mask")
                                                           )
