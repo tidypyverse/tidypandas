@@ -107,6 +107,8 @@ def ifelse(condition, yes, no):
         else:
             res[i] = no_series[i]
     return _coerce_series(pd.Series(res))
+
+if_else = ifelse
    
 def coalesce(list_of_series):
     '''
@@ -206,22 +208,22 @@ def case_when(list_of_tuples, default = pd.NA):
     res = res.fillna(default).reset_index(drop = True)
     return res
     
-def n_distinct(aseries, na_rm = False):
+def n_distinct(x, na_rm = False):
     '''
     n_distinct
     Number of distinct values in a series
     
     Parameters
     ----------
-    aseries: A pandas series
+    x: A pandas series
     na_rm (default is False): bool, Should missing value be counted
     
     Returns
     -------
     int, Number of distinct values
     '''
-    assert isinstance(aseries, pd.Series)
-    return aseries.nunique(dropna = False)
+    assert isinstance(x, pd.Series)
+    return x.nunique(dropna = False)
 
 def _order_series(x, na_position = "last"):
     '''
@@ -499,7 +501,7 @@ def dense_rank(x, ascending = True):
 def percent_rank(x, ascending = True):
     '''
     percent_rank
-    ranking order with ties set to minimum rank rescaled between 0 and 1
+    ranking order witbh ties set to minimum rank rescaled between 0 and 1
     
     Parameters
     ----------
@@ -555,3 +557,42 @@ def cume_dist(x, ascending = True):
     >>> cume_dist(ser)
     '''
     return _rank(x, "max", ascending, True)
+
+def as_bool(x):
+    '''
+    as_bool
+    Convert boolean or object dtype series to bool series with NAs as False
+    Helpful in combining multiple series in 'filter'
+    
+    Parameters
+    ----------
+    x: pandas series
+        Should have one of these dtypes: bool, boolean, object
+    
+    Returns
+    -------
+    A pandas series of dtype bool
+    
+    Examples
+    --------
+    ser = pd.Series([True, False, pd.NA])
+    print(str(ser.dtype))
+    
+    print(as_bool(ser))
+    print(str(as_bool(ser).dtype))
+    
+    ser2 = ser.convert_dtypes()
+    print(str(ser2.dtype))
+    
+    print(as_bool(ser2))
+    print(str(as_bool(ser2).dtype))
+    '''
+    assert isinstance(x, pd.Series),\
+        "input should be a pandas series"
+    assert isinstance(str(x.dtype), ('bool', 'boolean', 'object')),\
+        "input should have one of these dypes: 'bool, boolean, object"
+    if str(x.dtype) == "bool":
+        res = x
+    else:
+        res = pd.Series([False if pd.isna(y) else bool(y) for y in x])
+    return res

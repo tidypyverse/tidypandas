@@ -23,6 +23,8 @@ palmerpenguins = "^0.1.4"
 numpydoc = "^1.2.1"
 pydata-sphinx-theme = "^0.8.0"
 nycflights13 = "^0.0.3"
+plotnine = "^0.8.0"
+seaborn = "^0.11.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

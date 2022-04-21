@@ -16,7 +16,7 @@ reticulate::use_virtualenv("~/.cache/pypoetry/virtualenvs/tidypandas-cfuMUHaV-py
 
 # Using `tidypandas`
 
-> `tidypandas` -- A **grammar of data manipulation** for [pandas](https://pandas.pydata.org/docs/index.html) inspired by [tidyverse](https://tidyverse.tidyverse.org/) 
+> [`tidypandas`](https://github.com/talegari/tidypandas) -- A **grammar of data manipulation** for [pandas](https://pandas.pydata.org/docs/index.html) inspired by [tidyverse](https://tidyverse.tidyverse.org/) 
 
 ## Overview of tidypandas
 

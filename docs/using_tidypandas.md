@@ -1,6 +1,7 @@
 # Using `tidypandas`
 
-> `tidypandas` – A **grammar of data manipulation** for
+> [`tidypandas`](https://github.com/talegari/tidypandas) – A **grammar
+> of data manipulation** for
 > [pandas](https://pandas.pydata.org/docs/index.html) inspired by
 > [tidyverse](https://tidyverse.tidyverse.org/)
 
@@ -74,15 +75,15 @@ makes a copy).
   </thead>
   <tbody>
 <tr>
-<td style="color:red;font-style:oblique;"></td>
-<td style="color:red;font-style:oblique;">&lt;string&gt;</td>
-<td style="color:red;font-style:oblique;">&lt;string&gt;</td>
-<td style="color:red;font-style:oblique;">&lt;Float64&gt;</td>
-<td style="color:red;font-style:oblique;">&lt;Float64&gt;</td>
-<td style="color:red;font-style:oblique;">&lt;Int64&gt;</td>
-<td style="color:red;font-style:oblique;">&lt;Int64&gt;</td>
-<td style="color:red;font-style:oblique;">&lt;string&gt;</td>
-<td style="color:red;font-style:oblique;">&lt;Int64&gt;</td>
+<td style="color:#606060;font-style:oblique;"></td>
+<td style="color:#606060;font-style:oblique;">&lt;string&gt;</td>
+<td style="color:#606060;font-style:oblique;">&lt;string&gt;</td>
+<td style="color:#606060;font-style:oblique;">&lt;Float64&gt;</td>
+<td style="color:#606060;font-style:oblique;">&lt;Float64&gt;</td>
+<td style="color:#606060;font-style:oblique;">&lt;Int64&gt;</td>
+<td style="color:#606060;font-style:oblique;">&lt;Int64&gt;</td>
+<td style="color:#606060;font-style:oblique;">&lt;string&gt;</td>
+<td style="color:#606060;font-style:oblique;">&lt;Int64&gt;</td>
 </tr>
     <tr>
       <th>0</th>
@@ -259,9 +260,9 @@ methods or verbs.
   </thead>
   <tbody>
 <tr>
-<td style="color:red;font-style:oblique;"></td>
-<td style="color:red;font-style:oblique;">&lt;string&gt;</td>
-<td style="color:red;font-style:oblique;">&lt;int64&gt;</td>
+<td style="color:#606060;font-style:oblique;"></td>
+<td style="color:#606060;font-style:oblique;">&lt;string&gt;</td>
+<td style="color:#606060;font-style:oblique;">&lt;int64&gt;</td>
 </tr>
     <tr>
       <th>0</th>
@@ -292,11 +293,11 @@ dataframe. The methods should be prepended by `tp` (short for
     penguins.tp.slice([0, 1], by = 'species')
 
     ##      species     island  bill_length_mm  ...  body_mass_g     sex  year
-    ## 0     Adelie  Torgersen            39.1  ...       3750.0    male  2007
-    ## 1     Adelie  Torgersen            39.5  ...       3800.0  female  2007
-    ## 2     Gentoo     Biscoe            46.1  ...       4500.0  female  2007
-    ## 3     Gentoo     Biscoe            50.0  ...       5700.0    male  2007
-    ## 4  Chinstrap      Dream            46.5  ...       3500.0  female  2007
-    ## 5  Chinstrap      Dream            50.0  ...       3900.0    male  2007
+    ## 0     Adelie  Torgersen            39.1  ...         3750    male  2007
+    ## 1     Adelie  Torgersen            39.5  ...         3800  female  2007
+    ## 2     Gentoo     Biscoe            46.1  ...         4500  female  2007
+    ## 3     Gentoo     Biscoe            50.0  ...         5700    male  2007
+    ## 4  Chinstrap      Dream            46.5  ...         3500  female  2007
+    ## 5  Chinstrap      Dream            50.0  ...         3900    male  2007
     ## 
     ## [6 rows x 8 columns]
