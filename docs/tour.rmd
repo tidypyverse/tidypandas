@@ -12,12 +12,12 @@ reticulate::use_virtualenv("~/.cache/pypoetry/virtualenvs/tidypandas-cfuMUHaV-py
                            )
 ```
 
-# A tour of tidypandas
+# A tour of `tidypandas`
 
 ----
 
 > The intent of this document is to illustrate some standard data manipulation exercises
- using `tidypandas` python package. We use the `nycflights13` data.
+ using [`tidypandas`](https://github.com/talegari/tidypandas) python package. We use the `nycflights13` data.
 
 ----
  
@@ -141,7 +141,7 @@ print(planes_year_frame)
 
 age_delay_stats_frame = \
   (flights_tidy.inner_join(planes_year_frame, on = 'tailnum')
-               .mutate({'age': ('x - y', ['year', 'plane_year'])})
+               .mutate({'age': (lambda x, y: x - y, ['year', 'plane_year'])})
                .filter(lambda x: ~ pd.isna(x['age']))
                .mutate({'age_25': lambda x: ifelse(x['age'] > 25, 25, x['age'])})
                .summarise(column_names = ['arr_delay', 'dep_delay'],

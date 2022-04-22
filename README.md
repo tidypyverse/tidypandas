@@ -1,6 +1,6 @@
 # `tidypandas`
 
-> \`A **grammar of data manipulation** for
+> A **grammar of data manipulation** for
 > [pandas](https://pandas.pydata.org/docs/index.html) inspired by
 > [tidyverse](https://tidyverse.tidyverse.org/)
 
@@ -53,6 +53,6 @@ data manipulation tasks:
 -   you prefer writing free flowing, expressive code in
     [dplyr](https://dplyr.tidyverse.org/) style
 
-**Caveat**: `tidypandas` does not replace the amazing `pandas` library,
-rather relies on it. It offers a consistent API with a different
-[philosophy](https://tidyverse.tidyverse.org/articles/manifesto.html).
+> `tidypandas` relies on the amazing `pandas` library and offers a
+> consistent API with a different
+> [philosophy](https://tidyverse.tidyverse.org/articles/manifesto.html).

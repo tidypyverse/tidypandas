@@ -1,10 +1,11 @@
-# A tour of tidypandas
+# A tour of `tidypandas`
 
 ------------------------------------------------------------------------
 
 > The intent of this document is to illustrate some standard data
-> manipulation exercises using `tidypandas` python package. We use the
-> `nycflights13` data.
+> manipulation exercises using
+> [`tidypandas`](https://github.com/talegari/tidypandas) python package.
+> We use the `nycflights13` data.
 
 ------------------------------------------------------------------------
 
@@ -149,18 +150,18 @@ of other useful datasets.
     print(data_for_plot)
 
     ## # A tidy dataframe: 730 X 6
-    ##       day   month  cancelled_prop    year     delay_type      value
-    ##   <Int64> <Int64>       <Float64> <Int64>       <string>  <Float64>
-    ## 0       1       1        0.013064    2013  avg_dep_delay  11.548926
-    ## 1       2       1        0.015907    2013  avg_dep_delay  13.858824
-    ## 2       3       1        0.015317    2013  avg_dep_delay  10.987832
-    ## 3       4       1         0.00765    2013  avg_dep_delay   8.951595
-    ## 4       5       1        0.004167    2013  avg_dep_delay   5.732218
-    ## 5       6       1        0.003606    2013  avg_dep_delay   7.148014
-    ## 6       7       1        0.003215    2013  avg_dep_delay   5.417204
-    ## 7       8       1        0.007786    2013  avg_dep_delay   2.553073
-    ## 8       9       1        0.009978    2013  avg_dep_delay   2.276477
-    ## 9      10       1        0.003219    2013  avg_dep_delay   2.844995
+    ##      year     day   month  cancelled_prop     delay_type      value
+    ##   <Int64> <Int64> <Int64>       <Float64>       <string>  <Float64>
+    ## 0    2013       1       1        0.013064  avg_dep_delay  11.548926
+    ## 1    2013       2       1        0.015907  avg_dep_delay  13.858824
+    ## 2    2013       3       1        0.015317  avg_dep_delay  10.987832
+    ## 3    2013       4       1         0.00765  avg_dep_delay   8.951595
+    ## 4    2013       5       1        0.004167  avg_dep_delay   5.732218
+    ## 5    2013       6       1        0.003606  avg_dep_delay   7.148014
+    ## 6    2013       7       1        0.003215  avg_dep_delay   5.417204
+    ## 7    2013       8       1        0.007786  avg_dep_delay   2.553073
+    ## 8    2013       9       1        0.009978  avg_dep_delay   2.276477
+    ## 9    2013      10       1        0.003219  avg_dep_delay   2.844995
     ## #... with 720 more rows
 
     (ggplot(downcast_dtypes(data_for_plot.to_pandas()),
@@ -170,7 +171,7 @@ of other useful datasets.
         geom_smooth(method = "lm")
         )
 
-    ## <ggplot: (8751366103836)>
+    ## <ggplot: (8773246763692)>
 
 <img src="tour_files/figure-markdown_strict/unnamed-chunk-6-1.png" width="614" />
 
@@ -240,7 +241,7 @@ of other useful datasets.
 
     age_delay_stats_frame = \
       (flights_tidy.inner_join(planes_year_frame, on = 'tailnum')
-                   .mutate({'age': ('x - y', ['year', 'plane_year'])})
+                   .mutate({'age': (lambda x, y: x - y, ['year', 'plane_year'])})
                    .filter(lambda x: ~ pd.isna(x['age']))
                    .mutate({'age_25': lambda x: ifelse(x['age'] > 25, 25, x['age'])})
                    .summarise(column_names = ['arr_delay', 'dep_delay'],
@@ -272,7 +273,7 @@ of other useful datasets.
          ylim(0, 11)
          )
 
-    ## <ggplot: (8751365834072)>
+    ## <ggplot: (8773246495199)>
     ## 
     ## /home/dattachidambara/.cache/pypoetry/virtualenvs/tidypandas-cfuMUHaV-py3.8/lib/python3.8/site-packages/plotnine/layer.py:401: PlotnineWarning: geom_point : Removed 25 rows containing missing values.
 

@@ -7,8 +7,8 @@
 # -- Project information -----------------------------------------------------
 
 project = u"tidypandas"
-copyright = u"2022, Srikanth K S"
-author = u"Srikanth K S"
+copyright = u"MIT License"
+author = u"Srikanth Komala Sheshachala, Ashish Raj"
 
 # -- General configuration ---------------------------------------------------
 

@@ -6,6 +6,7 @@
 :hidden:
 
 using_tidypandas.md
-changelog.md
+tour.md
 autoapi/index
+changelog.md
 ```

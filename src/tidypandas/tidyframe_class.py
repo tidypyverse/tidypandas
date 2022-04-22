@@ -1932,7 +1932,13 @@ class tidyframe:
         # use predicate to assign appropriate column_names
         else:
             mask = list(self.__data.apply(predicate, axis = 0))
-            assert all([isinstance(x, bool) for x in mask])
+            assert all([isinstance(x, bool) for x in mask])(self.group_modify(lambda chunk: chunk.query(query)
+                                             , by = by
+                                             , is_pandas_udf = True
+                                             , preserve_row_order = True
+                                             , row_order_column_name = ro_name
+                                             )
+                               )
             column_names = self.__data.columns[mask]
         
         # make a copy of the dataframe and apply mutate in order
@@ -4178,6 +4184,7 @@ class tidyframe:
         >>> penguins_tidy.slice_sample(n = 5, by = 'species', random_state = 1)
         '''
         nr = self.nrow
+        cn = self.colnames
 
         # exactly one of then should be none
         assert not ((n is None) and (prop is None)),\
@@ -4344,7 +4351,7 @@ class tidyframe:
         
         Notes
         -----
-        1. Only one argument among 'n' and 'prop' should be provided.
+        1. Only one argument among 'n' and 'prop' should be provided.S
         2. Row order is not preserved by the method.
         
         Examples
@@ -5634,7 +5641,7 @@ class tidyframe:
       >>> # assign a subset with another tidyframe
       >>> penguins_tidy[0:2, 0:2] = pd.DataFrame({'species': ['d', 'e']
       >>>                                         , 'island': ['f', 'g']
-      >>>                                         }).pipe(tidy)
+      >>>                                         }).pipe(tidyframe)
       >>> penguins_tidy[0:5, :]
       '''
       cn = self.colnames

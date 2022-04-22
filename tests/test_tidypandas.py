@@ -217,22 +217,222 @@ def test_select(penguins_data):
 
 def test_filter(penguins_data):
     penguins_tidy = tidyframe(penguins_data, copy=False)
-    pass
-
+    exp = penguins_tidy.filter(lambda x: x['bill_length_mm'] >= x['bill_length_mm'].mean(), by = 'species')
+    assert isinstance(exp, tidyframe)
+    
+    # string test
+    exp = penguins_tidy.filter('bill_length_mm > 35', by = 'species')
+    assert isinstance(exp, tidyframe)
+    
 ## test joins
 
 ## test pivot
 
+## test slice and its extensions
+def test_slice(penguins_data):
+    penguins_tidy = tidyframe(penguins_data)
+    
+    # simple slice
+    exp = penguins_data.convert_dtypes().iloc[range(2, 5), :].reset_index(drop = True)
+    res = penguins_tidy.slice(range(2, 5)).to_pandas()
+    assert_frame_equal_v2(exp, res)
 
-
-
-
+    # grouped slice
+    exp = (penguins_data.convert_dtypes()
+                        .groupby('species')
+                        .apply(lambda x: x.iloc[range(2, 5), :])
+                        .reset_index(drop = True)
+                        )
+    res = (penguins_tidy.slice(range(2, 5), by = 'species')
+                        .arrange('species')
+                        .to_pandas()
+                        )
+    assert_frame_equal_v2(exp, res)
+    
+    # simple slice head
+    exp = (penguins_data.convert_dtypes()
+                        .iloc[range(3), :]
+                        .reset_index(drop = True)
+                        )
+                        
+    res = penguins_tidy.slice_head(n = 3).to_pandas()
+    assert_frame_equal_v2(exp, res)
+    
+    # grouped slice head
+    exp = (penguins_data.convert_dtypes()
+                        .groupby('species')
+                        .apply(lambda x: x.iloc[range(3), :])
+                        .reset_index(drop = True)
+                        )
+                        
+    res = (penguins_tidy.slice_head(n = 3, by = 'species')
+                        .arrange('species')
+                        .to_pandas()
+                        )
+    assert_frame_equal_v2(exp, res)
+    
+    # simple slice tail
+    exp = (penguins_data.convert_dtypes()
+                        .tail(3)
+                        .reset_index(drop = True)
+                        )
+                        
+    res = penguins_tidy.slice_tail(n = 3).to_pandas()
+    assert_frame_equal_v2(exp, res)
+    
+    # grouped slice tail
+    exp = (penguins_data.convert_dtypes()
+                        .groupby('species')
+                        .apply(lambda x: x.tail(3))
+                        .reset_index(drop = True)
+                        )
+                        
+    res = (penguins_tidy.slice_tail(n = 3, by = 'species')
+                        .arrange('species')
+                        .to_pandas()
+                        )
+    assert_frame_equal_v2(exp, res)
   
+    # simple slice_max
+    exp = (penguins_data.convert_dtypes()
+                        .nlargest(3, 'bill_length_mm')
+                        .sort_values('bill_length_mm')
+                        .reset_index(drop = True)
+                        )
+                        
+    res = (penguins_tidy.slice_max(n = 3, order_by_column = 'bill_length_mm')
+                        .arrange('bill_length_mm')
+                        .to_pandas()
+                        )
+    assert_frame_equal_v2(exp, res)
+    
+    # grouped slice_max
+    exp = (penguins_data.convert_dtypes()
+                        .groupby('species')
+                        .apply(lambda x: x.nlargest(3, 'bill_length_mm'))
+                        .reset_index(drop = True)
+                        .sort_values('bill_length_mm', ignore_index = True)
+                        )
+                        
+    res = (penguins_tidy.slice_max(n = 3, order_by_column = 'bill_length_mm', by = 'species')
+                        .arrange('bill_length_mm')
+                        .to_pandas()
+                        )
+    assert_frame_equal_v2(exp, res)
+
+    # simple slice_minn
+    exp = (penguins_data.convert_dtypes()
+                        .nsmallest(3, 'bill_length_mm')
+                        .sort_values('bill_length_mm')
+                        .reset_index(drop = True)
+                        )
+
+    res = (penguins_tidy.slice_min(n = 3, order_by_column = 'bill_length_mm', with_ties = False)
+                        .arrange('bill_length_mm')
+                        .to_pandas()
+                        )
+    assert_frame_equal_v2(exp, res)
+
+    # grouped slice_min
+    exp = (penguins_data.convert_dtypes()
+                        .groupby('species')
+                        .apply(lambda x: x.nsmallest(3, 'bill_length_mm'))
+                        .reset_index(drop = True)
+                        .sort_values(['bill_length_mm', 'species'], ignore_index = True)
+                        )
+
+    res = (penguins_tidy.slice_min(n = 3,
+                                   order_by_column = 'bill_length_mm',
+                                   by = 'species',
+                                   with_ties = False
+                                   )
+                        .arrange(['bill_length_mm', 'species'])
+                        .to_pandas()
+                        )
+                        
+    assert_frame_equal_v2(exp, res)
+    
+    # test with_ties in slice_min/max
+    exp = (penguins_tidy.slice_max(n = 3,
+                                   order_by_column = 'year',
+                                   by = 'species',
+                                   with_ties = False
+                                   )
+                        )
+    assert exp.nrow == 9
+    
+    exp = (penguins_tidy.slice_max(n = 3,
+                                   order_by_column = 'year',
+                                   by = 'species',
+                                   with_ties = True
+                                   )
+                        )
+    assert exp.nrow > 9
+    
+    
+    exp = (penguins_tidy.slice_min(n = 3,
+                                   order_by_column = 'year',
+                                   by = 'species',
+                                   with_ties = False
+                                   )
+                        )
+    assert exp.nrow == 9
+    
+    exp = (penguins_tidy.slice_min(n = 3,
+                                   order_by_column = 'year',
+                                   by = 'species',
+                                   with_ties = True
+                                   )
+                        )
+    assert exp.nrow > 9
 
 
+    # test for seed in grouped slice_sample
+    exp1 = (penguins_tidy.slice_sample(n = 1, by = 'species', random_state = 100))
+    exp2 = (penguins_tidy.slice_sample(n = 1, by = 'species', random_state = 100))
+    
+    assert_frame_equal_v2(exp1.to_pandas(), exp2.to_pandas())
 
-
-
-
-
-
+# simple workinh tests
+def working(penguins_data):
+    
+    penguins_tidy = tidyframe(penguins_data)
+    
+    assert isinstance(penguins_tidy.select(['bill_length_mm', 'species']), tidyframe)
+    assert isinstance(penguins_tidy.relocate(['bill_length_mm']), tidyframe)
+    assert isinstance(penguins_tidy.slice(range(3)), tidyframe)
+    assert isinstance(penguins_tidy.arrange('bill_length_mm'), tidyframe)
+    assert isinstance(penguins_tidy.arrange(['bill_length_mm', 'desc'], 'bill_depth_mm'), tidyframe)
+    assert isinstance(penguins_tidy.distinct('bill_length_mm'), tidyframe)
+    assert isinstance(penguins_tidy.distinct('bill_length_mm'), tidyframe)
+    
+    # joins
+    penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+                                     .select(['species', 'bill_length_mm', 'island'])
+                                     )
+    penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+                                     .select(['species', 'island', 'bill_depth_mm'])
+                                     )
+                                     
+    assert isinstance(penguins_tidy_s1.inner_join(penguins_tidy_s2, on = 'island'),
+                      tidyframe
+                      )
+    assert isinstance(penguins_tidy_s1.left_join(penguins_tidy_s2, on = 'island'),
+                      tidyframe
+                      )
+    assert isinstance(penguins_tidy_s1.right_join(penguins_tidy_s2, on = 'island'),
+                      tidyframe
+                      )
+    assert isinstance(penguins_tidy_s1.outer_join(penguins_tidy_s2, on = 'island'),
+                      tidyframe
+                      )
+    assert isinstance(penguins_tidy_s1.semi_join(penguins_tidy_s2, on = 'island'),
+                      tidyframe
+                      )
+    assert isinstance(penguins_tidy_s1.anti_join(penguins_tidy_s2, on = 'island'),
+                      tidyframe
+                      )
+                      
+    
+    
+    

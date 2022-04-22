@@ -2,7 +2,7 @@
 title: "Using tidypandas"
 date: "`r Sys.Date()`"
 output: 
-    md_document:
+    html_document:
         toc: false
 ---
 
