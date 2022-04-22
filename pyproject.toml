@@ -2,9 +2,14 @@
 name = "tidypandas"
 version = "0.1.0"
 description = "A grammar of data manipulation for pandas inspired by tidyverse"
-authors = ["Srikanth Komala Sheshachala", "Ashish Raj"]
+authors = ["Srikanth Komala Sheshachala <sri.teach@gmail.com>", "Ashish Raj <ashishrj.162@gmail.com>"]
+maintainers = ["Srikanth Komala Sheshachala <sri.teach@gmail.com>", "Ashish Raj <ashishrj.162@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+homepage = "https://talegari.github.io/tidypandas/"
+repository = "https://github.com/talegari/tidypandas"
+documentation = "https://talegari.github.io/tidypandas/_build/html/autoapi/index.html"
+classifiers = ["Development Status :: 4 - Beta"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
