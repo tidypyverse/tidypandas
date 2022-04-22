@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>tidypandas &#8212; tidypandas  documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Using tidypandas" href="using_tidypandas.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="#">
+<p class="title">tidypandas</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="using_tidypandas.html">
+  Using
+  <code class="docutils literal notranslate">
+   <span class="pre">
+    tidypandas
+   </span>
+  </code>
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="tour.html">
+  A tour of
+  <code class="docutils literal notranslate">
+   <span class="pre">
+    tidypandas
+   </span>
+  </code>
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="autoapi/index.html">
+  API Reference
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="changelog.html">
+  Changelog
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example">
+   Example
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#why-use-tidypandas">
+   Why use
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     tidypandas
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="tidypandas">
+<h1><code class="docutils literal notranslate"><span class="pre">tidypandas</span></code><a class="headerlink" href="#tidypandas" title="Permalink to this headline">#</a></h1>
+<blockquote>
+<div><p>A <strong>grammar of data manipulation</strong> for
+<a class="reference external" href="https://pandas.pydata.org/docs/index.html">pandas</a> inspired by
+<a class="reference external" href="https://tidyverse.tidyverse.org/">tidyverse</a></p>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">tidypandas</span></code> python package provides <em>minimal, pythonic</em> API for common
+data manipulation tasks:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tidyframe</span></code> class (wrapper over pandas dataframe) provides a
+dataframe with simplified index structure (no more resetting indexes
+and multi indexes)</p></li>
+<li><p>Consistent ‘verbs’ (<code class="docutils literal notranslate"><span class="pre">select</span></code>, <code class="docutils literal notranslate"><span class="pre">arrange</span></code>, <code class="docutils literal notranslate"><span class="pre">distinct</span></code>, …) as methods
+to <code class="docutils literal notranslate"><span class="pre">tidyframe</span></code> class which mostly return a <code class="docutils literal notranslate"><span class="pre">tidyframe</span></code></p></li>
+<li><p>Unified interface for summarizing (aggregation) and mutate (assign)
+operations across groups</p></li>
+<li><p>Utilites for pandas dataframes and series</p></li>
+<li><p>Uses of simple python data structures, No esoteric classes, No
+pipes, No Non-standard evaluation</p></li>
+<li><p>No copy data conversion between <code class="docutils literal notranslate"><span class="pre">tidyframe</span></code> and pandas dataframes</p></li>
+<li><p>An accessor to apply <code class="docutils literal notranslate"><span class="pre">tidyframe</span></code> verbs to simple pandas datarames</p></li>
+<li><p>…</p></li>
+</ul>
+<section id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tidypandas</span></code> code:</p></li>
+</ul>
+<!-- -->
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>df.filter(lambda x: x[&#39;col_1&#39;] &gt; x[&#39;col_1&#39;].mean(), by = &#39;col_2&#39;)
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>equivalent pandas code:</p></li>
+</ul>
+<!-- -->
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(df.groupby(&#39;col2&#39;)
+   .apply(lambda x: x.loc(lambda y: y[&#39;col_1&#39;] &gt; y[&#39;col_1&#39;].mean()))
+   .reset_index(drop = True)
+   )
+</pre></div>
+</div>
+</section>
+<section id="why-use-tidypandas">
+<h2>Why use <code class="docutils literal notranslate"><span class="pre">tidypandas</span></code><a class="headerlink" href="#why-use-tidypandas" title="Permalink to this headline">#</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">tidypandas</span></code> is for you if:</p>
+<ul class="simple">
+<li><p>you <em>frequently</em> write data manipulation code using pandas</p></li>
+<li><p>you prefer to have stay in pandas ecosystem (see accessor)</p></li>
+<li><p>you <em>prefer</em> to remember a <a class="reference external" href="https://medium.com/dunder-data/minimally-sufficient-pandas-a8e67f2a2428">limited set of
+methods</a></p></li>
+<li><p>you do not want to write (or be surprised by)
+<a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.reset_index.html"><code class="docutils literal notranslate"><span class="pre">reset_index</span></code></a>,
+<a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.rename_axis.html"><code class="docutils literal notranslate"><span class="pre">rename_axis</span></code></a>
+often</p></li>
+<li><p>you prefer writing free flowing, expressive code in
+<a class="reference external" href="https://dplyr.tidyverse.org/">dplyr</a> style</p></li>
+</ul>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">tidypandas</span></code> relies on the amazing <code class="docutils literal notranslate"><span class="pre">pandas</span></code> library and offers a
+consistent API with a different
+<a class="reference external" href="https://tidyverse.tidyverse.org/articles/manifesto.html">philosophy</a>.</p>
+</div></blockquote>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='right-next' id="next-link" href="using_tidypandas.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Using <code class="docutils literal notranslate"><span class="pre">tidypandas</span></code></p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright MIT License.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

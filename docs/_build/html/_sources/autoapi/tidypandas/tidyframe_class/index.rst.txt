@@ -1,0 +1,3487 @@
+:py:mod:`tidypandas.tidyframe_class`
+====================================
+
+.. py:module:: tidypandas.tidyframe_class
+
+.. autoapi-nested-parse::
+
+   
+   ..
+       !! processed by numpydoc !!
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   tidypandas.tidyframe_class.tidyframe
+
+
+
+
+.. py:class:: tidyframe(x, check=True, copy=True)
+
+   
+   tidyframe class
+   A tidy pandas dataframe is a wrapper over 'simple' pandas
+   DataFrame object with method similar to tidyverse.
+
+   .. rubric:: Notes
+
+   A pandas dataframe is said to be 'simple' if:
+
+   1. Column names (x.columns) are an unnamed pd.Index object of unique
+      strings.
+   2. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0
+      and step = 1.
+
+   * Methods constitute a grammar of data manipulation mostly returning a
+     tidy dataframe as a result.
+   * When a method returns a tidy dataframe, it returns a copy and not
+     a view, unless copy is set to False.
+   * Methods 'to_pandas' and 'to_series' convert into pandas dataframe or
+     series.
+   * The only attribute of the class is the underlying pandas dataframe. This
+     cannot be accessed by the user. Please use 'to_pandas' method to obtain
+     a copy of the underlying pandas dataframe.
+
+   .. attribute:: nrow
+
+      :type: Number of rows
+
+   .. attribute:: ncol
+
+      :type: Number of columns
+
+   .. attribute:: shape(alias dim)
+
+      :type: tuple of number of rows and number of columns
+
+   .. attribute:: colnames
+
+      :type: list of column names
+
+   .. method:: init
+
+      Creates a tidy dataframe from a 'simple' pandas dataframe
+
+   .. method:: 'to' methods:
+
+      to_pandas
+          Returns the underlying pandas dataframe
+      to_series
+          Returns selected column as pandas series
+
+   .. method:: 'pipe' methods:
+
+      pipe
+          A pipe method for tidy dataframe
+      pipe_tee
+          A pipe method called for side-effect and returns the input
+
+   .. method:: 'basic' methods:
+
+      select
+          Returns a dataframe with selected columns
+      arrange
+          Returns a dataframe after sorting rows
+      slice
+          Returns a dataframe to subset by row numbers
+      distinct
+          Returns a distinct rows defined by selected columns
+      filter
+          Returns a dataframe with rows selected by some criteria
+      mutate
+          Returns a dataframe by adding or changing a few columns
+      summarise (alias: summarize)
+          Returns a dataframe after aggregating over selected columns
+
+   .. method:: 'count' methods:
+
+      count
+          Returns a dataframe after counting over selected columns
+      add_count
+          Returns a dataframe by adding a new count column to input
+
+   .. method:: 'pivot' methods:
+
+      pivot_wider
+          Returns a dataframe by converting from long to wide format
+      pivot_longer
+          Returns a dataframe by converting from wide to long format
+
+   .. method:: 'missing value' methods:
+
+      drop_na
+          Returns a dataframe by dropping rows which have mssing values in
+          selected columns
+      replace_na
+          Returns a dataframe by replacing missing values in selected columns
+      fill_na
+          Returns a dataframe by filling missing values from up, down or
+          both directions for selected columns
+
+   .. method:: 'string' methods:
+
+      separate
+          Returns a dataframe by splitting a string column into multiple
+          columns
+      unite
+          Returns a dataframe by combining multiple string columns
+      separate_rows
+          Returns a dataframe by exploding a string column
+
+   .. method:: 'slice' extensions:
+
+      slice_head
+          Returns a dataframe with top few rows of the input
+      slice_tail
+          Returns a dataframe with last few rows of the input
+      slice_max
+          Returns a dataframe with few rows corrsponding to maximum values of
+          some columns
+      slice_min
+          Returns a dataframe with few rows corrsponding to maximum values of
+          some columns
+      slice_sample
+          Returns a dataframe with a sample of rows
+
+   .. method:: 'join' methods:
+
+      join, inner_join, outer_join, left_join, right_join, anti_join:
+          Returns a joined dataframe of a pair of dataframes
+
+   .. method:: 'set operations' methods:
+
+      union, intersection, setdiff:
+          Returns a dataframe after set like operations over a pair of
+          dataframes
+
+   .. method:: 'bind' methods:
+
+      rbind, cbind:
+          Returns a dataframe by rowwise or column wise binding of a pair of
+          dataframes
+
+   .. method:: 'misc' methods:
+
+      add_row_number:
+          Returns a dataframe with rowids added
+      add_group_number:
+          Returns a dataframe with group ids added
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+   .. py:attribute:: to_series
+      
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:attribute:: rowid_to_column
+      
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:attribute:: summarize
+      
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:attribute:: full_join
+      
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:attribute:: head
+      
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:attribute:: tail
+      
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:attribute:: sample
+      
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:attribute:: fill
+      
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:attribute:: group_split
+      
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: __repr__(self) -> str
+
+      
+      Return a string representation for a particular DataFrame.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: _repr_html_(self)
+
+      
+      Return a html representation for a particular DataFrame.
+      Mainly for IPython notebook.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: to_pandas(self, copy=True)
+
+      
+      Return copy of underlying pandas dataframe
+
+      :param copy: Whether to return a copy of pandas dataframe held by
+                   tidyframe object or to return the underlying
+                   pandas dataframe itself
+      :type copy: bool, default is True
+
+      :rtype: pandas dataframe
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+
+      >>> penguins_tidy.to_pandas()
+      >>> # check whether the dataframes are same
+      >>> penguins.equals(penguins_tidy.to_pandas())
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: pull(self, column_name=None, copy=True)
+
+      
+      pull (aka to_series)
+      Returns a copy of column as pandas series
+
+      :param column_name: Name of the column to be returned as pandas series. When there is
+                          only one column, it can be None.
+      :type column_name: str or None
+      :param copy: Whether to return a copy of the pandas series object
+      :type copy: bool, default is True
+
+      :rtype: pandas series
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>> penguins_tidy.pull("species")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: pipe(self, func, *args, **kwargs)
+
+      
+      Returns func(self)
+
+      :param func:
+      :type func: callable
+
+      :rtype: Depends on the return type of `func`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: pipe_tee(self, func, *args, **kwargs)
+
+      
+      pipe for side-effect
+
+      :param func:
+      :type func: callable
+
+      :rtype: tidyframe
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: nrow(self)
+      :property:
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: ncol(self)
+      :property:
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: shape(self)
+      :property:
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: dim(self)
+      :property:
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: colnames(self)
+      :property:
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: skim(self, return_self=False)
+
+      
+      Skim the tidy dataframe.
+      Provides a meaningful summary of the dataframe
+
+      :param return_self: Whether to return the input
+                          This is helpful while piping the input to next method while skim is
+                          a side-effect
+      :type return_self: bool (default is False)
+
+      :rtype: None when return_self is False, input otherwise
+
+      .. rubric:: Notes
+
+      1. skim is done via 'skimpy' package is expected to be installed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: _validate_by(self, by)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: _validate_column_names(self, column_names)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: _clean_order_by(self, order_by)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: add_row_number(self, name='row_number', by=None)
+
+      
+      add_row_number (aka rowid_to_column)
+      Add a row number column to tidyframe
+
+      :param name: Name for the row number column
+      :type name: str
+      :param by: Columns to group by
+      :type by: str or list of strings
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Row order is preserved.
+      2. Column indicating row number is added as the first column
+         (to the left).
+      3. Alias: rowid_to_column
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+
+      >>> penguins_tidy.add_row_number() # equivalently penguins_tidy.add_rowid()
+
+      >>> # add row number per group in the order of appearance
+      >>> penguins_tidy.add_row_number(by = 'sex')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: add_group_number(self, by=None, name='group_number')
+
+      
+      Add a group number column to tidyframe
+
+      :param name: Name for the group number column
+      :type name: str
+      :param by: Columns to group by
+      :type by: str or list of strings
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Row order is preserved.
+      2. Column indicating group number is added as the first column
+         (to the left).
+      3. Number for the group is based on the first appearance of a
+         group combination.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+
+      >>> penguins_tidy.add_group_number(by = 'sex')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: group_modify(self, func, by, preserve_row_order=False, row_order_column_name='rowid_temp', is_pandas_udf=False, **kwargs)
+
+      
+      Split by some columns, apply a function per chunk which returns a
+      dataframe and combine it back into a single dataframe
+
+      :param func: Type 1. A function: TidyDataFrame --> TidyDataFrame
+                   Type 2. A function: simple pandas df --> simple pandas df
+                   In latter case, set 'is_pandas_udf' to True
+      :type func: callable
+      :param by: Column names to group by
+      :type by: string or list of strings
+      :param preserve_row_order: Whether to preserve the row order of the input dataframe
+      :type preserve_row_order: bool (default is False)
+      :param row_order_column_name: Temporary column name to be created to maintain row order
+      :type row_order_column_name: string
+      :param is_pandas_udf: Whether the 'func' argument is of type 2
+      :type is_pandas_udf: bool (default is False)
+      :param \*\*kwargs:
+      :type \*\*kwargs: arguments to 'func'
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Chunks will always include the grouping columns.
+      2. If grouping columns are found in output of 'func', then they are
+         removed and replaced with value in input chunk.
+      3. When 'preserve_row_order' is True, a temporary column is added
+         to each chunk. udf should pass it through without modification.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> # pick a sample of rows per chunk defined by 'species'
+      >>> penguins_tidy.group_modify(lambda x: x.sample(n = 3)
+      >>>                             , by = 'species'
+      >>>                             )
+      >>>
+      >>> # apply a pandas udf per chunk defined by 'species'
+      >>> # groupby columns are always added to the left
+      >>> penguins_tidy.group_modify(lambda x: x.select('year')
+      >>>                             , by = ['species', 'sex']
+      >>>                             )
+      >>>
+      >>> # preserve row order
+      >>> # a temporary column (default: 'rowid_temp') is added to each chunk
+      >>> # udf should not meddle with the temporary column
+      >>> (penguins_tidy
+      >>>     .select('sex')
+      >>>     # add 'row_number' column to illustrate row preservation
+      >>>     .add_row_number()
+      >>>     # print the output of each chunk
+      >>>     # sample 2 rows
+      >>>     .group_modify(lambda x: x.pipe_tee(print).sample(2)
+      >>>                   , by = 'sex'
+      >>>                   , preserve_row_order = True
+      >>>                   )
+      >>>   )
+      >>>
+      >>> # use kwargs
+      >>> penguins_tidy.group_modify(lambda x, **kwargs: x.sample(n = kwargs['size'])
+      >>>                             , by = 'species'
+      >>>                             , size = 3
+      >>>                             )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: select(self, column_names=None, predicate=None, include=True)
+
+      
+      Select a subset of columns by name or predicate
+
+      :param column_names: list of column names to be selected
+      :type column_names: str or a list of strings
+      :param predicate: function which returns a bool
+      :type predicate: callable, series --> bool
+      :param include: When True, column_names are selected, else dropped
+      :type include: bool, default is True
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Select works by either specifying column names or a predicate,
+         not both.
+      2. When predicate is used, predicate should accept a pandas series and
+         return a bool. Each column is passed to the predicate and the result
+         indicates whether the column should be selected or not.
+
+      .. rubric:: Examples
+
+      >>> import re
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> # select with names
+      >>> penguins_tidy.select(['sex', 'species'])
+      >>>
+      >>> # select using a predicate: only non-numeric columns
+      >>> penguins_tidy.select(predicate = lambda x: x.dtype != "string")
+      >>>
+      >>> # select columns ending with 'mm'
+      >>> penguins_tidy.select(
+      >>>     predicate = lambda x: bool(re.match(".*mm$", x.name))
+      >>>     )
+      >>>
+      >>> # invert the selection
+      >>> penguins_tidy.select(['sex', 'species'], include = False)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: relocate(self, column_names, before=None, after=None)
+
+      
+      relocate the columns of the tidy pandas dataframe
+
+      :param column_names: column names to be moved
+      :type column_names: string or a list of strings
+      :param before: column before which the column are to be moved. The default is None.
+      :type before: string, optional
+      :param after: column after which the column are to be moved. The default is None.
+      :type after: TYPE, optional
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      Only one among 'before' and 'after' can be not None. When both are None,
+      the columns are added to the begining of the dataframe (leftmost)
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> # move "island" and "species" columns to the left of the dataframe
+      >>> penguins_tidy.relocate(["island", "species"])
+      >>>
+      >>> # move "sex" and "year" columns to the left of "island" column
+      >>> penguins_tidy.relocate(["sex", "year"], before = "island")
+      >>>
+      >>> # move "island" and "species" columns to the right of "year" column
+      >>> penguins_tidy.relocate(["island", "species"], after = "year")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: rename(self, old_new_dict)
+
+      
+      Rename columns of the tidy pandas dataframe
+
+      :param old_new_dict:
+      :type old_new_dict: A dict with old names as keys and new names as values
+
+      :rtype: tidyframe
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+
+      >>> penguins_tidy.rename({'species': 'species_2'})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: slice(self, row_numbers, by=None)
+
+      
+      Subset rows of a tidyframe
+
+      :param row_numbers: list/array of row numbers.
+      :type row_numbers: int or list or range or 1-D numpy array of positive integers
+      :param by: Column names to groupby. The default is None.
+      :type by: list of strings, optional
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Grouped slice preserves the row order.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+
+      >>> # pick first three rows of the dataframe
+      >>> penguins_tidy.slice(np.arange(3))
+      >>>
+      >>> # pick these row numbers: [0, 3, 8]
+      >>> penguins_tidy.slice([0, 3, 8])
+      >>>
+      >>> # pick first three rows per specie
+      >>> penguins_tidy.slice([0,1,2], by = "species")
+      >>>
+      >>> # pick first three rows for each species and sex combination
+      >>> penguins_tidy.slice(np.arange(3), by = ["species", "sex"])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: arrange(self, order_by, na_position='last', by=None)
+
+      
+      Orders the rows by the values of selected columns
+
+      :param column_names: column names to order by.
+      :type column_names: list of strings
+      :param order_by: column names and asc/desc tuples. See examples.
+      :type order_by: str, list, tuple
+      :param na_position: One among: 'first', 'last'. The default is 'last'.
+      :type na_position: str, optional
+      :param by: Column names to group by
+      :type by: str, list of strings (default: None)
+
+      :rtype: tidyframe
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> # arrange by ascending order of column 'bill_length_mm'
+      >>> penguins_tidy.arrange('bill_length_mm')
+      >>> # equivalent to below:
+      >>> # penguins_tidy.arrange([('bill_length_mm', 'asc')])
+      >>>
+      >>> # arrange by descding order of column 'bill_length_mm'
+      >>> penguins_tidy.arrange([('bill_length_mm', 'desc')])
+      >>>
+      >>> # arrange by ascending order of column 'body_mass_g' and break ties with
+      >>> # ascending order to 'bill_length_mm'
+      >>> penguins_tidy.arrange([('body_mass_g', 'asc'), ('bill_length_mm', 'asc')])
+      >>> # equivalent to below:
+      >>> # penguins_tidy.arrange(['body_mass_g', 'bill_length_mm'])
+      >>>
+      >>> # arrange by ascending order of column 'body_mass_g' and break ties with
+      >>> # descending order to 'bill_length_mm'
+      >>> penguins_tidy.arrange([('body_mass_g', 'asc'), ('bill_length_mm', 'desc')])
+      >>> # equivalent to below:
+      >>> penguins_tidy.arrange(['body_mass_g', ('bill_length_mm', 'desc')])
+      >>>
+      >>> # determine where NA has to appear
+      >>> penguins_tidy.arrange('sex', na_position = 'first')
+      >>>
+      >>> # grouped arrange: rearranges within the group
+      >>> penguins_tidy
+      >>> penguins_tidy.arrange('bill_length_mm', by = 'sex')
+      >>> # notice that order of 'sex' column does not change while row corresponding
+      >>> # to 'bill_length_mm' per group is sorted in ascending order
+      >>> # This preserves the relative position of groups
+      >>> # If you intend to not preserve the row order, then simply
+      >>> # include the grouping variable(s) in order
+      >>> # ex: penguins_tidy.arrange(['sex', 'bill_length_mm'])
+
+      .. rubric:: Notes
+
+      1. Grouped arrange rearranges the rows within a group without
+      changing the relative position of groups in the dataframe.
+
+      2. When multiple columns are provided in order_by, second column is
+      used to break the ties after sorting by first column and so on.
+
+      3. If the column(s) provided in arrange are not sufficient to order
+      the rows of the dataframe, then row number is implicitly used to
+      deterministically break ties.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: filter(self, query=None, mask=None, by=None, **kwargs)
+
+      
+      subset some rows
+
+      :param query: when str, query string parsable by pandas eval
+                    when function, should output an array of booleans
+                    of length equal to numbers of rows of the input dataframe
+      :type query: str or a function
+      :param mask: numpy array or pandas Series of booleans
+                   of length equal to numbers of rows of the input dataframe
+      :type mask: list of booleans or
+      :param by: column names to group by
+      :type by: Optional, str or list of strings
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Exactly one arg among 'query' and 'mask' should be provided
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> # query with pandas eval. pandas eval does not support complicated expressions.
+      >>> penguins_tidy.filter("body_mass_g > 4000")
+      >>>
+      >>> # subset with a mask -- list or array or pandas Series of precomputed booleans
+      >>> penguins_tidy.filter(mask = (penguins_tidy.pull("year") == 2007))
+      >>> # equivalently:
+      >>> # penguins_tidy.filter(lambda x: x.year == 2007)
+      >>>
+      >>> # use complex expressions as a lambda function and filter
+      >>> penguins_tidy.filter(lambda x: x['bill_length_mm'] > np.mean(x['bill_length_mm']))
+      >>>
+      >>> # per group filter retains the row order
+      >>> penguins_tidy.filter(lambda x: x['bill_length_mm'] > np.mean(x['bill_length_mm']), by = 'sex')
+      >>>
+      >>> # using kwargs
+      >>> penguins_tidy.filter(lambda x, **kwargs: x.year == kwargs['some_kwarg'],
+      >>>                      some_kwarg = 2009
+      >>>                      )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: distinct(self, column_names=None, keep_all=False)
+
+      
+      subset unique rows from the dataframe
+
+      :param column_names: Names of the column for distinct
+      :type column_names: string or a list of strings
+      :param keep_all: Whether to keep all the columns or only the 'column_names'
+      :type keep_all: bool (default: False)
+      :param by: Column names to groupby
+      :type by: Optional, string or a list of strings
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. distinct preserves the order of the rows of the input dataframe.
+      2. 'column_names' and 'by' should not have common column names.
+      3. When keep_all is True, first rows corresponding a unique combination
+         is preserved.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> tidy_penguins.distinct() # distinct over all columns
+      >>>
+      >>> tidy_penguins.distinct('species') # keep only 'distinct' columns
+      >>> tidy_penguins.distinct('species', keep_all = True) # keep all columns
+      >>>
+      >>> tidy_penguins.distinct(['bill_length_mm', 'bill_depth_mm'])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: _mutate(self, dictionary, order_by=None, **kwargs)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: _mutate_across(self, func, column_names=None, predicate=None, prefix='', order_by=None, **kwargs)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: mutate(self, dictionary=None, func=None, column_names=None, predicate=None, prefix='', by=None, order_by=None, **kwargs)
+
+      
+      Add or modify some columns
+
+      :param dictionary: A dictionary of mutating operations. This supports multiple
+                         styles, see the examples
+      :type dictionary: dict
+      :param func: A function to apply on the 'column_names' or the columns chosen by
+                   the 'predicate'.
+      :type func: callable
+      :param column_names: Names of the columns to apply 'func' on
+      :type column_names: string or a list of strings
+      :param predicate: A function to choose columns. Input: pandas series, output: bool
+      :type predicate: callable
+      :param prefix: Prefix the resulting summarization column after applying 'func'
+      :type prefix: string
+      :param by: column names to group by
+      :type by: string or a list of strings
+      :param order_by: Names of columns to order by, before applying the mutating function
+      :type order_by: string or a list of strings
+      :param \*\*kwargs: for lambda functions in dictionary or func
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. mutate works in two modes:
+          a. direct assign: A series or 1-D array is assignged as a column
+          b. dictionary mode: A key should be a resulting column name. Value
+              should be a specification of the mutating operation. See the
+              examples for various sytles.
+          c. across mode: A function is applied across a set of columns or
+              columns selected by a predicate function.
+      2. mutate preserves row order.
+      3. 'by'(groupby) and 'order_by' columns should not be mutated.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> # mutate with dict
+      >>> penguins_tidy.mutate({
+      >>>   # 1. direct assign
+      >>>   'ind' : np.arange(344),
+      >>>
+      >>>   # 2. using pandas style lambda function
+      >>>   "yp1": lambda x: x['year'] + 1,
+      >>>
+      >>>   # 2a. pass the content of lambda function as a string
+      >>>   "yp1_string": "x['year'] + 1",
+      >>>
+      >>>   # 3. pass a tuple of function and column list
+      >>>   "yp1_abstract": (lambda x: x + 1, "year"),
+      >>>
+      >>>   # 3a. pass the tuple of function content as string and the column list
+      >>>   "yp2_abstract": ("x + 1", "year"),
+      >>>
+      >>>   # 4. pass multiple columns
+      >>>   "x_plus_y": ("x + y", ["bill_length_mm", "bill_depth_mm"]),
+      >>>   # the above is equivalent to:
+      >>>   # "x_plus_y": (lambda x, y: x + y, ["bill_length_mm", "bill_depth_mm"]),
+      >>>
+      >>>   # 5. output multiple columns as a list
+      >>>   ('x', 'y'): lambda x: [x['year'] - 1, x['year'] + 1],
+      >>>   # the above is equivalent to:
+      >>>   # ('x2', 'y2'): "[x['year'] - 1, x['year'] + 1]",
+      >>>
+      >>>   # change an existing column: add one to 'bill_length_mm'
+      >>>   'bill_length_mm': ("x + 1", )
+      >>>   # the above is equivalent to these:
+      >>>   # 'bill_length_mm': ("x + 1", 'bill_length_mm'),
+      >>>   # 'bill_length_mm': (lambda x: x + 1, 'bill_length_mm')
+      >>>   })
+      >>>
+      >>> # mutate with dict and groupby
+      >>> penguins_tidy.mutate({'x' : "x['year'] + np.mean(x['year']) - 4015"}
+      >>>                      , by = 'sex'
+      >>>                      )
+      >>>
+      >>> # mutate can use columns created in the dict before
+      >>> (penguins_tidy.select('year')
+      >>>               .mutate({'yp1': ("x + 1", 'year'),
+      >>>                        'yp1m1': ("x - 1", 'yp1')
+      >>>                       })
+      >>>               )
+      >>>
+      >>> # use kwargs
+      >>> (penguins_tidy
+      >>>  .select('year')
+      >>>  .mutate({'yp1': ("x + kwargs['akwarg']", 'year')}, akwarg = 10)
+      >>>  )
+      >>>
+      >>> # 'order_by' some column before the mutate opeation
+      >>> # order_by column 'bill_length_mm' before computing cumsum over 'year' columns
+      >>> # row order is preserved
+      >>> cumsum_df = (penguins_tidy.select(['year', 'species', 'bill_length_mm'])
+      >>>                           .mutate({'year_cumsum': (np.cumsum, 'year')},
+      >>>                                   order_by = 'bill_length_mm'
+      >>>                                   )
+      >>>                           )
+      >>> cumsum_df
+      >>> # confirm the computation:
+      >>> cumsum_df.arrange('bill_length_mm')
+      >>>
+      >>> # across mode with column names
+      >>> (penguins_tidy.select(['bill_length_mm', 'body_mass_g'])
+      >>>               .mutate(column_names = ['bill_length_mm', 'body_mass_g']
+      >>>                       , func = lambda x: x - np.mean(x)
+      >>>                       , prefix = "demean_"
+      >>>                       )
+      >>>               )
+      >>>
+      >>> # grouped across with column names
+      >>> (penguins_tidy.select(['bill_length_mm', 'body_mass_g', 'species'])
+      >>>               .mutate(column_names = ['bill_length_mm', 'body_mass_g'],
+      >>>                       func = lambda x: x - np.mean(x),
+      >>>                       prefix = "demean_",
+      >>>                       by = 'species'
+      >>>                       )
+      >>>               )
+      >>>
+      >>> # across mode with predicate
+      >>> penguins_tidy.mutate(func = lambda x: x - np.mean(x),
+      >>>                      predicate = dtypes.is_numeric_dtype,
+      >>>                      prefix = "demean_"
+      >>>                      )
+      >>>
+      >>> # grouped across with predicate without prefix
+      >>> # this will return a copy with columns changed without changing names
+      >>> penguins_tidy.mutate(func = lambda x: x - np.mean(x),
+      >>>                      predicate = dtypes.is_numeric_dtype,
+      >>>                      by = 'species'
+      >>>                      )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: _summarise(self, dictionary, **kwargs)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: summarise(self, dictionary=None, func=None, column_names=None, predicate=None, prefix='', by=None, **kwargs)
+
+      
+      Creates one row per group summarising the input dataframe
+
+      :param dictionary: A dictionary of summarising operations. This supports multiple
+                         styles, see the examples
+      :type dictionary: dict
+      :param func: A function to apply on the 'column_names' or the columns chosen by
+                   the 'predicate'. func should return a scalar.
+      :type func: callable
+      :param column_names: Names of the columns to apply 'func' on
+      :type column_names: string or a list of strings
+      :param predicate: A function to choose columns. Input: pandas series, output: bool
+      :type predicate: callable
+      :param prefix: Prefix the resulting summarization column after applying 'func'
+      :type prefix: string
+      :param by: column names to group by
+      :type by: string or a list of strings
+      :param \*\*kwargs: for lambda functions in dictionary or func
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. When by is None, summarise outputs a single row dataframe.
+      2. summarise function works in two modes:
+          a. dictionary mode: A key should be a resulting column name. Value
+              should be a specification of the summarising operation. See the
+              examples for various sytles.
+          b. across mode: A function is applied across a set of columns or
+              columns selected by a predicate function.
+
+      .. rubric:: Examples
+
+      >>> import pandas.api.types as dtypes
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> # summarise in dict mode
+      >>> penguins_tidy.summarise({
+      >>>     # using pandas style lambda function
+      >>>     "a_mean": lambda x: x['year'].mean(),
+      >>>
+      >>>     # pass the content of lambda function as a string
+      >>>     "b_mean": "x['year'].mean()",
+      >>>
+      >>>     # pass a tuple of function and column list
+      >>>     "a_median": (np.median, "year"),
+      >>>
+      >>>     # pass a tuple of function to retain same column name
+      >>>     "year": (np.median, ),
+      >>>
+      >>>     # pass multiple columns as a string
+      >>>     "x_plus_y_mean": ("np.mean(x + y)", ["bill_length_mm", "bill_depth_mm"]),
+      >>>
+      >>>     # output multiple columns as a list (pandas style)
+      >>>     ('x', 'y'): lambda x: list(np.quantile(x['year'], [0.25, 0.75])),
+      >>>
+      >>>     # same as above in string style
+      >>>     ('x2', 'y2'): "list(np.quantile(x['year'], [0.25, 0.75]))",
+      >>>
+      >>>     # tuple style with multiple output
+      >>>     ('A', 'B'): ("[np.mean(x + y), np.mean(x - y)]"
+      >>>                  , ["bill_length_mm", "bill_depth_mm"]
+      >>>                  )
+      >>>     })
+      >>>
+      >>> # grouped summarise in dict mode
+      >>> penguins_tidy.summarise({"a_mean": (np.mean, 'year')},
+      >>>                         by = ['species', 'sex']
+      >>>                         )
+      >>>
+      >>> # use kwargs
+      >>> penguins_tidy.summarise(
+      >>>   {"a_mean": lambda x, **kwargs: x['year'].mean() + kwargs['leap']},
+      >>>   by = ['species', 'sex'],
+      >>>   leap = 4
+      >>>   )
+      >>>
+      >>> # equivalently:
+      >>> penguins_tidy.summarise(
+      >>>   {"a_mean": "x['year'].mean() + kwargs['leap']"},
+      >>>   by = ['species', 'sex'],
+      >>>   leap = 4
+      >>>   )
+      >>>
+      >>> # across mode with column names
+      >>> penguins_tidy.summarise(
+      >>>   func = np.mean,
+      >>>   column_names = ['bill_length_mm', 'bill_depth_mm']
+      >>>   )
+      >>>
+      >>> # across mode with predicate
+      >>> penguins_tidy.summarise(
+      >>>   func = np.mean,
+      >>>   predicate = dtypes.is_numeric_dtype,
+      >>>   prefix = "avg_"
+      >>>   )
+      >>>
+      >>> # grouped across with predicate
+      >>> penguins_tidy.summarise(
+      >>>   func = np.mean,
+      >>>   predicate = dtypes.is_numeric_dtype,
+      >>>   prefix = "avg_",
+      >>>   by = ['species', 'sex']
+      >>>   )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: _validate_join(self, y, how, on, on_x, on_y, sort, suffix_y)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: _join(self, y, how, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y', validate=True)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: inner_join(self, y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+
+      
+      Joins columns of y to self by matching rows
+      Includes only matching keys
+
+      :param y:
+      :type y: tidyframe
+      :param on: Common column names to match
+      :type on: string or a list of strings
+      :param on_x: Column names of self to be matched with arg 'on_y'
+      :param on_y: Column names of y to be matched with arg 'on_x'
+      :param sort: Whether to sort by row order of self and row order of y
+      :type sort: bool
+      :param suffix_y: suffix to append the columns of y which have same names as self's
+                       column names
+      :type suffix_y: string
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Column names of self will not have a suffix.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+      >>>                                  .select(['species', 'bill_length_mm', 'island'])
+      >>>                                  )
+      >>> penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+      >>>                                  .select(['species', 'island', 'bill_depth_mm'])
+      >>>                                  )
+      >>>
+      >>> penguins_tidy_s1.inner_join(penguins_tidy_s2, on = 'island')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: outer_join(self, y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+
+      
+      Joins columns of y to self by matching rows
+      Includes all keys
+
+      :param y:
+      :type y: tidyframe
+      :param on: Common column names to match
+      :type on: string or a list of strings
+      :param on_x: Column names of self to be matched with arg 'on_y'
+      :param on_y: Column names of y to be matched with arg 'on_x'
+      :param sort: Whether to sort by row order of self and row order of y
+      :type sort: bool
+      :param suffix_y: suffix to append the columns of y which have same names as self's
+                       column names
+      :type suffix_y: string
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Column names of self will not have a suffix.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+      >>>                                  .select(['species', 'bill_length_mm', 'island'])
+      >>>                                  )
+      >>> penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+      >>>                                  .select(['species', 'island', 'bill_depth_mm'])
+      >>>                                  )
+      >>>
+      >>> penguins_tidy_s1.outer_join(penguins_tidy_s2, on = 'island')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: left_join(self, y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+
+      
+      Joins columns of y to self by matching rows
+      Includes all keys in self
+
+      :param y:
+      :type y: tidyframe
+      :param on: Common column names to match
+      :type on: string or a list of strings
+      :param on_x: Column names of self to be matched with arg 'on_y'
+      :param on_y: Column names of y to be matched with arg 'on_x'
+      :param sort: Whether to sort by row order of self and row order of y
+      :type sort: bool
+      :param suffix_y: suffix to append the columns of y which have same names as self's
+                       column names
+      :type suffix_y: string
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Column names of self will not have a suffix.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+      >>>                                  .select(['species', 'bill_length_mm', 'island'])
+      >>>                                  )
+      >>> penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+      >>>                                  .select(['species', 'island', 'bill_depth_mm'])
+      >>>                                  )
+      >>>
+      >>> penguins_tidy_s1.left_join(penguins_tidy_s2, on = 'island')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: right_join(self, y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+
+      
+      Joins columns of y to self by matching rows
+      Includes all keys in y
+
+      :param y:
+      :type y: tidyframe
+      :param on: Common column names to match
+      :type on: string or a list of strings
+      :param on_x: Column names of self to be matched with arg 'on_y'
+      :param on_y: Column names of y to be matched with arg 'on_x'
+      :param sort: Whether to sort by row order of self and row order of y
+      :type sort: bool
+      :param suffix_y: suffix to append the columns of y which have same names as self's
+                       column names
+      :type suffix_y: string
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Column names of self will not have a suffix.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+      >>>                                  .select(['species', 'bill_length_mm', 'island'])
+      >>>                                  )
+      >>> penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+      >>>                                  .select(['species', 'island', 'bill_depth_mm'])
+      >>>                                  )
+      >>>
+      >>> penguins_tidy_s1.right_join(penguins_tidy_s2, on = 'island')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: semi_join(self, y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+
+      
+      Joins columns of y to self by matching rows
+      Includes keys in self if present in y
+
+      :param y:
+      :type y: tidyframe
+      :param on: Common column names to match
+      :type on: string or a list of strings
+      :param on_x: Column names of self to be matched with arg 'on_y'
+      :param on_y: Column names of y to be matched with arg 'on_x'
+      :param sort: Whether to sort by row order of self and row order of y
+      :type sort: bool
+      :param suffix_y: suffix to append the columns of y which have same names as self's
+                       column names
+      :type suffix_y: string
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Column names of self will not have a suffix.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+      >>>                                  .select(['species', 'bill_length_mm', 'island'])
+      >>>                                  )
+      >>> penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+      >>>                                  .select(['species', 'island', 'bill_depth_mm'])
+      >>>                                  )
+      >>>
+      >>> penguins_tidy_s2.semi_join(penguins_tidy_s1, on = 'island')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: anti_join(self, y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+
+      
+      Joins columns of y to self by matching rows
+      Includes keys in self if not present in y
+
+      :param y:
+      :type y: tidyframe
+      :param on: Common column names to match
+      :type on: string or a list of strings
+      :param on_x: Column names of self to be matched with arg 'on_y'
+      :param on_y: Column names of y to be matched with arg 'on_x'
+      :param sort: Whether to sort by row order of self and row order of y
+      :type sort: bool
+      :param suffix_y: suffix to append the columns of y which have same names as self's
+                       column names
+      :type suffix_y: string
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Column names of self will not have a suffix.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+      >>>                                  .select(['species', 'bill_length_mm', 'island'])
+      >>>                                  )
+      >>> penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+      >>>                                  .select(['species', 'island', 'bill_depth_mm'])
+      >>>                                  )
+      >>>
+      >>> penguins_tidy_s2.anti_join(penguins_tidy_s1, on = 'island')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: cross_join(self, y, sort=True, suffix_y='_y')
+
+      
+      Joins columns of y to self by matching rows
+      Includes all cartersian product
+
+      :param y:
+      :type y: tidyframe
+      :param sort: Whether to sort by row order of self and row order of y
+      :type sort: bool
+      :param suffix_y: suffix to append the columns of y which have same names as self's
+                       column names
+      :type suffix_y: string
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Column names of self will not have a suffix.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+      >>>                                  .select(['species', 'bill_length_mm', 'island'])
+      >>>                                  )
+      >>> penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+      >>>                                  .select(['species', 'island', 'bill_depth_mm'])
+      >>>                                  )
+      >>>
+      >>> penguins_tidy_s2.cross_join(penguins_tidy_s1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: cbind(self, y)
+
+      
+      bind columns of y to self
+
+      :param y:
+      :type y: a tidyframe with same number of rows
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. The tidyframe to be binded should same same number of rows.
+      2. Column names of the tidyframe should be different from self.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> (penguins_tidy.select(['species', 'island'])
+      >>>               .cbind(penguins_tidy.select(['bill_length_mm', 'bill_depth_mm']))
+      >>>               )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: rbind(self, y)
+
+      
+      bind rows of y to self
+
+      :param y:
+      :type y: a tidyframe
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Result will have union of column names of self and y.
+      2. Missing values are created when a column name is present in one
+         dataframe and not in the other.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> (penguins_tidy.select(['species', 'island'])
+      >>>               .rbind(penguins_tidy.select(['island', 'bill_length_mm', 'bill_depth_mm']))
+      >>>               )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: count(self, column_names=None, name='n', decreasing=True, wt=None)
+
+      
+      count rows by groups
+
+      :param column_names: Column names to groupby before counting the rows.
+                           When None, counts all rows.
+      :type column_names: None or string or a list of strings
+      :param name: Column name of the resulting count column
+      :type name: string (default: 'n')
+      :param decreasing: Whether to sort the result in descending order of the count column
+      :type decreasing: bool (default is True)
+      :param wt: When a string, should be a column name with numeric dtype.
+                 When wt is None, rows are counted.
+                 When wt is present, then wt column is summed up.
+      :type wt: None or string
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> # count rows
+      >>> penguins_tidy.count()
+      >>>
+      >>> # count number of rows of 'sex' column
+      >>> # count column is always ordered in descending order unless decreasing is False
+      >>> penguins_tidy.count('sex', name = "cnt")
+      >>> penguins_tidy.count('sex', name = "cnt", decreasing = False)
+      >>>
+      >>> # sum up a column (weighted sum of rows)
+      >>> penguins_tidy.count(['sex', 'species'], wt = 'year')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: add_count(self, column_names=None, name='n', wt=None)
+
+      
+      adds counts of rows by groups as a column
+
+      :param column_names: Column names to groupby before counting the rows.
+                           When None, counts all rows.
+      :type column_names: None or string or a list of strings
+      :param name: Column name of the resulting count column
+      :type name: string (default: 'n')
+      :param wt: When a string, should be a column name with numeric dtype.
+                 When wt is None, rows are counted.
+                 When wt is present, then wt column is summed up.
+      :type wt: None or string
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> # count rows
+      >>> penguins_tidy.add_count()
+      >>>
+      >>> # count number of rows of 'sex' column
+      >>> penguins_tidy.add_count('sex', name = "cnt")
+      >>>
+      >>> # sum up a column (weighted sum of rows)
+      >>> penguins_tidy.add_count(['sex', 'species'], wt = 'year')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: pivot_wider(self, names_from, values_from, values_fill=None, values_fn=None, id_cols=None, sep='__')
+
+      
+      Pivot data from long to wide
+
+      :param names_from: column names whose unique combinations are expected to become column
+                         new names in the result
+      :type names_from: string or list of strings
+      :param values_from: column names to fill the new columns with
+      :type values_from: string or list of strings
+      :param values_fill: A value to fill the missing values with
+                          When None, missing values are left as-is
+      :type values_fill: scalar (default is None)
+      :param values_fn: A function to handle multiple values per row in the result.
+                        When a dict, keys should be same as arg 'values_from'
+                        When None, multiple values are in kept a list and a single value is
+                        not kept in a list (will be a scalar)
+      :type values_fn: function or a dict of functions (default is None)
+      :param id_cols: Names of the columns that should uniquely identify an observation
+                      (row) after widening (columns of the original dataframe that are
+                      supposed to stay put)
+      :type id_cols: string or list of strings, default is None
+      :param sep: seperator to use while creating resulting column names
+      :type sep: string
+
+      :rtype: tidyframe
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> import numpy as np
+      >>>
+      >>> # generic widening leads to list-columns
+      >>> penguins_tidy.pivot_wider(id_cols       = "island"
+      >>>                           , names_from  = "sex"
+      >>>                           , values_from = "bill_length_mm"
+      >>>                           )
+      >>>
+      >>> # aggregate with a function
+      >>> penguins_tidy.pivot_wider(id_cols       = "island"
+      >>>                           , names_from  = "sex"
+      >>>                           , values_from = "bill_length_mm"
+      >>>                           , values_fn   = np.mean
+      >>>                           )
+      >>>
+      >>> # choose different aggregation logic for value_from columns
+      >>> penguins_tidy.pivot_wider(
+      >>>   id_cols       = "island"
+      >>>   , names_from  = "species"
+      >>>   , values_from = ["bill_length_mm", "bill_depth_mm"]
+      >>>   , values_fn   = {"bill_length_mm" : np.mean, "bill_depth_mm" : list}
+      >>>   )
+      >>>
+      >>> # aggregate with almost any function
+      >>> penguins_tidy.pivot_wider(
+      >>>   id_cols       = "island"
+      >>>   , names_from  = "species"
+      >>>   , values_from = "sex"
+      >>>   , values_fn   = lambda x: dict(pd.Series(x).value_counts())
+      >>>   )
+      >>>
+      >>> # All three inputs: 'id_cols', 'names_from', 'values_from' can be lists
+      >>> penguins_tidy.pivot_wider(
+      >>>     id_cols       = ["island", "sex"]
+      >>>     , names_from  = "species"
+      >>>     , values_from = "bill_length_mm"
+      >>>     )
+      >>>
+      >>> penguins_tidy.pivot_wider(
+      >>>     id_cols       = ["island", "sex"]
+      >>>     , names_from  = "species"
+      >>>     , values_from = ["bill_length_mm", "bill_depth_mm"]
+      >>>     )
+      >>>
+      >>> penguins_tidy.pivot_wider(id_cols       = ["island", "sex"]
+      >>>                           , names_from  = ["species", "year"]
+      >>>                           , values_from = "bill_length_mm"
+      >>>                           )
+      >>>
+      >>> penguins_tidy.pivot_wider(
+      >>>     id_cols       = ["island", "sex"]
+      >>>     , names_from  = ["species", "year"]
+      >>>     , values_from = ["bill_length_mm", "bill_depth_mm"]
+      >>>     )
+      >>>
+      >>> # when id_cols is empty, all columns except the columns from
+      >>> # `names_from` and `values_from` are considered as id_cols
+      >>> (penguins_tidy
+      >>>  .select(['flipper_length_mm', 'body_mass_g'], include = False)
+      >>>  .pivot_wider(names_from    = ["species", "year"]
+      >>>               , values_from = ["bill_length_mm", "bill_depth_mm"]
+      >>>               )
+      >>>  )
+      >>>
+      >>> # fill the missing values with something
+      >>> penguins_tidy.pivot_wider(id_cols       = "island"
+      >>>                           , names_from  = "species"
+      >>>                           , values_from = "bill_length_mm"
+      >>>                           , values_fn   = np.mean
+      >>>                           , values_fill = 0
+      >>>                           )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: pivot_longer(self, cols, names_to='name', values_to='value', include=True, values_drop_na=False)
+
+      
+      Pivot from wide to long
+      aka melt
+
+      :param cols: Column names to be melted.
+                   The dtypes of the columns should match.
+                   Leftover columns are considered as 'id' columns.
+                   When include is False, 'cols' refers to leftover columns.
+      :type cols: list of strings
+      :param names_to: Name of the resulting column which will hold the names of the columns
+                       to be melted
+      :type names_to: string (default: 'name')
+      :param values_to: Name of the resulting column which will hold the values of the columns
+                        to be melted
+      :type values_to: string (default: 'value')
+      :param include: If True, cols are used to melt. Else, cols are considered as 'id'
+                      columns
+      :type include: bool
+      :param values_drop_na: Whether to drop the rows corresponding to missing value in the result
+      :type values_drop_na: bool
+
+      :rtype: tidyframe
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> # pivot to bring values from columns ending with 'mm'
+      >>> cns = ['species'
+      >>>        , 'bill_length_mm'
+      >>>        , 'bill_depth_mm'
+      >>>        , 'flipper_length_mm'
+      >>>        ]
+      >>> (penguins_tidy.select(cns)
+      >>>               .pivot_longer(cols = ['bill_length_mm',
+      >>>                                     'bill_depth_mm',
+      >>>                                     'flipper_length_mm']
+      >>>                             )
+      >>>               )
+      >>>
+      >>> # pivot by specifying 'id' columns to obtain the same result as above
+      >>> # this is helpful when there are many columns to melt
+      >>> (penguins_tidy.select(cns)
+      >>>               .pivot_longer(cols = 'species',
+      >>>                             include = False
+      >>>                             )
+      >>>               )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: slice_head(self, n=None, prop=None, rounding_type='round', by=None)
+
+      
+      Subset first few rows
+
+      :param n: Number of rows to subset, should be atleast 1
+      :type n: int
+      :param prop: proportion of rows to subset, should be between 0(exclusive) and 1
+                   (inclusive)
+      :type prop: float
+      :param rounding_type: When prop is provided, rounding method to be used.
+                            Options: 'round' (default), 'floor', 'ceiling'
+      :type rounding_type: string
+      :param by: column names to group by
+      :type by: string or list of strings
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Only one argument among 'n' and 'prop' should be provided.
+      2. Row order is preserved by the method.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> penguins_tidy.slice_head(n = 3)
+      >>> penguins_tidy.slice_head(prop = 0.01)
+      >>>
+      >>> penguins_tidy.slice_head(n = 1, by = 'species')
+      >>> penguins_tidy.slice_head(prop = 0.01, by = 'species')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: slice_tail(self, n=None, prop=None, rounding_type='round', by=None)
+
+      
+      Subset last few rows
+
+      :param n: Number of rows to subset, should be atleast 1
+      :type n: int
+      :param prop: proportion of rows to subset, should be between 0(exclusive) and 1(inclusive)
+      :type prop: float
+      :param rounding_type: When prop is provided, rounding method to be used.
+                            Options: 'round' (default), 'floor', 'ceiling'
+      :type rounding_type: string
+      :param by: column names to group by
+      :type by: string or list of strings
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Only one argument among 'n' and 'prop' should be provided.
+      2. Row order is preserved by the method.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> penguins_tidy.slice_tail(n = 3)
+      >>> penguins_tidy.slice_tail(prop = 0.01)
+      >>>
+      >>> penguins_tidy.slice_tail(n = 1, by = 'species')
+      >>> penguins_tidy.slice_tail(prop = 0.01, by = 'species')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: slice_sample(self, n=None, prop=None, replace=False, weights=None, random_state=None, by=None)
+
+      
+      Sample a few rows
+
+      :param n: Number of rows to sample, should be atleast 1
+      :type n: int
+      :param prop: Proportion of rows to subset, should be non-negative
+      :type prop: float
+      :param replace: Whether to sampling should be done with replacement
+      :type replace: bool, default is False
+      :param weights: When a string, it should be an column of numeric dtype
+                      When None, no weights are used
+      :type weights: string, pandas series, numpy array (Default is None)
+      :param random_state: Seed to keep the sampling reproducible
+                           When None, a pseudorandom seed is chosen
+      :type random_state: positive integer (Default is None)
+      :param by: column names to group by
+      :type by: string or list of strings
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Only one argument among 'n' and 'prop' should be provided.
+      2. Row order is not preserved by the method.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> # swor: sample without replacement
+      >>> # swr: sample with replacement
+      >>>
+      >>> # sample by specifiying count
+      >>> penguins_tidy.slice_sample(n = 5)                    # swor
+      >>> penguins_tidy.slice_sample(n = 5, replace = True)    # swr, smaller than input
+      >>> penguins_tidy.slice_sample(n = 1000, replace = True) # swr, larger than input
+      >>>
+      >>> # sample by specifiying proportion of number of rows of the input
+      >>> penguins_tidy.slice_sample(prop = 0.3)                 # swor
+      >>> penguins_tidy.slice_sample(prop = 0.3, replace = True) # swr, smaller than input
+      >>> penguins_tidy.slice_sample(prop = 1.1, replace = True) # swr, larger than input
+      >>>
+      >>> # sample with weights
+      >>> penguins_tidy.slice_sample(prop = 0.3, weights = 'year')
+      >>>
+      >>> # sampling is reproducible by setting a random state
+      >>> penguins_tidy.slice_sample(n = 3, random_state = 42)
+      >>>
+      >>> # per group sampling
+      >>> penguins_tidy.slice_sample(n = 5, by = 'species', random_state = 1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: slice_min(self, n=None, prop=None, order_by_column=None, with_ties=True, rounding_type='round', by=None)
+
+      
+      Subset top rows ordered by some columns
+
+      :param n: Number of rows to subset, should be atleast 1
+      :type n: int
+      :param prop: Proportion of rows to subset, should be non-negative
+      :type prop: float
+      :param order_by_column: column to order by
+      :type order_by_column: string or list of strings
+      :param with_ties: Whether to return all rows when ordering results in ties. If True,
+                        the output might have more than n/prop rows
+      :type with_ties: bool (default: True)
+      :param rounding_type: Rounding type to used when prop is provided. 'rounding_type' should
+                            be one among: 'round', 'ceiling', 'floor'
+      :type rounding_type: string (Default is None)
+      :param by: column names to group by
+      :type by: string or list of strings
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Only one argument among 'n' and 'prop' should be provided.S
+      2. Row order is not preserved by the method.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> # subset atleast 4 rows corresponding to ascending 'body_mass_g'
+      >>> penguins_tidy.slice_min(n = 4, order_by_column = 'body_mass_g')
+      >>>
+      >>> # subset exactly 4 rows corresponding to ascending 'body_mass_g'
+      >>> # when more than 'n' rows exist, top n rows in the row order are chosen
+      >>> penguins_tidy.slice_min(n = 4, order_by_column = 'body_mass_g', with_ties = False)
+      >>>
+      >>> # subset a fraction of rows corresponding to ascending 'body_mass_g'
+      >>> penguins_tidy.slice_min(prop = 0.1, order_by_column = 'body_mass_g')
+      >>>
+      >>> # subset atleast 3 rows corresponding to ascending 'bill_length_mm' per each 'species'
+      >>> penguins_tidy.slice_min(n = 2, order_by_column = 'bill_length_mm', by = 'sex')
+      >>>
+      >>> # subset atleast 1% corresponding to ascending 'bill_length_mm' per each 'species'
+      >>> penguins_tidy.slice_min(prop = 0.01, order_by_column = 'bill_length_mm', by = 'sex')
+      >>>
+      >>> # order by column 'bill_length_mm' and break ties using 'bill_depth_mm'
+      >>> # in decreasing order and then pick the min 5 rows
+      >>> (penguins_tidy
+      >>>  .mutate({'rank': (lambda x, y: dense_rank([x, y],
+      >>>                                            ascending = [True, False]
+      >>>                                            ),
+      >>>                    ["bill_length_mm", "bill_depth_mm"]
+      >>>                    )
+      >>>          })
+      >>>  .slice_min(n = 5, order_by_column = "rank")
+      >>>  .select("rank", include = False)
+      >>>  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: slice_max(self, n=None, prop=None, order_by_column=None, with_ties=True, rounding_type='round', by=None)
+
+      
+      Subset top rows ordered by some columns
+
+      :param n: Number of rows to subset, should be atleast 1
+      :type n: int
+      :param prop: Proportion of rows to subset, should be non-negative
+      :type prop: float
+      :param order_by_column: column to order by
+      :type order_by_column: string or list of strings
+      :param with_ties: Whether to return all rows when ordering results in ties. If True,
+                        the output might have more than n/prop rows
+      :type with_ties: bool (default: True)
+      :param rounding_type: Rounding type to used when prop is provided. 'rounding_type' should
+                            be one among: 'round', 'ceiling', 'floor'
+      :type rounding_type: string (Default is None)
+      :param by: column names to group by
+      :type by: string or list of strings
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Only one argument among 'n' and 'prop' should be provided.
+      2. Row order is not preserved by the method.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> # subset atleast 4 rows corresponding to descending 'body_mass_g'
+      >>> penguins_tidy.slice_max(n = 4, order_by_column = 'body_mass_g')
+      >>>
+      >>> # subset exactly 4 rows corresponding to descending 'body_mass_g'
+      >>> # when more than 'n' rows exist, top n rows in the row order are chosen
+      >>> penguins_tidy.slice_max(n = 4, order_by_column = 'body_mass_g', with_ties = False)
+      >>>
+      >>> # subset a fraction of rows corresponding to descending 'body_mass_g'
+      >>> penguins_tidy.slice_max(prop = 0.1, order_by_column = 'body_mass_g')
+      >>>
+      >>> # subset atleast 3 rows corresponding to descending 'bill_length_mm' per each 'species'
+      >>> penguins_tidy.slice_max(n = 2, order_by_column = 'bill_length_mm', by = 'sex')
+      >>>
+      >>> # subset atleast 1% corresponding to descending 'bill_length_mm' per each 'species'
+      >>> penguins_tidy.slice_max(prop = 0.01, order_by_column = 'bill_length_mm', by = 'sex')
+      >>>
+      >>> # order by column 'bill_length_mm' and break ties using 'bill_depth_mm'
+      >>> # in decreasing order and then pick the min 5 rows
+      >>> (penguins_tidy
+      >>>  .mutate({'rank': (lambda x, y: dense_rank([x, y],
+      >>>                                            ascending = [True, False]
+      >>>                                            ),
+      >>>                    ["bill_length_mm", "bill_depth_mm"]
+      >>>                    )
+      >>>          })
+      >>>  .slice_max(n = 5, order_by_column = "rank")
+      >>>  .select("rank", include = False)
+      >>>  )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: union(self, y)
+
+      
+      Union of rows y with the self
+      Equivalent to outer join over all columns
+
+      :param y:
+      :type y: tidyframe with same columns as x
+
+      :rtype: tidyframe
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> penguins_tidy[0:5, :].union(penguins_tidy[1:6, :])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: intersection(self, y)
+
+      
+      Intersection of rows y with the self
+      Equivalent to inner join over all columns
+
+      :param y:
+      :type y: tidyframe with same columns as x
+
+      :rtype: tidyframe
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> penguins_tidy[0:5, :].intersection(penguins_tidy[1:6, :])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: setdiff(self, y)
+
+      
+      Keep rows of self which are not in y
+      Equivalent to anti join over all columns
+
+      :param y:
+      :type y: tidyframe with same columns as x
+
+      :rtype: tidyframe
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> penguins_tidy[0:5, :].setdiff(penguins_tidy[1:6, :])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: any_na(self)
+
+      
+      Is there a missing value in the dataframe?
+
+      :returns: True if there is a missing value, False otherwise
+      :rtype: bool
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: replace_na(self, value)
+
+      
+      Replace missing values with a specified value
+
+      :param value: When a dict, key should be a column name and value should be the
+                    value to replace by missing values of the column
+                    When a scalar, missing values of all columns will be replaced with
+                    value
+      :type value: dict or a scalar
+
+      :rtype: tidyframe
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> penguins_tidy.replace_na({'sex': 'unknown'})
+      >>> penguins_tidy.select(predicate = dtypes.is_numeric_dtype).replace_na(1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: drop_na(self, column_names=None)
+
+      
+      Drops rows if missing values are present in specified columns
+
+      :param column_names: Drop a row if there is a missing value in any of the
+                           column_names. When None, all columns are considered.
+      :type column_names: string or list of strings
+
+      :rtype: tidyframe
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> penguins_tidy.drop_na() # remove a row if any column has a NA
+      >>> # remove a row only if there is a missing value in 'bill_length_mm'
+      >>> # column
+      >>> penguins_tidy.drop_na('bill_length_mm')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: fill_na(self, column_direction_dict, order_by=None, ascending=True, na_position='last', by=None)
+
+      
+      Fill missing values from neighboring values per column
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: separate(self, column_name, into, sep='[^[:alnum:]]+', strict=True, keep=False)
+
+      
+      Split a string column into multiple string columns rowwise
+
+      :param column_name: Name of the column to split
+      :type column_name: string
+      :param into: Name of the new columns after slitting the column
+      :type into: list of strings
+      :param sep: Regex to identify the separator
+      :type sep: string
+      :param strict: When True, results in an exception if column splits to exactly
+                     to result into 'into' number of columns.
+      :type strict: bool (default: True)
+      :param keep: Whether to keep the original column after splitting
+      :type keep: bool (default: False)
+
+      .. rubric:: Examples
+
+      >>> df = tidyframe(pd.DataFrame({'col': ["a_b", "c_d", "e_f_g"]}))
+      >>> print(df)
+      >>>
+      >>> # separate into three columns
+      >>> df.separate('col', into = ["col_1", "col_2", "col_3"], sep = "_")
+      >>>
+      >>> # separate into two columns and ignore the last piece
+      >>> df.separate('col', into = ["col_1", "col_2"], sep = "_", strict = False)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: unite(self, column_names, into, sep='_', keep=False)
+
+      
+      Split a string column into multiple string columns rowwise
+
+      :param column_name: Name of the column to split
+      :type column_name: string
+      :param into: Name of the new columns after slitting the column
+      :type into: list of strings
+      :param sep: Regex to identify the separator
+      :type sep: string
+      :param strict: When True, results in an exception if column splits to exactly
+                     to result into 'into' number of columns.
+      :type strict: bool (default: True)
+      :param keep: Whether to keep the original column after splitting
+      :type keep: bool (default: False)
+
+      .. rubric:: Examples
+
+      >>> df = tidyframe(pd.DataFrame({'col': ["a_b", "c_d", "e_f_g"]}))
+      >>> print(df)
+      >>>
+      >>> # separate into three columns
+      >>> (df.separate('col', into = ["col_1", "col_2", "col_3"], sep = "_")
+      >>>    .unite(column_names = ["col_1", "col_2", "col_3"], into = "united", sep = "_")
+      >>>    )
+      >>>
+      >>> # separate into two columns and ignore the last piece
+      >>> df.separate('col', into = ["col_1", "col_2"], sep = "_", strict = False)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: separate_rows(self, column_name, sep=';')
+
+      
+      split a string column using a seperator and create a row for each
+
+      :param column_name: A column name to split
+      :type column_name: string
+      :param sep: regex to split
+      :type sep: string
+
+      :rtype: tidyframe
+
+      .. rubric:: Examples
+
+      >>> temp = tidyframe(pd.DataFrame({"A": ["hello;world", "hey,mister;o/mister"]}))
+      >>> temp
+      >>> temp.separate_rows('A', sep = ",|;")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: nest_by(self, by=None, nest_column_name='data', drop_by=True)
+
+      
+      Nest all columns of tidy dataframe with respect to 'by' columns
+
+      :param by: Columns to stay, rest of them are nested
+      :type by: str or list of strings
+      :param nest_column_name: Name of the resulting nested column (pandas Series)
+      :type nest_column_name: str
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. 'by' should not contain all column names (some columns should be left
+         for nesting)
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+
+      >>> penguins_tidy.nest_by(by = 'species')
+      >>> penguins_tidy.nest_by(by = ['species', 'sex'])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: nest(self, column_names=None, nest_column_name='data', include=True)
+
+      
+      Nest columns of tidy dataframe
+
+      :param column_names: Columns to be nested
+      :type column_names: str or list of strings
+      :param nest_column_name: Name of the resulting nested column (pandas Series)
+      :type nest_column_name: str
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. 'column_names' should not contain all column names.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> penguins_tidy.nest(['bill_length_mm', 'bill_depth_mm',
+      >>>                     'flipper_length_mm', 'body_mass_g']
+      >>>                    )
+      >>> penguins_tidy.nest(['species', 'sex'], include = False)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: unnest(self, nest_column_name='data')
+
+      
+      Unnest a nested column of a tidy dataframe
+
+      :param nest_column_name: Name of the column to be unnested
+      :type nest_column_name: str
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. unnest does not support a mix of nested lists and dataframe in the
+         same column
+
+      .. rubric:: Examples
+
+      >>> import pandas as pd
+      >>> nested_pdf = pd.DataFrame({"A": [1,2,3, 4],
+      >>>                            "B": pd.Series([[10, 20, 30],
+      >>>                                            [40, 50],
+      >>>                                            [60],
+      >>>                                            70
+      >>>                                           ]
+      >>>                                          )
+      >>>                   })
+      >>> nested_pdf
+      >>>
+      >>> # unnest nested lists
+      >>> tidyframe(nested_pdf).unnest('B')
+      >>>
+      >>> from palmerpenguins import load_penguins
+      >>> penguins = load_penguins().convert_dtypes()
+      >>> penguins_tidy = tidyframe(penguins)
+      >>> pen_nested_by_species = penguins_tidy.nest_by('species')
+      >>> pen_nested_by_species
+      >>>
+      >>> # unnest nested dataframes
+      >>> pen_nested_by_species.unnest('data')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: split(self, by)
+
+      
+      split
+      split rows of a dataframe by groups
+
+      :param by: columns to group by
+      :type by: string or a list of strings
+
+      :rtype: list of tidyframes
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>> penguins_tidy.split(by = "species")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: __getitem__(self, key)
+
+      
+      Subset some and columns of the dataframe
+      Always returns a copy and not a view
+
+      :param key:
+      :type key: tuple of x and y subset operations
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Rows can be subset by specifying integer positions
+         (as int, list, slice and range objects) or by providing a boolean mask.
+
+      2. Columns can be subset by specifiying integer positions
+         (as int, list, slice and range objects) or by specifying a list of unique
+         column names or by providing a boolean mask.
+
+      3. Any combination of row and column specifications work together.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> # Rows can be subset with integer indexes with slice objects
+      >>> # right end is not included in slice objects
+      >>> # first four rows
+      >>> penguins_tidy[0:4,:]
+      >>>
+      >>> # a row can be subset with a single integer
+      >>> # moreover subsetting always returns a dataframe
+      >>> penguins_tidy[10, :]
+      >>>
+      >>> # Rows can be subset with a boolean mask
+      >>> penguins_tidy[penguins_tidy.pull('bill_length_mm') > 40, :]
+      >>>
+      >>> # Columns can be subset using column names
+      >>> penguins_tidy[0:5, ["species", "year"]]
+      >>>
+      >>> # A single column can be subset by specifying column name as a string
+      >>> # moreover subsetting always returns a dataframe
+      >>> penguins_tidy[0:5, "species"] # same as: penguins_tidy[0:5, ["species"]]
+      >>>
+      >>> # columns can be subset by integer position
+      >>> penguins_tidy[[7, 6, 5], 0:3]
+      >>>
+      >>> # row and columns can be subset with different types of specifications
+      >>> penguins_tidy[0:2, 1] # same as: penguins_tidy[[0, 1], 'island']
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: __setitem__(self, key, value)
+
+      
+      Change a subset of the dataframe in-place
+
+      :param key:
+      :type key: tuple of x and y subset operations
+      :param value:
+      :type value: value to be assigned
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Rows can be subset by specifying integer positions
+         (as int, list, slice and range objects) or by providing a boolean mask.
+
+      2. Columns can be subset by specifiying integer positions
+         (as int, list, slice and range objects) or by specifying a list of unique
+         column names or by providing a boolean mask.
+
+      3. Any combination of row and column specifications work together.
+
+      4. Assignment is done by "pdf.loc[exp1, exp2] = value". Incompatible value
+         assignment exceptions are handled by this method and they will cascade.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> # assign a single value with correct type
+      >>> penguins_tidy[0,0] = "a"
+      >>> penguins_tidy[0:5, :]
+      >>>
+      >>> # assign a multiple values with correct type
+      >>> penguins_tidy[0:3,0] = "b"
+      >>> penguins_tidy[0:5, :]
+      >>>
+      >>> # assign a row partially by a list of appropriate types
+      >>> penguins_tidy[0, ['species', 'bill_length_mm']] = ['c', 1]
+      >>> penguins_tidy[0:5, :]
+      >>>
+      >>> # assign a subset with another tidyframe
+      >>> penguins_tidy[0:2, 0:2] = pd.DataFrame({'species': ['d', 'e']
+      >>>                                         , 'island': ['f', 'g']
+      >>>                                         }).pipe(tidyframe)
+      >>> penguins_tidy[0:5, :]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+

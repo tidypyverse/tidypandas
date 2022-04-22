@@ -1,0 +1,761 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tidypandas.tidy_accessor &#8212; tidypandas  documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../../index.html">
+<p class="title">tidypandas</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../using_tidypandas.html">
+  Using
+  <code class="docutils literal notranslate">
+   <span class="pre">
+    tidypandas
+   </span>
+  </code>
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../tour.html">
+  A tour of
+  <code class="docutils literal notranslate">
+   <span class="pre">
+    tidypandas
+   </span>
+  </code>
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../autoapi/index.html">
+  API Reference
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../changelog.html">
+  Changelog
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <h1>Source code for tidypandas.tidy_accessor</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">copy</span> <span class="k">as</span> <span class="nn">util_copy</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">string</span> <span class="k">as</span> <span class="nn">string</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pandas.io.formats</span> <span class="kn">import</span> <span class="nb">format</span> <span class="k">as</span> <span class="n">fmt</span>
+<span class="kn">from</span> <span class="nn">pandas._config</span> <span class="kn">import</span> <span class="n">get_option</span>
+<span class="kn">from</span> <span class="nn">collections_extended</span> <span class="kn">import</span> <span class="n">setlist</span>
+<span class="kn">from</span> <span class="nn">skimpy</span> <span class="kn">import</span> <span class="n">skim</span>
+<span class="kn">import</span> <span class="nn">pandas.api.types</span> <span class="k">as</span> <span class="nn">dtypes</span>
+
+<span class="kn">from</span> <span class="nn">tidypandas.tidy_utils</span> <span class="kn">import</span> <span class="n">simplify</span><span class="p">,</span> <span class="n">is_simple</span>
+<span class="kn">from</span> <span class="nn">tidypandas._unexported_utils</span> <span class="kn">import</span> <span class="p">(</span>
+                                            <span class="n">_is_kwargable</span><span class="p">,</span>
+                                            <span class="n">_is_valid_colname</span><span class="p">,</span>
+                                            <span class="n">_is_string_or_string_list</span><span class="p">,</span>
+                                            <span class="n">_enlist</span><span class="p">,</span>
+                                            <span class="n">_get_unique_names</span><span class="p">,</span>
+                                            <span class="n">_is_unique_list</span><span class="p">,</span>
+                                            <span class="n">_get_dtype_dict</span><span class="p">,</span>
+                                            <span class="n">_generate_new_string</span><span class="p">,</span>
+                                            <span class="n">_coerce_series</span><span class="p">,</span>
+                                            <span class="n">_coerce_pdf</span>
+                                        <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tidypandas</span> <span class="kn">import</span> <span class="n">tidyframe</span>
+
+<div class="viewcode-block" id="tp"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp">[docs]</a><span class="nd">@pd</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">extensions</span><span class="o">.</span><span class="n">register_dataframe_accessor</span><span class="p">(</span><span class="s2">&quot;tp&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">tp</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    See the documentation of tidyframe class</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pandas_obj</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">(</span><span class="n">pandas_obj</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_obj</span> <span class="o">=</span> <span class="n">pandas_obj</span>
+
+<div class="viewcode-block" id="tp._validate"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp._validate">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_simple</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">((</span><span class="s2">&quot;Input pandas dataframe is not &#39;simple&#39;. Try &quot;</span>
+                             <span class="s2">&quot;`tidypandas.tidy_utils.simplify` function.&quot;</span>
+                             <span class="p">))</span></div>
+        
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nrow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">nrow</span>  
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ncol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">ncol</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">shape</span>
+      
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dim</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">dim</span>
+        
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">colnames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">colnames</span>
+    
+<div class="viewcode-block" id="tp.add_row_number"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.add_row_number">[docs]</a>    <span class="k">def</span> <span class="nf">add_row_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;row_number&#39;</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">add_row_number</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.add_group_number"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.add_group_number">[docs]</a>    <span class="k">def</span> <span class="nf">add_group_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;group_number&#39;</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">add_group_number</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="n">by</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.group_modify"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.group_modify">[docs]</a>    <span class="k">def</span> <span class="nf">group_modify</span><span class="p">(</span><span class="bp">self</span>
+                     <span class="p">,</span> <span class="n">func</span>
+                     <span class="p">,</span> <span class="n">by</span>
+                     <span class="p">,</span> <span class="n">preserve_row_order</span> <span class="o">=</span> <span class="kc">False</span>
+                     <span class="p">,</span> <span class="n">row_order_column_name</span> <span class="o">=</span> <span class="s2">&quot;rowid_temp&quot;</span>
+                     <span class="p">,</span> <span class="n">is_pandas_udf</span> <span class="o">=</span> <span class="kc">False</span>
+                     <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                     <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">group_modify</span><span class="p">(</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
+                               <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span>
+                               <span class="p">,</span> <span class="n">preserve_row_order</span> <span class="o">=</span> <span class="n">preserve_row_order</span>
+                               <span class="p">,</span> <span class="n">row_order_column_name</span> <span class="o">=</span> <span class="n">row_order_column_name</span>
+                               <span class="p">,</span> <span class="n">is_pandas_udf</span> <span class="o">=</span> <span class="n">is_pandas_udf</span>
+                               <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                               <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+     
+<div class="viewcode-block" id="tp.select"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_names</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">predicate</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">include</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">column_names</span> <span class="o">=</span> <span class="n">column_names</span>
+                         <span class="p">,</span> <span class="n">predicate</span> <span class="o">=</span> <span class="n">predicate</span>
+                         <span class="p">,</span> <span class="n">include</span> <span class="o">=</span> <span class="n">include</span>
+                         <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.relocate"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.relocate">[docs]</a>    <span class="k">def</span> <span class="nf">relocate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_names</span><span class="p">,</span> <span class="n">before</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">after</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">relocate</span><span class="p">(</span><span class="n">column_names</span> <span class="o">=</span> <span class="n">column_names</span>
+                           <span class="p">,</span> <span class="n">before</span> <span class="o">=</span> <span class="n">before</span>
+                           <span class="p">,</span> <span class="n">after</span> <span class="o">=</span> <span class="n">after</span>
+                           <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+                           
+<div class="viewcode-block" id="tp.rename"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.rename">[docs]</a>    <span class="k">def</span> <span class="nf">rename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_new_dict</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">old_new_dict</span> <span class="o">=</span> <span class="n">old_new_dict</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="tp.slice"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.slice">[docs]</a>    <span class="k">def</span> <span class="nf">slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_numbers</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">row_numbers</span> <span class="o">=</span> <span class="n">row_numbers</span>
+                        <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span>
+                        <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.arrange"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.arrange">[docs]</a>    <span class="k">def</span> <span class="nf">arrange</span><span class="p">(</span><span class="bp">self</span>
+                <span class="p">,</span> <span class="n">order_by</span>
+                <span class="p">,</span> <span class="n">na_position</span> <span class="o">=</span> <span class="s1">&#39;last&#39;</span>
+                <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="n">order_by</span> <span class="o">=</span> <span class="n">order_by</span>
+                          <span class="p">,</span> <span class="n">na_position</span> <span class="o">=</span> <span class="n">na_position</span>
+                          <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span>
+                          <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="tp.filter"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.filter">[docs]</a>    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">query</span> <span class="o">=</span> <span class="n">query</span>
+                         <span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span>
+                         <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span>
+                         <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                         <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.distinct"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.distinct">[docs]</a>    <span class="k">def</span> <span class="nf">distinct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_names</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">keep_all</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="n">column_names</span> <span class="o">=</span> <span class="n">column_names</span>
+                           <span class="p">,</span> <span class="n">keep_all</span> <span class="o">=</span> <span class="n">keep_all</span>
+                           <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+                           
+<div class="viewcode-block" id="tp.mutate"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.mutate">[docs]</a>    <span class="k">def</span> <span class="nf">mutate</span><span class="p">(</span><span class="bp">self</span>
+               <span class="p">,</span> <span class="n">dictionary</span> <span class="o">=</span> <span class="kc">None</span>
+               <span class="p">,</span> <span class="n">func</span> <span class="o">=</span> <span class="kc">None</span>
+               <span class="p">,</span> <span class="n">column_names</span> <span class="o">=</span> <span class="kc">None</span>
+               <span class="p">,</span> <span class="n">predicate</span> <span class="o">=</span> <span class="kc">None</span>
+               <span class="p">,</span> <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+               <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
+               <span class="p">,</span> <span class="n">order_by</span> <span class="o">=</span> <span class="kc">None</span>
+               <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+               <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">dictionary</span> <span class="o">=</span> <span class="n">dictionary</span>
+                         <span class="p">,</span> <span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
+                         <span class="p">,</span> <span class="n">column_names</span> <span class="o">=</span> <span class="n">column_names</span>
+                         <span class="p">,</span> <span class="n">predicate</span> <span class="o">=</span> <span class="n">predicate</span>
+                         <span class="p">,</span> <span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
+                         <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span>
+                         <span class="p">,</span> <span class="n">order_by</span> <span class="o">=</span> <span class="n">order_by</span>
+                         <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                         <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+                           
+<div class="viewcode-block" id="tp.summarise"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.summarise">[docs]</a>    <span class="k">def</span> <span class="nf">summarise</span><span class="p">(</span><span class="bp">self</span>
+                  <span class="p">,</span> <span class="n">dictionary</span> <span class="o">=</span> <span class="kc">None</span>
+                  <span class="p">,</span> <span class="n">func</span> <span class="o">=</span> <span class="kc">None</span>
+                  <span class="p">,</span> <span class="n">column_names</span> <span class="o">=</span> <span class="kc">None</span>
+                  <span class="p">,</span> <span class="n">predicate</span> <span class="o">=</span> <span class="kc">None</span>
+                  <span class="p">,</span> <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                  <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
+                  <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                  <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">summarise</span><span class="p">(</span><span class="n">dictionary</span> <span class="o">=</span> <span class="n">dictionary</span>
+                            <span class="p">,</span> <span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
+                            <span class="p">,</span> <span class="n">column_names</span> <span class="o">=</span> <span class="n">column_names</span>
+                            <span class="p">,</span> <span class="n">predicate</span> <span class="o">=</span> <span class="n">predicate</span>
+                            <span class="p">,</span> <span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
+                            <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span>
+                            <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+                            <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+                            
+    <span class="n">summarize</span> <span class="o">=</span> <span class="n">summarise</span>                        
+    
+<div class="viewcode-block" id="tp.inner_join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.inner_join">[docs]</a>    <span class="k">def</span> <span class="nf">inner_join</span><span class="p">(</span><span class="bp">self</span>
+                   <span class="p">,</span> <span class="n">y</span>
+                   <span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
+                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
+                   <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">inner_join</span><span class="p">(</span><span class="n">y</span>
+                             <span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="n">on</span>
+                             <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
+                             <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
+                             <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
+                             <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                             <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.full_join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.full_join">[docs]</a>    <span class="k">def</span> <span class="nf">full_join</span><span class="p">(</span><span class="bp">self</span>
+                   <span class="p">,</span> <span class="n">y</span>
+                   <span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
+                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
+                   <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">full_join</span><span class="p">(</span><span class="n">y</span>
+                             <span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="n">on</span>
+                             <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
+                             <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
+                             <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
+                             <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                             <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+    <span class="n">outer_join</span> <span class="o">=</span> <span class="n">full_join</span>
+    
+<div class="viewcode-block" id="tp.left_join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.left_join">[docs]</a>    <span class="k">def</span> <span class="nf">left_join</span><span class="p">(</span><span class="bp">self</span>
+                   <span class="p">,</span> <span class="n">y</span>
+                   <span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
+                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
+                   <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">left_join</span><span class="p">(</span><span class="n">y</span>
+                             <span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="n">on</span>
+                             <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
+                             <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
+                             <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
+                             <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                             <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+                             
+<div class="viewcode-block" id="tp.right_join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.right_join">[docs]</a>    <span class="k">def</span> <span class="nf">right_join</span><span class="p">(</span><span class="bp">self</span>
+                   <span class="p">,</span> <span class="n">y</span>
+                   <span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
+                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
+                   <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">right_join</span><span class="p">(</span><span class="n">y</span>
+                             <span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="n">on</span>
+                             <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
+                             <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
+                             <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
+                             <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                             <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.semi_join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.semi_join">[docs]</a>    <span class="k">def</span> <span class="nf">semi_join</span><span class="p">(</span><span class="bp">self</span>
+                   <span class="p">,</span> <span class="n">y</span>
+                   <span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
+                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
+                   <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">semi_join</span><span class="p">(</span><span class="n">y</span>
+                             <span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="n">on</span>
+                             <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
+                             <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
+                             <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
+                             <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                             <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+                           
+<div class="viewcode-block" id="tp.anti_join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.anti_join">[docs]</a>    <span class="k">def</span> <span class="nf">anti_join</span><span class="p">(</span><span class="bp">self</span>
+                   <span class="p">,</span> <span class="n">y</span>
+                   <span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
+                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
+                   <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">anti_join</span><span class="p">(</span><span class="n">y</span>
+                             <span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="n">on</span>
+                             <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
+                             <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
+                             <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
+                             <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                             <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.cross_join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.cross_join">[docs]</a>    <span class="k">def</span> <span class="nf">cross_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">cross_join</span><span class="p">(</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+                             <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
+                             <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                             <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.cbind"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.cbind">[docs]</a>    <span class="k">def</span> <span class="nf">cbind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">cbind</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.rbind"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.rbind">[docs]</a>    <span class="k">def</span> <span class="nf">rbind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">rbind</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.count"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.count">[docs]</a>    <span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="bp">self</span>
+              <span class="p">,</span> <span class="n">column_names</span> <span class="o">=</span> <span class="kc">None</span>
+              <span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;n&#39;</span>
+              <span class="p">,</span> <span class="n">decreasing</span> <span class="o">=</span> <span class="kc">True</span>
+              <span class="p">,</span> <span class="n">wt</span> <span class="o">=</span> <span class="kc">None</span>
+              <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">column_names</span> <span class="o">=</span> <span class="n">column_names</span>
+                        <span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+                        <span class="p">,</span> <span class="n">decreasing</span> <span class="o">=</span> <span class="n">decreasing</span>
+                        <span class="p">,</span> <span class="n">wt</span> <span class="o">=</span> <span class="n">wt</span>
+                        <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.add_count"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.add_count">[docs]</a>    <span class="k">def</span> <span class="nf">add_count</span><span class="p">(</span><span class="bp">self</span>
+                  <span class="p">,</span> <span class="n">column_names</span> <span class="o">=</span> <span class="kc">None</span>
+                  <span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;n&#39;</span>
+                  <span class="p">,</span> <span class="n">wt</span> <span class="o">=</span> <span class="kc">None</span>
+                  <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">add_count</span><span class="p">(</span><span class="n">column_names</span> <span class="o">=</span> <span class="n">column_names</span>
+                            <span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+                            <span class="p">,</span> <span class="n">wt</span> <span class="o">=</span> <span class="n">wt</span>
+                            <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.pivot_wider"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.pivot_wider">[docs]</a>    <span class="k">def</span> <span class="nf">pivot_wider</span><span class="p">(</span><span class="bp">self</span>
+                    <span class="p">,</span> <span class="n">names_from</span>
+                    <span class="p">,</span> <span class="n">values_from</span>
+                    <span class="p">,</span> <span class="n">values_fill</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="p">,</span> <span class="n">values_fn</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="p">,</span> <span class="n">id_cols</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;__&quot;</span>
+                    <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">pivot_wider</span><span class="p">(</span><span class="n">names_from</span> <span class="o">=</span> <span class="n">names_from</span>
+                              <span class="p">,</span> <span class="n">values_from</span> <span class="o">=</span> <span class="n">values_from</span>
+                              <span class="p">,</span> <span class="n">values_fill</span> <span class="o">=</span> <span class="n">values_fill</span>
+                              <span class="p">,</span> <span class="n">values_fn</span> <span class="o">=</span> <span class="n">values_fn</span>
+                              <span class="p">,</span> <span class="n">id_cols</span> <span class="o">=</span> <span class="n">id_cols</span>
+                              <span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="n">sep</span>
+                              <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.pivot_longer"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.pivot_longer">[docs]</a>    <span class="k">def</span> <span class="nf">pivot_longer</span><span class="p">(</span><span class="bp">self</span>
+                     <span class="p">,</span> <span class="n">cols</span>
+                     <span class="p">,</span> <span class="n">names_to</span> <span class="o">=</span> <span class="s2">&quot;name&quot;</span>
+                     <span class="p">,</span> <span class="n">values_to</span> <span class="o">=</span> <span class="s2">&quot;value&quot;</span>
+                     <span class="p">,</span> <span class="n">include</span> <span class="o">=</span> <span class="kc">True</span>
+                     <span class="p">,</span> <span class="n">values_drop_na</span> <span class="o">=</span> <span class="kc">False</span>
+                     <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">pivot_longer</span><span class="p">(</span><span class="n">cols</span> <span class="o">=</span> <span class="n">cols</span>
+                               <span class="p">,</span> <span class="n">names_to</span> <span class="o">=</span> <span class="n">names_to</span>
+                               <span class="p">,</span> <span class="n">values_to</span> <span class="o">=</span> <span class="n">values_to</span>
+                               <span class="p">,</span> <span class="n">include</span> <span class="o">=</span> <span class="n">include</span>
+                               <span class="p">,</span> <span class="n">values_drop_na</span> <span class="o">=</span> <span class="n">values_drop_na</span>
+                               <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.slice_head"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.slice_head">[docs]</a>    <span class="k">def</span> <span class="nf">slice_head</span><span class="p">(</span><span class="bp">self</span>
+                   <span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">prop</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">rounding_type</span> <span class="o">=</span> <span class="s2">&quot;round&quot;</span>
+                   <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">slice_head</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+                             <span class="p">,</span> <span class="n">prop</span> <span class="o">=</span> <span class="n">prop</span>
+                             <span class="p">,</span> <span class="n">rounding_type</span> <span class="o">=</span> <span class="n">rounding_type</span>
+                             <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span>
+                             <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+    <span class="n">head</span> <span class="o">=</span> <span class="n">slice_head</span>
+    
+<div class="viewcode-block" id="tp.slice_tail"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.slice_tail">[docs]</a>    <span class="k">def</span> <span class="nf">slice_tail</span><span class="p">(</span><span class="bp">self</span>
+                   <span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">prop</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">,</span> <span class="n">rounding_type</span> <span class="o">=</span> <span class="s2">&quot;round&quot;</span>
+                   <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
+                   <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">slice_tail</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+                             <span class="p">,</span> <span class="n">prop</span> <span class="o">=</span> <span class="n">prop</span>
+                             <span class="p">,</span> <span class="n">rounding_type</span> <span class="o">=</span> <span class="n">rounding_type</span>
+                             <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span>
+                             <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>                         </div>
+    
+    <span class="n">tail</span> <span class="o">=</span> <span class="n">slice_tail</span>
+    
+<div class="viewcode-block" id="tp.slice_sample"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.slice_sample">[docs]</a>    <span class="k">def</span> <span class="nf">slice_sample</span><span class="p">(</span><span class="bp">self</span>
+                     <span class="p">,</span> <span class="n">n</span>            <span class="o">=</span> <span class="kc">None</span>
+                     <span class="p">,</span> <span class="n">prop</span>         <span class="o">=</span> <span class="kc">None</span>
+                     <span class="p">,</span> <span class="n">replace</span>      <span class="o">=</span> <span class="kc">False</span>
+                     <span class="p">,</span> <span class="n">weights</span>      <span class="o">=</span> <span class="kc">None</span>
+                     <span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="kc">None</span>
+                     <span class="p">,</span> <span class="n">by</span>           <span class="o">=</span> <span class="kc">None</span>
+                     <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">slice_sample</span><span class="p">(</span><span class="n">n</span>              <span class="o">=</span> <span class="n">n</span>
+                               <span class="p">,</span> <span class="n">prop</span>         <span class="o">=</span> <span class="n">prop</span>
+                               <span class="p">,</span> <span class="n">replace</span>      <span class="o">=</span> <span class="n">replace</span>
+                               <span class="p">,</span> <span class="n">weights</span>      <span class="o">=</span> <span class="n">weights</span>
+                               <span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="n">random_state</span>
+                               <span class="p">,</span> <span class="n">by</span>           <span class="o">=</span> <span class="n">by</span>
+                               <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">slice_sample</span>
+    
+<div class="viewcode-block" id="tp.slice_min"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.slice_min">[docs]</a>    <span class="k">def</span> <span class="nf">slice_min</span><span class="p">(</span><span class="bp">self</span>
+                  <span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="kc">None</span>
+                  <span class="p">,</span> <span class="n">prop</span> <span class="o">=</span> <span class="kc">None</span>
+                  <span class="p">,</span> <span class="n">order_by_column</span> <span class="o">=</span> <span class="kc">None</span>
+                  <span class="p">,</span> <span class="n">with_ties</span> <span class="o">=</span> <span class="kc">True</span>
+                  <span class="p">,</span> <span class="n">rounding_type</span> <span class="o">=</span> <span class="s2">&quot;round&quot;</span>
+                  <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
+                  <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">slice_min</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+                            <span class="p">,</span> <span class="n">prop</span> <span class="o">=</span> <span class="n">prop</span>
+                            <span class="p">,</span> <span class="n">order_by_column</span> <span class="o">=</span> <span class="n">order_by_column</span>
+                            <span class="p">,</span> <span class="n">with_ties</span> <span class="o">=</span> <span class="n">with_ties</span>
+                            <span class="p">,</span> <span class="n">rounding_type</span> <span class="o">=</span> <span class="n">rounding_type</span>
+                            <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span>
+                            <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.slice_max"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.slice_max">[docs]</a>    <span class="k">def</span> <span class="nf">slice_max</span><span class="p">(</span><span class="bp">self</span>
+                  <span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="kc">None</span>
+                  <span class="p">,</span> <span class="n">prop</span> <span class="o">=</span> <span class="kc">None</span>
+                  <span class="p">,</span> <span class="n">order_by_column</span> <span class="o">=</span> <span class="kc">None</span>
+                  <span class="p">,</span> <span class="n">with_ties</span> <span class="o">=</span> <span class="kc">True</span>
+                  <span class="p">,</span> <span class="n">rounding_type</span> <span class="o">=</span> <span class="s2">&quot;round&quot;</span>
+                  <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
+                  <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">slice_max</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+                            <span class="p">,</span> <span class="n">prop</span> <span class="o">=</span> <span class="n">prop</span>
+                            <span class="p">,</span> <span class="n">order_by_column</span> <span class="o">=</span> <span class="n">order_by_column</span>
+                            <span class="p">,</span> <span class="n">with_ties</span> <span class="o">=</span> <span class="n">with_ties</span>
+                            <span class="p">,</span> <span class="n">rounding_type</span> <span class="o">=</span> <span class="n">rounding_type</span>
+                            <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span>
+                            <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+                            
+<div class="viewcode-block" id="tp.union"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.union">[docs]</a>    <span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.intersection"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.intersection">[docs]</a>    <span class="k">def</span> <span class="nf">intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.setdiff"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.setdiff">[docs]</a>    <span class="k">def</span> <span class="nf">setdiff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">setdiff</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="tp.any_na"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.any_na">[docs]</a>    <span class="k">def</span> <span class="nf">any_na</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">any_na</span><span class="p">()</span></div>
+    
+<div class="viewcode-block" id="tp.replace_na"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.replace_na">[docs]</a>    <span class="k">def</span> <span class="nf">replace_na</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">replace_na</span><span class="p">(</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.drop_na"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.drop_na">[docs]</a>    <span class="k">def</span> <span class="nf">drop_na</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_names</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">drop_na</span><span class="p">(</span><span class="n">column_names</span> <span class="o">=</span> <span class="n">column_names</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.fill_na"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.fill_na">[docs]</a>    <span class="k">def</span> <span class="nf">fill_na</span><span class="p">(</span><span class="bp">self</span>
+                <span class="p">,</span> <span class="n">column_direction_dict</span>
+                <span class="p">,</span> <span class="n">order_by</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="p">,</span> <span class="n">na_position</span> <span class="o">=</span> <span class="s2">&quot;last&quot;</span>
+                <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">fill_na</span><span class="p">(</span><span class="n">column_direction_dict</span> <span class="o">=</span> <span class="n">column_direction_dict</span>
+                          <span class="p">,</span> <span class="n">order_by</span> <span class="o">=</span> <span class="n">order_by</span>
+                          <span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="n">ascending</span>
+                          <span class="p">,</span> <span class="n">na_position</span> <span class="o">=</span> <span class="n">na_position</span>
+                          <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span>
+                          <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+    <span class="n">fill</span> <span class="o">=</span> <span class="n">fill_na</span>
+    
+<div class="viewcode-block" id="tp.separate"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.separate">[docs]</a>    <span class="k">def</span> <span class="nf">separate</span><span class="p">(</span><span class="bp">self</span>
+                 <span class="p">,</span> <span class="n">column_name</span>
+                 <span class="p">,</span> <span class="n">into</span>
+                 <span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;[^[:alnum:]]+&#39;</span>
+                 <span class="p">,</span> <span class="n">strict</span> <span class="o">=</span> <span class="kc">True</span>
+                 <span class="p">,</span> <span class="n">keep</span> <span class="o">=</span> <span class="kc">False</span>
+                 <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">separate</span><span class="p">(</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
+                           <span class="p">,</span> <span class="n">into</span> <span class="o">=</span> <span class="n">into</span>
+                           <span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="n">sep</span>
+                           <span class="p">,</span> <span class="n">strict</span> <span class="o">=</span> <span class="n">strict</span>
+                           <span class="p">,</span> <span class="n">keep</span> <span class="o">=</span> <span class="n">keep</span>
+                           <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+                           
+<div class="viewcode-block" id="tp.unite"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.unite">[docs]</a>    <span class="k">def</span> <span class="nf">unite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_names</span><span class="p">,</span> <span class="n">into</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">keep</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">unite</span><span class="p">(</span><span class="n">column_names</span> <span class="o">=</span> <span class="n">column_names</span>
+                        <span class="p">,</span> <span class="n">into</span> <span class="o">=</span> <span class="n">into</span>
+                        <span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="n">sep</span>
+                        <span class="p">,</span> <span class="n">keep</span> <span class="o">=</span> <span class="n">keep</span>
+                        <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.separate_rows"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.separate_rows">[docs]</a>    <span class="k">def</span> <span class="nf">separate_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_name</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;;&#39;</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">separate_rows</span><span class="p">(</span><span class="n">column_name</span> <span class="o">=</span> <span class="n">column_name</span>
+                                <span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="n">sep</span>
+                                <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.nest_by"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.nest_by">[docs]</a>    <span class="k">def</span> <span class="nf">nest_by</span><span class="p">(</span><span class="bp">self</span>
+                <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="p">,</span> <span class="n">nest_column_name</span> <span class="o">=</span> <span class="s1">&#39;data&#39;</span>
+                <span class="p">,</span> <span class="n">drop_by</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> 
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">nest_by</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="n">by</span>
+                          <span class="p">,</span> <span class="n">nest_column_name</span> <span class="o">=</span> <span class="n">nest_column_name</span>
+                          <span class="p">,</span> <span class="n">drop_by</span> <span class="o">=</span> <span class="n">drop_by</span>
+                          <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+                           
+<div class="viewcode-block" id="tp.nest"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.nest">[docs]</a>    <span class="k">def</span> <span class="nf">nest</span><span class="p">(</span><span class="bp">self</span>
+             <span class="p">,</span> <span class="n">column_names</span> <span class="o">=</span> <span class="kc">None</span>
+             <span class="p">,</span> <span class="n">nest_column_name</span> <span class="o">=</span> <span class="s1">&#39;data&#39;</span>
+             <span class="p">,</span> <span class="n">include</span> <span class="o">=</span> <span class="kc">True</span>
+             <span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">nest</span><span class="p">(</span><span class="n">column_names</span> <span class="o">=</span> <span class="n">column_names</span>
+                       <span class="p">,</span> <span class="n">nest_column_name</span> <span class="o">=</span> <span class="n">nest_column_name</span>
+                       <span class="p">,</span> <span class="n">include</span> <span class="o">=</span> <span class="n">include</span>
+                       <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tp.unnest"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.unnest">[docs]</a>    <span class="k">def</span> <span class="nf">unnest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nest_column_name</span> <span class="o">=</span> <span class="s1">&#39;data&#39;</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">unnest</span><span class="p">(</span><span class="n">nest_column_name</span> <span class="o">=</span> <span class="n">nest_column_name</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="tp.split"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="p">):</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="n">by</span><span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+    <span class="n">group_split</span> <span class="o">=</span> <span class="n">split</span></div>
+    
+</pre></div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright MIT License.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

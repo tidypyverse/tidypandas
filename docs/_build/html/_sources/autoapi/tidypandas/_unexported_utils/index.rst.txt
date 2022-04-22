@@ -1,0 +1,305 @@
+:py:mod:`tidypandas._unexported_utils`
+======================================
+
+.. py:module:: tidypandas._unexported_utils
+
+.. autoapi-nested-parse::
+
+   
+   ..
+       !! processed by numpydoc !!
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   tidypandas._unexported_utils._is_kwargable
+   tidypandas._unexported_utils._is_valid_colname
+   tidypandas._unexported_utils._is_string_or_string_list
+   tidypandas._unexported_utils._enlist
+   tidypandas._unexported_utils._get_unique_names
+   tidypandas._unexported_utils._is_unique_list
+   tidypandas._unexported_utils._get_dtype_dict
+   tidypandas._unexported_utils._generate_new_string
+   tidypandas._unexported_utils._coerce_series
+   tidypandas._unexported_utils._coerce_pdf
+
+
+
+.. py:function:: _is_kwargable(func)
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: _is_valid_colname(string)
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: _is_string_or_string_list(x)
+
+   
+   Check whether the input is a string or a list of strings
+
+   :param x: Any python object
+   :type x: object
+
+   :returns: * *bool*
+             * *True if input is a string or a list of strings*
+
+   .. rubric:: Examples
+
+   >>> _is_string_or_string_list("bar")      # True
+   >>> _is_string_or_string_list(["bar"])    # True
+   >>> _is_string_or_string_list(("bar",))   # False
+   >>> _is_string_or_string_list(["bar", 1]) # False
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: _enlist(x)
+
+   
+   Returns the input in a list (as first element of the list) unless input itself is a list
+
+   :param x: Any python object
+   :type x: object
+
+   :returns: * *list*
+             * *Returns the input in a list (as first element of the list) unless input itself is a list*
+
+   .. rubric:: Examples
+
+   >>> _enlist(["a"]) # ["a"]
+   >>> _enlist("a")   # ["a"]
+   >>> _enlist((1, )) # [(1, )]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: _get_unique_names(strings)
+
+   
+   Returns a list of same length as the input such that elements are unique. This is done by adding '_1'. The resulting list does not alter nth element if the nth element occurs for the first time in the input list starting from left.
+
+   :param strings: A list of strings
+   :type strings: list
+
+   :rtype: list of strings
+
+   .. rubric:: Examples
+
+   >>> _get_unique_names(['a', 'b'])               # ['a', 'b']
+   >>> _get_unique_names(['a', 'a'])               # ['a', 'a_1']
+   >>> _get_unique_names(['a', 'a', 'a_1'])        # ['a', 'a_1_1', 'a_1']
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: _is_unique_list(x)
+
+   
+   Returns True if input list does not have duplicates
+
+   :param x:
+   :type x: list
+
+   :rtype: bool
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: _get_dtype_dict(pdf)
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: _generate_new_string(strings)
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: _coerce_series(aseries)
+
+   
+   _coerce_series
+   Convert the series type to its nullable type
+
+   :param aseries:
+   :type aseries: A pandas series
+
+   :rtype: A pandas series
+
+   .. rubric:: Notes
+
+   If series cannot infer the type, it will return the series asis.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: _coerce_pdf(pdf)
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

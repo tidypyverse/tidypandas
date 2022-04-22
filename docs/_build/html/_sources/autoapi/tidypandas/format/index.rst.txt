@@ -1,0 +1,364 @@
+:py:mod:`tidypandas.format`
+===========================
+
+.. py:module:: tidypandas.format
+
+.. autoapi-nested-parse::
+
+   
+   ..
+       !! processed by numpydoc !!
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   tidypandas.format.TidyDataFrameFormatter
+   tidypandas.format.TidyHTMLFormatter
+   tidypandas.format.TidyNotebookFormatter
+   tidypandas.format.TidyDataFrameRenderer
+
+
+
+
+.. py:class:: TidyDataFrameFormatter(frame: pandas.DataFrame, columns: Sequence[str] | None = None, col_space: ColspaceArgType | None = None, header: bool | Sequence[str] = True, index: bool = True, na_rep: str = 'NaN', formatters: FormattersType | None = None, justify: str | None = None, float_format: FloatFormatType | None = None, sparsify: bool | None = None, index_names: bool = True, max_rows: int | None = None, min_rows: int | None = None, max_cols: int | None = None, show_dimensions: bool | str = False, decimal: str = '.', bold_rows: bool = False, escape: bool = True)
+
+   Bases: :py:obj:`pandas.io.formats.format.DataFrameFormatter`
+
+   
+   Class for processing dataframe formatting options and data.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+   .. py:method:: format_col(self, i: int)
+
+      
+      Format column, add dtype ahead
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: get_strcols(self)
+
+      
+      Render a DataFrame to a list of columns (as lists of strings).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+.. py:class:: TidyHTMLFormatter(formatter: pandas.io.formats.format.DataFrameFormatter, classes: str | list[str] | tuple[str, ...] | None = None, border: int | None = None, table_id: str | None = None, render_links: bool = False)
+
+   Bases: :py:obj:`pandas.io.formats.html.HTMLFormatter`
+
+   
+   Internal class for formatting output data in html.
+   This class is intended for shared functionality between
+   DataFrame.to_html() and DataFrame._repr_html_().
+   Any logic in common with other output formatting methods
+   should ideally be inherited from classes in format.py
+   and this class responsible for only producing html markup.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+   .. py:method:: _write_body(self, indent: int)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: _write_row_column_types(self, column_types)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+.. py:class:: TidyNotebookFormatter(formatter: pandas.io.formats.format.DataFrameFormatter, classes: str | list[str] | tuple[str, ...] | None = None, border: int | None = None, table_id: str | None = None, render_links: bool = False)
+
+   Bases: :py:obj:`TidyHTMLFormatter`
+
+   
+   Internal class for formatting output data in html for display in Jupyter
+   Notebooks. This class is intended for functionality specific to
+   DataFrame._repr_html_() and DataFrame.to_html(notebook=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+   .. py:method:: _get_formatted_values(self)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: _get_columns_formatted_values(self)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: write_style(self)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: render(self)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+.. py:class:: TidyDataFrameRenderer(fmt: DataFrameFormatter)
+
+   Bases: :py:obj:`pandas.io.formats.format.DataFrameRenderer`
+
+   
+   Class for creating dataframe output in multiple formats.
+
+   Called in pandas.core.generic.NDFrame:
+       - to_csv
+       - to_latex
+
+   Called in pandas.core.frame.DataFrame:
+       - to_html
+       - to_string
+
+   :param fmt: Formatter with the formatting options.
+   :type fmt: DataFrameFormatter
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+   .. py:method:: to_html(self, buf=None, encoding=None, classes=None, notebook=False, border=None, table_id=None, render_links=False)
+
+      
+      Render a DataFrame to a html table.
+
+      :param buf: String, path object (implementing ``os.PathLike[str]``), or file-like
+                  object implementing a string ``write()`` function. If None, the result is
+                  returned as a string.
+      :type buf: str, path object, file-like object, or None, default None
+      :param encoding: Set character encoding.
+      :type encoding: str, default “utf-8”
+      :param classes: classes to include in the `class` attribute of the opening
+                      ``<table>`` tag, in addition to the default "dataframe".
+      :type classes: str or list-like
+      :param notebook: Whether the generated HTML is for IPython Notebook.
+      :type notebook: {True, False}, optional, default False
+      :param border: A ``border=border`` attribute is included in the opening
+                     ``<table>`` tag. Default ``pd.options.display.html.border``.
+      :type border: int
+      :param table_id: A css id is included in the opening `<table>` tag if specified.
+      :type table_id: str, optional
+      :param render_links: Convert URLs to HTML links.
+      :type render_links: bool, default False
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+

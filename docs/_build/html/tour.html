@@ -1,0 +1,568 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>A tour of tidypandas &#8212; tidypandas  documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="autoapi/index.html" />
+    <link rel="prev" title="Using tidypandas" href="using_tidypandas.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="index.html">
+<p class="title">tidypandas</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="using_tidypandas.html">
+  Using
+  <code class="docutils literal notranslate">
+   <span class="pre">
+    tidypandas
+   </span>
+  </code>
+ </a>
+</li>
+
+<li class="toctree-l1 current active nav-item">
+ <a class="current reference internal nav-link" href="#">
+  A tour of
+  <code class="docutils literal notranslate">
+   <span class="pre">
+    tidypandas
+   </span>
+  </code>
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="autoapi/index.html">
+  API Reference
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="changelog.html">
+  Changelog
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+              
+              <div class="toc-item">
+                
+<div class="tocsection onthispage mt-5 pt-1 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#imports">
+   Imports
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#load-and-display-flights-data">
+   Load and Display
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     flights
+    </span>
+   </code>
+   data
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise-find-all-flights-that-arrived-more-than-two-hours-late-but-didnt-leave-late">
+   Exercise: Find all flights that arrived more than two hours late, but didn’t leave late.
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise-sort-flights-to-find-the-fastest-flights">
+   Exercise: Sort flights to find the fastest flights
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise-is-the-proportion-of-cancelled-flights-related-to-the-average-delay">
+   Exercise: Is the proportion of cancelled flights related to the average delay?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise-find-all-destinations-that-are-flown-by-at-least-two-carriers-use-that-information-to-rank-the-carriers">
+   Exercise: Find all destinations that are flown by at least two carriers. Use that information to rank the carriers.
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#exercise-is-there-a-relationship-between-the-age-of-a-plane-and-its-delays">
+   Exercise: Is there a relationship between the age of a plane and its delays?
+  </a>
+ </li>
+</ul>
+
+</nav>
+              </div>
+              
+              <div class="toc-item">
+                
+              </div>
+              
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="a-tour-of-tidypandas">
+<h1>A tour of <code class="docutils literal notranslate"><span class="pre">tidypandas</span></code><a class="headerlink" href="#a-tour-of-tidypandas" title="Permalink to this headline">#</a></h1>
+<hr class="docutils" />
+<blockquote>
+<div><p>The intent of this document is to illustrate some standard data
+manipulation exercises using
+<a class="reference external" href="https://github.com/talegari/tidypandas"><code class="docutils literal notranslate"><span class="pre">tidypandas</span></code></a> python package.
+We use the <code class="docutils literal notranslate"><span class="pre">nycflights13</span></code> data.</p>
+</div></blockquote>
+<hr class="docutils" />
+<blockquote>
+<div><p><a class="reference external" href="https://github.com/talegari/tidypandas"><code class="docutils literal notranslate"><span class="pre">tidypandas</span></code></a> – A <strong>grammar
+of data manipulation</strong> for
+<a class="reference external" href="https://pandas.pydata.org/docs/index.html">pandas</a> inspired by
+<a class="reference external" href="https://tidyverse.tidyverse.org/">tidyverse</a></p>
+</div></blockquote>
+<hr class="docutils" />
+<p><code class="docutils literal notranslate"><span class="pre">nycflights13</span></code> contains information about all flights that departed from
+NYC (e.g. EWR, JFK and LGA) to destinations in the United States, Puerto
+Rico, and the American Virgin Islands) in 2013: 336,776 flights in
+total. To help understand what causes delays, it also includes a number
+of other useful datasets.</p>
+<ul class="simple">
+<li><p>flights: all flights that departed from NYC in 2013</p></li>
+<li><p>weather: hourly meteorological data for each airport</p></li>
+<li><p>planes: construction information about each plane</p></li>
+<li><p>airports: airport names and locations</p></li>
+<li><p>airlines: translation between two letter carrier codes and names</p></li>
+</ul>
+<section id="imports">
+<h2>Imports<a class="headerlink" href="#imports" title="Permalink to this headline">#</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>from tidypandas import tidyframe
+from tidypandas.series_utils import *
+from plotnine import *
+
+# for plotnine: some column need downcasting from nullable types
+def downcast_dtypes(pdf):
+    from pandas.api import types
+    cn = list(pdf.columns)
+    pdf2 = pdf.copy()
+    for acolname in cn:
+        if types.is_numeric_dtype(pdf[acolname]):
+            pdf2[acolname] = pd.to_numeric(pdf2[acolname].astype(&#39;string&#39;), downcast = &#39;integer&#39;)
+    return pdf2
+</pre></div>
+</div>
+</section>
+<section id="load-and-display-flights-data">
+<h2>Load and Display <code class="docutils literal notranslate"><span class="pre">flights</span></code> data<a class="headerlink" href="#load-and-display-flights-data" title="Permalink to this headline">#</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>from nycflights13 import flights, planes
+flights_tidy = tidyframe(flights)
+print(flights_tidy)
+
+## # A tidy dataframe: 336776 X 19
+##      year   month     day  ...    hour  minute             time_hour
+##   &lt;Int64&gt; &lt;Int64&gt; &lt;Int64&gt;  ... &lt;Int64&gt; &lt;Int64&gt;              &lt;string&gt;
+## 0    2013       1       1  ...       5      15  2013-01-01T10:00:00Z
+## 1    2013       1       1  ...       5      29  2013-01-01T10:00:00Z
+## 2    2013       1       1  ...       5      40  2013-01-01T10:00:00Z
+## 3    2013       1       1  ...       5      45  2013-01-01T10:00:00Z
+## 4    2013       1       1  ...       6       0  2013-01-01T11:00:00Z
+## 5    2013       1       1  ...       5      58  2013-01-01T10:00:00Z
+## 6    2013       1       1  ...       6       0  2013-01-01T11:00:00Z
+## 7    2013       1       1  ...       6       0  2013-01-01T11:00:00Z
+## 8    2013       1       1  ...       6       0  2013-01-01T11:00:00Z
+## 9    2013       1       1            6       0  2013-01-01T11:00:00Z
+## #... with 336766 more rows
+</pre></div>
+</div>
+</section>
+<section id="exercise-find-all-flights-that-arrived-more-than-two-hours-late-but-didnt-leave-late">
+<h2>Exercise: Find all flights that arrived more than two hours late, but didn’t leave late.<a class="headerlink" href="#exercise-find-all-flights-that-arrived-more-than-two-hours-late-but-didnt-leave-late" title="Permalink to this headline">#</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>out = (flights_tidy.filter(&quot;dep_delay &lt;= 0 and arr_delay &gt; 120&quot;)
+                   .select([&#39;flight&#39;, &#39;dep_delay&#39;, &#39;arr_delay&#39;])
+                   )
+print(out)
+
+## # A tidy dataframe: 29 X 3
+##    flight  dep_delay  arr_delay
+##   &lt;Int64&gt;    &lt;Int64&gt;    &lt;Int64&gt;
+## 0    3728         -1        124
+## 1    5181          0        130
+## 2    1151         -2        124
+## 3       3         -3        122
+## 4     399         -2        194
+## 5     389         -3        140
+## 6    4540         -5        124
+## 7     707         -2        179
+## 8    2083         -5        143
+## 9    4674         -3        127
+## #... with 19 more rows
+</pre></div>
+</div>
+</section>
+<section id="exercise-sort-flights-to-find-the-fastest-flights">
+<h2>Exercise: Sort flights to find the fastest flights<a class="headerlink" href="#exercise-sort-flights-to-find-the-fastest-flights" title="Permalink to this headline">#</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>out = (flights_tidy.mutate({&#39;speed&#39;: (lambda x, y: x/y, [&#39;distance&#39;, &#39;air_time&#39;])})
+                   .arrange([(&#39;speed&#39;, &#39;desc&#39;)])
+                   .select([&#39;flight&#39;, &#39;dep_delay&#39;, &#39;arr_delay&#39;, &#39;speed&#39;])
+                   )
+print(out)
+
+## # A tidy dataframe: 336776 X 4
+##    flight  dep_delay  arr_delay      speed
+##   &lt;Int64&gt;    &lt;Int64&gt;    &lt;Int64&gt;  &lt;Float64&gt;
+## 0    1499          9        -14  11.723077
+## 1    4667         45         26   10.83871
+## 2    4292         15         -1       10.8
+## 3    3805          4          2  10.685714
+## 4    1902         -1        -28   9.857143
+## 5     315         -5        -51        9.4
+## 6     707         -3        -26   9.290698
+## 7     936         -1        -43   9.274286
+## 8     347          1        -32   9.236994
+## 9     329         -2        -39   9.236994
+## #... with 336766 more rows
+</pre></div>
+</div>
+</section>
+<section id="exercise-is-the-proportion-of-cancelled-flights-related-to-the-average-delay">
+<h2>Exercise: Is the proportion of cancelled flights related to the average delay?<a class="headerlink" href="#exercise-is-the-proportion-of-cancelled-flights-related-to-the-average-delay" title="Permalink to this headline">#</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>out = (flights_tidy
+        .mutate({&#39;cancelled&#39;: (lambda x, y: (pd.isna(x) | pd.isna(y)),
+                               [&#39;arr_delay&#39;, &#39;dep_delay&#39;]
+                              )
+                }
+               )
+        .summarise({&#39;cancelled_prop&#39;: (np.mean, &#39;cancelled&#39;),
+                    &#39;avg_dep_delay&#39;: (np.mean, &#39;dep_delay&#39;),
+                    &#39;avg_arr_delay&#39;: (np.mean, &#39;arr_delay&#39;)
+                   },
+                   by = [&#39;year&#39;, &#39;month&#39;, &#39;day&#39;]
+                  )
+        )
+                        
+print(out)
+
+## # A tidy dataframe: 365 X 6
+##      year   month     day  cancelled_prop  avg_dep_delay  avg_arr_delay
+##   &lt;Int64&gt; &lt;Int64&gt; &lt;Int64&gt;       &lt;Float64&gt;      &lt;Float64&gt;      &lt;Float64&gt;
+## 0    2013       1       1        0.013064      11.548926      12.651023
+## 1    2013       1       2        0.015907      13.858824      12.692888
+## 2    2013       1       3        0.015317      10.987832       5.733333
+## 3    2013       1       4         0.00765       8.951595      -1.932819
+## 4    2013       1       5        0.004167       5.732218      -1.525802
+## 5    2013       1       6        0.003606       7.148014       4.236429
+## 6    2013       1       7        0.003215       5.417204      -4.947312
+## 7    2013       1       8        0.007786       2.553073      -3.227578
+## 8    2013       1       9        0.009978       2.276477      -0.264278
+## 9    2013       1      10        0.003219       2.844995      -5.898816
+## #... with 355 more rows
+
+data_for_plot = (out.pivot_longer(cols = [&#39;avg_dep_delay&#39;, &#39;avg_arr_delay&#39;],
+                                  names_to = &quot;delay_type&quot;
+                                  )
+                    )
+print(data_for_plot)
+
+## # A tidy dataframe: 730 X 6
+##      year     day   month  cancelled_prop     delay_type      value
+##   &lt;Int64&gt; &lt;Int64&gt; &lt;Int64&gt;       &lt;Float64&gt;       &lt;string&gt;  &lt;Float64&gt;
+## 0    2013       1       1        0.013064  avg_dep_delay  11.548926
+## 1    2013       2       1        0.015907  avg_dep_delay  13.858824
+## 2    2013       3       1        0.015317  avg_dep_delay  10.987832
+## 3    2013       4       1         0.00765  avg_dep_delay   8.951595
+## 4    2013       5       1        0.004167  avg_dep_delay   5.732218
+## 5    2013       6       1        0.003606  avg_dep_delay   7.148014
+## 6    2013       7       1        0.003215  avg_dep_delay   5.417204
+## 7    2013       8       1        0.007786  avg_dep_delay   2.553073
+## 8    2013       9       1        0.009978  avg_dep_delay   2.276477
+## 9    2013      10       1        0.003219  avg_dep_delay   2.844995
+## #... with 720 more rows
+
+(ggplot(downcast_dtypes(data_for_plot.to_pandas()),
+        aes(&#39;value&#39;, &#39;cancelled_prop&#39;, color = &#39;delay_type&#39;)
+        ) +
+    geom_point() +
+    geom_smooth(method = &quot;lm&quot;)
+    )
+
+## &lt;ggplot: (8773246763692)&gt;
+</pre></div>
+</div>
+<img src="tour_files/figure-markdown_strict/unnamed-chunk-6-1.png" width="614" />
+</section>
+<section id="exercise-find-all-destinations-that-are-flown-by-at-least-two-carriers-use-that-information-to-rank-the-carriers">
+<h2>Exercise: Find all destinations that are flown by at least two carriers. Use that information to rank the carriers.<a class="headerlink" href="#exercise-find-all-destinations-that-are-flown-by-at-least-two-carriers-use-that-information-to-rank-the-carriers" title="Permalink to this headline">#</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>out = (flights_tidy.mutate({&#39;n_carriers&#39;: (n_distinct, &#39;carrier&#39;)}, by = &#39;dest&#39;)
+                   .filter(&#39;n_carriers &gt; 1&#39;)
+                   .summarise({&#39;n_dest&#39;: (n_distinct, &#39;dest&#39;)}, by = &#39;carrier&#39;)
+                   .arrange([(&#39;n_dest&#39;, &#39;desc&#39;)])
+                   )
+print(out)
+
+## # A tidy dataframe: 16 X 2
+##    carrier  n_dest
+##   &lt;string&gt; &lt;Int64&gt;
+## 0       EV      51
+## 1       9E      48
+## 2       UA      42
+## 3       DL      39
+## 4       B6      35
+## 5       AA      19
+## 6       MQ      19
+## 7       WN      10
+## 8       US       5
+## 9       OO       5
+## #... with 6 more rows
+</pre></div>
+</div>
+</section>
+<section id="exercise-is-there-a-relationship-between-the-age-of-a-plane-and-its-delays">
+<h2>Exercise: Is there a relationship between the age of a plane and its delays?<a class="headerlink" href="#exercise-is-there-a-relationship-between-the-age-of-a-plane-and-its-delays" title="Permalink to this headline">#</a></h2>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>planes_tidy = tidyframe(planes)
+print(planes_tidy)
+
+## # A tidy dataframe: 3322 X 9
+##    tailnum    year                     type  ...   seats   speed     engine
+##   &lt;string&gt; &lt;Int64&gt;                 &lt;string&gt;  ... &lt;Int64&gt; &lt;Int64&gt;   &lt;string&gt;
+## 0   N10156    2004  Fixed wing multi engine  ...      55    &lt;NA&gt;  Turbo-fan
+## 1   N102UW    1998  Fixed wing multi engine  ...     182    &lt;NA&gt;  Turbo-fan
+## 2   N103US    1999  Fixed wing multi engine  ...     182    &lt;NA&gt;  Turbo-fan
+## 3   N104UW    1999  Fixed wing multi engine  ...     182    &lt;NA&gt;  Turbo-fan
+## 4   N10575    2002  Fixed wing multi engine  ...      55    &lt;NA&gt;  Turbo-fan
+## 5   N105UW    1999  Fixed wing multi engine  ...     182    &lt;NA&gt;  Turbo-fan
+## 6   N107US    1999  Fixed wing multi engine  ...     182    &lt;NA&gt;  Turbo-fan
+## 7   N108UW    1999  Fixed wing multi engine  ...     182    &lt;NA&gt;  Turbo-fan
+## 8   N109UW    1999  Fixed wing multi engine  ...     182    &lt;NA&gt;  Turbo-fan
+## 9   N110UW    1999  Fixed wing multi engine          182    &lt;NA&gt;  Turbo-fan
+## #... with 3312 more rows
+
+planes_year_frame = (planes_tidy.select([&#39;tailnum&#39;, &#39;year&#39;])
+                                .rename({&#39;year&#39;: &#39;plane_year&#39;})
+                                )
+print(planes_year_frame)
+
+## # A tidy dataframe: 3322 X 2
+##    tailnum  plane_year
+##   &lt;string&gt;     &lt;Int64&gt;
+## 0   N10156        2004
+## 1   N102UW        1998
+## 2   N103US        1999
+## 3   N104UW        1999
+## 4   N10575        2002
+## 5   N105UW        1999
+## 6   N107US        1999
+## 7   N108UW        1999
+## 8   N109UW        1999
+## 9   N110UW        1999
+## #... with 3312 more rows
+
+age_delay_stats_frame = \
+  (flights_tidy.inner_join(planes_year_frame, on = &#39;tailnum&#39;)
+               .mutate({&#39;age&#39;: (lambda x, y: x - y, [&#39;year&#39;, &#39;plane_year&#39;])})
+               .filter(lambda x: ~ pd.isna(x[&#39;age&#39;]))
+               .mutate({&#39;age_25&#39;: lambda x: ifelse(x[&#39;age&#39;] &gt; 25, 25, x[&#39;age&#39;])})
+               .summarise(column_names = [&#39;arr_delay&#39;, &#39;dep_delay&#39;],
+                          func = np.mean,
+                          prefix = &#39;mean_&#39;,
+                          by = &#39;age&#39;
+                          )
+               )
+print(age_delay_stats_frame)
+
+## # A tidy dataframe: 46 X 3
+##       age  mean_arr_delay  mean_dep_delay
+##   &lt;Int64&gt;       &lt;Float64&gt;       &lt;Float64&gt;
+## 0      14        7.117146       13.079679
+## 1      15        6.709817       13.429565
+## 2      23         5.69489       11.504746
+## 3       1        2.850889        9.642778
+## 4      22         4.17795       10.674242
+## 5      13        7.259624       11.734242
+## 6       9       10.243436       16.387705
+## 7       2        5.696238       11.840951
+## 8       6        7.540417        13.73795
+## 9       5        5.572951       13.158852
+## #... with 36 more rows
+
+(ggplot(age_delay_stats_frame.to_pandas().pipe(downcast_dtypes), aes(&#39;age&#39;, &#39;mean_arr_delay&#39;)) +
+     geom_point() +
+     xlim(0, 20) +
+     ylim(0, 11)
+     )
+
+## &lt;ggplot: (8773246495199)&gt;
+## 
+## /home/dattachidambara/.cache/pypoetry/virtualenvs/tidypandas-cfuMUHaV-py3.8/lib/python3.8/site-packages/plotnine/layer.py:401: PlotnineWarning: geom_point : Removed 25 rows containing missing values.
+</pre></div>
+</div>
+<img src="tour_files/figure-markdown_strict/unnamed-chunk-8-3.png" width="614" />
+</section>
+</section>
+
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="using_tidypandas.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Using <code class="docutils literal notranslate"><span class="pre">tidypandas</span></code></p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="autoapi/index.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">API Reference</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright MIT License.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

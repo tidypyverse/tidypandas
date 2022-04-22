@@ -1,0 +1,150 @@
+:py:mod:`tidypandas.tidy_utils`
+===============================
+
+.. py:module:: tidypandas.tidy_utils
+
+.. autoapi-nested-parse::
+
+   
+   ..
+       !! processed by numpydoc !!
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   tidypandas.tidy_utils.simplify
+   tidypandas.tidy_utils.is_simple
+
+
+
+.. py:function:: simplify(pdf, sep='__', verbose=False)
+
+   
+   Returns a pandas dataframe with simplified index structure.
+   This might be helpful before creating a tidyframe object.
+
+   :param pdf:
+   :type pdf: Pandas dataframe
+   :param sep: String separator to be used while concatenating column multiindex
+   :type sep: str (default: "__")
+   :param verbose: Whether to print the progress of simpliying process
+   :type verbose: bool (default: False)
+
+   :rtype: A pandas dataframe with simplified index structure
+
+   .. rubric:: Notes
+
+   Returns a `simple` pandas dataframe. A pandas dataframe is 'simple' if:
+
+       1. Column names (x.columns) are an unnamed pd.Index object of unique
+          strings. Column names do not start from "_".
+       2. Row index is absent (pandas rangeindex starting from 1)
+
+   This is done by collapsing the column MultiIndex by concatenating names
+   using separator 'sep' and ensuring that the resulting names are unique.
+   The row Index or MultiIndex are added to the dataframe as columns if their
+   names do not clash with the existing column names of the dataframe. Row
+   indexes without a name are dropped.
+
+   Additionally,
+       1. string columns stored as object are converted to string dtype
+       via 'convert_dtypes' method.
+       2. All missing values are replaced by pandas NA type.
+
+   .. rubric:: Examples
+
+   >>> from nycflights13 import flights
+   >>> ex1 = flights.groupby('dest').apply(lambda x: x.head(2))
+   >>> ex1
+   >>> simplify(ex1)
+   >>>
+   >>> ex2 = pd.crosstab(flights['origin'], flights['dest'])
+   >>> ex2
+   >>> simplify(ex2)
+   >>>
+   >>> ex3 = (flights.value_counts(['origin', 'dest', 'month', 'hour'])
+   >>>               .reset_index()
+   >>>               .rename(columns = {0 : 'n'})
+   >>>               .pipe(lambda  x: pd.pivot_table(x
+   >>>                                               , index = ['origin', 'month']
+   >>>                                               , columns = ['dest', 'hour']
+   >>>                                               , values = 'n'
+   >>>                                               , fill_value = 0
+   >>>                                               )
+   >>>                     )
+   >>>               )
+   >>> ex3
+   >>> simplify(ex3)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: is_simple(pdf, verbose=False)
+
+   
+   is_simple
+   Whether the input pandas dataframe is 'simple' or not
+
+   :param pdf:
+   :type pdf: pandas dataframe
+   :param verbose: When True, prints the reason(s) why the input is not 'simple'.
+   :type verbose: bool, (default: False)
+
+   .. rubric:: Notes
+
+   A pandas dataframe is 'simple' if:
+
+       1. Column names (x.columns) are an unnamed pd.Index object of unique
+          strings. Column names do not start from "_".
+       2. Row index is absent (pandas rangeindex starting from 0).
+
+   :returns: True if the input is 'simple' and False if the input is not 'simple'.
+   :rtype: bool
+
+   .. rubric:: Examples
+
+   >>> from palmerpenguins import load_penguins
+   >>> penguins = load_penguins().convert_dtypes()
+   >>> ex1 = penguins.groupby('species').apply(lambda x: x.head(2))
+   >>> ex1
+   >>>
+   >>> is_simple(ex1, verbose = True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+

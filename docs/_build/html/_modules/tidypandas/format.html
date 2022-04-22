@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tidypandas.format &#8212; tidypandas  documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../../index.html">
+<p class="title">tidypandas</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../using_tidypandas.html">
+  Using
+  <code class="docutils literal notranslate">
+   <span class="pre">
+    tidypandas
+   </span>
+  </code>
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../tour.html">
+  A tour of
+  <code class="docutils literal notranslate">
+   <span class="pre">
+    tidypandas
+   </span>
+  </code>
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../autoapi/index.html">
+  API Reference
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../changelog.html">
+  Changelog
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <h1>Source code for tidypandas.format</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">dedent</span>
+
+<span class="kn">from</span> <span class="nn">pandas.io.formats.format</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DataFrameFormatter</span><span class="p">,</span> 
+    <span class="n">format_array</span><span class="p">,</span> 
+    <span class="n">DataFrameRenderer</span><span class="p">,</span> 
+    <span class="n">save_to_buffer</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pandas.io.formats.html</span> <span class="kn">import</span> <span class="n">HTMLFormatter</span>
+<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">MultiIndex</span>
+
+<div class="viewcode-block" id="TidyDataFrameFormatter"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyDataFrameFormatter">[docs]</a><span class="k">class</span> <span class="nc">TidyDataFrameFormatter</span><span class="p">(</span><span class="n">DataFrameFormatter</span><span class="p">):</span>
+<div class="viewcode-block" id="TidyDataFrameFormatter.format_col"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyDataFrameFormatter.format_col">[docs]</a>    <span class="k">def</span> <span class="nf">format_col</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Format column, add dtype ahead&quot;&quot;&quot;</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tr_frame</span>
+        <span class="n">formatter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_formatter</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">dtype</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">format_array</span><span class="p">(</span>
+            <span class="n">frame</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">_values</span><span class="p">,</span>
+            <span class="n">formatter</span><span class="p">,</span>
+            <span class="n">float_format</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">float_format</span><span class="p">,</span>
+            <span class="n">na_rep</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">na_rep</span><span class="p">,</span>
+            <span class="n">space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">col_space</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">frame</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">i</span><span class="p">]),</span>
+            <span class="n">decimal</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">decimal</span><span class="p">,</span>
+            <span class="n">leading_space</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TidyDataFrameFormatter.get_strcols"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyDataFrameFormatter.get_strcols">[docs]</a>    <span class="k">def</span> <span class="nf">get_strcols</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Render a DataFrame to a list of columns (as lists of strings).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">strcols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_strcols_without_index</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">:</span>
+            <span class="c1">#           dtype</span>
+            <span class="n">str_index</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_formatted_index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tr_frame</span><span class="p">)</span>
+            <span class="n">strcols</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">str_index</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">strcols</span></div></div>
+
+
+<div class="viewcode-block" id="TidyHTMLFormatter"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyHTMLFormatter">[docs]</a><span class="k">class</span> <span class="nc">TidyHTMLFormatter</span><span class="p">(</span><span class="n">HTMLFormatter</span><span class="p">):</span>
+<div class="viewcode-block" id="TidyHTMLFormatter._write_body"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyHTMLFormatter._write_body">[docs]</a>    <span class="k">def</span> <span class="nf">_write_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span> <span class="c1"># -&gt; None:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&lt;tbody&gt;&quot;</span><span class="p">,</span> <span class="n">indent</span><span class="p">)</span>
+        <span class="n">fmt_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_formatted_values</span><span class="p">()</span>
+
+        <span class="n">column_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">fmt_values</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_row_column_types</span><span class="p">(</span><span class="n">column_types</span><span class="p">)</span>
+
+        <span class="n">fmt_values</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">fmt_values</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        
+        <span class="c1"># write values</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">index</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">MultiIndex</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_hierarchical_rows</span><span class="p">(</span><span class="n">fmt_values</span><span class="p">,</span> <span class="n">indent</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">indent_delta</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_regular_rows</span><span class="p">(</span><span class="n">fmt_values</span><span class="p">,</span> <span class="n">indent</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">indent_delta</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&lt;/tbody&gt;&quot;</span><span class="p">,</span> <span class="n">indent</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TidyHTMLFormatter._write_row_column_types"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyHTMLFormatter._write_row_column_types">[docs]</a>    <span class="k">def</span> <span class="nf">_write_row_column_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_types</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_tr</span><span class="p">([</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">column_types</span>
+                      <span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span>
+                      <span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="s1">&#39;style=&quot;color:#606060;font-style:oblique;&quot;&#39;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">column_types</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)}</span>
+                      <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="TidyNotebookFormatter"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyNotebookFormatter">[docs]</a><span class="k">class</span> <span class="nc">TidyNotebookFormatter</span><span class="p">(</span><span class="n">TidyHTMLFormatter</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Internal class for formatting output data in html for display in Jupyter</span>
+<span class="sd">    Notebooks. This class is intended for functionality specific to</span>
+<span class="sd">    DataFrame._repr_html_() and DataFrame.to_html(notebook=True)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TidyNotebookFormatter._get_formatted_values"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyNotebookFormatter._get_formatted_values">[docs]</a>    <span class="k">def</span> <span class="nf">_get_formatted_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1">#-&gt; dict[int, list[str]]:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">format_col</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ncols</span><span class="p">)}</span></div>
+
+<div class="viewcode-block" id="TidyNotebookFormatter._get_columns_formatted_values"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyNotebookFormatter._get_columns_formatted_values">[docs]</a>    <span class="k">def</span> <span class="nf">_get_columns_formatted_values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># -&gt; list[str]:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">format</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TidyNotebookFormatter.write_style"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyNotebookFormatter.write_style">[docs]</a>    <span class="k">def</span> <span class="nf">write_style</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># -&gt; None:</span>
+        <span class="c1"># We use the &quot;scoped&quot; attribute here so that the desired</span>
+        <span class="c1"># style properties for the data frame are not then applied</span>
+        <span class="c1"># throughout the entire notebook.</span>
+        <span class="n">template_first</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">            &lt;style scoped&gt;&quot;&quot;&quot;</span>
+        <span class="n">template_last</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">            &lt;/style&gt;&quot;&quot;&quot;</span>
+        <span class="n">template_select</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span><span class="se">\</span>
+<span class="s2">                .dataframe </span><span class="si">%s</span><span class="s2"> {</span>
+<span class="s2">                    </span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">;</span>
+<span class="s2">                }&quot;&quot;&quot;</span>
+        <span class="n">element_props</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;tbody tr th:only-of-type&quot;</span><span class="p">,</span> <span class="s2">&quot;vertical-align&quot;</span><span class="p">,</span> <span class="s2">&quot;middle&quot;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;tbody tr th&quot;</span><span class="p">,</span> <span class="s2">&quot;vertical-align&quot;</span><span class="p">,</span> <span class="s2">&quot;top&quot;</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="c1"># if isinstance(self.columns, MultiIndex):</span>
+        <span class="c1">#     element_props.append((&quot;thead tr th&quot;, &quot;text-align&quot;, &quot;left&quot;))</span>
+        <span class="c1">#     if self.show_row_idx_names:</span>
+        <span class="c1">#         element_props.append(</span>
+        <span class="c1">#             (&quot;thead tr:last-of-type th&quot;, &quot;text-align&quot;, &quot;right&quot;)</span>
+        <span class="c1">#         )</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     element_props.append((&quot;thead th&quot;, &quot;text-align&quot;, &quot;right&quot;))</span>
+        <span class="n">element_props</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;thead th&quot;</span><span class="p">,</span> <span class="s2">&quot;text-align&quot;</span><span class="p">,</span> <span class="s2">&quot;right&quot;</span><span class="p">))</span>
+
+        <span class="n">template_mid</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">template_select</span> <span class="o">%</span> <span class="n">t</span><span class="p">,</span> <span class="n">element_props</span><span class="p">))</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">dedent</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">template_first</span><span class="p">,</span> <span class="n">template_mid</span><span class="p">,</span> <span class="n">template_last</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">template</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TidyNotebookFormatter.render"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyNotebookFormatter.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># -&gt; list[str]:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&lt;div&gt;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_style</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&lt;/div&gt;&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span></div></div>
+
+<div class="viewcode-block" id="TidyDataFrameRenderer"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyDataFrameRenderer">[docs]</a><span class="k">class</span> <span class="nc">TidyDataFrameRenderer</span><span class="p">(</span><span class="n">DataFrameRenderer</span><span class="p">):</span>
+<div class="viewcode-block" id="TidyDataFrameRenderer.to_html"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyDataFrameRenderer.to_html">[docs]</a>    <span class="k">def</span> <span class="nf">to_html</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">buf</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">encoding</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">classes</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">notebook</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">border</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">table_id</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">render_links</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span> <span class="c1"># -&gt; str | None:</span>
+        <span class="c1"># from pandas.io.formats.html import (</span>
+        <span class="c1">#     HTMLFormatter,</span>
+        <span class="c1">#     NotebookFormatter,</span>
+        <span class="c1"># )</span>
+
+        <span class="n">Klass</span> <span class="o">=</span> <span class="n">TidyNotebookFormatter</span> <span class="k">if</span> <span class="n">notebook</span> <span class="k">else</span> <span class="n">TidyHTMLFormatter</span>
+
+        <span class="n">html_formatter</span> <span class="o">=</span> <span class="n">Klass</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">,</span>
+            <span class="n">classes</span><span class="o">=</span><span class="n">classes</span><span class="p">,</span>
+            <span class="n">border</span><span class="o">=</span><span class="n">border</span><span class="p">,</span>
+            <span class="n">table_id</span><span class="o">=</span><span class="n">table_id</span><span class="p">,</span>
+            <span class="n">render_links</span><span class="o">=</span><span class="n">render_links</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="n">html_formatter</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">save_to_buffer</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">buf</span><span class="o">=</span><span class="n">buf</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span></div></div>
+
+
+
+
+</pre></div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright MIT License.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>

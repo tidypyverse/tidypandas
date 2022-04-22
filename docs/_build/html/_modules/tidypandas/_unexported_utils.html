@@ -1,0 +1,417 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tidypandas._unexported_utils &#8212; tidypandas  documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/graphviz.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+    <nav class="navbar navbar-light navbar-expand-lg bg-light fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+
+  <div id="navbar-start">
+    
+    
+<a class="navbar-brand" href="../../index.html">
+<p class="title">tidypandas</p>
+</a>
+
+    
+  </div>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-collapsible" aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  
+  <div id="navbar-collapsible" class="col-lg-9 collapse navbar-collapse">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <ul id="navbar-main-elements" class="navbar-nav">
+    <li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../using_tidypandas.html">
+  Using
+  <code class="docutils literal notranslate">
+   <span class="pre">
+    tidypandas
+   </span>
+  </code>
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../tour.html">
+  A tour of
+  <code class="docutils literal notranslate">
+   <span class="pre">
+    tidypandas
+   </span>
+  </code>
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../autoapi/index.html">
+  API Reference
+ </a>
+</li>
+
+<li class="toctree-l1 nav-item">
+ <a class="reference internal nav-link" href="../../changelog.html">
+  Changelog
+ </a>
+</li>
+
+    
+</ul>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    </nav>
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+            
+            <!-- Only show if we have sidebars configured, else just a small margin  -->
+            <div class="col-12 col-md-3 bd-sidebar">
+              <div class="sidebar-start-items"><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <div class="bd-toc-item active">
+    
+  </div>
+</nav>
+              </div>
+              <div class="sidebar-end-items">
+              </div>
+            </div>
+            
+          
+
+          
+          <div class="d-none d-xl-block col-xl-2 bd-toc">
+            
+          </div>
+          
+
+          
+          
+            
+          
+          <main class="col-12 col-md-9 col-xl-7 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+              
+              <div>
+                
+  <h1>Source code for tidypandas._unexported_utils</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="c1"># This file is a part of tidypandas python package</span>
+<span class="c1"># Find the dev version here: https://github.com/talegari/tidypandas</span>
+<span class="c1"># -----------------------------------------------------------------------------</span>
+<span class="kn">import</span> <span class="nn">string</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">pandas.api.types</span> <span class="k">as</span> <span class="nn">dtypes</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<div class="viewcode-block" id="_is_kwargable"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._is_kwargable">[docs]</a><span class="k">def</span> <span class="nf">_is_kwargable</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">spec</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">varkw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="_is_valid_colname"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._is_valid_colname">[docs]</a><span class="k">def</span> <span class="nf">_is_valid_colname</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="nb">str</span><span class="p">))</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">string</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+  
+<div class="viewcode-block" id="_is_string_or_string_list"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._is_string_or_string_list">[docs]</a><span class="k">def</span> <span class="nf">_is_string_or_string_list</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    _is_string_or_string_list(x)</span>
+<span class="sd">    </span>
+<span class="sd">    Check whether the input is a string or a list of strings</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : object</span>
+<span class="sd">        Any python object</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">    True if input is a string or a list of strings</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; _is_string_or_string_list(&quot;bar&quot;)      # True</span>
+<span class="sd">    &gt;&gt;&gt; _is_string_or_string_list([&quot;bar&quot;])    # True</span>
+<span class="sd">    &gt;&gt;&gt; _is_string_or_string_list((&quot;bar&quot;,))   # False</span>
+<span class="sd">    &gt;&gt;&gt; _is_string_or_string_list([&quot;bar&quot;, 1]) # False</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]):</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="kc">False</span>
+    
+    <span class="k">return</span> <span class="n">res</span></div>
+    
+<div class="viewcode-block" id="_enlist"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._enlist">[docs]</a><span class="k">def</span> <span class="nf">_enlist</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    _enlist(x)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns the input in a list (as first element of the list) unless input itself is a list</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : object</span>
+<span class="sd">        Any python object</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list</span>
+<span class="sd">    Returns the input in a list (as first element of the list) unless input itself is a list</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; _enlist([&quot;a&quot;]) # [&quot;a&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; _enlist(&quot;a&quot;)   # [&quot;a&quot;]</span>
+<span class="sd">    &gt;&gt;&gt; _enlist((1, )) # [(1, )]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+    
+    <span class="k">return</span> <span class="n">x</span></div>
+
+<div class="viewcode-block" id="_get_unique_names"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._get_unique_names">[docs]</a><span class="k">def</span> <span class="nf">_get_unique_names</span><span class="p">(</span><span class="n">strings</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    _get_unique_names(strings)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns a list of same length as the input such that elements are unique. This is done by adding &#39;_1&#39;. The resulting list does not alter nth element if the nth element occurs for the first time in the input list starting from left.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    strings : list</span>
+<span class="sd">        A list of strings</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list of strings</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; _get_unique_names([&#39;a&#39;, &#39;b&#39;])               # [&#39;a&#39;, &#39;b&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; _get_unique_names([&#39;a&#39;, &#39;a&#39;])               # [&#39;a&#39;, &#39;a_1&#39;]</span>
+<span class="sd">    &gt;&gt;&gt; _get_unique_names([&#39;a&#39;, &#39;a&#39;, &#39;a_1&#39;])        # [&#39;a&#39;, &#39;a_1_1&#39;, &#39;a_1&#39;]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="n">_is_string_or_string_list</span><span class="p">(</span><span class="n">strings</span><span class="p">)</span>
+    <span class="n">strings</span> <span class="o">=</span> <span class="n">_enlist</span><span class="p">(</span><span class="n">strings</span><span class="p">)</span>
+
+    <span class="n">new_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">old_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">strings</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">astring</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">:</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span> 
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">astring</span> <span class="ow">in</span> <span class="n">new_list</span><span class="p">:</span>
+                <span class="n">counter</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">astring</span> <span class="o">=</span> <span class="n">astring</span> <span class="o">+</span> <span class="s2">&quot;_1&quot;</span> 
+            <span class="k">elif</span> <span class="n">astring</span> <span class="ow">in</span> <span class="n">old_set</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">counter</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">astring</span> <span class="o">=</span> <span class="n">astring</span> <span class="o">+</span> <span class="s2">&quot;_1&quot;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">astring</span><span class="p">)</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">old_set</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">astring</span><span class="p">)</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                    <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">astring</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">old_set</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">astring</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">break</span>
+        
+    <span class="k">return</span> <span class="n">new_list</span></div>
+
+<div class="viewcode-block" id="_is_unique_list"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._is_unique_list">[docs]</a><span class="k">def</span> <span class="nf">_is_unique_list</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    _is_unique_list(x)</span>
+<span class="sd">    </span>
+<span class="sd">    Returns True if input list does not have duplicates</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : list</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="_get_dtype_dict"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._get_dtype_dict">[docs]</a><span class="k">def</span> <span class="nf">_get_dtype_dict</span><span class="p">(</span><span class="n">pdf</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pdf</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
+    
+    <span class="n">dtf</span> <span class="o">=</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">pdf</span><span class="o">.</span><span class="n">dtypes</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+             <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="s2">&quot;column_name&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span> <span class="s2">&quot;dtype&quot;</span><span class="p">})</span>
+             <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">dtype</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;dtype&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;string&#39;</span><span class="p">))</span>
+             <span class="p">)</span>
+    
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">dtf</span><span class="p">[</span><span class="s1">&#39;column_name&#39;</span><span class="p">],</span> <span class="n">dtf</span><span class="p">[</span><span class="s1">&#39;dtype&#39;</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="_generate_new_string"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._generate_new_string">[docs]</a><span class="k">def</span> <span class="nf">_generate_new_string</span><span class="p">(</span><span class="n">strings</span><span class="p">):</span>
+    
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">strings</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">])</span>
+    
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">random_string</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span><span class="p">),</span> <span class="mi">20</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">random_string</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">:</span>
+            <span class="k">break</span>
+    
+    <span class="k">return</span> <span class="n">random_string</span></div>
+
+<div class="viewcode-block" id="_coerce_series"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._coerce_series">[docs]</a><span class="k">def</span> <span class="nf">_coerce_series</span><span class="p">(</span><span class="n">aseries</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    _coerce_series</span>
+<span class="sd">    Convert the series type to its nullable type</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    aseries: A pandas series</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    A pandas series</span>
+<span class="sd">    </span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    If series cannot infer the type, it will return the series asis.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># first try</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">aseries</span><span class="o">.</span><span class="n">convert_dtypes</span><span class="p">()</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    
+    <span class="c1"># second try by dropping NA</span>
+    <span class="k">if</span> <span class="n">dt</span> <span class="o">==</span> <span class="s2">&quot;object&quot;</span><span class="p">:</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">aseries</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span><span class="o">.</span><span class="n">convert_dtypes</span><span class="p">()</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+    
+    <span class="c1"># warn if type cannot be detected        </span>
+    <span class="k">if</span> <span class="n">dt</span> <span class="o">==</span> <span class="s2">&quot;object&quot;</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not infer the dtype, left asis&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># return asis if not detected</span>
+    <span class="k">if</span> <span class="n">dt</span> <span class="o">==</span> <span class="s2">&quot;object&quot;</span><span class="p">:</span>
+        <span class="n">ser</span> <span class="o">=</span> <span class="n">aseries</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ser</span> <span class="o">=</span> <span class="n">aseries</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">ser</span></div>
+
+
+<div class="viewcode-block" id="_coerce_pdf"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._coerce_pdf">[docs]</a><span class="k">def</span> <span class="nf">_coerce_pdf</span><span class="p">(</span><span class="n">pdf</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">acol</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">pdf</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+        <span class="n">pdf</span><span class="p">[</span><span class="n">acol</span><span class="p">]</span> <span class="o">=</span> <span class="n">_coerce_series</span><span class="p">(</span><span class="n">pdf</span><span class="p">[</span><span class="n">acol</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">pdf</span></div>
+</pre></div>
+
+              </div>
+              
+              
+              <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+              
+          </main>
+          
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+<footer class="footer mt-5 mt-md-0">
+  <div class="container">
+    
+    <div class="footer-item">
+      <p class="copyright">
+    &copy; Copyright MIT License.<br>
+</p>
+    </div>
+    
+    <div class="footer-item">
+      <p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br>
+</p>
+    </div>
+    
+  </div>
+</footer>
+  </body>
+</html>
