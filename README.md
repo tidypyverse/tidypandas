@@ -15,8 +15,8 @@ data manipulation tasks:
 -   Unified interface for summarizing (aggregation) and mutate (assign)
     operations across groups
 -   Utilites for pandas dataframes and series
--   Uses of simple python data structures, No esoteric classes, No
-    pipes, No Non-standard evaluation
+-   Uses simple python data structures, No esoteric classes, No pipes,
+    No Non-standard evaluation
 -   No copy data conversion between `tidyframe` and pandas dataframes
 -   An accessor to apply `tidyframe` verbs to simple pandas datarames
 -   …
@@ -56,3 +56,23 @@ data manipulation tasks:
 > `tidypandas` relies on the amazing `pandas` library and offers a
 > consistent API with a different
 > [philosophy](https://tidyverse.tidyverse.org/articles/manifesto.html).
+
+## Installation
+
+1.  Install release version from Pypi using pip:
+
+        pip install tidypandas
+
+2.  For offline installation, use whl/tar file from the [releases
+    page](https://github.com/talegari/tidypandas/releases) on github.
+
+## Contribution/bug fixes/Issues:
+
+1.  Open an issue/suggestion/bugfix on the github
+    [issues](https://github.com/talegari/tidypandas/issues) page.
+
+2.  Use the master branch from
+    [github](https://github.com/talegari/tidypandas) repo tp submit your
+    PR.
+
+------------------------------------------------------------------------
