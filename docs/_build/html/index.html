@@ -206,7 +206,8 @@
               
               <div>
                 
-  <section class="tex2jax_ignore mathjax_ignore" id="tidypandas">
+  <p><a class="reference external" href="https://badge.fury.io/py/tidypandas"><img alt="PyPIversion" src="https://badge.fury.io/py/tidypandas.svg" /></a></p>
+<section class="tex2jax_ignore mathjax_ignore" id="tidypandas">
 <h1><code class="docutils literal notranslate"><span class="pre">tidypandas</span></code><a class="headerlink" href="#tidypandas" title="Permalink to this headline">#</a></h1>
 <blockquote>
 <div><p>A <strong>grammar of data manipulation</strong> for
@@ -244,7 +245,7 @@ No Non-standard evaluation</p></li>
 </ul>
 <!-- -->
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>(df.groupby(&#39;col2&#39;)
-   .apply(lambda x: x.loc(lambda y: y[&#39;col_1&#39;] &gt; y[&#39;col_1&#39;].mean()))
+   .apply(lambda x: x.loc[lambda y: y[&#39;col_1&#39;] &gt; y[&#39;col_1&#39;].mean(), :])
    .reset_index(drop = True)
    )
 </pre></div>

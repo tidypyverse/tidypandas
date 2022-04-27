@@ -2,7 +2,7 @@
 title: "Using tidypandas"
 date: "`r Sys.Date()`"
 output: 
-    html_document:
+    md_document:
         toc: false
 ---
 
@@ -55,7 +55,7 @@ A `tidyframe` is created from an existing pandas dataframe (by default makes a c
 from palmerpenguins import load_penguins
 penguins      = load_penguins() # pandas dataframe
 penguins_tidy = tidyframe(penguins) # create a tidyframe from pandas dataframe
-penguins_tidy
+print(penguins_tidy)
 ```
 
 ## Working with `tidyframe`s
@@ -79,7 +79,7 @@ An operation on a `tidyframe`(s) can be achieved by composition of methods or ve
 > example: Obtain count of birds per specie in the 'Dream' island
 
 ```{python}
-penguins_tidy.filter("island == 'Dream'").count('species')
+print( penguins_tidy.filter("island == 'Dream'").count('species') )
 ```
 
 ## Exporting a `tidyframe` to pandas

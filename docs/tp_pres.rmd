@@ -1,0 +1,423 @@
+---
+title: "tidypandas"
+author: "Srikanth Komala Sheshachala, Ashish Raj"
+date: "`r Sys.Date()`"
+output:
+  ioslides_presentation:
+    widescreen: true
+    smaller: true
+    incremental: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+reticulate::use_virtualenv("~/.cache/pypoetry/virtualenvs/tidypandas-cfuMUHaV-py3.8/")
+```
+
+
+## What is tidypandas?
+
+> A **grammar of data manipulation** for [pandas](https://pandas.pydata.org/docs/index.html) inspired by [tidyverse](https://tidyverse.tidyverse.org/)
+
+
+<br>
+<br>
+
+- `pandas`: Pandas compute engine (C++, Python) + Pandas API (Python)
+- `tidypandas`: Pandas compute engine (C++, Python) + tidyverse like API (Python)
+
+<br>
+<br>
+
+
+`tidypandas` is a python package:
+
+- Hosted on pypi: https://pypi.org/project/tidypandas/
+- Dev on github: https://github.com/talegari/tidypandas
+- Website: https://talegari.github.io/tidypandas/
+
+
+
+## What does the package do?
+
+
+`tidypandas` package provides *minimal, pythonic* API for common data manipulation tasks:
+
+
+- `tidyframe` class (wrapper over pandas dataframe) provides a
+    dataframe with simplified index structure (no more resetting indexes)
+
+- Consistent ‘verbs’ (`select`, `arrange`, `distinct`, …) as
+methods to `tidyframe` class which mostly return a `tidyframe`
+
+- Unified interface for summarizing (aggregation) and mutate (assign) operations across groups
+
+- Utilites for pandas dataframes and series
+
+- Uses simple python data structures, No esoteric classes, No pipes, No Non-standard evaluation
+
+- No copy data conversion between `tidyframe` and pandas dataframes
+
+- An accessor to apply `tidyframe` verbs to simple pandas dataframes
+
+## How to install?
+
+The release version:
+
+```{python, echo = TRUE, eval = FALSE}
+pip install tidypandas
+```
+
+For developers:
+For older versions or the dev version, clone the repo from github and setup with poetry.
+
+## What to import
+
+```{python, echo = TRUE, eval = TRUE}
+from tidypandas import tidyframe           # import tidy dataframe class
+from tidypandas.series_utils import *      # series utilities like ifelse, coalese, min_rank
+from tidypandas.tidy_utils import simplify # utility to 'simplify' complicated pandas dataframes
+from tidypandas.tidy_accessor import tp    # helps in applying verbs directly on pandas dataframes
+
+import pandas as pd
+from palmerpenguins import load_penguins
+```
+
+## How to create a tidyframe from a pandas dataframe?
+
+
+```{python, echo = TRUE, eval = TRUE}
+penguins = load_penguins()          # this is a pandas dataframe
+penguins_tidy = tidyframe(penguins) # this is a tidy dataframe
+print(penguins_tidy)
+```
+
+## How to export tidyframe as a pandas dataframe?
+
+Use the `to_pandas()` method
+
+```{python, echo = TRUE, eval = TRUE}
+penguins_tidy.to_pandas()
+```
+
+## List of simple verbs/methods
+
+- `select`    : choose some columns
+- `slice`     : choose some rows
+- `arrange`   : arrange rows
+- `distinct`  : distinct combinations of columns
+- `filter`    : subset rows based on condition(s)
+- `summarise` : aggregate a set of variables
+- `mutate`    : create or modify a set of variables
+
+## `select`
+
+- Select using column names:
+    ```{python, echo = TRUE, eval = TRUE}
+    print( penguins_tidy.select(['species', 'year']).head(2) )
+    ```
+
+- Select using a predicate:
+    ```{python, echo = TRUE, eval = TRUE}
+    from pandas.api import types
+    print( penguins_tidy.select(predicate = types.is_numeric_dtype).head(2) )
+    ```
+    
+## `slice`
+
+- Slice some rows:
+    ```{python, echo = TRUE, eval = TRUE}
+    print( penguins_tidy.slice([0, 2, 3]).head(2) )
+    ```
+
+- Slice some rows per group:
+    ```{python, echo = TRUE, eval = TRUE}
+    print( penguins_tidy.slice(range(1), by = 'species') )
+    ```
+ 
+## `arrange`
+
+- Arrange by 'bill_length_mm' (in asc) and 'bill_depth_mm' (in desc):
+    ```{python, echo = TRUE, eval = TRUE}
+    # asc is the default ordering
+    print( penguins_tidy.arrange(['bill_length_mm', ('bill_depth_mm', 'desc')]) )
+    ```
+    
+## `distinct`
+
+- Pick distinct combination of columns:
+    ```{python, echo = TRUE, eval = TRUE}
+    print( penguins_tidy.distinct('sex') )
+    ```
+    
+- Pick the all columns with first row corresponding to a unique combination:
+    ```{python, echo = TRUE, eval = TRUE}
+    print( penguins_tidy.distinct('sex', keep_all = True) )
+	```
+
+## `filter`
+
+- Subset rows based on a condition:
+    ```{python, echo = TRUE, eval = TRUE}
+    print( penguins_tidy.filter('year > 2008').head(2) )
+	```
+
+- Subset rows per group along with a lambda function:
+    ```{python, echo = TRUE, eval = TRUE}
+    print(penguins_tidy.filter(lambda x: x['year'] >= x['year'].mean(), by = 'species')
+                       .count('species')
+                       )
+	```
+
+## summarise
+
+Aggregate optionally per group:
+```{python, echo = TRUE, eval = TRUE}
+print(penguins_tidy.summarise({'max_ratio': (lambda x, y: np.max(x/y), ['bill_length_mm', 'bill_depth_mm']),
+                               'min_abs_diff': lambda x: (x['bill_length_mm'] - x['bill_depth_mm']).abs().min()
+
+                               },
+                               by = 'species'
+                              )
+                   )
+              
+```
+
+## mutate
+
+- Add / modify a column optionally per group:
+    ```{python, echo = TRUE, eval = TRUE}
+    print(penguins_tidy.mutate({'demean_year': (lambda x: x - x.mean(),
+                                                'year'
+                                               )
+                               },
+                               by = 'species'
+                              )
+                       .slice_head(2, by = 'species')
+                       )
+	```
+
+## Joins
+
+`tidypandas` offers various joins (`inner_join`, `outer_join`, `left_join`, `right_join`, `semi_join`, `anti_join`) with a common format:
+```{python, echo = TRUE, eval = TRUE}
+p1 = penguins_tidy.filter('year == 2008').select(['species', 'bill_length_mm', 'year'])
+p2 = penguins_tidy.filter('year == 2009').select(['species', 'bill_depth_mm', 'year'])
+print( p1.inner_join(p2, on = 'species') )
+```
+
+
+## `count` and `add_count`
+
+- Count unique combinations:
+    ```{python, echo = TRUE, eval = TRUE}
+    print(penguins_tidy.count('sex'))
+	```
+- Add counts as a column:
+    ```{python, echo = TRUE, eval = TRUE}
+    print(penguins_tidy.add_count(['sex', 'species'], name = 'count_col'))
+	```
+    
+## Pivoting operations
+
+`tidypandas` provides transforming dataframes between 'wide' and 'long' formats:
+    
+    - `pivot_wider`: long to wide (think: make it wide)
+    - `pivot_longer`: wide to long (think: make it long)
+    
+## `pivot_wider`
+
+pivot wider with different kind of aggregations over columns:
+
+```{python, echo = TRUE, eval = TRUE}
+penguins_tidy.pivot_wider(id_cols       = "island",
+                          names_from  = "species",
+                          values_from = ["bill_length_mm", "bill_depth_mm"],
+                          values_fn   = {"bill_length_mm" : np.mean, "bill_depth_mm" : list}
+                          )
+```
+
+
+## `pivot_longer`
+
+```{python, echo = TRUE, eval = TRUE}
+print(penguins_tidy.select(['species', 'bill_length_mm', 'bill_depth_mm'])
+                   .pivot_longer(cols = ['bill_length_mm','bill_depth_mm'])
+                   )
+```
+
+## `slice` extensions
+
+- `slice_head` and `slice_tail` help subset rows per group.
+- `slice_max` and `slice_min` are helpful when picking 'topn'.
+
+    ```{python, echo = TRUE, eval = TRUE}
+    print(penguins_tidy.slice_max(n = 2, order_by_column = 'bill_length_mm', by = 'species'))
+    ```
+
+- `slice_sample` is helpful in sampling large dataframes reproducibly and allows stratified sampling by specifiying either the count of rows or the proportion.
+
+## Utilities to handle `NA`
+
+- `replace_na`: Replace missing values in a column or columns using either a dictionary or a predicate.
+- `fill_na`: Fill the missing values from upward/downward direction.
+
+:::: {style="display: flex;"}
+
+::: {}
+
+```{python, echo = TRUE, eval = TRUE}
+df = tidyframe(
+    pd.DataFrame({'A': [pd.NA, 1, 1, 2, 2, 3, pd.NA],
+                  'B': [pd.NA, pd.NA, 1, 2, pd.NA, pd.NA, 3],
+                  'C': [1, 2, 1, 2, 1, 2, 1]
+                 }
+                )
+              )
+print(df)
+```
+:::
+
+::: {}
+
+```{python, echo = TRUE, eval = TRUE}
+print(df.fill_na({'B': 'up'}, by = 'A'))
+```
+:::
+    
+::::
+
+## `getitem` and `setitem`
+
+These return a tidyframe:
+
+```{python, echo = TRUE, eval = FALSE}
+df[0:2, 1]
+df[0:1, 0:3]
+df[0:2, ['col_A', 'col_C']]
+df[lambda x: x['col_A'] > 2, :]
+```
+
+Get a column as a pandas series: `df.pull('col_A')`
+
+Assign to tidyframe inplace:
+
+```{python, echo = TRUE, eval = FALSE}
+df[0:2, 1] = [3, 4]
+df[0:2, 0:3] = tidyframe(pd.DataFrame({'A':[1, 2], 'B': [3, 4], 'C': [5, 6]}))
+```
+
+## Many  more methods
+
+- rbind/cbind
+- nest/unest
+- series utilities like `min_rank`, `coalease` etc
+- `simplify` utility to simplify pandas dataframes with multiindex
+
+## 
+
+<br>
+<br>
+<br>
+<br>
+<br>
+Why tidypandas
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+## `tidypandas` often creates compact code
+
+ - `tidypandas`
+
+    ```{python, echo = TRUE, eval = FALSE}
+    df.filter(lambda x: x['col_1'] > x['col_1'].mean(), by = 'col_2')
+    # df.filter("x['col_1'] > x['col_1'].mean()", by = 'col_2') # equivalent
+    ```
+
+ - `pandas`
+
+    ```{python, echo = TRUE, eval = FALSE}
+    (df.groupby('col2')
+       .apply(lambda x: x.loc[lambda y: y['col_1'] > y['col_1'].mean(), :])
+       .reset_index(drop = True)
+       )
+    ```
+
+## `tidypandas` keeps the focus on analysis, not the datastructure
+
+- `tidypandas`
+
+    ```{python, echo = TRUE, eval = FALSE}
+    (flights_tidy.mutate({'n_carriers': (n_distinct, 'carrier')}, by = 'dest')
+                 .filter('n_carriers > 1')
+                 .summarise({'n_dest': (n_distinct, 'dest')}, by = 'carrier')
+                 .arrange([('n_dest', 'desc')])
+                 )
+    ```
+
+- `pandas`
+
+    ```{python, echo = TRUE, eval = FALSE}
+    (flights.groupby('dest')
+            .apply(lambda x: x.assign(n_carriers = lambda x: x['carrier'].nunique()))
+            .reset_index()
+            .query('n_carriers > 1')
+            .groupby('carrier')
+            .agg({'dest': lambda x: x.nunique()})
+            .reset_index()
+            .rename(columns = {'dest': 'n_dest'})
+            .sort_values('n_dest', ascending = False, ignore_index = True)
+            )
+    ```
+
+## `tidypandas` is provides consistent output with verbs
+
+- `tidypandas`
+    
+    ```{python, echo = TRUE, eval = FALSE}
+    df[:, 'col_1']     # returns a tidyframe
+    df[:, ['col_1']]   # returns a tidyframe
+    df.count('col_1')  # returns a tidyframe
+    ```
+    
+- `pandas`
+    ```{python, echo = TRUE, eval = FALSE}
+    df[:, 'col_1']            # returns a series
+    df[:, ['col_1']]          # returns a dataframe
+    df.value_counts('col_1')  # returns a series
+    ```
+
+## `tidypandas` avoids multiindex
+
+- `tidypandas`
+    
+    ```{python, echo = TRUE, eval = TRUE}
+    print(penguins_tidy.pivot_wider(id_cols = 'island', names_from = ['sex', 'species'],
+                                    values_from = 'year', values_fn = np.mean))
+    ```
+    
+- `pandas`
+    ```{python, echo = TRUE, eval = TRUE}
+    pd.pivot_table(penguins, index = 'island', columns = ['sex', 'species'], values = 'year', aggfunc = "mean")
+    ```
+    
+## Performance
+
+- All code is written using pandas API, hence, `tidypandas` is as fast as we can get.
+- `tidypandas` avoids making copies unnecessarily.
+- `tidypandas` does more sometimes like flattening multiindex, or arranging data in original order. `tidypandas` balances for human productivity as first priority.
+
+## Last words
+
+- `tidypandas` was created out of love for frictionless analysis experience.
+- Human experience was kept in mind, we have tried to keep the **cognitive load** to the minimal. 
+- `tidyverse` methods were debated and adapted for a regular pythonista.
+- Authors believe in a **compact** toolset, **powerful** enough to solve large class of problems leads to *clean* and *maintainable* code.
+- More smiles, more thinking time, less typing/fixing time, lower carbon emissions ...
+- Thank you: Friends who have motivated, reviewers, family ...
+- Give it a spin, spread the word if you like it, write to use: bugs, ideas, philosophy ...
+- Yours: Srikanth and Ashish

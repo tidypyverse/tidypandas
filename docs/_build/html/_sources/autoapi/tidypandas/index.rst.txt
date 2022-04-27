@@ -204,6 +204,15 @@ Classes
       add_group_number:
           Returns a dataframe with group ids added
 
+   .. method:: 'nest' methods:
+
+      nest_by:
+          Returns a dataframe with nesting by the groupby columns
+      nest:
+          Returns a dataframe with nesting the columns
+      unnest:
+          Returns the unnested dataframe
+
 
 
 
@@ -3360,7 +3369,7 @@ Classes
 
       >>> from palmerpenguins import load_penguins
       >>> penguins_tidy = tidyframe(load_penguins())
-      >>> penguins_tidy.split(by = "species")
+      >>> penguins_tidy.split(by = "species")t
 
 
 

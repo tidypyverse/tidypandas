@@ -43,173 +43,22 @@ makes a copy).
     from palmerpenguins import load_penguins
     penguins      = load_penguins() # pandas dataframe
     penguins_tidy = tidyframe(penguins) # create a tidyframe from pandas dataframe
-    penguins_tidy
+    print(penguins_tidy)
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>species</th>
-      <th>island</th>
-      <th>bill_length_mm</th>
-      <th>bill_depth_mm</th>
-      <th>flipper_length_mm</th>
-      <th>body_mass_g</th>
-      <th>sex</th>
-      <th>year</th>
-    </tr>
-  </thead>
-  <tbody>
-<tr>
-<td style="color:#606060;font-style:oblique;"></td>
-<td style="color:#606060;font-style:oblique;">&lt;string&gt;</td>
-<td style="color:#606060;font-style:oblique;">&lt;string&gt;</td>
-<td style="color:#606060;font-style:oblique;">&lt;Float64&gt;</td>
-<td style="color:#606060;font-style:oblique;">&lt;Float64&gt;</td>
-<td style="color:#606060;font-style:oblique;">&lt;Int64&gt;</td>
-<td style="color:#606060;font-style:oblique;">&lt;Int64&gt;</td>
-<td style="color:#606060;font-style:oblique;">&lt;string&gt;</td>
-<td style="color:#606060;font-style:oblique;">&lt;Int64&gt;</td>
-</tr>
-    <tr>
-      <th>0</th>
-      <td>Adelie</td>
-      <td>Torgersen</td>
-      <td>39.1</td>
-      <td>18.7</td>
-      <td>181</td>
-      <td>3750</td>
-      <td>male</td>
-      <td>2007</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Adelie</td>
-      <td>Torgersen</td>
-      <td>39.5</td>
-      <td>17.4</td>
-      <td>186</td>
-      <td>3800</td>
-      <td>female</td>
-      <td>2007</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Adelie</td>
-      <td>Torgersen</td>
-      <td>40.3</td>
-      <td>18.0</td>
-      <td>195</td>
-      <td>3250</td>
-      <td>female</td>
-      <td>2007</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>Adelie</td>
-      <td>Torgersen</td>
-      <td>&lt;NA&gt;</td>
-      <td>&lt;NA&gt;</td>
-      <td>&lt;NA&gt;</td>
-      <td>&lt;NA&gt;</td>
-      <td>&lt;NA&gt;</td>
-      <td>2007</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>Adelie</td>
-      <td>Torgersen</td>
-      <td>36.7</td>
-      <td>19.3</td>
-      <td>193</td>
-      <td>3450</td>
-      <td>female</td>
-      <td>2007</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>339</th>
-      <td>Chinstrap</td>
-      <td>Dream</td>
-      <td>55.8</td>
-      <td>19.8</td>
-      <td>207</td>
-      <td>4000</td>
-      <td>male</td>
-      <td>2009</td>
-    </tr>
-    <tr>
-      <th>340</th>
-      <td>Chinstrap</td>
-      <td>Dream</td>
-      <td>43.5</td>
-      <td>18.1</td>
-      <td>202</td>
-      <td>3400</td>
-      <td>female</td>
-      <td>2009</td>
-    </tr>
-    <tr>
-      <th>341</th>
-      <td>Chinstrap</td>
-      <td>Dream</td>
-      <td>49.6</td>
-      <td>18.2</td>
-      <td>193</td>
-      <td>3775</td>
-      <td>male</td>
-      <td>2009</td>
-    </tr>
-    <tr>
-      <th>342</th>
-      <td>Chinstrap</td>
-      <td>Dream</td>
-      <td>50.8</td>
-      <td>19.0</td>
-      <td>210</td>
-      <td>4100</td>
-      <td>male</td>
-      <td>2009</td>
-    </tr>
-    <tr>
-      <th>343</th>
-      <td>Chinstrap</td>
-      <td>Dream</td>
-      <td>50.2</td>
-      <td>18.7</td>
-      <td>198</td>
-      <td>3775</td>
-      <td>female</td>
-      <td>2009</td>
-    </tr>
-  </tbody>
-</table>
-<p>344 rows × 8 columns</p>
-</div>
+    ## # A tidy dataframe: 344 X 8
+    ##    species     island  bill_length_mm  ...  body_mass_g      sex    year
+    ##   <string>   <string>       <Float64>  ...      <Int64> <string> <Int64>
+    ## 0   Adelie  Torgersen            39.1  ...         3750     male    2007
+    ## 1   Adelie  Torgersen            39.5  ...         3800   female    2007
+    ## 2   Adelie  Torgersen            40.3  ...         3250   female    2007
+    ## 3   Adelie  Torgersen            <NA>  ...         <NA>     <NA>    2007
+    ## 4   Adelie  Torgersen            36.7  ...         3450   female    2007
+    ## 5   Adelie  Torgersen            39.3  ...         3650     male    2007
+    ## 6   Adelie  Torgersen            38.9  ...         3625   female    2007
+    ## 7   Adelie  Torgersen            39.2  ...         4675     male    2007
+    ## 8   Adelie  Torgersen            34.1  ...         3475     <NA>    2007
+    ## 9   Adelie  Torgersen            42.0              4250     <NA>    2007
+    ## #... with 334 more rows
 
 ## Working with `tidyframe`s
 
@@ -234,49 +83,13 @@ methods or verbs.
 
 > example: Obtain count of birds per specie in the ‘Dream’ island
 
-    penguins_tidy.filter("island == 'Dream'").count('species')
+    print( penguins_tidy.filter("island == 'Dream'").count('species') )
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>species</th>
-      <th>n</th>
-    </tr>
-  </thead>
-  <tbody>
-<tr>
-<td style="color:#606060;font-style:oblique;"></td>
-<td style="color:#606060;font-style:oblique;">&lt;string&gt;</td>
-<td style="color:#606060;font-style:oblique;">&lt;int64&gt;</td>
-</tr>
-    <tr>
-      <th>0</th>
-      <td>Chinstrap</td>
-      <td>68</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Adelie</td>
-      <td>56</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+    ## # A tidy dataframe: 2 X 2
+    ##      species       n
+    ##     <string> <int64>
+    ## 0  Chinstrap      68
+    ## 1     Adelie      56
 
 ## Exporting a `tidyframe` to pandas
 

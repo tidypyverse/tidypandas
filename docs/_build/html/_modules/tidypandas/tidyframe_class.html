@@ -324,6 +324,13 @@
 <span class="sd">        add_group_number:</span>
 <span class="sd">            Returns a dataframe with group ids added</span>
 <span class="sd">    </span>
+<span class="sd">    &#39;nest&#39; methods:</span>
+<span class="sd">        nest_by:</span>
+<span class="sd">            Returns a dataframe with nesting by the groupby columns</span>
+<span class="sd">        nest:</span>
+<span class="sd">            Returns a dataframe with nesting the columns</span>
+<span class="sd">        unnest:</span>
+<span class="sd">            Returns the unnested dataframe</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     
     <span class="c1">##########################################################################</span>
@@ -388,40 +395,81 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__data</span> <span class="o">=</span> <span class="n">x</span>
         <span class="k">return</span> <span class="kc">None</span>
     
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        init</span>
+<span class="sd">        Create tidy dataframe from a &#39;simple&#39; ungrouped pandas dataframe</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x : &#39;simple&#39; pandas dataframe</span>
+<span class="sd">        check : bool, Default is True</span>
+<span class="sd">            Whether to check if the input pandas dataframe is &#39;simple&#39;</span>
+<span class="sd">        copy: bool, Default is True</span>
+<span class="sd">            Whether the tidyframe object to be created should refer </span>
+<span class="sd">            to a copy of the input pandas dataframe or the input itself</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        1. A pandas dataframe is said to be &#39;simple&#39; if:</span>
+<span class="sd">            a. Column names (x.columns) are an unnamed pd.Index object of </span>
+<span class="sd">               unique strings.</span>
+<span class="sd">            b. Row names (x.index) are an unnamed pd.RangeIndex object with </span>
+<span class="sd">               start = 0 and step = 1.</span>
+<span class="sd">        2. Unless you are sure, in general usage:</span>
+<span class="sd">            a. set arg &#39;check&#39; to `True`.</span>
+<span class="sd">            b. set arg `copy` to `True`.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tidyframe</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from palmerpenguins import load_penguins</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy = tidyframe(load_penguins())</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # create dataframe using dictionary</span>
+<span class="sd">        &gt;&gt;&gt; df = tidyframe({&#39;one&#39;: [1,2,3], &#39;two&#39;: [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;]})</span>
+<span class="sd">        &gt;&gt;&gt; df</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">check</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">copy</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;copy&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">check</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>\
+            <span class="s2">&quot;arg &#39;check&#39; should be a bool&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">copy</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>\
+            <span class="s2">&quot;arg &#39;copy&#39; should be a bool&quot;</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        
+        <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_simple</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">((</span><span class="s2">&quot;Input pandas dataframe could not be simplified&quot;</span>
+                                     <span class="s2">&quot; See to above warnings.&quot;</span>
+                                    <span class="p">))</span>
+        
+        <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>                       
+            <span class="bp">self</span><span class="o">.</span><span class="n">__data</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                            <span class="o">.</span><span class="n">convert_dtypes</span><span class="p">()</span>
+                            <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">)</span>
+                            <span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">_coerce_pdf</span><span class="p">)</span>
+                            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__data</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    
     <span class="c1">##########################################################################</span>
     <span class="c1"># repr</span>
     <span class="c1">##########################################################################</span>
-    <span class="c1"># def __repr__(self):</span>
-        
-    <span class="c1">#     nr = self.nrow</span>
-    <span class="c1">#     nc = self.ncol</span>
-        
-    <span class="c1">#     header_line   = f&quot;# A tidy dataframe: {nr} X {nc}&quot;</span>
-    <span class="c1">#     head_10 = self.__data.head(10)</span>
-    <span class="c1">#     # dtype_dict = _get_dtype_dict(self.__data)</span>
-    <span class="c1">#     # for akey in dtype_dict:</span>
-    <span class="c1">#     #     dtype_dict[akey] = akey +  &quot; (&quot; + dtype_dict[akey][0:3] + &quot;)&quot;</span>
-    <span class="c1">#     # </span>
-    <span class="c1">#     # head_10 = self.__data.head(10).rename(columns = dtype_dict)</span>
-    <span class="c1">#     pandas_str = head_10.__str__()</span>
-
-    <span class="c1">#     left_over = nr - 10</span>
-    <span class="c1">#     if left_over &gt; 0:</span>
-    <span class="c1">#         leftover_str = f&quot;# ... with {left_over} more rows&quot;</span>
-
-    <span class="c1">#         tidy_string = (header_line +</span>
-    <span class="c1">#                        &#39;\n&#39; +</span>
-    <span class="c1">#                        pandas_str +</span>
-    <span class="c1">#                        &#39;\n&#39; +</span>
-    <span class="c1">#                        leftover_str</span>
-    <span class="c1">#                        )</span>
-    <span class="c1">#     else:</span>
-    <span class="c1">#         tidy_string = (header_line +</span>
-    <span class="c1">#                        &#39;\n&#39; +</span>
-    <span class="c1">#                        pandas_str</span>
-    <span class="c1">#                        )</span>
-
-    <span class="c1">#     return tidy_string</span>
 
 <div class="viewcode-block" id="tidyframe.__repr__"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -432,8 +480,27 @@
         <span class="c1">#     self.info(buf=buf)</span>
         <span class="c1">#     return buf.getvalue()</span>
 
-        <span class="n">repr_params</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">get_dataframe_repr_params</span><span class="p">()</span>
+        <span class="c1"># repr_params = fmt.get_dataframe_repr_params()</span>
         <span class="c1"># return self.to_string(**repr_params)</span>
+
+        <span class="c1">## to support pandas version prior to 1.4.0 avoiding get_dataframe_repr_params()</span>
+        <span class="kn">from</span> <span class="nn">pandas.io.formats</span> <span class="kn">import</span> <span class="n">console</span>
+
+        <span class="k">if</span> <span class="n">get_option</span><span class="p">(</span><span class="s2">&quot;display.expand_frame_repr&quot;</span><span class="p">):</span>
+            <span class="n">line_width</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">console</span><span class="o">.</span><span class="n">get_console_size</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">line_width</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">repr_params</span> <span class="o">=</span>  <span class="p">{</span>
+            <span class="s2">&quot;max_rows&quot;</span><span class="p">:</span> <span class="n">get_option</span><span class="p">(</span><span class="s2">&quot;display.max_rows&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;min_rows&quot;</span><span class="p">:</span> <span class="n">get_option</span><span class="p">(</span><span class="s2">&quot;display.min_rows&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;max_cols&quot;</span><span class="p">:</span> <span class="n">get_option</span><span class="p">(</span><span class="s2">&quot;display.max_columns&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;max_colwidth&quot;</span><span class="p">:</span> <span class="n">get_option</span><span class="p">(</span><span class="s2">&quot;display.max_colwidth&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;show_dimensions&quot;</span><span class="p">:</span> <span class="n">get_option</span><span class="p">(</span><span class="s2">&quot;display.show_dimensions&quot;</span><span class="p">),</span>
+            <span class="s2">&quot;line_width&quot;</span><span class="p">:</span> <span class="n">line_width</span><span class="p">,</span>
+        <span class="p">}</span>
+
+
 
         <span class="n">nr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span>
         <span class="n">nc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span>
@@ -464,8 +531,6 @@
                 <span class="n">formatted_str</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">footer_str</span>
             <span class="k">return</span> <span class="n">formatted_str</span></div>
 
-    <span class="c1"># def _repr_html_(self):</span>
-    <span class="c1">#     return self.__data._repr_html_()</span>
 
 <div class="viewcode-block" id="tidyframe._repr_html_"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe._repr_html_">[docs]</a>    <span class="k">def</span> <span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -3935,7 +4000,8 @@
                              <span class="p">,</span> <span class="n">dropna</span>     <span class="o">=</span> <span class="kc">False</span>
                              <span class="p">,</span> <span class="n">observed</span>   <span class="o">=</span> <span class="kc">True</span>
                              <span class="p">)</span>
-        <span class="k">return</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">res</span><span class="p">)</span></div>
+        
+        <span class="k">return</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">simplify</span><span class="p">(</span><span class="n">res</span><span class="p">),</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="tidyframe.pivot_longer"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.pivot_longer">[docs]</a>    <span class="k">def</span> <span class="nf">pivot_longer</span><span class="p">(</span><span class="bp">self</span>
                      <span class="p">,</span> <span class="n">cols</span>
@@ -5635,7 +5701,7 @@
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; from palmerpenguins import load_penguins</span>
 <span class="sd">        &gt;&gt;&gt; penguins_tidy = tidyframe(load_penguins())</span>
-<span class="sd">        &gt;&gt;&gt; penguins_tidy.split(by = &quot;species&quot;)</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.split(by = &quot;species&quot;)t</span>
 <span class="sd">        </span>
 <span class="sd">        </span>
 <span class="sd">        &#39;&#39;&#39;</span>

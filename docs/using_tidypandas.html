@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2022-04-22" />
+<meta name="date" content="2022-04-27" />
 
 <title>Using tidypandas</title>
 
@@ -165,7 +165,7 @@ pre code {
 
 
 <h1 class="title toc-ignore">Using tidypandas</h1>
-<h4 class="date">2022-04-22</h4>
+<h4 class="date">2022-04-27</h4>
 
 </div>
 
@@ -207,172 +207,21 @@ from tidypandas.tidy_accessor import tp</code></pre>
 <pre class="python"><code>from palmerpenguins import load_penguins
 penguins      = load_penguins() # pandas dataframe
 penguins_tidy = tidyframe(penguins) # create a tidyframe from pandas dataframe
-penguins_tidy</code></pre>
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>species</th>
-      <th>island</th>
-      <th>bill_length_mm</th>
-      <th>bill_depth_mm</th>
-      <th>flipper_length_mm</th>
-      <th>body_mass_g</th>
-      <th>sex</th>
-      <th>year</th>
-    </tr>
-  </thead>
-  <tbody>
-<tr>
-<td style="color:#606060;font-style:oblique;"></td>
-<td style="color:#606060;font-style:oblique;">&lt;string&gt;</td>
-<td style="color:#606060;font-style:oblique;">&lt;string&gt;</td>
-<td style="color:#606060;font-style:oblique;">&lt;Float64&gt;</td>
-<td style="color:#606060;font-style:oblique;">&lt;Float64&gt;</td>
-<td style="color:#606060;font-style:oblique;">&lt;Int64&gt;</td>
-<td style="color:#606060;font-style:oblique;">&lt;Int64&gt;</td>
-<td style="color:#606060;font-style:oblique;">&lt;string&gt;</td>
-<td style="color:#606060;font-style:oblique;">&lt;Int64&gt;</td>
-</tr>
-    <tr>
-      <th>0</th>
-      <td>Adelie</td>
-      <td>Torgersen</td>
-      <td>39.1</td>
-      <td>18.7</td>
-      <td>181</td>
-      <td>3750</td>
-      <td>male</td>
-      <td>2007</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Adelie</td>
-      <td>Torgersen</td>
-      <td>39.5</td>
-      <td>17.4</td>
-      <td>186</td>
-      <td>3800</td>
-      <td>female</td>
-      <td>2007</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>Adelie</td>
-      <td>Torgersen</td>
-      <td>40.3</td>
-      <td>18.0</td>
-      <td>195</td>
-      <td>3250</td>
-      <td>female</td>
-      <td>2007</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>Adelie</td>
-      <td>Torgersen</td>
-      <td>&lt;NA&gt;</td>
-      <td>&lt;NA&gt;</td>
-      <td>&lt;NA&gt;</td>
-      <td>&lt;NA&gt;</td>
-      <td>&lt;NA&gt;</td>
-      <td>2007</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>Adelie</td>
-      <td>Torgersen</td>
-      <td>36.7</td>
-      <td>19.3</td>
-      <td>193</td>
-      <td>3450</td>
-      <td>female</td>
-      <td>2007</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>339</th>
-      <td>Chinstrap</td>
-      <td>Dream</td>
-      <td>55.8</td>
-      <td>19.8</td>
-      <td>207</td>
-      <td>4000</td>
-      <td>male</td>
-      <td>2009</td>
-    </tr>
-    <tr>
-      <th>340</th>
-      <td>Chinstrap</td>
-      <td>Dream</td>
-      <td>43.5</td>
-      <td>18.1</td>
-      <td>202</td>
-      <td>3400</td>
-      <td>female</td>
-      <td>2009</td>
-    </tr>
-    <tr>
-      <th>341</th>
-      <td>Chinstrap</td>
-      <td>Dream</td>
-      <td>49.6</td>
-      <td>18.2</td>
-      <td>193</td>
-      <td>3775</td>
-      <td>male</td>
-      <td>2009</td>
-    </tr>
-    <tr>
-      <th>342</th>
-      <td>Chinstrap</td>
-      <td>Dream</td>
-      <td>50.8</td>
-      <td>19.0</td>
-      <td>210</td>
-      <td>4100</td>
-      <td>male</td>
-      <td>2009</td>
-    </tr>
-    <tr>
-      <th>343</th>
-      <td>Chinstrap</td>
-      <td>Dream</td>
-      <td>50.2</td>
-      <td>18.7</td>
-      <td>198</td>
-      <td>3775</td>
-      <td>female</td>
-      <td>2009</td>
-    </tr>
-  </tbody>
-</table>
-<p>344 rows × 8 columns</p>
-</div>
+print(penguins_tidy)</code></pre>
+<pre><code>## # A tidy dataframe: 344 X 8
+##    species     island  bill_length_mm  ...  body_mass_g      sex    year
+##   &lt;string&gt;   &lt;string&gt;       &lt;Float64&gt;  ...      &lt;Int64&gt; &lt;string&gt; &lt;Int64&gt;
+## 0   Adelie  Torgersen            39.1  ...         3750     male    2007
+## 1   Adelie  Torgersen            39.5  ...         3800   female    2007
+## 2   Adelie  Torgersen            40.3  ...         3250   female    2007
+## 3   Adelie  Torgersen            &lt;NA&gt;  ...         &lt;NA&gt;     &lt;NA&gt;    2007
+## 4   Adelie  Torgersen            36.7  ...         3450   female    2007
+## 5   Adelie  Torgersen            39.3  ...         3650     male    2007
+## 6   Adelie  Torgersen            38.9  ...         3625   female    2007
+## 7   Adelie  Torgersen            39.2  ...         4675     male    2007
+## 8   Adelie  Torgersen            34.1  ...         3475     &lt;NA&gt;    2007
+## 9   Adelie  Torgersen            42.0              4250     &lt;NA&gt;    2007
+## #... with 334 more rows</code></pre>
 </div>
 <div id="working-with-tidyframes" class="section level2">
 <h2>Working with <code>tidyframe</code>s</h2>
@@ -392,48 +241,12 @@ penguins_tidy</code></pre>
 <blockquote>
 <p>example: Obtain count of birds per specie in the ‘Dream’ island</p>
 </blockquote>
-<pre class="python"><code>penguins_tidy.filter(&quot;island == &#39;Dream&#39;&quot;).count(&#39;species&#39;)</code></pre>
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>species</th>
-      <th>n</th>
-    </tr>
-  </thead>
-  <tbody>
-<tr>
-<td style="color:#606060;font-style:oblique;"></td>
-<td style="color:#606060;font-style:oblique;">&lt;string&gt;</td>
-<td style="color:#606060;font-style:oblique;">&lt;int64&gt;</td>
-</tr>
-    <tr>
-      <th>0</th>
-      <td>Chinstrap</td>
-      <td>68</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>Adelie</td>
-      <td>56</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+<pre class="python"><code>print( penguins_tidy.filter(&quot;island == &#39;Dream&#39;&quot;).count(&#39;species&#39;) )</code></pre>
+<pre><code>## # A tidy dataframe: 2 X 2
+##      species       n
+##     &lt;string&gt; &lt;int64&gt;
+## 0  Chinstrap      68
+## 1     Adelie      56</code></pre>
 </div>
 <div id="exporting-a-tidyframe-to-pandas" class="section level2">
 <h2>Exporting a <code>tidyframe</code> to pandas</h2>
