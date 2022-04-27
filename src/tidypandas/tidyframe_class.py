@@ -269,8 +269,27 @@ class tidyframe:
         #     self.info(buf=buf)
         #     return buf.getvalue()
 
-        repr_params = fmt.get_dataframe_repr_params()
+        # repr_params = fmt.get_dataframe_repr_params()
         # return self.to_string(**repr_params)
+
+        ## to support pandas version prior to 1.4.0 avoiding get_dataframe_repr_params()
+        from pandas.io.formats import console
+
+        if get_option("display.expand_frame_repr"):
+            line_width, _ = console.get_console_size()
+        else:
+            line_width = None
+
+        repr_params =  {
+            "max_rows": get_option("display.max_rows"),
+            "min_rows": get_option("display.min_rows"),
+            "max_cols": get_option("display.max_columns"),
+            "max_colwidth": get_option("display.max_colwidth"),
+            "show_dimensions": get_option("display.show_dimensions"),
+            "line_width": line_width,
+        }
+
+
 
         nr = self.nrow
         nc = self.ncol
