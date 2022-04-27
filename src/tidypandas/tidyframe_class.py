@@ -161,6 +161,13 @@ class tidyframe:
         add_group_number:
             Returns a dataframe with group ids added
     
+    'nest' methods:
+        nest_by:
+            Returns a dataframe with nesting by the groupby columns
+        nest:
+            Returns a dataframe with nesting the columns
+        unnest:
+            Returns the unnested dataframe
     '''
     
     ##########################################################################
@@ -225,40 +232,81 @@ class tidyframe:
             self.__data = x
         return None
     
+    def __init__(self, *args, **kwargs):
+        '''
+        init
+        Create tidy dataframe from a 'simple' ungrouped pandas dataframe
+
+        Parameters
+        ----------
+        x : 'simple' pandas dataframe
+        check : bool, Default is True
+            Whether to check if the input pandas dataframe is 'simple'
+        copy: bool, Default is True
+            Whether the tidyframe object to be created should refer 
+            to a copy of the input pandas dataframe or the input itself
+
+        Notes
+        -----
+        1. A pandas dataframe is said to be 'simple' if:
+            a. Column names (x.columns) are an unnamed pd.Index object of 
+               unique strings.
+            b. Row names (x.index) are an unnamed pd.RangeIndex object with 
+               start = 0 and step = 1.
+        2. Unless you are sure, in general usage:
+            a. set arg 'check' to `True`.
+            b. set arg `copy` to `True`.
+        
+        Returns
+        -------
+        tidyframe
+        
+        Examples
+        --------
+        >>> from palmerpenguins import load_penguins
+        >>> penguins_tidy = tidyframe(load_penguins())
+        >>> penguins_tidy
+        >>>
+        >>> # create dataframe using dictionary
+        >>> df = tidyframe({'one': [1,2,3], 'two': ['a', 'b', 'c']})
+        >>> df
+        '''
+        
+        check = kwargs.get("bool", True)
+        copy = kwargs.get("copy", True)
+        
+        assert isinstance(check, bool),\
+            "arg 'check' should be a bool"
+        assert isinstance(copy, bool),\
+            "arg 'copy' should be a bool"
+        
+        if len(args) == 1 and isinstance(args[0], pd.DataFrame):
+            x = args[0]
+        else:
+            x = pd.DataFrame(args[0])
+        
+        if check:
+            if not is_simple(x, verbose = True):
+                try:
+                    x = simplify(x, verbose = True)
+                except:
+                    raise Exception(("Input pandas dataframe could not be simplified"
+                                     " See to above warnings."
+                                    ))
+        
+        if copy:                       
+            self.__data = (x.copy()
+                            .convert_dtypes()
+                            .fillna(pd.NA)
+                            .pipe(_coerce_pdf)
+                            )
+        else:
+            self.__data = x
+        return None
+    
     ##########################################################################
     # repr
     ##########################################################################
-    # def __repr__(self):
-        
-    #     nr = self.nrow
-    #     nc = self.ncol
-        
-    #     header_line   = f"# A tidy dataframe: {nr} X {nc}"
-    #     head_10 = self.__data.head(10)
-    #     # dtype_dict = _get_dtype_dict(self.__data)
-    #     # for akey in dtype_dict:
-    #     #     dtype_dict[akey] = akey +  " (" + dtype_dict[akey][0:3] + ")"
-    #     # 
-    #     # head_10 = self.__data.head(10).rename(columns = dtype_dict)
-    #     pandas_str = head_10.__str__()
-
-    #     left_over = nr - 10
-    #     if left_over > 0:
-    #         leftover_str = f"# ... with {left_over} more rows"
-
-    #         tidy_string = (header_line +
-    #                        '\n' +
-    #                        pandas_str +
-    #                        '\n' +
-    #                        leftover_str
-    #                        )
-    #     else:
-    #         tidy_string = (header_line +
-    #                        '\n' +
-    #                        pandas_str
-    #                        )
-
-    #     return tidy_string
 
     def __repr__(self) -> str:
         """
@@ -320,8 +368,6 @@ class tidyframe:
                 formatted_str += "\n" + footer_str
             return formatted_str
 
-    # def _repr_html_(self):
-    #     return self.__data._repr_html_()
 
     def _repr_html_(self):
         """
@@ -3791,7 +3837,8 @@ class tidyframe:
                              , dropna     = False
                              , observed   = True
                              )
-        return tidyframe(res)
+        
+        return tidyframe(simplify(res), copy = False, check = False)
     
     def pivot_longer(self
                      , cols
@@ -5491,7 +5538,7 @@ class tidyframe:
         --------
         >>> from palmerpenguins import load_penguins
         >>> penguins_tidy = tidyframe(load_penguins())
-        >>> penguins_tidy.split(by = "species")
+        >>> penguins_tidy.split(by = "species")t
         
         
         '''

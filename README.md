@@ -1,3 +1,6 @@
+[![PyPI
+version](https://badge.fury.io/py/tidypandas.svg)](https://badge.fury.io/py/tidypandas)
+
 # `tidypandas`
 
 > A **grammar of data manipulation** for
@@ -34,7 +37,7 @@ data manipulation tasks:
 <!-- -->
 
     (df.groupby('col2')
-       .apply(lambda x: x.loc(lambda y: y['col_1'] > y['col_1'].mean()))
+       .apply(lambda x: x.loc[lambda y: y['col_1'] > y['col_1'].mean(), :])
        .reset_index(drop = True)
        )
 
