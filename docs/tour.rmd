@@ -39,16 +39,6 @@ reticulate::use_virtualenv("~/.cache/pypoetry/virtualenvs/tidypandas-cfuMUHaV-py
 from tidypandas import tidyframe
 from tidypandas.series_utils import *
 from plotnine import *
-
-# for plotnine: some column need downcasting from nullable types
-def downcast_dtypes(pdf):
-    from pandas.api import types
-    cn = list(pdf.columns)
-    pdf2 = pdf.copy()
-    for acolname in cn:
-        if types.is_numeric_dtype(pdf[acolname]):
-            pdf2[acolname] = pd.to_numeric(pdf2[acolname].astype('string'), downcast = 'integer')
-    return pdf2
 ```
 
 ## Load and Display `flights` data
@@ -108,7 +98,7 @@ data_for_plot = (out.pivot_longer(cols = ['avg_dep_delay', 'avg_arr_delay'],
                     )
 print(data_for_plot)
 
-(ggplot(downcast_dtypes(data_for_plot.to_pandas()),
+(ggplot(data_for_plot.to_pandas(),
         aes('value', 'cancelled_prop', color = 'delay_type')
         ) +
     geom_point() +
@@ -152,7 +142,7 @@ age_delay_stats_frame = \
                )
 print(age_delay_stats_frame)
 
-(ggplot(age_delay_stats_frame.to_pandas().pipe(downcast_dtypes), aes('age', 'mean_arr_delay')) +
+(ggplot(age_delay_stats_frame.to_pandas(), aes('age', 'mean_arr_delay')) +
      geom_point() +
      xlim(0, 20) +
      ylim(0, 11)

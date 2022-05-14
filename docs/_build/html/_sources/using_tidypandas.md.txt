@@ -47,17 +47,17 @@ makes a copy).
 
     ## # A tidy dataframe: 344 X 8
     ##    species     island  bill_length_mm  ...  body_mass_g      sex    year
-    ##   <string>   <string>       <Float64>  ...      <Int64> <string> <Int64>
-    ## 0   Adelie  Torgersen            39.1  ...         3750     male    2007
-    ## 1   Adelie  Torgersen            39.5  ...         3800   female    2007
-    ## 2   Adelie  Torgersen            40.3  ...         3250   female    2007
-    ## 3   Adelie  Torgersen            <NA>  ...         <NA>     <NA>    2007
-    ## 4   Adelie  Torgersen            36.7  ...         3450   female    2007
-    ## 5   Adelie  Torgersen            39.3  ...         3650     male    2007
-    ## 6   Adelie  Torgersen            38.9  ...         3625   female    2007
-    ## 7   Adelie  Torgersen            39.2  ...         4675     male    2007
-    ## 8   Adelie  Torgersen            34.1  ...         3475     <NA>    2007
-    ## 9   Adelie  Torgersen            42.0              4250     <NA>    2007
+    ##   <object>   <object>       <float64>  ...    <float64> <object> <int64>
+    ## 0   Adelie  Torgersen            39.1  ...       3750.0     male    2007
+    ## 1   Adelie  Torgersen            39.5  ...       3800.0   female    2007
+    ## 2   Adelie  Torgersen            40.3  ...       3250.0   female    2007
+    ## 3   Adelie  Torgersen             NaN  ...          NaN      NaN    2007
+    ## 4   Adelie  Torgersen            36.7  ...       3450.0   female    2007
+    ## 5   Adelie  Torgersen            39.3  ...       3650.0     male    2007
+    ## 6   Adelie  Torgersen            38.9  ...       3625.0   female    2007
+    ## 7   Adelie  Torgersen            39.2  ...       4675.0     male    2007
+    ## 8   Adelie  Torgersen            34.1  ...       3475.0      NaN    2007
+    ## 9   Adelie  Torgersen            42.0            4250.0      NaN    2007
     ## #... with 334 more rows
 
 ## Working with `tidyframe`s
@@ -87,7 +87,7 @@ methods or verbs.
 
     ## # A tidy dataframe: 2 X 2
     ##      species       n
-    ##     <string> <int64>
+    ##     <object> <int64>
     ## 0  Chinstrap      68
     ## 1     Adelie      56
 
@@ -106,11 +106,11 @@ dataframe. The methods should be prepended by `tp` (short for
     penguins.tp.slice([0, 1], by = 'species')
 
     ##      species     island  bill_length_mm  ...  body_mass_g     sex  year
-    ## 0     Adelie  Torgersen            39.1  ...         3750    male  2007
-    ## 1     Adelie  Torgersen            39.5  ...         3800  female  2007
-    ## 2     Gentoo     Biscoe            46.1  ...         4500  female  2007
-    ## 3     Gentoo     Biscoe            50.0  ...         5700    male  2007
-    ## 4  Chinstrap      Dream            46.5  ...         3500  female  2007
-    ## 5  Chinstrap      Dream            50.0  ...         3900    male  2007
+    ## 0     Adelie  Torgersen            39.1  ...       3750.0    male  2007
+    ## 1     Adelie  Torgersen            39.5  ...       3800.0  female  2007
+    ## 2     Gentoo     Biscoe            46.1  ...       4500.0  female  2007
+    ## 3     Gentoo     Biscoe            50.0  ...       5700.0    male  2007
+    ## 4  Chinstrap      Dream            46.5  ...       3500.0  female  2007
+    ## 5  Chinstrap      Dream            50.0  ...       3900.0    male  2007
     ## 
     ## [6 rows x 8 columns]

@@ -49,11 +49,6 @@ def simplify(pdf
     names do not clash with the existing column names of the dataframe. Row
     indexes without a name are dropped.
     
-    Additionally, 
-        1. string columns stored as object are converted to string dtype
-        via 'convert_dtypes' method.
-        2. All missing values are replaced by pandas NA type.
-    
     Examples
     --------
     >>> from nycflights13 import flights
@@ -164,10 +159,6 @@ def simplify(pdf
     if verbose:
         print("Successfully simplified!")
     
-    # simplify dtypes and maintain standard NAs
-    pdf = pdf.convert_dtypes().fillna(pd.NA)
-    
-    pdf = _coerce_pdf(pdf)
     return pdf
 
 # -----------------------------------------------------------------------------

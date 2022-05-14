@@ -161,7 +161,6 @@ def test_summarise_groupby(penguins_data):
                             .apply(lambda x: np.mean(x["year"]))\
                             .reset_index().rename(columns={0: "a_mean"})\
                             .sort_values(["species", "sex"]).reset_index(drop=True)
-    expected = expected.convert_dtypes()
 
 
     result = penguins_tidy.summarise({"a_mean": (np.mean, 'year')},
@@ -176,7 +175,6 @@ def test_summarise_groupby(penguins_data):
                             .apply(lambda x: np.mean(x["year"]) + 4)\
                             .reset_index().rename(columns={0: "a_mean"})\
                             .sort_values(["species", "sex"]).reset_index(drop=True)
-    expected = expected.convert_dtypes()
 
     result = penguins_tidy.summarise(
                               {"a_mean": lambda x, **kwargs: x['year'].mean() + kwargs['leap']}
@@ -191,7 +189,6 @@ def test_summarise_groupby(penguins_data):
                                               .add_prefix("avg_"))\
                             .reset_index()\
                             .sort_values(["species", "sex"]).reset_index(drop=True)
-    expected = expected.convert_dtypes()
 
     result = penguins_tidy.summarise(
                                       func = np.mean,
@@ -205,7 +202,7 @@ def test_summarise_groupby(penguins_data):
 def test_select(penguins_data):
     penguins_tidy = tidyframe(penguins_data, copy=False)
 
-    sel_cols = penguins_data.convert_dtypes().columns[penguins_data.convert_dtypes().apply(lambda x: x.dtype != "string", axis=0)]
+    sel_cols = penguins_data.columns[penguins_data.apply(lambda x: x.dtype != "string", axis=0)]
     expected = penguins_data.loc[:, sel_cols]
     result = penguins_tidy.select(predicate = lambda x: x.dtype != "string").to_pandas()
     assert_frame_equal_v2(expected, result)
@@ -233,13 +230,12 @@ def test_slice(penguins_data):
     penguins_tidy = tidyframe(penguins_data)
     
     # simple slice
-    exp = penguins_data.convert_dtypes().iloc[range(2, 5), :].reset_index(drop = True)
+    exp = penguins_data.iloc[range(2, 5), :].reset_index(drop = True)
     res = penguins_tidy.slice(range(2, 5)).to_pandas()
     assert_frame_equal_v2(exp, res)
 
     # grouped slice
-    exp = (penguins_data.convert_dtypes()
-                        .groupby('species')
+    exp = (penguins_data.groupby('species')
                         .apply(lambda x: x.iloc[range(2, 5), :])
                         .reset_index(drop = True)
                         )
@@ -250,8 +246,7 @@ def test_slice(penguins_data):
     assert_frame_equal_v2(exp, res)
     
     # simple slice head
-    exp = (penguins_data.convert_dtypes()
-                        .iloc[range(3), :]
+    exp = (penguins_data.iloc[range(3), :]
                         .reset_index(drop = True)
                         )
                         
@@ -259,8 +254,7 @@ def test_slice(penguins_data):
     assert_frame_equal_v2(exp, res)
     
     # grouped slice head
-    exp = (penguins_data.convert_dtypes()
-                        .groupby('species')
+    exp = (penguins_data.groupby('species')
                         .apply(lambda x: x.iloc[range(3), :])
                         .reset_index(drop = True)
                         )
@@ -272,8 +266,7 @@ def test_slice(penguins_data):
     assert_frame_equal_v2(exp, res)
     
     # simple slice tail
-    exp = (penguins_data.convert_dtypes()
-                        .tail(3)
+    exp = (penguins_data.tail(3)
                         .reset_index(drop = True)
                         )
                         
@@ -281,8 +274,7 @@ def test_slice(penguins_data):
     assert_frame_equal_v2(exp, res)
     
     # grouped slice tail
-    exp = (penguins_data.convert_dtypes()
-                        .groupby('species')
+    exp = (penguins_data.groupby('species')
                         .apply(lambda x: x.tail(3))
                         .reset_index(drop = True)
                         )
@@ -294,35 +286,32 @@ def test_slice(penguins_data):
     assert_frame_equal_v2(exp, res)
   
     # simple slice_max
-    exp = (penguins_data.convert_dtypes()
-                        .nlargest(3, 'bill_length_mm')
+    exp = (penguins_data.nlargest(3, 'bill_length_mm')
                         .sort_values('bill_length_mm')
                         .reset_index(drop = True)
                         )
                         
-    res = (penguins_tidy.slice_max(n = 3, order_by_column = 'bill_length_mm')
+    res = (penguins_tidy.slice_max(n = 3, order_by_column = 'bill_length_mm', with_ties = False)
                         .arrange('bill_length_mm')
                         .to_pandas()
                         )
     assert_frame_equal_v2(exp, res)
     
     # grouped slice_max
-    exp = (penguins_data.convert_dtypes()
-                        .groupby('species')
+    exp = (penguins_data.groupby('species')
                         .apply(lambda x: x.nlargest(3, 'bill_length_mm'))
                         .reset_index(drop = True)
                         .sort_values('bill_length_mm', ignore_index = True)
                         )
                         
-    res = (penguins_tidy.slice_max(n = 3, order_by_column = 'bill_length_mm', by = 'species')
+    res = (penguins_tidy.slice_max(n = 3, order_by_column = 'bill_length_mm', by = 'species', with_ties = False)
                         .arrange('bill_length_mm')
                         .to_pandas()
                         )
     assert_frame_equal_v2(exp, res)
 
     # simple slice_minn
-    exp = (penguins_data.convert_dtypes()
-                        .nsmallest(3, 'bill_length_mm')
+    exp = (penguins_data.nsmallest(3, 'bill_length_mm')
                         .sort_values('bill_length_mm')
                         .reset_index(drop = True)
                         )
@@ -334,8 +323,7 @@ def test_slice(penguins_data):
     assert_frame_equal_v2(exp, res)
 
     # grouped slice_min
-    exp = (penguins_data.convert_dtypes()
-                        .groupby('species')
+    exp = (penguins_data.groupby('species')
                         .apply(lambda x: x.nsmallest(3, 'bill_length_mm'))
                         .reset_index(drop = True)
                         .sort_values(['bill_length_mm', 'species'], ignore_index = True)

@@ -174,64 +174,6 @@ class tidyframe:
     # init
     ##########################################################################
     
-    def __init__(self, x, check = True, copy = True):
-        '''
-        init
-        Create tidy dataframe from a 'simple' ungrouped pandas dataframe
-
-        Parameters
-        ----------
-        x : 'simple' pandas dataframe
-        check : bool, Default is True
-            Whether to check if the input pandas dataframe is 'simple'
-        copy: bool, Default is True
-            Whether the tidyframe object to be created should refer 
-            to a copy of the input pandas dataframe or the input itself
-
-        Notes
-        -----
-        1. A pandas dataframe is said to be 'simple' if:
-            a. Column names (x.columns) are an unnamed pd.Index object of 
-               unique strings.
-            b. Row names (x.index) are an unnamed pd.RangeIndex object with 
-               start = 0 and step = 1.
-        2. Unless you are sure, in general usage:
-            a. set arg 'check' to `True`.
-            b. set arg `copy` to `True`.
-        
-        Returns
-        -------
-        tidyframe
-        
-        Examples
-        --------
-        >>> from palmerpenguins import load_penguins
-        >>> penguins_tidy = tidyframe(load_penguins())
-        >>> penguins_tidy
-        '''
-        assert isinstance(check, bool),\
-            "arg 'check' should be a bool"
-        assert isinstance(copy, bool),\
-            "arg 'copy' should be a bool"
-        if check:
-            if not is_simple(x, verbose = True):
-                try:
-                    x = simplify(x, verbose = True)
-                except:
-                    raise Exception(("Input pandas dataframe could not be simplified"
-                                     " See to above warnings."
-                                    ))
-        
-        if copy:                       
-            self.__data = (x.copy()
-                            .convert_dtypes()
-                            .fillna(pd.NA)
-                            .pipe(_coerce_pdf)
-                            )
-        else:
-            self.__data = x
-        return None
-    
     def __init__(self, *args, **kwargs):
         '''
         init
@@ -272,8 +214,8 @@ class tidyframe:
         >>> df
         '''
         
-        check = kwargs.get("bool", True)
-        copy = kwargs.get("copy", True)
+        check = kwargs.get("check", True)
+        copy  = kwargs.get("copy", True)
         
         assert isinstance(check, bool),\
             "arg 'check' should be a bool"
@@ -293,13 +235,9 @@ class tidyframe:
                     raise Exception(("Input pandas dataframe could not be simplified"
                                      " See to above warnings."
                                     ))
-        
+            
         if copy:                       
-            self.__data = (x.copy()
-                            .convert_dtypes()
-                            .fillna(pd.NA)
-                            .pipe(_coerce_pdf)
-                            )
+            self.__data = x.copy()
         else:
             self.__data = x
         return None
@@ -4902,7 +4840,7 @@ class tidyframe:
         >>> penguins_tidy.replace_na({'sex': 'unknown'})
         >>> penguins_tidy.select(predicate = dtypes.is_numeric_dtype).replace_na(1)
         '''
-        return tidyframe(self.__data.fillna(value).fillna(pd.NA)
+        return tidyframe(self.__data.fillna(value)
                           , copy = False
                           , check = False
                           )
@@ -5335,8 +5273,8 @@ class tidyframe:
         # add data into nest_column_name column
         if drop_by:
             res[nest_column_name] = (
-                pd.Series(map(lambda x: x.drop(columns = by)
-                              , dict(tuple(go)).values()
+                pd.Series(map(lambda x: x.drop(columns = by).reset_index(drop = True),
+                              dict(tuple(go)).values()
                               )
                           )
                 )
@@ -5344,18 +5282,20 @@ class tidyframe:
             # drop the extra column in the nested column
             if extra:
                 res[nest_column_name] = (
-                    pd.Series(map(lambda x: x.drop(columns = new_colname)
-                                  , dict(tuple(go)).values()
+                    pd.Series(map(lambda x: x.drop(columns = new_colname).reset_index(drop = True),
+                                  dict(tuple(go)).values()
                                   )
                               )
                     )
             else:
-                res[nest_column_name] = pd.Series(dict(tuple(go)).values())
+                res[nest_column_name] =\
+                    pd.Series(map(lambda x: x.reset_index(drop = True),
+                                  dict(tuple(go)).values()
+                                  )
+                              )
         
         if extra:
             res = res.drop(columns = new_colname)
-        
-        res = res.convert_dtypes().fillna(pd.NA)
         
         res[nest_column_name] = ( 
             res[nest_column_name].apply(lambda x: tidyframe(
@@ -5707,7 +5647,7 @@ class tidyframe:
       >>> # assign a subset with another tidyframe
       >>> penguins_tidy[0:2, 0:2] = pd.DataFrame({'species': ['d', 'e']
       >>>                                         , 'island': ['f', 'g']
-      >>>                                         }).pipe(tidyframe)
+      >>>                                      ""   }).pipe(tidyframe)
       >>> penguins_tidy[0:5, :]
       '''
       cn = self.colnames

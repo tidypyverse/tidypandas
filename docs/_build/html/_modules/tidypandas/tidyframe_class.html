@@ -337,64 +337,6 @@
     <span class="c1"># init</span>
     <span class="c1">##########################################################################</span>
     
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        init</span>
-<span class="sd">        Create tidy dataframe from a &#39;simple&#39; ungrouped pandas dataframe</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        x : &#39;simple&#39; pandas dataframe</span>
-<span class="sd">        check : bool, Default is True</span>
-<span class="sd">            Whether to check if the input pandas dataframe is &#39;simple&#39;</span>
-<span class="sd">        copy: bool, Default is True</span>
-<span class="sd">            Whether the tidyframe object to be created should refer </span>
-<span class="sd">            to a copy of the input pandas dataframe or the input itself</span>
-
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        1. A pandas dataframe is said to be &#39;simple&#39; if:</span>
-<span class="sd">            a. Column names (x.columns) are an unnamed pd.Index object of </span>
-<span class="sd">               unique strings.</span>
-<span class="sd">            b. Row names (x.index) are an unnamed pd.RangeIndex object with </span>
-<span class="sd">               start = 0 and step = 1.</span>
-<span class="sd">        2. Unless you are sure, in general usage:</span>
-<span class="sd">            a. set arg &#39;check&#39; to `True`.</span>
-<span class="sd">            b. set arg `copy` to `True`.</span>
-<span class="sd">        </span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        tidyframe</span>
-<span class="sd">        </span>
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; from palmerpenguins import load_penguins</span>
-<span class="sd">        &gt;&gt;&gt; penguins_tidy = tidyframe(load_penguins())</span>
-<span class="sd">        &gt;&gt;&gt; penguins_tidy</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">check</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>\
-            <span class="s2">&quot;arg &#39;check&#39; should be a bool&quot;</span>
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">copy</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>\
-            <span class="s2">&quot;arg &#39;copy&#39; should be a bool&quot;</span>
-        <span class="k">if</span> <span class="n">check</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">is_simple</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">x</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-                <span class="k">except</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">((</span><span class="s2">&quot;Input pandas dataframe could not be simplified&quot;</span>
-                                     <span class="s2">&quot; See to above warnings.&quot;</span>
-                                    <span class="p">))</span>
-        
-        <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>                       
-            <span class="bp">self</span><span class="o">.</span><span class="n">__data</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                            <span class="o">.</span><span class="n">convert_dtypes</span><span class="p">()</span>
-                            <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">)</span>
-                            <span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">_coerce_pdf</span><span class="p">)</span>
-                            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__data</span> <span class="o">=</span> <span class="n">x</span>
-        <span class="k">return</span> <span class="kc">None</span>
-    
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        init</span>
@@ -435,8 +377,8 @@
 <span class="sd">        &gt;&gt;&gt; df</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         
-        <span class="n">check</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;bool&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="n">copy</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;copy&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">check</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;check&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">copy</span>  <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;copy&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">check</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>\
             <span class="s2">&quot;arg &#39;check&#39; should be a bool&quot;</span>
@@ -456,13 +398,9 @@
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">((</span><span class="s2">&quot;Input pandas dataframe could not be simplified&quot;</span>
                                      <span class="s2">&quot; See to above warnings.&quot;</span>
                                     <span class="p">))</span>
-        
+            
         <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>                       
-            <span class="bp">self</span><span class="o">.</span><span class="n">__data</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                            <span class="o">.</span><span class="n">convert_dtypes</span><span class="p">()</span>
-                            <span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">)</span>
-                            <span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">_coerce_pdf</span><span class="p">)</span>
-                            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__data</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__data</span> <span class="o">=</span> <span class="n">x</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -5065,7 +5003,7 @@
 <span class="sd">        &gt;&gt;&gt; penguins_tidy.replace_na({&#39;sex&#39;: &#39;unknown&#39;})</span>
 <span class="sd">        &gt;&gt;&gt; penguins_tidy.select(predicate = dtypes.is_numeric_dtype).replace_na(1)</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">return</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
                           <span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span>
                           <span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span>
                           <span class="p">)</span></div>
@@ -5498,8 +5436,8 @@
         <span class="c1"># add data into nest_column_name column</span>
         <span class="k">if</span> <span class="n">drop_by</span><span class="p">:</span>
             <span class="n">res</span><span class="p">[</span><span class="n">nest_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="n">by</span><span class="p">)</span>
-                              <span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">go</span><span class="p">))</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="n">by</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">),</span>
+                              <span class="nb">dict</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">go</span><span class="p">))</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
                               <span class="p">)</span>
                           <span class="p">)</span>
                 <span class="p">)</span>
@@ -5507,18 +5445,20 @@
             <span class="c1"># drop the extra column in the nested column</span>
             <span class="k">if</span> <span class="n">extra</span><span class="p">:</span>
                 <span class="n">res</span><span class="p">[</span><span class="n">nest_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                    <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="n">new_colname</span><span class="p">)</span>
-                                  <span class="p">,</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">go</span><span class="p">))</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                    <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="n">new_colname</span><span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">),</span>
+                                  <span class="nb">dict</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">go</span><span class="p">))</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
                                   <span class="p">)</span>
                               <span class="p">)</span>
                     <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">res</span><span class="p">[</span><span class="n">nest_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">go</span><span class="p">))</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                <span class="n">res</span><span class="p">[</span><span class="n">nest_column_name</span><span class="p">]</span> <span class="o">=</span>\
+                    <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">),</span>
+                                  <span class="nb">dict</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">go</span><span class="p">))</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                                  <span class="p">)</span>
+                              <span class="p">)</span>
         
         <span class="k">if</span> <span class="n">extra</span><span class="p">:</span>
             <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="n">new_colname</span><span class="p">)</span>
-        
-        <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">convert_dtypes</span><span class="p">()</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">)</span>
         
         <span class="n">res</span><span class="p">[</span><span class="n">nest_column_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span> 
             <span class="n">res</span><span class="p">[</span><span class="n">nest_column_name</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">tidyframe</span><span class="p">(</span>
@@ -5870,7 +5810,7 @@
 <span class="sd">      &gt;&gt;&gt; # assign a subset with another tidyframe</span>
 <span class="sd">      &gt;&gt;&gt; penguins_tidy[0:2, 0:2] = pd.DataFrame({&#39;species&#39;: [&#39;d&#39;, &#39;e&#39;]</span>
 <span class="sd">      &gt;&gt;&gt;                                         , &#39;island&#39;: [&#39;f&#39;, &#39;g&#39;]</span>
-<span class="sd">      &gt;&gt;&gt;                                         }).pipe(tidyframe)</span>
+<span class="sd">      &gt;&gt;&gt;                                      &quot;&quot;   }).pipe(tidyframe)</span>
 <span class="sd">      &gt;&gt;&gt; penguins_tidy[0:5, :]</span>
 <span class="sd">      &#39;&#39;&#39;</span>
       <span class="n">cn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span>

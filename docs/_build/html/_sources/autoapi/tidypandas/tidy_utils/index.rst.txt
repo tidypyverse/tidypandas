@@ -53,11 +53,6 @@ Functions
    names do not clash with the existing column names of the dataframe. Row
    indexes without a name are dropped.
 
-   Additionally,
-       1. string columns stored as object are converted to string dtype
-       via 'convert_dtypes' method.
-       2. All missing values are replaced by pandas NA type.
-
    .. rubric:: Examples
 
    >>> from nycflights13 import flights

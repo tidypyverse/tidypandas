@@ -288,17 +288,17 @@ print(penguins_tidy)
 
 ## # A tidy dataframe: 344 X 8
 ##    species     island  bill_length_mm  ...  body_mass_g      sex    year
-##   &lt;string&gt;   &lt;string&gt;       &lt;Float64&gt;  ...      &lt;Int64&gt; &lt;string&gt; &lt;Int64&gt;
-## 0   Adelie  Torgersen            39.1  ...         3750     male    2007
-## 1   Adelie  Torgersen            39.5  ...         3800   female    2007
-## 2   Adelie  Torgersen            40.3  ...         3250   female    2007
-## 3   Adelie  Torgersen            &lt;NA&gt;  ...         &lt;NA&gt;     &lt;NA&gt;    2007
-## 4   Adelie  Torgersen            36.7  ...         3450   female    2007
-## 5   Adelie  Torgersen            39.3  ...         3650     male    2007
-## 6   Adelie  Torgersen            38.9  ...         3625   female    2007
-## 7   Adelie  Torgersen            39.2  ...         4675     male    2007
-## 8   Adelie  Torgersen            34.1  ...         3475     &lt;NA&gt;    2007
-## 9   Adelie  Torgersen            42.0              4250     &lt;NA&gt;    2007
+##   &lt;object&gt;   &lt;object&gt;       &lt;float64&gt;  ...    &lt;float64&gt; &lt;object&gt; &lt;int64&gt;
+## 0   Adelie  Torgersen            39.1  ...       3750.0     male    2007
+## 1   Adelie  Torgersen            39.5  ...       3800.0   female    2007
+## 2   Adelie  Torgersen            40.3  ...       3250.0   female    2007
+## 3   Adelie  Torgersen             NaN  ...          NaN      NaN    2007
+## 4   Adelie  Torgersen            36.7  ...       3450.0   female    2007
+## 5   Adelie  Torgersen            39.3  ...       3650.0     male    2007
+## 6   Adelie  Torgersen            38.9  ...       3625.0   female    2007
+## 7   Adelie  Torgersen            39.2  ...       4675.0     male    2007
+## 8   Adelie  Torgersen            34.1  ...       3475.0      NaN    2007
+## 9   Adelie  Torgersen            42.0            4250.0      NaN    2007
 ## #... with 334 more rows
 </pre></div>
 </div>
@@ -328,7 +328,7 @@ methods or verbs.</p>
 
 ## # A tidy dataframe: 2 X 2
 ##      species       n
-##     &lt;string&gt; &lt;int64&gt;
+##     &lt;object&gt; &lt;int64&gt;
 ## 0  Chinstrap      68
 ## 1     Adelie      56
 </pre></div>
@@ -348,12 +348,12 @@ dataframe. The methods should be prepended by <code class="docutils literal notr
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>penguins.tp.slice([0, 1], by = &#39;species&#39;)
 
 ##      species     island  bill_length_mm  ...  body_mass_g     sex  year
-## 0     Adelie  Torgersen            39.1  ...         3750    male  2007
-## 1     Adelie  Torgersen            39.5  ...         3800  female  2007
-## 2     Gentoo     Biscoe            46.1  ...         4500  female  2007
-## 3     Gentoo     Biscoe            50.0  ...         5700    male  2007
-## 4  Chinstrap      Dream            46.5  ...         3500  female  2007
-## 5  Chinstrap      Dream            50.0  ...         3900    male  2007
+## 0     Adelie  Torgersen            39.1  ...       3750.0    male  2007
+## 1     Adelie  Torgersen            39.5  ...       3800.0  female  2007
+## 2     Gentoo     Biscoe            46.1  ...       4500.0  female  2007
+## 3     Gentoo     Biscoe            50.0  ...       5700.0    male  2007
+## 4  Chinstrap      Dream            46.5  ...       3500.0  female  2007
+## 5  Chinstrap      Dream            50.0  ...       3900.0    male  2007
 ## 
 ## [6 rows x 8 columns]
 </pre></div>

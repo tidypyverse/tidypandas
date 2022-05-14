@@ -329,12 +329,6 @@ using separator ‘sep’ and ensuring that the resulting names are unique.
 The row Index or MultiIndex are added to the dataframe as columns if their
 names do not clash with the existing column names of the dataframe. Row
 indexes without a name are dropped.</p>
-<dl class="simple">
-<dt>Additionally,</dt><dd><p>1. string columns stored as object are converted to string dtype
-via ‘convert_dtypes’ method.
-2. All missing values are replaced by pandas NA type.</p>
-</dd>
-</dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">nycflights13</span> <span class="kn">import</span> <span class="n">flights</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ex1</span> <span class="o">=</span> <span class="n">flights</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;dest&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>

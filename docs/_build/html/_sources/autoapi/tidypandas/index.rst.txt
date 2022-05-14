@@ -53,7 +53,7 @@ Classes
 
 
 
-.. py:class:: tidyframe(x, check=True, copy=True)
+.. py:class:: tidyframe(*args, **kwargs)
 
    
    tidyframe class
@@ -3503,7 +3503,7 @@ Classes
       >>> # assign a subset with another tidyframe
       >>> penguins_tidy[0:2, 0:2] = pd.DataFrame({'species': ['d', 'e']
       >>>                                         , 'island': ['f', 'g']
-      >>>                                         }).pipe(tidyframe)
+      >>>                                      ""   }).pipe(tidyframe)
       >>> penguins_tidy[0:5, :]
 
 

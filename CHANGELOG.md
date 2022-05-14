@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.1.4 (14/05/2022)
+
+- __init__ now does not coerce column classes
+
 ## v0.1.3 (27/04/2022)
 
 - __repr__ set right for dataframes with pandas version <= 1.4.0
