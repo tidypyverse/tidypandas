@@ -37,7 +37,7 @@ data manipulation tasks:
 <!-- -->
 
     (df.groupby('col2')
-       .apply(lambda x: x.loc[lambda y: y['col_1'] > y['col_1'].mean(), :])
+       .apply(lambda x: x.loc[x['col_1'] > x['col_1'].mean(), :])
        .reset_index(drop = True)
        )
 
