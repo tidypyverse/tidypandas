@@ -6,8 +6,10 @@ import numpy as np
 import pandas as pd
 from tidypandas._unexported_utils import (_is_unique_list,
                                           _get_unique_names, 
-                                          _coerce_pdf
+                                          _coerce_pdf,
+                                          _is_string_or_string_list
                                          )
+import functools
 
 # -----------------------------------------------------------------------------
 # simplify
@@ -237,7 +239,56 @@ def is_simple(pdf, verbose = False):
             print("Column index should be string column names.")
         if not unique_flag:
             print("Column names should be unique.")
-        if not unique_flag:
+        if not unique_flag    :
             print("Column names should not start with an underscore.")
             
     return flag
+
+# expand_grid
+def expand_grid(dictionary):
+    '''
+    expand_grid
+    Create a tidy dataframe with all combinatons of inputs
+    
+    Parameters
+    ----------
+    dictionary: dict
+        A dictionary with string keys and values of one these types: tidyframe, 
+        pandas series, an object coercible to pandas series.
+        
+    Returns
+    -------
+    tidyframe
+    
+    Examples
+    --------
+    import pandas as pd
+    # use lists or series
+    expand_grid({'a': [1, 2], 'b': pd.Series(['m', 'n'])})
+    
+    # dict value can be a tidyframe
+    expand_grid({'a': [1,2], 'b': tidyframe({'b': [3, pd.NA], 'c': [5, 6]})})
+    '''
+    from tidypandas import tidyframe
+    
+    keys = list(dictionary.keys())
+    assert _is_string_or_string_list(keys),\
+        "dict key should be a string"
+    assert _is_unique_list(keys),\
+        "dicts keys should be unique"
+    
+    for akey in dictionary:
+        if isinstance(dictionary[akey], tidyframe):
+            pass
+        elif isinstance(dictionary[akey], pd.Series):
+            dictionary[akey] = tidyframe({akey: dictionary[akey]})
+        else:
+            try:
+                dictionary[akey] = tidyframe({akey: pd.Series(dictionary[akey])})
+            except:
+                raise Exception((f"Did not find a way to convert value "
+                                 f"corresponding to key '{akey}' to pandas series"
+                                 ))
+    
+    expanded = functools.reduce(lambda k1, k2: dictionary[k1].cross_join(dictionary[k2]), list(dictionary.keys()))
+    return expanded

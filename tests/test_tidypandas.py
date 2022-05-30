@@ -336,6 +336,7 @@ def test_slice(penguins_data):
                                    )
                         .arrange(['bill_length_mm', 'species'])
                         .to_pandas()
+                        
                         )
                         
     assert_frame_equal_v2(exp, res)
@@ -381,6 +382,23 @@ def test_slice(penguins_data):
     
     assert_frame_equal_v2(exp1.to_pandas(), exp2.to_pandas())
 
+
+# Test: expand_grid
+def test_expand_grid(penguins_data):
+    from tidypandas.tidy_utils import expand_grid
+    import pandas as pd
+    # use lists or series
+    res_1 = expand_grid({'a': [1, 2], 'b': pd.Series(['m', 'n'])})
+    assert isinstance(res_1, tidyframe)
+    assert res_1.nrow == 4
+    
+    # dict value can be a tidyframe
+    res_2 = expand_grid({'a': [1,2],
+                         'b': tidyframe({'b': [3, pd.NA, 4], 'c': [5, 6, 7]})
+                         })
+    assert isinstance(res_2, tidyframe)
+    assert res_2.nrow == 6
+    
 # simple workinh tests
 def working(penguins_data):
     
