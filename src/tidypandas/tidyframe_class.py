@@ -3571,6 +3571,7 @@ class tidyframe:
                     , values_fn = None
                     , id_cols = None
                     , sep = "__"
+                    , names_prefix = ""
                     ):
         '''
         Pivot data from long to wide
@@ -3601,6 +3602,9 @@ class tidyframe:
             
         sep: string
             seperator to use while creating resulting column names
+            
+        names_prefix: string
+            prefix for new columns
             
         Returns
         -------
@@ -3682,6 +3686,12 @@ class tidyframe:
         >>>                           , values_fn   = np.mean
         >>>                           , values_fill = 0
         >>>                           )
+        >>> # use some prefix for new columns
+        >>> penguins_tidy.pivot_wider(id_cols       = "island"
+        >>>                           , names_from  = "sex"
+        >>>                           , values_from = "bill_length_mm"
+        >>>                           , names_prefix = "gender_"
+        >>>                           )
         '''
         
         cn = self.colnames
@@ -3760,11 +3770,17 @@ class tidyframe:
         
         assert isinstance(sep, str),\
             "arg 'sep' should be a string"
+            
+        assert isinstance(names_prefix, str),\
+            "arg 'names_prefix' should be a string without spaces"
+        assert ' ' not in names_prefix,\
+            "arg 'names_prefix' should be a string without spaces"
         
         # make values_from a scalar if it is
         if len(values_from) == 1:
             values_from = values_from[0]
-
+        
+        # core pivoting logic
         res = pd.pivot_table(data         = self.__data
                              , index      = id_cols
                              , columns    = names_from
@@ -3776,7 +3792,23 @@ class tidyframe:
                              , observed   = True
                              )
         
-        return tidyframe(simplify(res), copy = False, check = False)
+        res = tidyframe(simplify(res), copy = False, check = False)
+        
+        # add names prefix
+        if names_prefix != "":
+            org_cn = self.colnames
+            new_cn = res.colnames
+            fresh_cn = list(set(new_cn).difference(org_cn))
+            fresh_cn_prefixed = [names_prefix + x for x in fresh_cn]
+            dict_for_renaming = dict(zip(fresh_cn, fresh_cn_prefixed))
+            
+            res = res.rename(dict_for_renaming)
+        
+        return res
+            
+    ###########################################################################
+    # pivot_longer
+    ###########################################################################
     
     def pivot_longer(self
                      , cols
