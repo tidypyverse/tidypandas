@@ -530,10 +530,12 @@ class tidyframe:
         -----
         1. skim is done via 'skimpy' package is expected to be installed.
         '''
-        # TODO: Implement package check
+
         if importlib.util.find_spec("skimpy") is not None:
             from skimpy import skim
             skim(self.__data)
+        else:
+            print("skim output is not printed. Please install skimpy package.")
 
         if return_self:
             return self
@@ -1137,7 +1139,7 @@ class tidyframe:
     # rename
     ##########################################################################
     
-    def rename(self, old_new_dict):
+    def rename(self, old_new_dict = None, predicate = None, fn = None):
         '''
         Rename columns of the tidy pandas dataframe
         
@@ -1153,19 +1155,52 @@ class tidyframe:
         --------
         >>> from palmerpenguins import load_penguins
         >>> penguins_tidy = tidyframe(load_penguins())
-
+exit
         >>> penguins_tidy.rename({'species': 'species_2'})
+        
+        >>> penguins_tidy.rename(predicate = lambda x: bool(re.match("^spe", x.name)),
+        >>>                      fn = lambda x: x.name + "_two"
+        >>>                      )
         '''
         cn = self.colnames
         
-        assert isinstance(old_new_dict, dict),\
-            "arg 'old_new_dict' should be a dict"
-        assert set(cn).issuperset(old_new_dict.keys()),\
-            "keys of the input dict should be existing column names"
-        assert _is_string_or_string_list(list(old_new_dict.values())),\
-            "values of the dict should be strings"
-        assert _is_unique_list(list(old_new_dict.values())),\
-            "values of the dict should be unique"
+        if (old_new_dict is None) and (predicate is None):
+            raise Exception("provide exactly one among old_new_dict and predicate")
+        
+        if (old_new_dict is not None) and (predicate is not None):
+            raise Exception("provide exactly one among old_new_dict and predicate")
+            
+        if (predicate is not None) and (fn is None):
+            raise Exception("both predicate and fn should be provided")
+            
+        if (predicate is None) and (fn is not None):
+            raise Exception("both predicate and fn should be provided")
+        
+        if old_new_dict is not None:
+            assert isinstance(old_new_dict, dict),\
+                "arg 'old_new_dict' should be a dict"
+            assert set(cn).issuperset(old_new_dict.keys()),\
+                "keys of the input dict should be existing column names"
+            assert _is_string_or_string_list(list(old_new_dict.values())),\
+                "values of the dict should be strings"
+            assert _is_unique_list(list(old_new_dict.values())),\
+                "values of the dict should be unique"
+        else:
+            assert callable(predicate),\
+                "predicate should be a function"
+            assert callable(fn),\
+                "fn should be a function"
+        
+        # create old_new_dict in predicate case
+        if old_new_dict is None:
+            col_bool_list = np.array(list(self.__data.apply(predicate
+                                                            , axis = "index"
+                                                            )
+                                         )
+                                    )
+            column_names = list(np.array(cn)[col_bool_list])
+            column_names_renamed = [fn(self.__data[x]) for x in column_names]
+            old_new_dict = dict(zip(column_names, column_names_renamed))
         
         # new names should not intersect with 'remaining' names
         remaining = set(cn).difference(old_new_dict.keys())
