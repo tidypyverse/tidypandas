@@ -29,7 +29,10 @@ from tidypandas._unexported_utils import (
                                             _get_dtype_dict,
                                             _generate_new_string,
                                             _coerce_series,
-                                            _coerce_pdf
+                                            _coerce_pdf,
+                                            _is_nested,
+                                            _flatten_strings,
+                                            _nested_is_unique
                                         )
 import tidypandas.format as tidy_fmt
 
@@ -4857,6 +4860,8 @@ exit
                  )
         
         return tidyframe(res, check = False, copy = False)
+    
+    
     # na handling methods
     
     ############################################################################
@@ -5766,4 +5771,216 @@ exit
         self.to_pandas(copy = False).loc[key[0], key[1]] = value
       # nothing to return as this is an inplace operation
     
+    ############################################################################
+    # expand
+    ############################################################################
     
+    def _crossing(self, col_list):
+        if _is_string_or_string_list(col_list):
+            d_list = [self.distinct(x) for x in list(set(col_list))]
+        else:
+            # each element is a tidyframe
+            d_list = col_list
+        
+        return functools.reduce(lambda x, y: x.cross_join(y).distinct(), d_list)
+    
+    def _nesting(self, col_list):
+        if not _is_string_or_string_list(col_list):
+            # each element is a tidyframe
+            d_list = col_list
+            col_list = functools.reduce(lambda x, y: set(x.colnames).union(y.colnames),
+                                        d_list
+                                        )
+            col_list = list(col_list)
+        return self.distinct(col_list)
+        
+        
+    def _flatten(self, spec_list, is_tuple):
+        res = [None] * len(spec_list)
+        
+        if _is_nested(spec_list):
+            # break down each element to a dataframe
+            for ind in range(len(spec_list)):
+                # simple column
+                if isinstance(spec_list[ind], str):
+                    # get single column distinct tidyframe
+                    res[ind] = self.distinct(spec_list[ind])
+                else:
+                    assert isinstance(spec_list[ind], (tuple, set)),\
+                        "every element of spec should be a string, tuple or a set"
+                    # tuple or a set
+                    if _is_nested(spec_list[ind]):
+                        # recursive call when nested
+                        if isinstance(spec_list[ind], tuple):
+                            res[ind] = self._flatten(list(spec_list[ind]),
+                                                     isinstance(spec_list[ind], tuple)
+                                                     )
+                        else:
+                            # set, thereby nesting, simply flatten inside
+                            res[ind] = self._nesting(_flatten_strings(spec_list[ind]))
+                    else:
+                        # now that we have a flat structure
+                        if isinstance(spec_list[ind], tuple):
+                            res[ind] = self._crossing(list(spec_list[ind]))
+                        else:
+                            res[ind] = self._nesting(list(spec_list[ind]))
+        else:
+            res = spec_list
+        
+        # now handle the outer list 'res'          
+        if is_tuple:
+            res = self._crossing(res)
+        else:
+            res = self._nesting(res)
+        
+        return res
+
+    def _expand(self, spec):
+        assert isinstance(spec, (tuple, set)),\
+            "spec should be a tuple or a set"
+        assert len(spec)>= 2,\
+            "minimum length of spec should be 2"
+        assert _nested_is_unique(spec),\
+            "column names should be unique"
+        assert set(_flatten_strings(spec)).issubset(self.colnames),\
+            "all strings in spec should be valid column names"
+        
+        return self._flatten(list(spec), isinstance(spec, tuple))
+    
+    def expand(self, spec, by = None):
+        '''
+        expand
+        Creates combinations of columns using specification
+        
+        Paramaters
+        ----------
+        spec: tuple or set
+            See Notes and Examples
+        by: string or a list of strings
+            Column names to group by
+        
+        Returns
+        -------
+        tidyframe
+        
+        Notes
+        -----
+        A specification is a nested combination of two types:
+            1. crossing: Generates all possible distinct combinations of columns
+                        example: ('col_1', 'col_2')
+            2. nesting: Generates only exisiting distinct combinations of columns
+                        example: {'col_1', 'col_2', 'col_3'}
+            
+        Examples
+        --------
+        >>> from tidypandas import tidyframe
+        >>> from palmerpenguins import load_penguins
+        >>> penguins_tidy = tidyframe(load_penguins())
+        >>> 
+        >>> # crossing: tuple bracket
+        >>> # nesting: set bracket
+        >>> 
+        >>> # simple crossing
+        >>> penguins_tidy.expand(("species", "island"))
+        >>> 
+        >>> # simple nesting
+        >>> penguins_tidy.expand({"species", "island"})
+        >>> 
+        >>> # nest outside and crossing inside
+        >>> penguins_tidy.expand({"sex", ("species", "island")})
+        >>> 
+        >>> # crossing outside and nesting inside
+        >>> penguins_tidy.expand(("sex", {"species", "island"}))
+        >>> 
+        >>> # more 'nesting'
+        >>> penguins_tidy.expand((("year", "bill_length_mm"), {"species", "island"}))
+        >>> 
+        >>> # grouped expand
+        >>> penguins_tidy.expand({"species", "island"}, by = 'sex')
+        '''
+        if by is None:
+            res = self._expand(spec)
+        else:
+            self._validate_by(by)
+            assert len(set(by).intersection(_flatten_strings(spec))) == 0,\
+                "'by' columns should not be present in 'spec'"
+            res = self.group_modify(lambda x: x._expand(spec), by = by)
+        return res
+
+    def _complete(self, spec, fill = None):
+        expanded = self.expand(spec)
+        cn = list(set(self.colnames).intersection(expanded.colnames))
+        res = self.full_join(expanded, on = cn)
+        if fill is not None:
+            res = res.replace_na(fill)
+        return res
+    
+    def complete(self, spec, fill = None, by = None):
+        '''
+        complete
+        Completes a tidyframe with missing combinations of data
+        
+        Paramaters
+        ----------
+        spec: tuple or set
+            See Notes and Examples
+        fill: scalar, dict
+            scalar value to fill missing values or
+            dict (key: column name, value: value to fill)
+        by: string or a list of strings
+            Column names to group by
+        
+        Returns
+        -------
+        tidyframe
+        
+        Notes
+        -----
+        A specification is a nested combination of two types:
+            1. crossing: Generates all possible distinct combinations of columns
+                        example: ('col_1', 'col_2')
+            2. nesting: Generates only exisiting distinct combinations of columns
+                        example: {'col_1', 'col_2', 'col_3'}
+            
+        Examples
+        --------
+        >>> from tidypandas import tidyframe
+        >>> from palmerpenguins import load_penguins
+        >>> penguins_tidy = tidyframe(load_penguins())
+        >>> 
+        >>> # crossing: tuple bracket
+        >>> # nesting: set bracket
+        >>>
+        >>> # simple crossing
+        >>> penguins_tidy.complete(("species", "island"))
+        >>> 
+        >>> # simple nesting
+        >>> penguins_tidy.complete({"species", "island"})
+        >>> 
+        >>> # nest outside and crossing inside
+        >>> penguins_tidy.complete({"sex", ("species", "island")})
+        >>> 
+        >>> # crossing outside and nesting inside
+        >>> penguins_tidy.complete(("sex", {"species", "island"}))
+        >>> 
+        >>> # more 'nesting'
+        >>> penguins_tidy.complete((("year", "bill_length_mm"), {"species", "island"}))
+        >>> 
+        >>> # filling missing values
+        >>> penguins_tidy.complete(("sex", {"species", "island"}), fill = {'bill_length_mm': 100})
+        >>> 
+        >>> # grouped complete
+        >>> penguins_tidy.complete({"species", "island"}, by = 'sex')
+        '''
+        if by is None:
+            res = self._complete(spec, fill = fill)
+        else:
+            self._validate_by(by)
+            assert len(set(by).intersection(_flatten_strings(spec))) == 0,\
+                "'by' columns should not be present in 'spec'"
+            res = self.group_modify(lambda x: x._complete(spec,
+                                                          fill = fill
+                                                          ),
+                                    by = by
+                                    )
+        return res

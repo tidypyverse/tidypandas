@@ -216,3 +216,39 @@ def _coerce_pdf(pdf):
     for acol in list(pdf.columns):
         pdf[acol] = _coerce_series(pdf[acol])
     return pdf
+
+def _is_nested(x):
+    assert isinstance(x, (list, tuple, set)) or np.isscalar(x)
+    
+    if np.isscalar(x):
+        res = False
+    else:
+        res = not all([np.isscalar(y) for y in x])
+    
+    return res
+
+def _flatten_strings(x):
+    res = set()
+    x = list(x)
+    for ele in x:
+        if isinstance(ele, str):
+            res = res.union({ele})
+        elif _is_nested(ele):
+            res = res.union(_flatten_strings(ele))
+        else:
+            res = res.union(set(ele))
+    return list(res)
+
+def _nested_is_unique(x):
+    res = list()
+    x = list(x)
+    for ele in x:
+        if isinstance(ele, str):
+            res = res + [ele]
+        elif _is_nested(ele):
+            res = res + _flatten_strings(ele)
+        else:
+            assert _is_string_or_string_list(list(ele)),\
+                "Each element of the nested structure should be a string"
+            res = res + list(ele)
+    return (len(res) == len(set(res)))

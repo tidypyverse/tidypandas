@@ -398,46 +398,114 @@ def test_expand_grid(penguins_data):
                          })
     assert isinstance(res_2, tidyframe)
     assert res_2.nrow == 6
+
+# Test: expand
+def test_expand(penguins_data):
+    penguins_tidy = tidyframe(load_penguins())
+
+    # simple crossing
+    res = penguins_tidy.expand(("species", "island"))
+    assert isinstance(res, tidyframe)
+    assert res.nrow == 9
     
-# simple workinh tests
-def working(penguins_data):
+    # simple nesting
+    res = penguins_tidy.expand({"species", "island"})
+    assert isinstance(res, tidyframe)
+    assert res.nrow == 5
     
-    penguins_tidy = tidyframe(penguins_data)
+    # nest outside and crossing inside
+    res = penguins_tidy.expand({"sex", ("species", "island")})
+    assert isinstance(res, tidyframe)
+    assert res.nrow == 13
+    assert res.ncol == 3
     
-    assert isinstance(penguins_tidy.select(['bill_length_mm', 'species']), tidyframe)
-    assert isinstance(penguins_tidy.relocate(['bill_length_mm']), tidyframe)
-    assert isinstance(penguins_tidy.slice(range(3)), tidyframe)
-    assert isinstance(penguins_tidy.arrange('bill_length_mm'), tidyframe)
-    assert isinstance(penguins_tidy.arrange(['bill_length_mm', 'desc'], 'bill_depth_mm'), tidyframe)
-    assert isinstance(penguins_tidy.distinct('bill_length_mm'), tidyframe)
-    assert isinstance(penguins_tidy.distinct('bill_length_mm'), tidyframe)
+    # crossing outside and nesting inside
+    res = penguins_tidy.expand(("sex", {"species", "island"}))
+    assert isinstance(res, tidyframe)
+    assert res.nrow == 15
+    assert res.ncol == 3
     
-    # joins
-    penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
-                                     .select(['species', 'bill_length_mm', 'island'])
-                                     )
-    penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
-                                     .select(['species', 'island', 'bill_depth_mm'])
-                                     )
-                                     
-    assert isinstance(penguins_tidy_s1.inner_join(penguins_tidy_s2, on = 'island'),
-                      tidyframe
-                      )
-    assert isinstance(penguins_tidy_s1.left_join(penguins_tidy_s2, on = 'island'),
-                      tidyframe
-                      )
-    assert isinstance(penguins_tidy_s1.right_join(penguins_tidy_s2, on = 'island'),
-                      tidyframe
-                      )
-    assert isinstance(penguins_tidy_s1.outer_join(penguins_tidy_s2, on = 'island'),
-                      tidyframe
-                      )
-    assert isinstance(penguins_tidy_s1.semi_join(penguins_tidy_s2, on = 'island'),
-                      tidyframe
-                      )
-    assert isinstance(penguins_tidy_s1.anti_join(penguins_tidy_s2, on = 'island'),
-                      tidyframe
-                      )
+    # more 'nesting'
+    res = penguins_tidy.expand((("year", "bill_length_mm"), {"species", "island"}))
+    assert isinstance(res, tidyframe)
+    assert res.nrow == 2475
+    assert res.ncol == 4
+    
+    # grouped expand
+    res = penguins_tidy.expand({"species", "island"}, by = 'sex')
+    assert isinstance(res, tidyframe)
+    assert res.nrow == 13
+    assert res.ncol == 3
+    
+    # negative tests
+    with pytest.raises(Exception) as e_info:
+        # list input: tuple, set allowed
+        penguins_tidy.expand(["species", "island"])
+    
+    with pytest.raises(Exception) as e_info:    
+        # spec has length <= 1
+        penguins_tidy.expand(set())
+        penguins_tidy.expand(set('species'))
+    
+    with pytest.raises(Exception) as e_info:    
+        # non-unique columns
+        penguins_tidy.expand(("species", "island", {'species', 'year'}))
+    
+    with pytest.raises(Exception) as e_info:    
+        # non-existing column
+        penguins_tidy.expand({"species", "iceland"})
+        
+    with pytest.raises(Exception) as e_info:    
+        # by should not intersect spec
+        penguins_tidy.expand({"species", "iceland"}, by = "species")
+        
+
+# Test: complete
+def test_complete(penguins_data):
+    penguins_tidy = tidyframe(load_penguins())
+
+    # simple crossing
+    res = penguins_tidy.complete(("species", "island"))
+    assert isinstance(res, tidyframe)
+    assert res.nrow == 348
+    assert res.ncol == 8
+    
+    # simple nesting
+    res = penguins_tidy.complete({"species", "island"})
+    assert isinstance(res, tidyframe)
+    assert res.nrow == 344
+    assert res.ncol == 8
+    
+    # nest outside and crossing inside
+    res = penguins_tidy.complete({"sex", ("species", "island")})
+    assert isinstance(res, tidyframe)
+    assert res.nrow == 344
+    assert res.ncol == 8
+    
+    # crossing outside and nesting inside
+    res = penguins_tidy.complete(("sex", {"species", "island"}))
+    assert isinstance(res, tidyframe)
+    assert res.nrow == 346
+    assert res.ncol == 8
+    
+    # more 'nesting'
+    res = penguins_tidy.complete((("year", "bill_length_mm"), {"species", "island"}))
+    assert isinstance(res, tidyframe)
+    assert res.nrow == 2512
+    assert res.ncol == 8
+    
+    # grouped expand
+    res = penguins_tidy.complete({"species", "island"}, by = 'sex')
+    assert isinstance(res, tidyframe)
+    assert res.nrow == 344
+    assert res.ncol == 8
+    
+    # negative tests
+    # expand covers at its level
+    # fill errors are handled by replace_na
+    with pytest.raises(Exception) as e_info:    
+        # by should not intersect spec
+        penguins_tidy.complete({"species", "iceland"}, by = "species")
                       
     
     
