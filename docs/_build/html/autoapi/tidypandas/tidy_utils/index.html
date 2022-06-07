@@ -253,6 +253,11 @@
        is_simple
       </a>
      </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#tidypandas.tidy_utils.expand_grid">
+       expand_grid
+      </a>
+     </li>
     </ul>
    </li>
   </ul>
@@ -295,6 +300,9 @@
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#tidypandas.tidy_utils.is_simple" title="tidypandas.tidy_utils.is_simple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_simple</span></code></a>(pdf, verbose=False)</p></td>
 <td><p>is_simple</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tidypandas.tidy_utils.expand_grid" title="tidypandas.tidy_utils.expand_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">expand_grid</span></code></a>(dictionary)</p></td>
+<td><p>expand_grid</p></td>
 </tr>
 </tbody>
 </table>
@@ -395,6 +403,28 @@ strings. Column names do not start from “_”.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">is_simple</span><span class="p">(</span><span class="n">ex1</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tidypandas.tidy_utils.expand_grid">
+<span class="sig-prename descclassname"><span class="pre">tidypandas.tidy_utils.</span></span><span class="sig-name descname"><span class="pre">expand_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dictionary</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidy_utils.html#expand_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidy_utils.expand_grid" title="Permalink to this definition">#</a></dt>
+<dd><p>expand_grid
+Create a tidy dataframe with all combinatons of inputs</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dictionary</strong> (<em>dict</em>) – A dictionary with string keys and values of one these types: tidyframe,
+pandas series, an object coercible to pandas series.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../index.html#tidypandas.tidyframe" title="tidypandas.tidyframe">tidyframe</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>import pandas as pd
+# use lists or series
+expand_grid({‘a’: [1, 2], ‘b’: pd.Series([‘m’, ‘n’])})</p>
+<p># dict value can be a tidyframe
+expand_grid({‘a’: [1,2], ‘b’: tidyframe({‘b’: [3, pd.NA], ‘c’: [5, 6]})})</p>
 </dd></dl>
 
 </section>

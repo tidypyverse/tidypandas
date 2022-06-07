@@ -1142,13 +1142,18 @@ class tidyframe:
     # rename
     ##########################################################################
     
-    def rename(self, old_new_dict = None, predicate = None, fn = None):
+    def rename(self, old_new_dict = None, predicate = None, func = None):
         '''
         Rename columns of the tidy pandas dataframe
         
         Parameters
         ----------
-        old_new_dict: A dict with old names as keys and new names as values
+        old_new_dict: dict
+            A dict with old names as keys and new names as values
+        predicate: callable
+            function with series input and bool output to identify a column
+        func: callable
+            function to apply on columns identified by predicate
         
         Returns
         -------
@@ -1158,11 +1163,9 @@ class tidyframe:
         --------
         >>> from palmerpenguins import load_penguins
         >>> penguins_tidy = tidyframe(load_penguins())
-exit
         >>> penguins_tidy.rename({'species': 'species_2'})
-        
         >>> penguins_tidy.rename(predicate = lambda x: bool(re.match("^spe", x.name)),
-        >>>                      fn = lambda x: x.name + "_two"
+        >>>                      func = lambda x: x.name + "_two"
         >>>                      )
         '''
         cn = self.colnames
@@ -1173,11 +1176,11 @@ exit
         if (old_new_dict is not None) and (predicate is not None):
             raise Exception("provide exactly one among old_new_dict and predicate")
             
-        if (predicate is not None) and (fn is None):
-            raise Exception("both predicate and fn should be provided")
+        if (predicate is not None) and (func is None):
+            raise Exception("both predicate and func should be provided")
             
-        if (predicate is None) and (fn is not None):
-            raise Exception("both predicate and fn should be provided")
+        if (predicate is None) and (func is not None):
+            raise Exception("both predicate and func should be provided")
         
         if old_new_dict is not None:
             assert isinstance(old_new_dict, dict),\
@@ -1191,8 +1194,8 @@ exit
         else:
             assert callable(predicate),\
                 "predicate should be a function"
-            assert callable(fn),\
-                "fn should be a function"
+            assert callable(func),\
+                "func should be a function"
         
         # create old_new_dict in predicate case
         if old_new_dict is None:
@@ -1202,7 +1205,7 @@ exit
                                          )
                                     )
             column_names = list(np.array(cn)[col_bool_list])
-            column_names_renamed = [fn(self.__data[x]) for x in column_names]
+            column_names_renamed = [func(self.__data[x]) for x in column_names]
             old_new_dict = dict(zip(column_names, column_names_renamed))
         
         # new names should not intersect with 'remaining' names
@@ -5776,8 +5779,18 @@ exit
     ############################################################################
     
     def _crossing(self, col_list):
+        
+        # I/O are tidyframes
+        def pick_distinct(df, colname):
+            col = df.pull(colname, copy = False)
+            if col.dtype.name == 'category':
+                res = tidyframe(pd.DataFrame({colname: pd.Series(col.cat.categories)}))
+            else:
+                res = df.distinct(colname)
+            return res
+                
         if _is_string_or_string_list(col_list):
-            d_list = [self.distinct(x) for x in list(set(col_list))]
+            d_list = [pick_distinct(self, x) for x in list(set(col_list))]
         else:
             # each element is a tidyframe
             d_list = col_list
@@ -5833,6 +5846,16 @@ exit
         else:
             res = self._nesting(res)
         
+        # handle categorical dtype
+        is_cat = (self.to_pandas(copy = False)
+                      .apply(lambda x: x.dtype.name == 'category')
+                      )
+        cat_cols = list(np.array(list(is_cat.index))[np.array(list(is_cat))])
+        if len(cat_cols) >= 1:
+            for acatcol in cat_cols:
+                res.__data[acatcol] = pd.Categorical(res.pull(acatcol),
+                                                     categories = self.pull(acatcol).cat.categories
+                                                     )
         return res
 
     def _expand(self, spec):

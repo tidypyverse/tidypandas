@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.1.5 (7th June 2022)
+- methods 'expand' and 'complete' are implemented
+- 'rename' method gains arguments 'predicate' and 'func'
+- 'pivot_wider' method gains argument 'names_prefix'
+- 'skim' method now provides a warning when skimpy is not installed
+- utility 'expand_grid' is implemented
+
 ## v0.1.4 (14/05/2022)
 
 - __init__ now does not coerce column classes

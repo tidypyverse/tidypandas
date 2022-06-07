@@ -29,6 +29,9 @@ Functions
    tidypandas._unexported_utils._generate_new_string
    tidypandas._unexported_utils._coerce_series
    tidypandas._unexported_utils._coerce_pdf
+   tidypandas._unexported_utils._is_nested
+   tidypandas._unexported_utils._flatten_strings
+   tidypandas._unexported_utils._nested_is_unique
 
 
 
@@ -282,6 +285,72 @@ Functions
        !! processed by numpydoc !!
 
 .. py:function:: _coerce_pdf(pdf)
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: _is_nested(x)
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: _flatten_strings(x)
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: _nested_is_unique(x)
 
    
 

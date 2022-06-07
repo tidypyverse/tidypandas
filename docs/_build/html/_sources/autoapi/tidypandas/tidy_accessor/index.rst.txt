@@ -454,7 +454,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: rename(self, old_new_dict)
+   .. py:method:: rename(self, old_new_dict=None, predicate=None, func=None)
 
       
 
@@ -850,7 +850,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: pivot_wider(self, names_from, values_from, values_fill=None, values_fn=None, id_cols=None, sep='__')
+   .. py:method:: pivot_wider(self, names_from, values_from, values_fill=None, values_fn=None, id_cols=None, sep='__', names_prefix='')
 
       
 
@@ -1291,6 +1291,50 @@ Classes
           !! processed by numpydoc !!
 
    .. py:method:: split(self, by)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: expand(self, spec, by=None)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: complete(self, spec, fill=None, by=None)
 
       
 

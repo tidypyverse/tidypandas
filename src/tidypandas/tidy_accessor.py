@@ -107,10 +107,14 @@ class tp:
                            , after = after
                            ).to_pandas(copy = False)
                            
-    def rename(self, old_new_dict):
+    def rename(self, old_new_dict = None, predicate = None, func = None):
         tf = tidyframe(self._obj, copy = False, check = False)
-        return tf.rename(old_new_dict = old_new_dict).to_pandas(copy = False)
-    
+        res = (tf.rename(old_new_dict = old_new_dict,
+                         predicate = predicate,
+                         func = func
+                        )
+                 .to_pandas(copy = False)
+                 )
     
     def slice(self, row_numbers, by = None):
         tf = tidyframe(self._obj, copy = False, check = False)
@@ -344,6 +348,7 @@ class tp:
                     , values_fn = None
                     , id_cols = None
                     , sep = "__"
+                    , names_prefix = ""
                     ):
         tf = tidyframe(self._obj, copy = False, check = False)
         return tf.pivot_wider(names_from = names_from
@@ -352,6 +357,7 @@ class tp:
                               , values_fn = values_fn
                               , id_cols = id_cols
                               , sep = sep
+                              , names_prefix = names_prefix
                               ).to_pandas(copy = False)
     
     def pivot_longer(self
@@ -559,3 +565,10 @@ class tp:
     
     group_split = split
     
+    def expand(self, spec, by = None):
+        tf = tidyframe(self._obj, copy = False, check = False)
+        return tf.expand(spec = spec, by = by).to_pandas(copy = False)
+    
+    def complete(self, spec, fill = None, by = None):
+        tf = tidyframe(self._obj, copy = False, check = False)
+        return tf.complete(spec = spec, fill = fill, by = by).to_pandas(copy = False)

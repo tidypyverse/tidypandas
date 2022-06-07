@@ -1112,13 +1112,17 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: rename(self, old_new_dict)
+   .. py:method:: rename(self, old_new_dict=None, predicate=None, func=None)
 
       
       Rename columns of the tidy pandas dataframe
 
-      :param old_new_dict:
-      :type old_new_dict: A dict with old names as keys and new names as values
+      :param old_new_dict: A dict with old names as keys and new names as values
+      :type old_new_dict: dict
+      :param predicate: function with series input and bool output to identify a column
+      :type predicate: callable
+      :param func: function to apply on columns identified by predicate
+      :type func: callable
 
       :rtype: tidyframe
 
@@ -1126,8 +1130,10 @@ Classes
 
       >>> from palmerpenguins import load_penguins
       >>> penguins_tidy = tidyframe(load_penguins())
-
       >>> penguins_tidy.rename({'species': 'species_2'})
+      >>> penguins_tidy.rename(predicate = lambda x: bool(re.match("^spe", x.name)),
+      >>>                      func = lambda x: x.name + "_two"
+      >>>                      )
 
 
 
@@ -2339,7 +2345,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: pivot_wider(self, names_from, values_from, values_fill=None, values_fn=None, id_cols=None, sep='__')
+   .. py:method:: pivot_wider(self, names_from, values_from, values_fill=None, values_fn=None, id_cols=None, sep='__', names_prefix='')
 
       
       Pivot data from long to wide
@@ -2363,6 +2369,8 @@ Classes
       :type id_cols: string or list of strings, default is None
       :param sep: seperator to use while creating resulting column names
       :type sep: string
+      :param names_prefix: prefix for new columns
+      :type names_prefix: string
 
       :rtype: tidyframe
 
@@ -2441,6 +2449,12 @@ Classes
       >>>                           , values_from = "bill_length_mm"
       >>>                           , values_fn   = np.mean
       >>>                           , values_fill = 0
+      >>>                           )
+      >>> # use some prefix for new columns
+      >>> penguins_tidy.pivot_wider(id_cols       = "island"
+      >>>                           , names_from  = "sex"
+      >>>                           , values_from = "bill_length_mm"
+      >>>                           , names_prefix = "gender_"
       >>>                           )
 
 
@@ -3505,6 +3519,164 @@ Classes
       >>>                                         , 'island': ['f', 'g']
       >>>                                      ""   }).pipe(tidyframe)
       >>> penguins_tidy[0:5, :]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: _crossing(self, col_list)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: _nesting(self, col_list)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: _flatten(self, spec_list, is_tuple)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: _expand(self, spec)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: expand(self, spec, by=None)
+
+      
+      expand
+      Creates combinations of columns using specification
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: _complete(self, spec, fill=None)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: complete(self, spec, fill=None, by=None)
+
+      
+      complete
+      Completes a tidyframe with missing combinations of data
+
 
 
 

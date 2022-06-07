@@ -21,6 +21,7 @@ Functions
 
    tidypandas.tidy_utils.simplify
    tidypandas.tidy_utils.is_simple
+   tidypandas.tidy_utils.expand_grid
 
 
 
@@ -125,6 +126,44 @@ Functions
    >>> ex1
    >>>
    >>> is_simple(ex1, verbose = True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: expand_grid(dictionary)
+
+   
+   expand_grid
+   Create a tidy dataframe with all combinatons of inputs
+
+   :param dictionary: A dictionary with string keys and values of one these types: tidyframe,
+                      pandas series, an object coercible to pandas series.
+   :type dictionary: dict
+
+   :rtype: tidyframe
+
+   .. rubric:: Examples
+
+   import pandas as pd
+   # use lists or series
+   expand_grid({'a': [1, 2], 'b': pd.Series(['m', 'n'])})
+
+   # dict value can be a tidyframe
+   expand_grid({'a': [1,2], 'b': tidyframe({'b': [3, pd.NA], 'c': [5, 6]})})
 
 
 

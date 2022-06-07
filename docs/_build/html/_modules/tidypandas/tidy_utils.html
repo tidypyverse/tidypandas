@@ -169,8 +169,10 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">tidypandas._unexported_utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">_is_unique_list</span><span class="p">,</span>
                                           <span class="n">_get_unique_names</span><span class="p">,</span> 
-                                          <span class="n">_coerce_pdf</span>
+                                          <span class="n">_coerce_pdf</span><span class="p">,</span>
+                                          <span class="n">_is_string_or_string_list</span>
                                          <span class="p">)</span>
+<span class="kn">import</span> <span class="nn">functools</span>
 
 <span class="c1"># -----------------------------------------------------------------------------</span>
 <span class="c1"># simplify</span>
@@ -400,10 +402,59 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Column index should be string column names.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">unique_flag</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Column names should be unique.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">unique_flag</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">unique_flag</span>    <span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Column names should not start with an underscore.&quot;</span><span class="p">)</span>
             
     <span class="k">return</span> <span class="n">flag</span></div>
+
+<span class="c1"># expand_grid</span>
+<div class="viewcode-block" id="expand_grid"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_utils/index.html#tidypandas.tidy_utils.expand_grid">[docs]</a><span class="k">def</span> <span class="nf">expand_grid</span><span class="p">(</span><span class="n">dictionary</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    expand_grid</span>
+<span class="sd">    Create a tidy dataframe with all combinatons of inputs</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dictionary: dict</span>
+<span class="sd">        A dictionary with string keys and values of one these types: tidyframe, </span>
+<span class="sd">        pandas series, an object coercible to pandas series.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tidyframe</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    import pandas as pd</span>
+<span class="sd">    # use lists or series</span>
+<span class="sd">    expand_grid({&#39;a&#39;: [1, 2], &#39;b&#39;: pd.Series([&#39;m&#39;, &#39;n&#39;])})</span>
+<span class="sd">    </span>
+<span class="sd">    # dict value can be a tidyframe</span>
+<span class="sd">    expand_grid({&#39;a&#39;: [1,2], &#39;b&#39;: tidyframe({&#39;b&#39;: [3, pd.NA], &#39;c&#39;: [5, 6]})})</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="kn">from</span> <span class="nn">tidypandas</span> <span class="kn">import</span> <span class="n">tidyframe</span>
+    
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dictionary</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">assert</span> <span class="n">_is_string_or_string_list</span><span class="p">(</span><span class="n">keys</span><span class="p">),</span>\
+        <span class="s2">&quot;dict key should be a string&quot;</span>
+    <span class="k">assert</span> <span class="n">_is_unique_list</span><span class="p">(</span><span class="n">keys</span><span class="p">),</span>\
+        <span class="s2">&quot;dicts keys should be unique&quot;</span>
+    
+    <span class="k">for</span> <span class="n">akey</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dictionary</span><span class="p">[</span><span class="n">akey</span><span class="p">],</span> <span class="n">tidyframe</span><span class="p">):</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dictionary</span><span class="p">[</span><span class="n">akey</span><span class="p">],</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+            <span class="n">dictionary</span><span class="p">[</span><span class="n">akey</span><span class="p">]</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">({</span><span class="n">akey</span><span class="p">:</span> <span class="n">dictionary</span><span class="p">[</span><span class="n">akey</span><span class="p">]})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">dictionary</span><span class="p">[</span><span class="n">akey</span><span class="p">]</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">({</span><span class="n">akey</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">dictionary</span><span class="p">[</span><span class="n">akey</span><span class="p">])})</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">((</span><span class="sa">f</span><span class="s2">&quot;Did not find a way to convert value &quot;</span>
+                                 <span class="sa">f</span><span class="s2">&quot;corresponding to key &#39;</span><span class="si">{</span><span class="n">akey</span><span class="si">}</span><span class="s2">&#39; to pandas series&quot;</span>
+                                 <span class="p">))</span>
+    
+    <span class="n">expanded</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">:</span> <span class="n">dictionary</span><span class="p">[</span><span class="n">k1</span><span class="p">]</span><span class="o">.</span><span class="n">cross_join</span><span class="p">(</span><span class="n">dictionary</span><span class="p">[</span><span class="n">k2</span><span class="p">]),</span> <span class="nb">list</span><span class="p">(</span><span class="n">dictionary</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+    <span class="k">return</span> <span class="n">expanded</span></div>
 </pre></div>
 
               </div>

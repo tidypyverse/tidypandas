@@ -648,6 +648,41 @@
          __setitem__
         </a>
        </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe._crossing">
+         _crossing
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe._nesting">
+         _nesting
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe._flatten">
+         _flatten
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe._expand">
+         _expand
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe.expand">
+         expand
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe._complete">
+         _complete
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe.complete">
+         complete
+        </a>
+       </li>
       </ul>
      </li>
     </ul>
@@ -1349,11 +1384,15 @@ the columns are added to the begining of the dataframe (leftmost)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe.rename">
-<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_new_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe.rename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe.rename" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">old_new_dict</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">predicate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe.rename"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe.rename" title="Permalink to this definition">#</a></dt>
 <dd><p>Rename columns of the tidy pandas dataframe</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>old_new_dict</strong> (<em>A dict with old names as keys and new names as values</em>) – </p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>old_new_dict</strong> (<em>dict</em>) – A dict with old names as keys and new names as values</p></li>
+<li><p><strong>predicate</strong> (<em>callable</em>) – function with series input and bool output to identify a column</p></li>
+<li><p><strong>func</strong> (<em>callable</em>) – function to apply on columns identified by predicate</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="#tidypandas.tidyframe_class.tidyframe" title="tidypandas.tidyframe_class.tidyframe">tidyframe</a></p>
@@ -1362,9 +1401,10 @@ the columns are added to the begining of the dataframe (leftmost)</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="s1">&#39;species_2&#39;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="s1">&#39;species_2&#39;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">predicate</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;^spe&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">)),</span>
+<span class="gp">&gt;&gt;&gt; </span>                     <span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s2">&quot;_two&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span>                     <span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -2261,7 +2301,7 @@ When wt is present, then wt column is summed up.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe.pivot_wider">
-<span class="sig-name descname"><span class="pre">pivot_wider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names_from</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values_from</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values_fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'__'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe.pivot_wider"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe.pivot_wider" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">pivot_wider</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names_from</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values_from</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values_fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">values_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id_cols</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'__'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe.pivot_wider"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe.pivot_wider" title="Permalink to this definition">#</a></dt>
 <dd><p>Pivot data from long to wide</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2279,6 +2319,7 @@ not kept in a list (will be a scalar)</p></li>
 (row) after widening (columns of the original dataframe that are
 supposed to stay put)</p></li>
 <li><p><strong>sep</strong> (<em>string</em>) – seperator to use while creating resulting column names</p></li>
+<li><p><strong>names_prefix</strong> (<em>string</em>) – prefix for new columns</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
@@ -2359,6 +2400,12 @@ supposed to stay put)</p></li>
 <span class="gp">&gt;&gt;&gt; </span>                          <span class="p">,</span> <span class="n">values_from</span> <span class="o">=</span> <span class="s2">&quot;bill_length_mm&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>                          <span class="p">,</span> <span class="n">values_fn</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span>
 <span class="gp">&gt;&gt;&gt; </span>                          <span class="p">,</span> <span class="n">values_fill</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">&gt;&gt;&gt; </span>                          <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># use some prefix for new columns</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">pivot_wider</span><span class="p">(</span><span class="n">id_cols</span>       <span class="o">=</span> <span class="s2">&quot;island&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span>                          <span class="p">,</span> <span class="n">names_from</span>  <span class="o">=</span> <span class="s2">&quot;sex&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span>                          <span class="p">,</span> <span class="n">values_from</span> <span class="o">=</span> <span class="s2">&quot;bill_length_mm&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span>                          <span class="p">,</span> <span class="n">names_prefix</span> <span class="o">=</span> <span class="s2">&quot;gender_&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>                          <span class="p">)</span>
 </pre></div>
 </div>
@@ -3118,6 +3165,45 @@ assignment exceptions are handled by this method and they will cascade.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="p">:]</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe._crossing">
+<span class="sig-name descname"><span class="pre">_crossing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe._crossing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe._crossing" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe._nesting">
+<span class="sig-name descname"><span class="pre">_nesting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">col_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe._nesting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe._nesting" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe._flatten">
+<span class="sig-name descname"><span class="pre">_flatten</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spec_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_tuple</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe._flatten"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe._flatten" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe._expand">
+<span class="sig-name descname"><span class="pre">_expand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spec</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe._expand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe._expand" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe.expand">
+<span class="sig-name descname"><span class="pre">expand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe.expand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe.expand" title="Permalink to this definition">#</a></dt>
+<dd><p>expand
+Creates combinations of columns using specification</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe._complete">
+<span class="sig-name descname"><span class="pre">_complete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe._complete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe._complete" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe.complete">
+<span class="sig-name descname"><span class="pre">complete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe.complete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe.complete" title="Permalink to this definition">#</a></dt>
+<dd><p>complete
+Completes a tidyframe with missing combinations of data</p>
 </dd></dl>
 
 </dd></dl>

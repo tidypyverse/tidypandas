@@ -192,7 +192,10 @@
                                             <span class="n">_get_dtype_dict</span><span class="p">,</span>
                                             <span class="n">_generate_new_string</span><span class="p">,</span>
                                             <span class="n">_coerce_series</span><span class="p">,</span>
-                                            <span class="n">_coerce_pdf</span>
+                                            <span class="n">_coerce_pdf</span><span class="p">,</span>
+                                            <span class="n">_is_nested</span><span class="p">,</span>
+                                            <span class="n">_flatten_strings</span><span class="p">,</span>
+                                            <span class="n">_nested_is_unique</span>
                                         <span class="p">)</span>
 <span class="kn">import</span> <span class="nn">tidypandas.format</span> <span class="k">as</span> <span class="nn">tidy_fmt</span>
 
@@ -693,10 +696,12 @@
 <span class="sd">        -----</span>
 <span class="sd">        1. skim is done via &#39;skimpy&#39; package is expected to be installed.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="c1"># TODO: Implement package check</span>
+
         <span class="k">if</span> <span class="n">importlib</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">find_spec</span><span class="p">(</span><span class="s2">&quot;skimpy&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">skimpy</span> <span class="kn">import</span> <span class="n">skim</span>
             <span class="n">skim</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;skim output is not printed. Please install skimpy package.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">return_self</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
@@ -1300,13 +1305,18 @@
     <span class="c1"># rename</span>
     <span class="c1">##########################################################################</span>
     
-<div class="viewcode-block" id="tidyframe.rename"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.rename">[docs]</a>    <span class="k">def</span> <span class="nf">rename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_new_dict</span><span class="p">):</span>
+<div class="viewcode-block" id="tidyframe.rename"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.rename">[docs]</a>    <span class="k">def</span> <span class="nf">rename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_new_dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">predicate</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">func</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Rename columns of the tidy pandas dataframe</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        old_new_dict: A dict with old names as keys and new names as values</span>
+<span class="sd">        old_new_dict: dict</span>
+<span class="sd">            A dict with old names as keys and new names as values</span>
+<span class="sd">        predicate: callable</span>
+<span class="sd">            function with series input and bool output to identify a column</span>
+<span class="sd">        func: callable</span>
+<span class="sd">            function to apply on columns identified by predicate</span>
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1316,19 +1326,50 @@
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; from palmerpenguins import load_penguins</span>
 <span class="sd">        &gt;&gt;&gt; penguins_tidy = tidyframe(load_penguins())</span>
-
 <span class="sd">        &gt;&gt;&gt; penguins_tidy.rename({&#39;species&#39;: &#39;species_2&#39;})</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.rename(predicate = lambda x: bool(re.match(&quot;^spe&quot;, x.name)),</span>
+<span class="sd">        &gt;&gt;&gt;                      func = lambda x: x.name + &quot;_two&quot;</span>
+<span class="sd">        &gt;&gt;&gt;                      )</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">cn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span>
         
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">old_new_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">),</span>\
-            <span class="s2">&quot;arg &#39;old_new_dict&#39; should be a dict&quot;</span>
-        <span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">old_new_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>\
-            <span class="s2">&quot;keys of the input dict should be existing column names&quot;</span>
-        <span class="k">assert</span> <span class="n">_is_string_or_string_list</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">old_new_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span>\
-            <span class="s2">&quot;values of the dict should be strings&quot;</span>
-        <span class="k">assert</span> <span class="n">_is_unique_list</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">old_new_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span>\
-            <span class="s2">&quot;values of the dict should be unique&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">old_new_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">predicate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;provide exactly one among old_new_dict and predicate&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="n">old_new_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">predicate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;provide exactly one among old_new_dict and predicate&quot;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="p">(</span><span class="n">predicate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;both predicate and func should be provided&quot;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="p">(</span><span class="n">predicate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;both predicate and func should be provided&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">old_new_dict</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">old_new_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">),</span>\
+                <span class="s2">&quot;arg &#39;old_new_dict&#39; should be a dict&quot;</span>
+            <span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span><span class="o">.</span><span class="n">issuperset</span><span class="p">(</span><span class="n">old_new_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>\
+                <span class="s2">&quot;keys of the input dict should be existing column names&quot;</span>
+            <span class="k">assert</span> <span class="n">_is_string_or_string_list</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">old_new_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span>\
+                <span class="s2">&quot;values of the dict should be strings&quot;</span>
+            <span class="k">assert</span> <span class="n">_is_unique_list</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">old_new_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span>\
+                <span class="s2">&quot;values of the dict should be unique&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">predicate</span><span class="p">),</span>\
+                <span class="s2">&quot;predicate should be a function&quot;</span>
+            <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">func</span><span class="p">),</span>\
+                <span class="s2">&quot;func should be a function&quot;</span>
+        
+        <span class="c1"># create old_new_dict in predicate case</span>
+        <span class="k">if</span> <span class="n">old_new_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">col_bool_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">predicate</span>
+                                                            <span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="s2">&quot;index&quot;</span>
+                                                            <span class="p">)</span>
+                                         <span class="p">)</span>
+                                    <span class="p">)</span>
+            <span class="n">column_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">cn</span><span class="p">)[</span><span class="n">col_bool_list</span><span class="p">])</span>
+            <span class="n">column_names_renamed</span> <span class="o">=</span> <span class="p">[</span><span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="p">[</span><span class="n">x</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">column_names</span><span class="p">]</span>
+            <span class="n">old_new_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">column_names</span><span class="p">,</span> <span class="n">column_names_renamed</span><span class="p">))</span>
         
         <span class="c1"># new names should not intersect with &#39;remaining&#39; names</span>
         <span class="n">remaining</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">old_new_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
@@ -3734,6 +3775,7 @@
                     <span class="p">,</span> <span class="n">values_fn</span> <span class="o">=</span> <span class="kc">None</span>
                     <span class="p">,</span> <span class="n">id_cols</span> <span class="o">=</span> <span class="kc">None</span>
                     <span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;__&quot;</span>
+                    <span class="p">,</span> <span class="n">names_prefix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
                     <span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Pivot data from long to wide</span>
@@ -3764,6 +3806,9 @@
 <span class="sd">            </span>
 <span class="sd">        sep: string</span>
 <span class="sd">            seperator to use while creating resulting column names</span>
+<span class="sd">            </span>
+<span class="sd">        names_prefix: string</span>
+<span class="sd">            prefix for new columns</span>
 <span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -3845,6 +3890,12 @@
 <span class="sd">        &gt;&gt;&gt;                           , values_fn   = np.mean</span>
 <span class="sd">        &gt;&gt;&gt;                           , values_fill = 0</span>
 <span class="sd">        &gt;&gt;&gt;                           )</span>
+<span class="sd">        &gt;&gt;&gt; # use some prefix for new columns</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.pivot_wider(id_cols       = &quot;island&quot;</span>
+<span class="sd">        &gt;&gt;&gt;                           , names_from  = &quot;sex&quot;</span>
+<span class="sd">        &gt;&gt;&gt;                           , values_from = &quot;bill_length_mm&quot;</span>
+<span class="sd">        &gt;&gt;&gt;                           , names_prefix = &quot;gender_&quot;</span>
+<span class="sd">        &gt;&gt;&gt;                           )</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="n">cn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span>
@@ -3923,11 +3974,17 @@
         
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sep</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>\
             <span class="s2">&quot;arg &#39;sep&#39; should be a string&quot;</span>
+            
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">names_prefix</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>\
+            <span class="s2">&quot;arg &#39;names_prefix&#39; should be a string without spaces&quot;</span>
+        <span class="k">assert</span> <span class="s1">&#39; &#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">names_prefix</span><span class="p">,</span>\
+            <span class="s2">&quot;arg &#39;names_prefix&#39; should be a string without spaces&quot;</span>
         
         <span class="c1"># make values_from a scalar if it is</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values_from</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">values_from</span> <span class="o">=</span> <span class="n">values_from</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
+        
+        <span class="c1"># core pivoting logic</span>
         <span class="n">res</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">data</span>         <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data</span>
                              <span class="p">,</span> <span class="n">index</span>      <span class="o">=</span> <span class="n">id_cols</span>
                              <span class="p">,</span> <span class="n">columns</span>    <span class="o">=</span> <span class="n">names_from</span>
@@ -3939,7 +3996,23 @@
                              <span class="p">,</span> <span class="n">observed</span>   <span class="o">=</span> <span class="kc">True</span>
                              <span class="p">)</span>
         
-        <span class="k">return</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">simplify</span><span class="p">(</span><span class="n">res</span><span class="p">),</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">simplify</span><span class="p">(</span><span class="n">res</span><span class="p">),</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+        
+        <span class="c1"># add names prefix</span>
+        <span class="k">if</span> <span class="n">names_prefix</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">org_cn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span>
+            <span class="n">new_cn</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">colnames</span>
+            <span class="n">fresh_cn</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">new_cn</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">org_cn</span><span class="p">))</span>
+            <span class="n">fresh_cn_prefixed</span> <span class="o">=</span> <span class="p">[</span><span class="n">names_prefix</span> <span class="o">+</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">fresh_cn</span><span class="p">]</span>
+            <span class="n">dict_for_renaming</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">fresh_cn</span><span class="p">,</span> <span class="n">fresh_cn_prefixed</span><span class="p">))</span>
+            
+            <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">dict_for_renaming</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">res</span></div>
+            
+    <span class="c1">###########################################################################</span>
+    <span class="c1"># pivot_longer</span>
+    <span class="c1">###########################################################################</span>
     
 <div class="viewcode-block" id="tidyframe.pivot_longer"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.pivot_longer">[docs]</a>    <span class="k">def</span> <span class="nf">pivot_longer</span><span class="p">(</span><span class="bp">self</span>
                      <span class="p">,</span> <span class="n">cols</span>
@@ -4953,6 +5026,8 @@
                  <span class="p">)</span>
         
         <span class="k">return</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+    
     <span class="c1"># na handling methods</span>
     
     <span class="c1">############################################################################</span>
@@ -5859,10 +5934,242 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
       
       <span class="k">else</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span></div>
       <span class="c1"># nothing to return as this is an inplace operation</span>
     
+    <span class="c1">############################################################################</span>
+    <span class="c1"># expand</span>
+    <span class="c1">############################################################################</span>
     
+<div class="viewcode-block" id="tidyframe._crossing"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe._crossing">[docs]</a>    <span class="k">def</span> <span class="nf">_crossing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col_list</span><span class="p">):</span>
+        
+        <span class="c1"># I/O are tidyframes</span>
+        <span class="k">def</span> <span class="nf">pick_distinct</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">colname</span><span class="p">):</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">colname</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">col</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;category&#39;</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="n">colname</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">col</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span><span class="p">)}))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="n">colname</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">res</span>
+                
+        <span class="k">if</span> <span class="n">_is_string_or_string_list</span><span class="p">(</span><span class="n">col_list</span><span class="p">):</span>
+            <span class="n">d_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">pick_distinct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">col_list</span><span class="p">))]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># each element is a tidyframe</span>
+            <span class="n">d_list</span> <span class="o">=</span> <span class="n">col_list</span>
+        
+        <span class="k">return</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">cross_join</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">distinct</span><span class="p">(),</span> <span class="n">d_list</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tidyframe._nesting"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe._nesting">[docs]</a>    <span class="k">def</span> <span class="nf">_nesting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">col_list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_is_string_or_string_list</span><span class="p">(</span><span class="n">col_list</span><span class="p">):</span>
+            <span class="c1"># each element is a tidyframe</span>
+            <span class="n">d_list</span> <span class="o">=</span> <span class="n">col_list</span>
+            <span class="n">col_list</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">set</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">colnames</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">colnames</span><span class="p">),</span>
+                                        <span class="n">d_list</span>
+                                        <span class="p">)</span>
+            <span class="n">col_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">col_list</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="n">col_list</span><span class="p">)</span></div>
+        
+        
+<div class="viewcode-block" id="tidyframe._flatten"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe._flatten">[docs]</a>    <span class="k">def</span> <span class="nf">_flatten</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec_list</span><span class="p">,</span> <span class="n">is_tuple</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">spec_list</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">_is_nested</span><span class="p">(</span><span class="n">spec_list</span><span class="p">):</span>
+            <span class="c1"># break down each element to a dataframe</span>
+            <span class="k">for</span> <span class="n">ind</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">spec_list</span><span class="p">)):</span>
+                <span class="c1"># simple column</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec_list</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="c1"># get single column distinct tidyframe</span>
+                    <span class="n">res</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="n">spec_list</span><span class="p">[</span><span class="n">ind</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec_list</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">set</span><span class="p">)),</span>\
+                        <span class="s2">&quot;every element of spec should be a string, tuple or a set&quot;</span>
+                    <span class="c1"># tuple or a set</span>
+                    <span class="k">if</span> <span class="n">_is_nested</span><span class="p">(</span><span class="n">spec_list</span><span class="p">[</span><span class="n">ind</span><span class="p">]):</span>
+                        <span class="c1"># recursive call when nested</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec_list</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+                            <span class="n">res</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">spec_list</span><span class="p">[</span><span class="n">ind</span><span class="p">]),</span>
+                                                     <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec_list</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">)</span>
+                                                     <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="c1"># set, thereby nesting, simply flatten inside</span>
+                            <span class="n">res</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nesting</span><span class="p">(</span><span class="n">_flatten_strings</span><span class="p">(</span><span class="n">spec_list</span><span class="p">[</span><span class="n">ind</span><span class="p">]))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># now that we have a flat structure</span>
+                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec_list</span><span class="p">[</span><span class="n">ind</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">):</span>
+                            <span class="n">res</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crossing</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">spec_list</span><span class="p">[</span><span class="n">ind</span><span class="p">]))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">res</span><span class="p">[</span><span class="n">ind</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nesting</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">spec_list</span><span class="p">[</span><span class="n">ind</span><span class="p">]))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">spec_list</span>
+        
+        <span class="c1"># now handle the outer list &#39;res&#39;          </span>
+        <span class="k">if</span> <span class="n">is_tuple</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_crossing</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nesting</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+        
+        <span class="c1"># handle categorical dtype</span>
+        <span class="n">is_cat</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+                      <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;category&#39;</span><span class="p">)</span>
+                      <span class="p">)</span>
+        <span class="n">cat_cols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">is_cat</span><span class="o">.</span><span class="n">index</span><span class="p">))[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">is_cat</span><span class="p">))])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cat_cols</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">acatcol</span> <span class="ow">in</span> <span class="n">cat_cols</span><span class="p">:</span>
+                <span class="n">res</span><span class="o">.</span><span class="n">__data</span><span class="p">[</span><span class="n">acatcol</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">acatcol</span><span class="p">),</span>
+                                                     <span class="n">categories</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">acatcol</span><span class="p">)</span><span class="o">.</span><span class="n">cat</span><span class="o">.</span><span class="n">categories</span>
+                                                     <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="tidyframe._expand"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe._expand">[docs]</a>    <span class="k">def</span> <span class="nf">_expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">set</span><span class="p">)),</span>\
+            <span class="s2">&quot;spec should be a tuple or a set&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span><span class="o">&gt;=</span> <span class="mi">2</span><span class="p">,</span>\
+            <span class="s2">&quot;minimum length of spec should be 2&quot;</span>
+        <span class="k">assert</span> <span class="n">_nested_is_unique</span><span class="p">(</span><span class="n">spec</span><span class="p">),</span>\
+            <span class="s2">&quot;column names should be unique&quot;</span>
+        <span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">_flatten_strings</span><span class="p">(</span><span class="n">spec</span><span class="p">))</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">),</span>\
+            <span class="s2">&quot;all strings in spec should be valid column names&quot;</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">spec</span><span class="p">),</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span></div>
+    
+<div class="viewcode-block" id="tidyframe.expand"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.expand">[docs]</a>    <span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        expand</span>
+<span class="sd">        Creates combinations of columns using specification</span>
+<span class="sd">        </span>
+<span class="sd">        Paramaters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        spec: tuple or set</span>
+<span class="sd">            See Notes and Examples</span>
+<span class="sd">        by: string or a list of strings</span>
+<span class="sd">            Column names to group by</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tidyframe</span>
+<span class="sd">        </span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        A specification is a nested combination of two types:</span>
+<span class="sd">            1. crossing: Generates all possible distinct combinations of columns</span>
+<span class="sd">                        example: (&#39;col_1&#39;, &#39;col_2&#39;)</span>
+<span class="sd">            2. nesting: Generates only exisiting distinct combinations of columns</span>
+<span class="sd">                        example: {&#39;col_1&#39;, &#39;col_2&#39;, &#39;col_3&#39;}</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from tidypandas import tidyframe</span>
+<span class="sd">        &gt;&gt;&gt; from palmerpenguins import load_penguins</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy = tidyframe(load_penguins())</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # crossing: tuple bracket</span>
+<span class="sd">        &gt;&gt;&gt; # nesting: set bracket</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # simple crossing</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.expand((&quot;species&quot;, &quot;island&quot;))</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # simple nesting</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.expand({&quot;species&quot;, &quot;island&quot;})</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # nest outside and crossing inside</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.expand({&quot;sex&quot;, (&quot;species&quot;, &quot;island&quot;)})</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # crossing outside and nesting inside</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.expand((&quot;sex&quot;, {&quot;species&quot;, &quot;island&quot;}))</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # more &#39;nesting&#39;</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.expand(((&quot;year&quot;, &quot;bill_length_mm&quot;), {&quot;species&quot;, &quot;island&quot;}))</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # grouped expand</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.expand({&quot;species&quot;, &quot;island&quot;}, by = &#39;sex&#39;)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">by</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expand</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_by</span><span class="p">(</span><span class="n">by</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">by</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">_flatten_strings</span><span class="p">(</span><span class="n">spec</span><span class="p">)))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span>\
+                <span class="s2">&quot;&#39;by&#39; columns should not be present in &#39;spec&#39;&quot;</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_modify</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">_expand</span><span class="p">(</span><span class="n">spec</span><span class="p">),</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="tidyframe._complete"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe._complete">[docs]</a>    <span class="k">def</span> <span class="nf">_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">expanded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">spec</span><span class="p">)</span>
+        <span class="n">cn</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">expanded</span><span class="o">.</span><span class="n">colnames</span><span class="p">))</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_join</span><span class="p">(</span><span class="n">expanded</span><span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="n">cn</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fill</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">replace_na</span><span class="p">(</span><span class="n">fill</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+    
+<div class="viewcode-block" id="tidyframe.complete"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.complete">[docs]</a>    <span class="k">def</span> <span class="nf">complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        complete</span>
+<span class="sd">        Completes a tidyframe with missing combinations of data</span>
+<span class="sd">        </span>
+<span class="sd">        Paramaters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        spec: tuple or set</span>
+<span class="sd">            See Notes and Examples</span>
+<span class="sd">        fill: scalar, dict</span>
+<span class="sd">            scalar value to fill missing values or</span>
+<span class="sd">            dict (key: column name, value: value to fill)</span>
+<span class="sd">        by: string or a list of strings</span>
+<span class="sd">            Column names to group by</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tidyframe</span>
+<span class="sd">        </span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        A specification is a nested combination of two types:</span>
+<span class="sd">            1. crossing: Generates all possible distinct combinations of columns</span>
+<span class="sd">                        example: (&#39;col_1&#39;, &#39;col_2&#39;)</span>
+<span class="sd">            2. nesting: Generates only exisiting distinct combinations of columns</span>
+<span class="sd">                        example: {&#39;col_1&#39;, &#39;col_2&#39;, &#39;col_3&#39;}</span>
+<span class="sd">            </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from tidypandas import tidyframe</span>
+<span class="sd">        &gt;&gt;&gt; from palmerpenguins import load_penguins</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy = tidyframe(load_penguins())</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # crossing: tuple bracket</span>
+<span class="sd">        &gt;&gt;&gt; # nesting: set bracket</span>
+<span class="sd">        &gt;&gt;&gt;</span>
+<span class="sd">        &gt;&gt;&gt; # simple crossing</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.complete((&quot;species&quot;, &quot;island&quot;))</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # simple nesting</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.complete({&quot;species&quot;, &quot;island&quot;})</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # nest outside and crossing inside</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.complete({&quot;sex&quot;, (&quot;species&quot;, &quot;island&quot;)})</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # crossing outside and nesting inside</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.complete((&quot;sex&quot;, {&quot;species&quot;, &quot;island&quot;}))</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # more &#39;nesting&#39;</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.complete(((&quot;year&quot;, &quot;bill_length_mm&quot;), {&quot;species&quot;, &quot;island&quot;}))</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # filling missing values</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.complete((&quot;sex&quot;, {&quot;species&quot;, &quot;island&quot;}), fill = {&#39;bill_length_mm&#39;: 100})</span>
+<span class="sd">        &gt;&gt;&gt; </span>
+<span class="sd">        &gt;&gt;&gt; # grouped complete</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.complete({&quot;species&quot;, &quot;island&quot;}, by = &#39;sex&#39;)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">by</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_complete</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="n">fill</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_by</span><span class="p">(</span><span class="n">by</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">by</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">_flatten_strings</span><span class="p">(</span><span class="n">spec</span><span class="p">)))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">,</span>\
+                <span class="s2">&quot;&#39;by&#39; columns should not be present in &#39;spec&#39;&quot;</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group_modify</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">_complete</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span>
+                                                          <span class="n">fill</span> <span class="o">=</span> <span class="n">fill</span>
+                                                          <span class="p">),</span>
+                                    <span class="n">by</span> <span class="o">=</span> <span class="n">by</span>
+                                    <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div></div>
 </pre></div>
 
               </div>

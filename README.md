@@ -1,3 +1,5 @@
+![](docs/logo.png)
+
 [![PyPI
 version](https://badge.fury.io/py/tidypandas.svg)](https://badge.fury.io/py/tidypandas)
 
