@@ -358,7 +358,6 @@ class tidyframe:
         # def is_interactive():
         #     import __main__ as main
         #     return not hasattr(main, '__file__')
-
         def in_notebook():
             try:
                 from IPython import get_ipython
@@ -390,7 +389,7 @@ class tidyframe:
         pd.set_option("display.max_rows", max_rows)
 
 
-    def glimpse(self):
+    def glimpse(self, n=10):
         from shutil import get_terminal_size
         w, h = get_terminal_size()
 
@@ -405,10 +404,7 @@ class tidyframe:
         t_ljust = 0
         values = []
 
-        max_rows = get_option("display.max_rows")
-
-
-        for acol in self.colnames[0:max_rows]:
+        for acol in self.colnames[0:n]:
             aseries = self.pull(acol)
 
             names.append(aseries.name)
@@ -417,15 +413,15 @@ class tidyframe:
             t_ljust = max(t_ljust, len(dtypes[-1]))
 
         for name, dtype in zip(names, dtypes):
-            val_str = ",".join(list(map(str,self.pull(name).values)))
+            val_str = ", ".join(list(map(str,self.pull(name).values)))
             if len(val_str) > w-2-n_ljust-t_ljust:
                 val_str = val_str[0:(w-2-n_ljust-t_ljust)-3] + "..."
             res_str = f'{name.ljust(n_ljust)} {dtype.ljust(t_ljust)} {val_str}'
             res.append(res_str)
 
-        if ncol > max_rows:
-            footer = f'\nmore columns: {", ".join(self.colnames[max_rows:(max_rows+50)])}'
-            if ncol >= max_rows+50:
+        if ncol > n:
+            footer = f'\nmore columns: {", ".join(self.colnames[n:(n+50)])}'
+            if ncol >= n+50:
                 footer += "..."
 
             res.append(footer)
