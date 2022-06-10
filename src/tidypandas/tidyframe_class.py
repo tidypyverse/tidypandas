@@ -423,12 +423,12 @@ class tidyframe:
             res_str = f'{name.ljust(n_ljust)} {dtype.ljust(t_ljust)} {val_str}'
             res.append(res_str)
 
+        if ncol > max_rows:
+            footer = f'\nmore columns: {", ".join(self.colnames[max_rows:(max_rows+50)])}'
+            if ncol >= max_rows+50:
+                footer += "..."
 
-        footer = f'{",".join(self.colnames[max_rows:(max_rows+50)])}'
-        if ncol >= max_rows+50:
-            footer += "..."
-
-        res.append(footer)
+            res.append(footer)
         print("\n".join(res))
             
     ##########################################################################
