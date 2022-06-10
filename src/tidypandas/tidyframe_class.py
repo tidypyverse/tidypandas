@@ -354,7 +354,83 @@ class tidyframe:
             return None
 
 
-    
+    def show(self, n=10):
+        # def is_interactive():
+        #     import __main__ as main
+        #     return not hasattr(main, '__file__')
+
+        def in_notebook():
+            try:
+                from IPython import get_ipython
+                if 'IPKernelApp' not in get_ipython().config:  # pragma: no cover
+                    return False
+            except ImportError:
+                return False
+            except AttributeError:
+                return False
+            return True
+
+
+        max_rows = get_option("display.max_rows")
+        min_rows = get_option("display.min_rows")
+
+        pd.set_option("display.min_rows", None)
+        pd.set_option("display.max_rows", n)
+
+        
+        if in_notebook():
+            res = self.head(n)._repr_html_()
+            from IPython import display
+            display.display_html(display.HTML(res))
+        else:
+            res = self.head(n).__repr__()
+            print(res)
+
+        pd.set_option("display.min_rows", min_rows)
+        pd.set_option("display.max_rows", max_rows)
+
+
+    def glimpse(self):
+        from shutil import get_terminal_size
+        w, h = get_terminal_size()
+
+        nrow = self.nrow
+        ncol = self.ncol
+        res = [f'Rows: {nrow}', f'Columns: {ncol}']
+
+        col_strs = []
+        names = []
+        n_ljust = 0
+        dtypes = []
+        t_ljust = 0
+        values = []
+
+        max_rows = get_option("display.max_rows")
+
+
+        for acol in self.colnames[0:max_rows]:
+            aseries = self.pull(acol)
+
+            names.append(aseries.name)
+            n_ljust = max(n_ljust, len(names[-1]))
+            dtypes.append(f'<{aseries.dtype.name}>')
+            t_ljust = max(t_ljust, len(dtypes[-1]))
+
+        for name, dtype in zip(names, dtypes):
+            val_str = ",".join(list(map(str,self.pull(name).values)))
+            if len(val_str) > w-2-n_ljust-t_ljust:
+                val_str = val_str[0:(w-2-n_ljust-t_ljust)-3] + "..."
+            res_str = f'{name.ljust(n_ljust)} {dtype.ljust(t_ljust)} {val_str}'
+            res.append(res_str)
+
+
+        footer = f'{",".join(self.colnames[max_rows:(max_rows+50)])}'
+        if ncol >= max_rows+50:
+            footer += "..."
+
+        res.append(footer)
+        print("\n".join(res))
+            
     ##########################################################################
     # to_pandas methods
     ##########################################################################
