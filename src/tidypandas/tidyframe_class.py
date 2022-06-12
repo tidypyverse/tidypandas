@@ -311,7 +311,7 @@ class tidyframe:
             max_footer_cols_print = 100
             if formatter.is_truncated_horizontally and formatter.tr_col_num < self.ncol:
                 more_cols = self.ncol - formatter.tr_col_num
-                footer_cols = ["<{}> {}".format(self.__data[cname].dtype.name, cname) 
+                footer_cols = ["{} <{}>".format(cname, self.__data[cname].dtype.name) 
                                   for cname in self.colnames[formatter.tr_col_num:]
                               ]
                 footer_str = "{} more columns: {}".format(more_cols, ", ".join(footer_cols[0:max_footer_cols_print]))

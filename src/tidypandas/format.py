@@ -112,7 +112,7 @@ class TidyHTMLFormatter(HTMLFormatter):
         max_footer_cols_print = 100
         if self.fmt.is_truncated_horizontally and self.fmt.tr_col_num < len(self.frame.columns):
             more_cols = len(self.frame.columns) - self.fmt.tr_col_num
-            footer_cols = ["&lt{}&gt {}".format(self.frame[cname].dtype.name, cname) 
+            footer_cols = ["{} &lt{}&gt".format(cname, self.frame[cname].dtype.name) 
                               for cname in self.frame.columns[self.fmt.tr_col_num:]
                           ]
             col_footer_str = "{} more columns: {}".format(more_cols, ", ".join(footer_cols[0:max_footer_cols_print]))
