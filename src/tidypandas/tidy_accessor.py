@@ -67,6 +67,14 @@ class tp:
     def colnames(self):
         tf = tidyframe(self._obj, copy = False, check = False)
         return tf.colnames
+
+    def show(self, n = 10):
+        tf = tidyframe(self._obj, copy = False, check = False)
+        tf.show(n = n)
+
+    def glimpse(self, n = 10):
+        tf = tidyframe(self._obj, copy = False, check = False)
+        tf.glimpse(n = n)
     
     def add_row_number(self, name = 'row_number', by = None):
         tf = tidyframe(self._obj, copy = False, check = False)

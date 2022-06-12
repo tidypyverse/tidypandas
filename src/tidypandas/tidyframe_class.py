@@ -307,6 +307,20 @@ class tidyframe:
             if row_truncated:
                 footer_str = "#... with {} more rows".format(self.__data.shape[0]-repr_params["min_rows"])
                 formatted_str += "\n" + footer_str
+
+            max_footer_cols_print = 100
+            if formatter.is_truncated_horizontally and formatter.tr_col_num < self.ncol:
+                more_cols = self.ncol - formatter.tr_col_num
+                footer_cols = ["{} <{}>".format(cname, self.__data[cname].dtype.name) 
+                                  for cname in self.colnames[formatter.tr_col_num:]
+                              ]
+                footer_str = "{} more columns: {}".format(more_cols, ", ".join(footer_cols[0:max_footer_cols_print]))
+                if more_cols > max_footer_cols_print:
+                    footer_str += "..."
+                if row_truncated:
+                    formatted_str += ", and " + footer_str
+                else:
+                    formatted_str += "#... with " + footer_str
             return formatted_str
 
 
@@ -354,7 +368,79 @@ class tidyframe:
             return None
 
 
-    
+    def show(self, n=10):
+        # def is_interactive():
+        #     import __main__ as main
+        #     return not hasattr(main, '__file__')
+        def in_notebook():
+            try:
+                from IPython import get_ipython
+                if 'IPKernelApp' not in get_ipython().config:  # pragma: no cover
+                    return False
+            except ImportError:
+                return False
+            except AttributeError:
+                return False
+            return True
+
+
+        max_rows = get_option("display.max_rows")
+        min_rows = get_option("display.min_rows")
+
+        pd.set_option("display.min_rows", None)
+        pd.set_option("display.max_rows", n)
+
+        
+        if in_notebook():
+            res = self.head(n)._repr_html_()
+            from IPython import display
+            display.display_html(display.HTML(res))
+        else:
+            res = self.head(n).__repr__()
+            print(res)
+
+        pd.set_option("display.min_rows", min_rows)
+        pd.set_option("display.max_rows", max_rows)
+
+
+    def glimpse(self, n=10):
+        from shutil import get_terminal_size
+        w, h = get_terminal_size()
+
+        nrow = self.nrow
+        ncol = self.ncol
+        res = [f'Rows: {nrow}', f'Columns: {ncol}']
+
+        col_strs = []
+        names = []
+        n_ljust = 0
+        dtypes = []
+        t_ljust = 0
+        values = []
+
+        for acol in self.colnames[0:n]:
+            aseries = self.pull(acol)
+
+            names.append(aseries.name)
+            n_ljust = max(n_ljust, len(names[-1]))
+            dtypes.append(f'<{aseries.dtype.name}>')
+            t_ljust = max(t_ljust, len(dtypes[-1]))
+
+        for name, dtype in zip(names, dtypes):
+            val_str = ", ".join(list(map(str,self.pull(name).values)))
+            if len(val_str) > w-2-n_ljust-t_ljust:
+                val_str = val_str[0:(w-2-n_ljust-t_ljust)-3] + "..."
+            res_str = f'{name.ljust(n_ljust)} {dtype.ljust(t_ljust)} {val_str}'
+            res.append(res_str)
+
+        if ncol > n:
+            footer = f'\nmore columns: {", ".join(self.colnames[n:(n+50)])}'
+            if ncol >= n+50:
+                footer += "..."
+
+            res.append(footer)
+        print("\n".join(res))
+            
     ##########################################################################
     # to_pandas methods
     ##########################################################################
