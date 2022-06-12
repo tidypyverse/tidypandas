@@ -10,6 +10,54 @@ from pandas.io.formats.html import HTMLFormatter
 from pandas import MultiIndex
 
 class TidyDataFrameFormatter(DataFrameFormatter):
+    def _truncate_horizontally(self) -> None:
+        """Remove columns, which are not to be displayed and adjust formatters.
+        Attributes affected:
+            - tr_frame
+            - formatters
+            - tr_col_num
+        """
+        assert self.max_cols_fitted is not None
+        # col_num = self.max_cols_fitted // 2
+        col_num = self.max_cols_fitted
+        if col_num >= 1:
+            # left = self.tr_frame.iloc[:, :col_num]
+            # right = self.tr_frame.iloc[:, -col_num:]
+            # self.tr_frame = concat((left, right), axis=1)
+            self.tr_frame = self.tr_frame.iloc[:, :col_num]
+
+            # truncate formatter
+            if isinstance(self.formatters, (list, tuple)):
+                # self.formatters = [
+                #     *self.formatters[:col_num],
+                #     *self.formatters[-col_num:],
+                # ]
+                self.formatters = self.formatters[:col_num]
+                    
+        else:
+            col_num = cast(int, self.max_cols)
+            self.tr_frame = self.tr_frame.iloc[:, :col_num]
+        self.tr_col_num = col_num
+
+    def _truncate_vertically(self) -> None:
+        """Remove rows, which are not to be displayed.
+        Attributes affected:
+            - tr_frame
+            - tr_row_num
+        """
+        assert self.max_rows_fitted is not None
+        # row_num = self.max_rows_fitted // 2
+        row_num = self.max_rows_fitted
+        if row_num >= 1:
+            # head = self.tr_frame.iloc[:row_num, :]
+            # tail = self.tr_frame.iloc[-row_num:, :]
+            # self.tr_frame = concat((head, tail))
+            self.tr_frame = self.tr_frame.iloc[:row_num, :]
+        else:
+            row_num = cast(int, self.max_rows)
+            self.tr_frame = self.tr_frame.iloc[:row_num, :]
+        self.tr_row_num = row_num
+
     def format_col(self, i: int):
         """Format column, add dtype ahead"""
         frame = self.tr_frame
@@ -42,6 +90,44 @@ class TidyDataFrameFormatter(DataFrameFormatter):
 
 
 class TidyHTMLFormatter(HTMLFormatter):
+
+    def render(self): # -> list[str]:
+        by = chr(215)  # ×
+        # font-style:oblique;
+        self.write(
+            f"<p style='color:#606060;font-family:verdana;font-size:10px'> A tidy dataframe: {len(self.frame)} {by} {len(self.frame.columns)} </p>"
+        )
+        self._write_table()
+
+        # if self.should_show_dimensions:
+        #     by = chr(215)  # ×
+        #     self.write(
+        #         f"<p>{len(self.frame)} rows {by} {len(self.frame.columns)} columns</p>"
+        #     )
+
+        footer_str = ""
+        if self.fmt.is_truncated_vertically:
+            footer_str += "#... with {} more rows".format(len(self.frame)-self.fmt.tr_row_num)
+
+        max_footer_cols_print = 100
+        if self.fmt.is_truncated_horizontally and self.fmt.tr_col_num < len(self.frame.columns):
+            more_cols = len(self.frame.columns) - self.fmt.tr_col_num
+            footer_cols = ["&lt{}&gt {}".format(self.frame[cname].dtype.name, cname) 
+                              for cname in self.frame.columns[self.fmt.tr_col_num:]
+                          ]
+            col_footer_str = "{} more columns: {}".format(more_cols, ", ".join(footer_cols[0:max_footer_cols_print]))
+            
+            if more_cols > max_footer_cols_print:
+                col_footer_str += "..."
+            if self.fmt.is_truncated_vertically:
+                footer_str += ", and " + col_footer_str
+            else:
+                footer_str += "#... with " + col_footer_str
+
+        self.write(f"<p style='color:#606060;font-family:verdana;font-size:10px'>{footer_str}</p>")
+
+        return self.elements
+
     def _write_body(self, indent: int): # -> None:
         self.write("<tbody>", indent)
         fmt_values = self._get_formatted_values()

@@ -307,6 +307,20 @@ class tidyframe:
             if row_truncated:
                 footer_str = "#... with {} more rows".format(self.__data.shape[0]-repr_params["min_rows"])
                 formatted_str += "\n" + footer_str
+
+            max_footer_cols_print = 100
+            if formatter.is_truncated_horizontally and formatter.tr_col_num < self.ncol:
+                more_cols = self.ncol - formatter.tr_col_num
+                footer_cols = ["<{}> {}".format(self.__data[cname].dtype.name, cname) 
+                                  for cname in self.colnames[formatter.tr_col_num:]
+                              ]
+                footer_str = "{} more columns: {}".format(more_cols, ", ".join(footer_cols[0:max_footer_cols_print]))
+                if more_cols > max_footer_cols_print:
+                    footer_str += "..."
+                if row_truncated:
+                    formatted_str += ", and " + footer_str
+                else:
+                    formatted_str += "#... with " + footer_str
             return formatted_str
 
 
