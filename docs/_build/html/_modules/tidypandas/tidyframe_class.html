@@ -470,6 +470,20 @@
             <span class="k">if</span> <span class="n">row_truncated</span><span class="p">:</span>
                 <span class="n">footer_str</span> <span class="o">=</span> <span class="s2">&quot;#... with </span><span class="si">{}</span><span class="s2"> more rows&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">repr_params</span><span class="p">[</span><span class="s2">&quot;min_rows&quot;</span><span class="p">])</span>
                 <span class="n">formatted_str</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">footer_str</span>
+
+            <span class="n">max_footer_cols_print</span> <span class="o">=</span> <span class="mi">100</span>
+            <span class="k">if</span> <span class="n">formatter</span><span class="o">.</span><span class="n">is_truncated_horizontally</span> <span class="ow">and</span> <span class="n">formatter</span><span class="o">.</span><span class="n">tr_col_num</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span><span class="p">:</span>
+                <span class="n">more_cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span> <span class="o">-</span> <span class="n">formatter</span><span class="o">.</span><span class="n">tr_col_num</span>
+                <span class="n">footer_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> &lt;</span><span class="si">{}</span><span class="s2">&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="p">[</span><span class="n">cname</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> 
+                                  <span class="k">for</span> <span class="n">cname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">[</span><span class="n">formatter</span><span class="o">.</span><span class="n">tr_col_num</span><span class="p">:]</span>
+                              <span class="p">]</span>
+                <span class="n">footer_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> more columns: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">more_cols</span><span class="p">,</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">footer_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">max_footer_cols_print</span><span class="p">]))</span>
+                <span class="k">if</span> <span class="n">more_cols</span> <span class="o">&gt;</span> <span class="n">max_footer_cols_print</span><span class="p">:</span>
+                    <span class="n">footer_str</span> <span class="o">+=</span> <span class="s2">&quot;...&quot;</span>
+                <span class="k">if</span> <span class="n">row_truncated</span><span class="p">:</span>
+                    <span class="n">formatted_str</span> <span class="o">+=</span> <span class="s2">&quot;, and &quot;</span> <span class="o">+</span> <span class="n">footer_str</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">formatted_str</span> <span class="o">+=</span> <span class="s2">&quot;#... with &quot;</span> <span class="o">+</span> <span class="n">footer_str</span>
             <span class="k">return</span> <span class="n">formatted_str</span></div>
 
 
@@ -517,7 +531,79 @@
             <span class="k">return</span> <span class="kc">None</span></div>
 
 
-    
+<div class="viewcode-block" id="tidyframe.show"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="c1"># def is_interactive():</span>
+        <span class="c1">#     import __main__ as main</span>
+        <span class="c1">#     return not hasattr(main, &#39;__file__&#39;)</span>
+        <span class="k">def</span> <span class="nf">in_notebook</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="kn">from</span> <span class="nn">IPython</span> <span class="kn">import</span> <span class="n">get_ipython</span>
+                <span class="k">if</span> <span class="s1">&#39;IPKernelApp&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">get_ipython</span><span class="p">()</span><span class="o">.</span><span class="n">config</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+
+        <span class="n">max_rows</span> <span class="o">=</span> <span class="n">get_option</span><span class="p">(</span><span class="s2">&quot;display.max_rows&quot;</span><span class="p">)</span>
+        <span class="n">min_rows</span> <span class="o">=</span> <span class="n">get_option</span><span class="p">(</span><span class="s2">&quot;display.min_rows&quot;</span><span class="p">)</span>
+
+        <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.min_rows&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.max_rows&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+        
+        <span class="k">if</span> <span class="n">in_notebook</span><span class="p">():</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">_repr_html_</span><span class="p">()</span>
+            <span class="kn">from</span> <span class="nn">IPython</span> <span class="kn">import</span> <span class="n">display</span>
+            <span class="n">display</span><span class="o">.</span><span class="n">display_html</span><span class="p">(</span><span class="n">display</span><span class="o">.</span><span class="n">HTML</span><span class="p">(</span><span class="n">res</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
+        <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.min_rows&quot;</span><span class="p">,</span> <span class="n">min_rows</span><span class="p">)</span>
+        <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.max_rows&quot;</span><span class="p">,</span> <span class="n">max_rows</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="tidyframe.glimpse"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.glimpse">[docs]</a>    <span class="k">def</span> <span class="nf">glimpse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">get_terminal_size</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">get_terminal_size</span><span class="p">()</span>
+
+        <span class="n">nrow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span>
+        <span class="n">ncol</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ncol</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Rows: </span><span class="si">{</span><span class="n">nrow</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;Columns: </span><span class="si">{</span><span class="n">ncol</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span>
+
+        <span class="n">col_strs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">n_ljust</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">t_ljust</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">acol</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="p">]:</span>
+            <span class="n">aseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">acol</span><span class="p">)</span>
+
+            <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aseries</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">n_ljust</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">n_ljust</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">aseries</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">)</span>
+            <span class="n">t_ljust</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">t_ljust</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dtypes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">dtypes</span><span class="p">):</span>
+            <span class="n">val_str</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">)))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">val_str</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">w</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="n">n_ljust</span><span class="o">-</span><span class="n">t_ljust</span><span class="p">:</span>
+                <span class="n">val_str</span> <span class="o">=</span> <span class="n">val_str</span><span class="p">[</span><span class="mi">0</span><span class="p">:(</span><span class="n">w</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="n">n_ljust</span><span class="o">-</span><span class="n">t_ljust</span><span class="p">)</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span>
+            <span class="n">res_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="n">n_ljust</span><span class="p">)</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">dtype</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="n">t_ljust</span><span class="p">)</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">val_str</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res_str</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ncol</span> <span class="o">&gt;</span> <span class="n">n</span><span class="p">:</span>
+            <span class="n">footer</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">more columns: </span><span class="si">{</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">[</span><span class="n">n</span><span class="p">:(</span><span class="n">n</span><span class="o">+</span><span class="mi">50</span><span class="p">)])</span><span class="si">}</span><span class="s1">&#39;</span>
+            <span class="k">if</span> <span class="n">ncol</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="o">+</span><span class="mi">50</span><span class="p">:</span>
+                <span class="n">footer</span> <span class="o">+=</span> <span class="s2">&quot;...&quot;</span>
+
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">footer</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">res</span><span class="p">))</span></div>
+            
     <span class="c1">##########################################################################</span>
     <span class="c1"># to_pandas methods</span>
     <span class="c1">##########################################################################</span>
@@ -788,78 +874,6 @@
         <span class="k">return</span> <span class="n">order_by</span></div>
     
     <span class="c1">##########################################################################</span>
-    <span class="c1"># add_row_number</span>
-    <span class="c1">##########################################################################</span>
-<div class="viewcode-block" id="tidyframe.add_row_number"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.add_row_number">[docs]</a>    <span class="k">def</span> <span class="nf">add_row_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;row_number&#39;</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        add_row_number (aka rowid_to_column)</span>
-<span class="sd">        Add a row number column to tidyframe</span>
-<span class="sd">        </span>
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        name : str</span>
-<span class="sd">            Name for the row number column</span>
-<span class="sd">        by : str or list of strings</span>
-<span class="sd">            Columns to group by</span>
-<span class="sd">        </span>
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        tidyframe</span>
-<span class="sd">        </span>
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        1. Row order is preserved.</span>
-<span class="sd">        2. Column indicating row number is added as the first column </span>
-<span class="sd">           (to the left).</span>
-<span class="sd">        3. Alias: rowid_to_column</span>
-<span class="sd">        </span>
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        &gt;&gt;&gt; from palmerpenguins import load_penguins</span>
-<span class="sd">        &gt;&gt;&gt; penguins_tidy = tidyframe(load_penguins())</span>
-
-<span class="sd">        &gt;&gt;&gt; penguins_tidy.add_row_number() # equivalently penguins_tidy.add_rowid()</span>
-<span class="sd">        </span>
-<span class="sd">        &gt;&gt;&gt; # add row number per group in the order of appearance</span>
-<span class="sd">        &gt;&gt;&gt; penguins_tidy.add_row_number(by = &#39;sex&#39;)</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        
-        <span class="n">nr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span>
-        <span class="n">cn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span>
-        
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>\
-            <span class="s2">&quot;arg &#39;name&#39; should be a string&quot;</span>
-        <span class="k">if</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;name&#39; should not start with an underscore&quot;</span><span class="p">)</span>
-        
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">cn</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">Expection</span><span class="p">(</span><span class="s2">&quot;&#39;name&#39; should not be an existing column name.&quot;</span><span class="p">)</span>
-            
-        <span class="k">if</span> <span class="n">by</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">name</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nr</span><span class="p">)})</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_by</span><span class="p">(</span><span class="n">by</span><span class="p">)</span>
-            <span class="n">by</span> <span class="o">=</span> <span class="n">_enlist</span><span class="p">(</span><span class="n">by</span><span class="p">)</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span>
-                   <span class="o">.</span><span class="n">__data</span>
-                   <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">&quot;_rn&quot;</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nr</span><span class="p">)})</span>
-                   <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">dropna</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-                   <span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">name</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])}))</span>
-                   <span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-                   <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;_rn&quot;</span><span class="p">,</span> <span class="n">ignore_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-                   <span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="s2">&quot;_rn&quot;</span><span class="p">)</span>
-                   <span class="p">)</span>
-        
-        <span class="n">col_order</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">+</span> <span class="n">cn</span>
-        
-        <span class="k">return</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">col_order</span><span class="p">]</span>
-                                   <span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span>
-                                   <span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span>
-                                   <span class="p">)</span></div>
-    
-    <span class="n">rowid_to_column</span> <span class="o">=</span> <span class="n">add_row_number</span>
-    
-    <span class="c1">##########################################################################</span>
     <span class="c1"># add_group_number</span>
     <span class="c1">##########################################################################</span>
 <div class="viewcode-block" id="tidyframe.add_group_number"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.add_group_number">[docs]</a>    <span class="k">def</span> <span class="nf">add_group_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;group_number&#39;</span><span class="p">):</span>
@@ -929,7 +943,75 @@
                    <span class="p">)</span>
         
         <span class="k">return</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+    <span class="c1">##########################################################################</span>
+    <span class="c1"># add_row_number</span>
+    <span class="c1">##########################################################################</span>
+<div class="viewcode-block" id="tidyframe.add_row_number"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.add_row_number">[docs]</a>    <span class="k">def</span> <span class="nf">add_row_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;row_number&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        add_row_number (aka rowid_to_column)</span>
+<span class="sd">        Add a row number column to tidyframe</span>
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name : str</span>
+<span class="sd">            Name for the row number column</span>
+<span class="sd">        by : str or list of strings</span>
+<span class="sd">            Columns to group by</span>
+<span class="sd">        </span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tidyframe</span>
+<span class="sd">        </span>
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        1. Row order is preserved.</span>
+<span class="sd">        2. Column indicating row number is added as the first column </span>
+<span class="sd">           (to the left).</span>
+<span class="sd">        3. Alias: rowid_to_column</span>
+<span class="sd">        </span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from palmerpenguins import load_penguins</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy = tidyframe(load_penguins())</span>
 
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.add_row_number() # equivalently penguins_tidy.add_rowid()</span>
+<span class="sd">        </span>
+<span class="sd">        &gt;&gt;&gt; # add row number per group in the order of appearance</span>
+<span class="sd">        &gt;&gt;&gt; penguins_tidy.add_row_number(by = &#39;sex&#39;)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">nr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span>
+        <span class="n">cn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span>
+        
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>\
+            <span class="s2">&quot;arg &#39;name&#39; should be a string&quot;</span>
+        <span class="k">if</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;&#39;name&#39; should not start with an underscore&quot;</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">cn</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">Expection</span><span class="p">(</span><span class="s2">&quot;&#39;name&#39; should not be an existing column name.&quot;</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">by</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">po</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">name</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nr</span><span class="p">)})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">by</span> <span class="o">=</span> <span class="n">_enlist</span><span class="p">(</span><span class="n">by</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_by</span><span class="p">(</span><span class="n">by</span><span class="p">)</span>
+            
+            <span class="n">grp_colname</span> <span class="o">=</span> <span class="n">_generate_new_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colnames</span> <span class="o">+</span> <span class="p">[</span><span class="n">name</span><span class="p">])</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_group_number</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="n">by</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">grp_colname</span><span class="p">)</span>
+            <span class="n">po</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+            <span class="n">po</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">po</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">grp_colname</span><span class="p">)</span><span class="o">.</span><span class="n">cumcount</span><span class="p">()</span>
+        
+        <span class="n">col_order</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">+</span> <span class="n">cn</span>
+        
+        <span class="k">return</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">po</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">col_order</span><span class="p">]</span>
+                         <span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span>
+                         <span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span>
+                         <span class="p">)</span></div>
+    
+    <span class="n">rowid_to_column</span> <span class="o">=</span> <span class="n">add_row_number</span>
+    
     <span class="c1">##########################################################################</span>
     <span class="c1"># group_modify</span>
     <span class="c1">##########################################################################</span>

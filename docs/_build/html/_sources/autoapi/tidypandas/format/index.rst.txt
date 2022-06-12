@@ -50,6 +50,59 @@ Classes
 
    ..
        !! processed by numpydoc !!
+   .. py:method:: _truncate_horizontally(self) -> None
+
+      
+      Remove columns, which are not to be displayed and adjust formatters.
+      Attributes affected:
+          - tr_frame
+          - formatters
+          - tr_col_num
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: _truncate_vertically(self) -> None
+
+      
+      Remove rows, which are not to be displayed.
+      Attributes affected:
+          - tr_frame
+          - tr_row_num
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
    .. py:method:: format_col(self, i: int)
 
       
@@ -126,6 +179,28 @@ Classes
 
    ..
        !! processed by numpydoc !!
+   .. py:method:: render(self)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
    .. py:method:: _write_body(self, indent: int)
 
       

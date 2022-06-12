@@ -249,6 +249,16 @@
       </a>
       <ul class="nav section-nav flex-column">
        <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#tidypandas.format.TidyDataFrameFormatter._truncate_horizontally">
+         _truncate_horizontally
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#tidypandas.format.TidyDataFrameFormatter._truncate_vertically">
+         _truncate_vertically
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
         <a class="reference internal nav-link" href="#tidypandas.format.TidyDataFrameFormatter.format_col">
          format_col
         </a>
@@ -265,6 +275,11 @@
        TidyHTMLFormatter
       </a>
       <ul class="nav section-nav flex-column">
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#tidypandas.format.TidyHTMLFormatter.render">
+         render
+        </a>
+       </li>
        <li class="toc-h5 nav-item toc-entry">
         <a class="reference internal nav-link" href="#tidypandas.format.TidyHTMLFormatter._write_body">
          _write_body
@@ -373,6 +388,33 @@
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.io.formats.format.DataFrameFormatter</span></code></p>
 <p>Class for processing dataframe formatting options and data.</p>
 <dl class="py method">
+<dt class="sig sig-object py" id="tidypandas.format.TidyDataFrameFormatter._truncate_horizontally">
+<span class="sig-name descname"><span class="pre">_truncate_horizontally</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/tidypandas/format.html#TidyDataFrameFormatter._truncate_horizontally"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.format.TidyDataFrameFormatter._truncate_horizontally" title="Permalink to this definition">#</a></dt>
+<dd><p>Remove columns, which are not to be displayed and adjust formatters.
+Attributes affected:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>tr_frame</p></li>
+<li><p>formatters</p></li>
+<li><p>tr_col_num</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tidypandas.format.TidyDataFrameFormatter._truncate_vertically">
+<span class="sig-name descname"><span class="pre">_truncate_vertically</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../../../_modules/tidypandas/format.html#TidyDataFrameFormatter._truncate_vertically"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.format.TidyDataFrameFormatter._truncate_vertically" title="Permalink to this definition">#</a></dt>
+<dd><p>Remove rows, which are not to be displayed.
+Attributes affected:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>tr_frame</p></li>
+<li><p>tr_row_num</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.format.TidyDataFrameFormatter.format_col">
 <span class="sig-name descname"><span class="pre">format_col</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/format.html#TidyDataFrameFormatter.format_col"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.format.TidyDataFrameFormatter.format_col" title="Permalink to this definition">#</a></dt>
 <dd><p>Format column, add dtype ahead</p>
@@ -396,6 +438,11 @@ DataFrame.to_html() and DataFrame._repr_html_().
 Any logic in common with other output formatting methods
 should ideally be inherited from classes in format.py
 and this class responsible for only producing html markup.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="tidypandas.format.TidyHTMLFormatter.render">
+<span class="sig-name descname"><span class="pre">render</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/format.html#TidyHTMLFormatter.render"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.format.TidyHTMLFormatter.render" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.format.TidyHTMLFormatter._write_body">
 <span class="sig-name descname"><span class="pre">_write_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/format.html#TidyHTMLFormatter._write_body"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.format.TidyHTMLFormatter._write_body" title="Permalink to this definition">#</a></dt>

@@ -453,6 +453,50 @@ Classes
       ..
           !! processed by numpydoc !!
 
+   .. py:method:: show(self, n=10)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: glimpse(self, n=10)
+
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
    .. py:method:: to_pandas(self, copy=True)
 
       
@@ -797,7 +841,51 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: add_row_number(self, name='row_number', by=None)
+   .. py:method:: add_group_number(self, by=None, name='group_number')
+
+      
+      Add a group number column to tidyframe
+
+      :param name: Name for the group number column
+      :type name: str
+      :param by: Columns to group by
+      :type by: str or list of strings
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. Row order is preserved.
+      2. Column indicating group number is added as the first column
+         (to the left).
+      3. Number for the group is based on the first appearance of a
+         group combination.
+
+      .. rubric:: Examples
+
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+
+      >>> penguins_tidy.add_group_number(by = 'sex')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+   .. py:method:: add_row_number(self, by=None, name='row_number')
 
       
       add_row_number (aka rowid_to_column)
@@ -826,50 +914,6 @@ Classes
 
       >>> # add row number per group in the order of appearance
       >>> penguins_tidy.add_row_number(by = 'sex')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: add_group_number(self, by=None, name='group_number')
-
-      
-      Add a group number column to tidyframe
-
-      :param name: Name for the group number column
-      :type name: str
-      :param by: Columns to group by
-      :type by: str or list of strings
-
-      :rtype: tidyframe
-
-      .. rubric:: Notes
-
-      1. Row order is preserved.
-      2. Column indicating group number is added as the first column
-         (to the left).
-      3. Number for the group is based on the first appearance of a
-         group combination.
-
-      .. rubric:: Examples
-
-      >>> from palmerpenguins import load_penguins
-      >>> penguins_tidy = tidyframe(load_penguins())
-
-      >>> penguins_tidy.add_group_number(by = 'sex')
 
 
 

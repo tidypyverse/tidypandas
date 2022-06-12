@@ -329,6 +329,16 @@
         </a>
        </li>
        <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe.show">
+         show
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe.glimpse">
+         glimpse
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
         <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe.to_pandas">
          to_pandas
         </a>
@@ -394,13 +404,13 @@
         </a>
        </li>
        <li class="toc-h5 nav-item toc-entry">
-        <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe.add_row_number">
-         add_row_number
+        <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe.add_group_number">
+         add_group_number
         </a>
        </li>
        <li class="toc-h5 nav-item toc-entry">
-        <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe.add_group_number">
-         add_group_number
+        <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe.add_row_number">
+         add_row_number
         </a>
        </li>
        <li class="toc-h5 nav-item toc-entry">
@@ -1023,6 +1033,16 @@ Mainly for IPython notebook.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe.show">
+<span class="sig-name descname"><span class="pre">show</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe.show"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe.show" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe.glimpse">
+<span class="sig-name descname"><span class="pre">glimpse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe.glimpse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe.glimpse" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe.to_pandas">
 <span class="sig-name descname"><span class="pre">to_pandas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe.to_pandas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe.to_pandas" title="Permalink to this definition">#</a></dt>
 <dd><p>Return copy of underlying pandas dataframe</p>
@@ -1163,8 +1183,41 @@ a side-effect</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe.add_group_number">
+<span class="sig-name descname"><span class="pre">add_group_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group_number'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe.add_group_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe.add_group_number" title="Permalink to this definition">#</a></dt>
+<dd><p>Add a group number column to tidyframe</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – Name for the group number column</p></li>
+<li><p><strong>by</strong> (<em>str</em><em> or </em><em>list of strings</em>) – Columns to group by</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#tidypandas.tidyframe_class.tidyframe" title="tidypandas.tidyframe_class.tidyframe">tidyframe</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ol class="arabic simple">
+<li><p>Row order is preserved.</p></li>
+<li><p>Column indicating group number is added as the first column
+(to the left).</p></li>
+<li><p>Number for the group is based on the first appearance of a
+group combination.</p></li>
+</ol>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">add_group_number</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;sex&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe.add_row_number">
-<span class="sig-name descname"><span class="pre">add_row_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'row_number'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe.add_row_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe.add_row_number" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">add_row_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'row_number'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe.add_row_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe.add_row_number" title="Permalink to this definition">#</a></dt>
 <dd><p>add_row_number (aka rowid_to_column)
 Add a row number column to tidyframe</p>
 <dl class="field-list simple">
@@ -1195,39 +1248,6 @@ Add a row number column to tidyframe</p>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># add row number per group in the order of appearance</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">add_row_number</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;sex&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe.add_group_number">
-<span class="sig-name descname"><span class="pre">add_group_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group_number'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe.add_group_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe.add_group_number" title="Permalink to this definition">#</a></dt>
-<dd><p>Add a group number column to tidyframe</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<em>str</em>) – Name for the group number column</p></li>
-<li><p><strong>by</strong> (<em>str</em><em> or </em><em>list of strings</em>) – Columns to group by</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#tidypandas.tidyframe_class.tidyframe" title="tidypandas.tidyframe_class.tidyframe">tidyframe</a></p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<ol class="arabic simple">
-<li><p>Row order is preserved.</p></li>
-<li><p>Column indicating group number is added as the first column
-(to the left).</p></li>
-<li><p>Number for the group is based on the first appearance of a
-group combination.</p></li>
-</ol>
-<p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">add_group_number</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;sex&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>

@@ -173,6 +173,54 @@
 <span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">MultiIndex</span>
 
 <div class="viewcode-block" id="TidyDataFrameFormatter"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyDataFrameFormatter">[docs]</a><span class="k">class</span> <span class="nc">TidyDataFrameFormatter</span><span class="p">(</span><span class="n">DataFrameFormatter</span><span class="p">):</span>
+<div class="viewcode-block" id="TidyDataFrameFormatter._truncate_horizontally"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyDataFrameFormatter._truncate_horizontally">[docs]</a>    <span class="k">def</span> <span class="nf">_truncate_horizontally</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Remove columns, which are not to be displayed and adjust formatters.</span>
+<span class="sd">        Attributes affected:</span>
+<span class="sd">            - tr_frame</span>
+<span class="sd">            - formatters</span>
+<span class="sd">            - tr_col_num</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_cols_fitted</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="c1"># col_num = self.max_cols_fitted // 2</span>
+        <span class="n">col_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_cols_fitted</span>
+        <span class="k">if</span> <span class="n">col_num</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># left = self.tr_frame.iloc[:, :col_num]</span>
+            <span class="c1"># right = self.tr_frame.iloc[:, -col_num:]</span>
+            <span class="c1"># self.tr_frame = concat((left, right), axis=1)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tr_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tr_frame</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:</span><span class="n">col_num</span><span class="p">]</span>
+
+            <span class="c1"># truncate formatter</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">formatters</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+                <span class="c1"># self.formatters = [</span>
+                <span class="c1">#     *self.formatters[:col_num],</span>
+                <span class="c1">#     *self.formatters[-col_num:],</span>
+                <span class="c1"># ]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">formatters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatters</span><span class="p">[:</span><span class="n">col_num</span><span class="p">]</span>
+                    
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">col_num</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_cols</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tr_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tr_frame</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:</span><span class="n">col_num</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tr_col_num</span> <span class="o">=</span> <span class="n">col_num</span></div>
+
+<div class="viewcode-block" id="TidyDataFrameFormatter._truncate_vertically"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyDataFrameFormatter._truncate_vertically">[docs]</a>    <span class="k">def</span> <span class="nf">_truncate_vertically</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Remove rows, which are not to be displayed.</span>
+<span class="sd">        Attributes affected:</span>
+<span class="sd">            - tr_frame</span>
+<span class="sd">            - tr_row_num</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_rows_fitted</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="c1"># row_num = self.max_rows_fitted // 2</span>
+        <span class="n">row_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_rows_fitted</span>
+        <span class="k">if</span> <span class="n">row_num</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># head = self.tr_frame.iloc[:row_num, :]</span>
+            <span class="c1"># tail = self.tr_frame.iloc[-row_num:, :]</span>
+            <span class="c1"># self.tr_frame = concat((head, tail))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tr_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tr_frame</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">row_num</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">row_num</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_rows</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tr_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tr_frame</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="n">row_num</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tr_row_num</span> <span class="o">=</span> <span class="n">row_num</span></div>
+
 <div class="viewcode-block" id="TidyDataFrameFormatter.format_col"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyDataFrameFormatter.format_col">[docs]</a>    <span class="k">def</span> <span class="nf">format_col</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Format column, add dtype ahead&quot;&quot;&quot;</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tr_frame</span>
@@ -205,6 +253,44 @@
 
 
 <div class="viewcode-block" id="TidyHTMLFormatter"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyHTMLFormatter">[docs]</a><span class="k">class</span> <span class="nc">TidyHTMLFormatter</span><span class="p">(</span><span class="n">HTMLFormatter</span><span class="p">):</span>
+
+<div class="viewcode-block" id="TidyHTMLFormatter.render"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyHTMLFormatter.render">[docs]</a>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span> <span class="c1"># -&gt; list[str]:</span>
+        <span class="n">by</span> <span class="o">=</span> <span class="nb">chr</span><span class="p">(</span><span class="mi">215</span><span class="p">)</span>  <span class="c1"># ×</span>
+        <span class="c1"># font-style:oblique;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;&lt;p style=&#39;color:#606060;font-family:verdana;font-size:10px&#39;&gt; A tidy dataframe: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">by</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="si">}</span><span class="s2"> &lt;/p&gt;&quot;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_table</span><span class="p">()</span>
+
+        <span class="c1"># if self.should_show_dimensions:</span>
+        <span class="c1">#     by = chr(215)  # ×</span>
+        <span class="c1">#     self.write(</span>
+        <span class="c1">#         f&quot;&lt;p&gt;{len(self.frame)} rows {by} {len(self.frame.columns)} columns&lt;/p&gt;&quot;</span>
+        <span class="c1">#     )</span>
+
+        <span class="n">footer_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">is_truncated_vertically</span><span class="p">:</span>
+            <span class="n">footer_str</span> <span class="o">+=</span> <span class="s2">&quot;#... with </span><span class="si">{}</span><span class="s2"> more rows&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">tr_row_num</span><span class="p">)</span>
+
+        <span class="n">max_footer_cols_print</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">is_truncated_horizontally</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">tr_col_num</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">columns</span><span class="p">):</span>
+            <span class="n">more_cols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">tr_col_num</span>
+            <span class="n">footer_cols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> &amp;lt</span><span class="si">{}</span><span class="s2">&amp;gt&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="p">[</span><span class="n">cname</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> 
+                              <span class="k">for</span> <span class="n">cname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">tr_col_num</span><span class="p">:]</span>
+                          <span class="p">]</span>
+            <span class="n">col_footer_str</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> more columns: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">more_cols</span><span class="p">,</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">footer_cols</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">max_footer_cols_print</span><span class="p">]))</span>
+            
+            <span class="k">if</span> <span class="n">more_cols</span> <span class="o">&gt;</span> <span class="n">max_footer_cols_print</span><span class="p">:</span>
+                <span class="n">col_footer_str</span> <span class="o">+=</span> <span class="s2">&quot;...&quot;</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="o">.</span><span class="n">is_truncated_vertically</span><span class="p">:</span>
+                <span class="n">footer_str</span> <span class="o">+=</span> <span class="s2">&quot;, and &quot;</span> <span class="o">+</span> <span class="n">col_footer_str</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">footer_str</span> <span class="o">+=</span> <span class="s2">&quot;#... with &quot;</span> <span class="o">+</span> <span class="n">col_footer_str</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;p style=&#39;color:#606060;font-family:verdana;font-size:10px&#39;&gt;</span><span class="si">{</span><span class="n">footer_str</span><span class="si">}</span><span class="s2">&lt;/p&gt;&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span></div>
+
 <div class="viewcode-block" id="TidyHTMLFormatter._write_body"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyHTMLFormatter._write_body">[docs]</a>    <span class="k">def</span> <span class="nf">_write_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span> <span class="c1"># -&gt; None:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;&lt;tbody&gt;&quot;</span><span class="p">,</span> <span class="n">indent</span><span class="p">)</span>
         <span class="n">fmt_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_formatted_values</span><span class="p">()</span>
