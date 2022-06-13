@@ -403,7 +403,7 @@ class tidyframe:
         pd.set_option("display.max_rows", max_rows)
 
 
-    def glimpse(self, n=10):
+    def glimpse(self, n=100):
         from shutil import get_terminal_size
         w, h = get_terminal_size()
 
@@ -418,17 +418,22 @@ class tidyframe:
         t_ljust = 0
         values = []
 
+        all_dtypes = self.__data.dtypes
         for acol in self.colnames[0:n]:
-            aseries = self.pull(acol)
-
-            names.append(aseries.name)
+            names.append(acol)
             n_ljust = max(n_ljust, len(names[-1]))
-            dtypes.append(f'<{aseries.dtype.name}>')
+            dtypes.append(f'<{all_dtypes[acol].name}>')
             t_ljust = max(t_ljust, len(dtypes[-1]))
 
+        max_values_to_glimpse = 100
+        float_vals_precision = 2
         for name, dtype in zip(names, dtypes):
-            val_str = ", ".join(list(map(str,self.pull(name).values)))
-            if len(val_str) > w-2-n_ljust-t_ljust:
+            vals = self.__data.loc[0:max_values_to_glimpse, name]
+            if dtype[1:6] == "float":
+                vals = vals.round(float_vals_precision)
+            val_str = ", ".join(list(map(str, vals)))
+
+            if len(val_str) > w-2-n_ljust-t_ljust or nrow > max_values_to_glimpse:
                 val_str = val_str[0:(w-2-n_ljust-t_ljust)-3] + "..."
             res_str = f'{name.ljust(n_ljust)} {dtype.ljust(t_ljust)} {val_str}'
             res.append(res_str)
