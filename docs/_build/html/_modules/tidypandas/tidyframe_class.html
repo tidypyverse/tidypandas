@@ -334,6 +334,12 @@
 <span class="sd">            Returns a dataframe with nesting the columns</span>
 <span class="sd">        unnest:</span>
 <span class="sd">            Returns the unnested dataframe</span>
+<span class="sd">            </span>
+<span class="sd">    &#39;expand and complete&#39; methods:</span>
+<span class="sd">        expand:</span>
+<span class="sd">            Returns a dataframe with all combinations of columns</span>
+<span class="sd">        complete:</span>
+<span class="sd">            Returns a dataframe with combination of expand + full_join</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     
     <span class="c1">##########################################################################</span>
@@ -566,7 +572,7 @@
         <span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">&quot;display.max_rows&quot;</span><span class="p">,</span> <span class="n">max_rows</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="tidyframe.glimpse"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.glimpse">[docs]</a>    <span class="k">def</span> <span class="nf">glimpse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<div class="viewcode-block" id="tidyframe.glimpse"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.glimpse">[docs]</a>    <span class="k">def</span> <span class="nf">glimpse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
         <span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">get_terminal_size</span>
         <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">get_terminal_size</span><span class="p">()</span>
 
@@ -581,17 +587,22 @@
         <span class="n">t_ljust</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
 
+        <span class="n">all_dtypes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="o">.</span><span class="n">dtypes</span>
         <span class="k">for</span> <span class="n">acol</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">n</span><span class="p">]:</span>
-            <span class="n">aseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">acol</span><span class="p">)</span>
-
-            <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">aseries</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">acol</span><span class="p">)</span>
             <span class="n">n_ljust</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">n_ljust</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
-            <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">aseries</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">)</span>
+            <span class="n">dtypes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&lt;</span><span class="si">{</span><span class="n">all_dtypes</span><span class="p">[</span><span class="n">acol</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&gt;&#39;</span><span class="p">)</span>
             <span class="n">t_ljust</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">t_ljust</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dtypes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
 
+        <span class="n">max_values_to_glimpse</span> <span class="o">=</span> <span class="mi">100</span>
+        <span class="n">float_vals_precision</span> <span class="o">=</span> <span class="mi">2</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">names</span><span class="p">,</span> <span class="n">dtypes</span><span class="p">):</span>
-            <span class="n">val_str</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">)))</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">val_str</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">w</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="n">n_ljust</span><span class="o">-</span><span class="n">t_ljust</span><span class="p">:</span>
+            <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">max_values_to_glimpse</span><span class="p">,</span> <span class="n">name</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">dtype</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;float&quot;</span><span class="p">:</span>
+                <span class="n">vals</span> <span class="o">=</span> <span class="n">vals</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">float_vals_precision</span><span class="p">)</span>
+            <span class="n">val_str</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">vals</span><span class="p">)))</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">val_str</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">w</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="n">n_ljust</span><span class="o">-</span><span class="n">t_ljust</span> <span class="ow">or</span> <span class="n">nrow</span> <span class="o">&gt;</span> <span class="n">max_values_to_glimpse</span><span class="p">:</span>
                 <span class="n">val_str</span> <span class="o">=</span> <span class="n">val_str</span><span class="p">[</span><span class="mi">0</span><span class="p">:(</span><span class="n">w</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="n">n_ljust</span><span class="o">-</span><span class="n">t_ljust</span><span class="p">)</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;...&quot;</span>
             <span class="n">res_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="n">n_ljust</span><span class="p">)</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">dtype</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="n">t_ljust</span><span class="p">)</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">val_str</span><span class="si">}</span><span class="s1">&#39;</span>
             <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">res_str</span><span class="p">)</span>
@@ -1002,13 +1013,12 @@
             <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_group_number</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="n">by</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">grp_colname</span><span class="p">)</span>
             <span class="n">po</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
             <span class="n">po</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">po</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">grp_colname</span><span class="p">)</span><span class="o">.</span><span class="n">cumcount</span><span class="p">()</span>
+            <span class="n">po</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">grp_colname</span><span class="p">],</span> <span class="n">inplace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+            
+        <span class="n">name_col</span> <span class="o">=</span> <span class="n">po</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">po</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">name_col</span><span class="p">)</span> <span class="c1"># in-place</span>
         
-        <span class="n">col_order</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">+</span> <span class="n">cn</span>
-        
-        <span class="k">return</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">po</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">col_order</span><span class="p">]</span>
-                         <span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span>
-                         <span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span>
-                         <span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">po</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
     
     <span class="n">rowid_to_column</span> <span class="o">=</span> <span class="n">add_row_number</span>
     
@@ -5221,7 +5231,7 @@
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Fill missing values from neighboring values per column</span>
 <span class="sd">        </span>
-<span class="sd">        Paramaters</span>
+<span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        column_direction_dict: dict</span>
 <span class="sd">            where key is a column name and value is the direction to fill.</span>
@@ -6117,10 +6127,9 @@
     
 <div class="viewcode-block" id="tidyframe.expand"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.expand">[docs]</a>    <span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        expand</span>
 <span class="sd">        Creates combinations of columns using specification</span>
 <span class="sd">        </span>
-<span class="sd">        Paramaters</span>
+<span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        spec: tuple or set</span>
 <span class="sd">            See Notes and Examples</span>
@@ -6185,10 +6194,9 @@
     
 <div class="viewcode-block" id="tidyframe.complete"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.complete">[docs]</a>    <span class="k">def</span> <span class="nf">complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">        complete</span>
 <span class="sd">        Completes a tidyframe with missing combinations of data</span>
 <span class="sd">        </span>
-<span class="sd">        Paramaters</span>
+<span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        spec: tuple or set</span>
 <span class="sd">            See Notes and Examples</span>

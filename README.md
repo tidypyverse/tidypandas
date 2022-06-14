@@ -77,7 +77,7 @@ data manipulation tasks:
     [issues](https://github.com/talegari/tidypandas/issues) page.
 
 2.  Use the master branch from
-    [github](https://github.com/talegari/tidypandas) repo tp submit your
+    [github](https://github.com/talegari/tidypandas) repo to submit your
     PR.
 
 ------------------------------------------------------------------------

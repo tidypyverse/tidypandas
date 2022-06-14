@@ -992,6 +992,17 @@ dataframes</p>
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">'expand</span> <span class="pre">and</span> <span class="pre">complete'</span> <span class="pre">methods:</span></span></dt>
+<dd><dl class="simple">
+<dt>expand:</dt><dd><p>Returns a dataframe with all combinations of columns</p>
+</dd>
+<dt>complete:</dt><dd><p>Returns a dataframe with combination of expand + full_join</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tidypandas.tidyframe.to_series">
 <span class="sig-name descname"><span class="pre">to_series</span></span><a class="headerlink" href="#tidypandas.tidyframe.to_series" title="Permalink to this definition">#</a></dt>
@@ -1057,7 +1068,7 @@ Mainly for IPython notebook.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe.glimpse">
-<span class="sig-name descname"><span class="pre">glimpse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.glimpse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.glimpse" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">glimpse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.glimpse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.glimpse" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -2888,6 +2899,50 @@ column_names. When None, all columns are considered.</p>
 <dt class="sig sig-object py" id="tidypandas.tidyframe.fill_na">
 <span class="sig-name descname"><span class="pre">fill_na</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_direction_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ascending</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">na_position</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'last'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.fill_na"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.fill_na" title="Permalink to this definition">#</a></dt>
 <dd><p>Fill missing values from neighboring values per column</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column_direction_dict</strong> (<em>dict</em>) – where key is a column name and value is the direction to fill.
+Direction should be one among: ‘up’, ‘down’, ‘updown’ and ‘downup’</p></li>
+<li><p><strong>order_by</strong> (<em>string</em><em> or </em><em>list of strings</em>) – Column names to order by before filling</p></li>
+<li><p><strong>ascending</strong> (<em>bool</em><em> or </em><em>a list of bools</em><em> (</em><em>default: True</em><em>)</em>) – Used when order_by is specified</p></li>
+<li><p><strong>na_position</strong> (<em>string</em><em> (</em><em>default: 'last'</em><em>)</em>) – One among: ‘first’, ‘last’</p></li>
+<li><p><strong>by</strong> (<em>string</em><em> or </em><em>list of strings</em>) – Column names to group by</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#tidypandas.tidyframe" title="tidypandas.tidyframe">tidyframe</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ol class="arabic simple">
+<li><p>The output might still have missing values after applying fill_na.</p></li>
+<li><p>The method preserves the row order.</p></li>
+</ol>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                       <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">NA</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>                       <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span>                       <span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span>                      <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;up&#39;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;down&#39;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;downup&#39;</span><span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;updown&#39;</span><span class="p">})</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;up&#39;</span><span class="p">},</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;down&#39;</span><span class="p">},</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;updown&#39;</span><span class="p">},</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;downup&#39;</span><span class="p">},</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;updown&#39;</span><span class="p">},</span> <span class="n">order_by</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;updown&#39;</span><span class="p">},</span> <span class="n">order_by</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -3228,8 +3283,61 @@ assignment exceptions are handled by this method and they will cascade.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe.expand">
 <span class="sig-name descname"><span class="pre">expand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.expand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.expand" title="Permalink to this definition">#</a></dt>
-<dd><p>expand
-Creates combinations of columns using specification</p>
+<dd><p>Creates combinations of columns using specification</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spec</strong> (<em>tuple</em><em> or </em><em>set</em>) – See Notes and Examples</p></li>
+<li><p><strong>by</strong> (<em>string</em><em> or </em><em>a list of strings</em>) – Column names to group by</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#tidypandas.tidyframe" title="tidypandas.tidyframe">tidyframe</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<dl class="simple">
+<dt>A specification is a nested combination of two types:</dt><dd><ol class="arabic simple">
+<li><dl class="simple">
+<dt>crossing: Generates all possible distinct combinations of columns</dt><dd><p>example: (‘col_1’, ‘col_2’)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>nesting: Generates only exisiting distinct combinations of columns</dt><dd><p>example: {‘col_1’, ‘col_2’, ‘col_3’}</p>
+</dd>
+</dl>
+</li>
+</ol>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tidypandas</span> <span class="kn">import</span> <span class="n">tidyframe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># crossing: tuple bracket</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># nesting: set bracket</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># simple crossing</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">expand</span><span class="p">((</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">))</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># simple nesting</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">expand</span><span class="p">({</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">})</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># nest outside and crossing inside</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">expand</span><span class="p">({</span><span class="s2">&quot;sex&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">)})</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># crossing outside and nesting inside</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">expand</span><span class="p">((</span><span class="s2">&quot;sex&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">}))</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># more &#39;nesting&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">expand</span><span class="p">(((</span><span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;bill_length_mm&quot;</span><span class="p">),</span> <span class="p">{</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">}))</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># grouped expand</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">expand</span><span class="p">({</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">},</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;sex&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -3240,8 +3348,66 @@ Creates combinations of columns using specification</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe.complete">
 <span class="sig-name descname"><span class="pre">complete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.complete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.complete" title="Permalink to this definition">#</a></dt>
-<dd><p>complete
-Completes a tidyframe with missing combinations of data</p>
+<dd><p>Completes a tidyframe with missing combinations of data</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spec</strong> (<em>tuple</em><em> or </em><em>set</em>) – See Notes and Examples</p></li>
+<li><p><strong>fill</strong> (<em>scalar</em><em>, </em><em>dict</em>) – scalar value to fill missing values or
+dict (key: column name, value: value to fill)</p></li>
+<li><p><strong>by</strong> (<em>string</em><em> or </em><em>a list of strings</em>) – Column names to group by</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#tidypandas.tidyframe" title="tidypandas.tidyframe">tidyframe</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<dl class="simple">
+<dt>A specification is a nested combination of two types:</dt><dd><ol class="arabic simple">
+<li><dl class="simple">
+<dt>crossing: Generates all possible distinct combinations of columns</dt><dd><p>example: (‘col_1’, ‘col_2’)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>nesting: Generates only exisiting distinct combinations of columns</dt><dd><p>example: {‘col_1’, ‘col_2’, ‘col_3’}</p>
+</dd>
+</dl>
+</li>
+</ol>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tidypandas</span> <span class="kn">import</span> <span class="n">tidyframe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># crossing: tuple bracket</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># nesting: set bracket</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># simple crossing</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">complete</span><span class="p">((</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">))</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># simple nesting</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">complete</span><span class="p">({</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">})</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># nest outside and crossing inside</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">complete</span><span class="p">({</span><span class="s2">&quot;sex&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">)})</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># crossing outside and nesting inside</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">complete</span><span class="p">((</span><span class="s2">&quot;sex&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">}))</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># more &#39;nesting&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">complete</span><span class="p">(((</span><span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;bill_length_mm&quot;</span><span class="p">),</span> <span class="p">{</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">}))</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># filling missing values</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">complete</span><span class="p">((</span><span class="s2">&quot;sex&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">}),</span> <span class="n">fill</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">})</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># grouped complete</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">complete</span><span class="p">({</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">},</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;sex&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>

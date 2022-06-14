@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.2.1 (14th June 2022)
+- glimpse by default shows 100 columns
+- add_row_number is more efficient
+
+## v0.2.0 (12th June 2022)
+- show method added (print specified number of rows)
+- glimpse method added (to see dataframe in horizontal form)
+- add_row_number is fast in grouped case (use of .cumcount)
+- All changes of github only release v0.1.5
+
+## v0.2.0 (12th June 2022)
+- show method added (print specified number of rows)
+- glimpse method added (to see dataframe in horizontal form)
+- add_row_number is fast in grouped case (use of .cumcount)
+- All changes of github only release v0.1.5
+
 ## v0.1.5 (7th June 2022)
 - methods 'expand' and 'complete' are implemented
 - 'rename' method gains arguments 'predicate' and 'func'

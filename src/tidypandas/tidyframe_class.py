@@ -171,6 +171,12 @@ class tidyframe:
             Returns a dataframe with nesting the columns
         unnest:
             Returns the unnested dataframe
+            
+    'expand and complete' methods:
+        expand:
+            Returns a dataframe with all combinations of columns
+        complete:
+            Returns a dataframe with combination of expand + full_join
     '''
     
     ##########################################################################
@@ -716,78 +722,6 @@ class tidyframe:
         return order_by
     
     ##########################################################################
-    # add_row_number
-    ##########################################################################
-    def add_row_number(self, name = 'row_number', by = None):
-        '''
-        add_row_number (aka rowid_to_column)
-        Add a row number column to tidyframe
-        
-        Parameters
-        ----------
-        name : str
-            Name for the row number column
-        by : str or list of strings
-            Columns to group by
-        
-        Returns
-        -------
-        tidyframe
-        
-        Notes
-        -----
-        1. Row order is preserved.
-        2. Column indicating row number is added as the first column 
-           (to the left).
-        3. Alias: rowid_to_column
-        
-        Examples
-        --------
-        >>> from palmerpenguins import load_penguins
-        >>> penguins_tidy = tidyframe(load_penguins())
-
-        >>> penguins_tidy.add_row_number() # equivalently penguins_tidy.add_rowid()
-        
-        >>> # add row number per group in the order of appearance
-        >>> penguins_tidy.add_row_number(by = 'sex')
-        '''
-        
-        nr = self.nrow
-        cn = self.colnames
-        
-        assert isinstance(name, str),\
-            "arg 'name' should be a string"
-        if name[0] == "_":
-            raise Exception("'name' should not start with an underscore")
-        
-        if name in cn:
-            raise Expection("'name' should not be an existing column name.")
-            
-        if by is None:
-            res = self.__data.assign(**{name : np.arange(nr)})
-        else:
-            self._validate_by(by)
-            by = _enlist(by)
-            res = (self
-                   .__data
-                   .assign(**{"_rn" : np.arange(nr)})
-                   .groupby(by, sort = False, dropna = False)
-                   .apply(lambda x: x.assign(**{name : np.arange(x.shape[0])}))
-                   .reset_index(drop = True)
-                   .sort_values("_rn", ignore_index = True)
-                   .drop(columns = "_rn")
-                   )
-        
-        col_order = [name] + cn
-        
-        return tidyframe(res.loc[:, col_order]
-                                   , check = False
-                                   , copy = False
-                                   )
-    
-    rowid_to_column = add_row_number
-    
-    ##########################################################################
     # add_group_number
     ##########################################################################
     def add_group_number(self, by = None, name = 'group_number'):
@@ -857,7 +791,74 @@ class tidyframe:
                    )
         
         return tidyframe(res, check = False, copy = False)
+    
+    ##########################################################################
+    # add_row_number
+    ##########################################################################
+    def add_row_number(self, by = None, name = 'row_number'):
+        '''
+        add_row_number (aka rowid_to_column)
+        Add a row number column to tidyframe
+        
+        Parameters
+        ----------
+        name : str
+            Name for the row number column
+        by : str or list of strings
+            Columns to group by
+        
+        Returns
+        -------
+        tidyframe
+        
+        Notes
+        -----
+        1. Row order is preserved.
+        2. Column indicating row number is added as the first column 
+           (to the left).
+        3. Alias: rowid_to_column
+        
+        Examples
+        --------
+        >>> from palmerpenguins import load_penguins
+        >>> penguins_tidy = tidyframe(load_penguins())
 
+        >>> penguins_tidy.add_row_number() # equivalently penguins_tidy.add_rowid()
+        
+        >>> # add row number per group in the order of appearance
+        >>> penguins_tidy.add_row_number(by = 'sex')
+        '''
+        
+        nr = self.nrow
+        cn = self.colnames
+        
+        assert isinstance(name, str),\
+            "arg 'name' should be a string"
+        if name[0] == "_":
+            raise Exception("'name' should not start with an underscore")
+        
+        if name in cn:
+            raise Expection("'name' should not be an existing column name.")
+            
+        if by is None:
+            po = self.__data.assign(**{name : np.arange(nr)})
+        else:
+            by = _enlist(by)
+            self._validate_by(by)
+            
+            grp_colname = _generate_new_string(self.colnames + [name])
+            res = self.add_group_number(by = by, name = grp_colname)
+            po = res.to_pandas(copy = False)
+            po[name] = po.groupby(grp_colname).cumcount()
+            po.drop(columns = [grp_colname], inplace = True)
+            
+        name_col = po.pop(name)
+        po.insert(0, name, name_col) # in-place
+        
+        return tidyframe(po, check = False, copy = False)
+    
+    rowid_to_column = add_row_number
+    
     ##########################################################################
     # group_modify
     ##########################################################################
@@ -5067,7 +5068,7 @@ class tidyframe:
         '''
         Fill missing values from neighboring values per column
         
-        Paramaters
+        Parameters
         ----------
         column_direction_dict: dict
             where key is a column name and value is the direction to fill.
@@ -5963,10 +5964,9 @@ class tidyframe:
     
     def expand(self, spec, by = None):
         '''
-        expand
         Creates combinations of columns using specification
         
-        Paramaters
+        Parameters
         ----------
         spec: tuple or set
             See Notes and Examples
@@ -6031,10 +6031,9 @@ class tidyframe:
     
     def complete(self, spec, fill = None, by = None):
         '''
-        complete
         Completes a tidyframe with missing combinations of data
         
-        Paramaters
+        Parameters
         ----------
         spec: tuple or set
             See Notes and Examples

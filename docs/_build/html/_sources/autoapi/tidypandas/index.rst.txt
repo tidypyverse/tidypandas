@@ -213,6 +213,13 @@ Classes
       unnest:
           Returns the unnested dataframe
 
+   .. method:: 'expand and complete' methods:
+
+      expand:
+          Returns a dataframe with all combinations of columns
+      complete:
+          Returns a dataframe with combination of expand + full_join
+
 
 
 
@@ -505,7 +512,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: glimpse(self, n=10)
+   .. py:method:: glimpse(self, n=100)
 
       
 
@@ -3125,6 +3132,48 @@ Classes
       
       Fill missing values from neighboring values per column
 
+      :param column_direction_dict: where key is a column name and value is the direction to fill.
+                                    Direction should be one among: 'up', 'down', 'updown' and 'downup'
+      :type column_direction_dict: dict
+      :param order_by: Column names to order by before filling
+      :type order_by: string or list of strings
+      :param ascending: Used when order_by is specified
+      :type ascending: bool or a list of bools (default: True)
+      :param na_position: One among: 'first', 'last'
+      :type na_position: string (default: 'last')
+      :param by: Column names to group by
+      :type by: string or list of strings
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      1. The output might still have missing values after applying fill_na.
+      2. The method preserves the row order.
+
+      .. rubric:: Examples
+
+      >>> df = tidyframe(
+      >>>          pd.DataFrame({'A': [pd.NA, 1, 1, 2, 2, 3, pd.NA],
+      >>>                        'B': [pd.NA, pd.NA, 1, 2, pd.NA, pd.NA, 3],
+      >>>                        'C': [1, 2, 1, 2, 1, 2, 1]
+      >>>                        }
+      >>>                       )
+      >>>          )
+      >>> df
+      >>>
+      >>> df.fill_na({'B': 'up'})
+      >>> df.fill_na({'B': 'down'})
+      >>> df.fill_na({'B': 'downup'})
+      >>> df.fill_na({'B': 'updown'})
+      >>>
+      >>> df.fill_na({'B': 'up'}, by = 'A')
+      >>> df.fill_na({'B': 'down'}, by = 'A')
+      >>> df.fill_na({'B': 'updown'}, by = 'A')
+      >>> df.fill_na({'B': 'downup'}, by = 'A')
+      >>>
+      >>> df.fill_na({'B': 'updown'}, order_by = "C")
+      >>> df.fill_na({'B': 'updown'}, order_by = "C", by = "A")
 
 
 
@@ -3672,9 +3721,49 @@ Classes
    .. py:method:: expand(self, spec, by=None)
 
       
-      expand
       Creates combinations of columns using specification
 
+      :param spec: See Notes and Examples
+      :type spec: tuple or set
+      :param by: Column names to group by
+      :type by: string or a list of strings
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      A specification is a nested combination of two types:
+          1. crossing: Generates all possible distinct combinations of columns
+                      example: ('col_1', 'col_2')
+          2. nesting: Generates only exisiting distinct combinations of columns
+                      example: {'col_1', 'col_2', 'col_3'}
+
+      .. rubric:: Examples
+
+      >>> from tidypandas import tidyframe
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> # crossing: tuple bracket
+      >>> # nesting: set bracket
+      >>>
+      >>> # simple crossing
+      >>> penguins_tidy.expand(("species", "island"))
+      >>>
+      >>> # simple nesting
+      >>> penguins_tidy.expand({"species", "island"})
+      >>>
+      >>> # nest outside and crossing inside
+      >>> penguins_tidy.expand({"sex", ("species", "island")})
+      >>>
+      >>> # crossing outside and nesting inside
+      >>> penguins_tidy.expand(("sex", {"species", "island"}))
+      >>>
+      >>> # more 'nesting'
+      >>> penguins_tidy.expand((("year", "bill_length_mm"), {"species", "island"}))
+      >>>
+      >>> # grouped expand
+      >>> penguins_tidy.expand({"species", "island"}, by = 'sex')
 
 
 
@@ -3718,9 +3807,55 @@ Classes
    .. py:method:: complete(self, spec, fill=None, by=None)
 
       
-      complete
       Completes a tidyframe with missing combinations of data
 
+      :param spec: See Notes and Examples
+      :type spec: tuple or set
+      :param fill: scalar value to fill missing values or
+                   dict (key: column name, value: value to fill)
+      :type fill: scalar, dict
+      :param by: Column names to group by
+      :type by: string or a list of strings
+
+      :rtype: tidyframe
+
+      .. rubric:: Notes
+
+      A specification is a nested combination of two types:
+          1. crossing: Generates all possible distinct combinations of columns
+                      example: ('col_1', 'col_2')
+          2. nesting: Generates only exisiting distinct combinations of columns
+                      example: {'col_1', 'col_2', 'col_3'}
+
+      .. rubric:: Examples
+
+      >>> from tidypandas import tidyframe
+      >>> from palmerpenguins import load_penguins
+      >>> penguins_tidy = tidyframe(load_penguins())
+      >>>
+      >>> # crossing: tuple bracket
+      >>> # nesting: set bracket
+      >>>
+      >>> # simple crossing
+      >>> penguins_tidy.complete(("species", "island"))
+      >>>
+      >>> # simple nesting
+      >>> penguins_tidy.complete({"species", "island"})
+      >>>
+      >>> # nest outside and crossing inside
+      >>> penguins_tidy.complete({"sex", ("species", "island")})
+      >>>
+      >>> # crossing outside and nesting inside
+      >>> penguins_tidy.complete(("sex", {"species", "island"}))
+      >>>
+      >>> # more 'nesting'
+      >>> penguins_tidy.complete((("year", "bill_length_mm"), {"species", "island"}))
+      >>>
+      >>> # filling missing values
+      >>> penguins_tidy.complete(("sex", {"species", "island"}), fill = {'bill_length_mm': 100})
+      >>>
+      >>> # grouped complete
+      >>> penguins_tidy.complete({"species", "island"}, by = 'sex')
 
 
 

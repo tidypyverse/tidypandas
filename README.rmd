@@ -66,6 +66,6 @@ df.filter(lambda x: x['col_1'] > x['col_1'].mean(), by = 'col_2')
 
 1.  Open an issue/suggestion/bugfix on the github [issues](https://github.com/talegari/tidypandas/issues) page.
 
-2.  Use the master branch from [github](https://github.com/talegari/tidypandas) repo tp submit your PR.
+2.  Use the master branch from [github](https://github.com/talegari/tidypandas) repo to submit your PR.
 
 ------------------------------------------------------------------------

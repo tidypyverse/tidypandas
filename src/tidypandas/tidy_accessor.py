@@ -1,6 +1,5 @@
 import copy as util_copy
 import warnings
-import re
 import functools
 import string as string
 from collections import namedtuple
@@ -68,14 +67,6 @@ class tp:
         tf = tidyframe(self._obj, copy = False, check = False)
         return tf.colnames
 
-    def show(self, n = 10):
-        tf = tidyframe(self._obj, copy = False, check = False)
-        tf.show(n = n)
-
-    def glimpse(self, n = 10):
-        tf = tidyframe(self._obj, copy = False, check = False)
-        tf.glimpse(n = n)
-    
     def add_row_number(self, name = 'row_number', by = None):
         tf = tidyframe(self._obj, copy = False, check = False)
         return tf.add_row_number(name = name, by = by).to_pandas(copy = False)
