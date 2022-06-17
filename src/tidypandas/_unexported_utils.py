@@ -17,7 +17,7 @@ def _is_kwargable(func):
         if spec.varkw is not None:
             res = True
     except:
-        Pass
+        pass
     return res
 
 def _is_valid_colname(string):
