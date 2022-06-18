@@ -21,7 +21,7 @@ jobs:
         run: python -m pip install black pylint isort
       - name: Run linters
         run: |
-          pylint alokka
+          pylint tidypandas
           black .
           isort .          
 
@@ -62,9 +62,9 @@ jobs:
         run: |
           source $VENV
           pytest -vvv --cov-report xml --cov=./          
-      - name: Upload coverage
-        uses: codecov/codecov-action@v1.2.1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: coverage.xml
-          fail_ci_if_error: true
+      #- name: Upload coverage
+      #  uses: codecov/codecov-action@v1.2.1
+      #  with:
+      #    token: ${{ secrets.CODECOV_TOKEN }}
+      #    file: coverage.xml
+      #    fail_ci_if_error: true
