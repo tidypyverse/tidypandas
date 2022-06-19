@@ -61,7 +61,8 @@ jobs:
       - name: Run tests
         run: |
           source $VENV
-          pytest -vvv --cov-report xml --cov=./          
+        #  pytest -vvv --cov-report xml --cov=./
+          pytest -vvv
       #- name: Upload coverage
       #  uses: codecov/codecov-action@v1.2.1
       #  with:
