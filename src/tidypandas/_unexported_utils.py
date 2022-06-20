@@ -12,7 +12,7 @@ import warnings
 
 def _is_kwargable(func):
     res = False
-    assert isinstance(func, callable), "func should be a callable"
+    assert callable(func), "arg 'func' should be callable"
     try:
         spec = inspect.getfullargspec(func)
         if spec.varkw is not None:
