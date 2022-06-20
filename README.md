@@ -2,7 +2,7 @@
 
 [![PyPI
 version](https://badge.fury.io/py/tidypandas.svg)](https://badge.fury.io/py/tidypandas)
-[![Test-Build](https://github.com/talegari/tidypandas/actions/workflows/test_suite.yml/badge.svg)]
+[![Test-Build](https://github.com/talegari/tidypandas/actions/workflows/test_suite.yml/badge.svg)](https://github.com/talegari/tidypandas/actions/workflows/test_suite.yml)
 
 # `tidypandas`
 
