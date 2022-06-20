@@ -1,5 +1,5 @@
 ## taken from https://jarmos.netlify.app/posts/a-standard-ci-cd-pipeline-for-python-projects/
-name: Test Suite
+name: Test-Build
 
 on: [pull_request, push]
 
@@ -62,7 +62,9 @@ jobs:
         run: |
           source $VENV
           pytest -vvv
-        #  pytest -vvv --cov-report xml --cov=./  
+        #  pytest -vvv --cov-report xml --cov=./ 
+      - name: Run build
+        run: poetry build
           
       #- name: Upload coverage
       #  uses: codecov/codecov-action@v1.2.1
