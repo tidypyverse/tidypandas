@@ -1675,11 +1675,10 @@ class tidyframe:
                                                  )
                                    )
                 res = res.relocate(self.colnames)
-        
-        if isinstance(res, pd.DataFrame):
-            if query is None and mask is not None:
-                res = self.__data.loc[mask, :]
+        else: #query is None and mask is not None:
+            res = self.__data.loc[mask, :]
             
+        if isinstance(res, pd.DataFrame):
             res = res.reset_index(drop = True)     
             return tidyframe(res, check = False)
         else:
