@@ -2737,7 +2737,7 @@ class tidyframe:
             else:
                 rowid_name = _generate_new_string(self.colnames)
                 group_mapper = (self.distinct(by)
-                                    .add_row_number(rowid_name)
+                                    .add_row_number(name=rowid_name)
                                     .to_pandas()
                                     )
                 res = (self.__data
