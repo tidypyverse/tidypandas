@@ -12,12 +12,13 @@ import warnings
 
 def _is_kwargable(func):
     res = False
+    assert callable(func), "arg 'func' should be callable"
     try:
         spec = inspect.getfullargspec(func)
         if spec.varkw is not None:
             res = True
-    except:
-        pass
+    except TypeError as e:
+        pass # res is False
     return res
 
 def _is_valid_colname(string):
