@@ -2,7 +2,6 @@
 
 [![PyPI
 version](https://badge.fury.io/py/tidypandas.svg)](https://badge.fury.io/py/tidypandas)
-[![Test-Build](https://github.com/talegari/tidypandas/actions/workflows/test_suite.yml/badge.svg)](https://github.com/talegari/tidypandas/actions/workflows/test_suite.yml)
 
 # `tidypandas`
 
@@ -62,6 +61,11 @@ data manipulation tasks:
 > `tidypandas` relies on the amazing `pandas` library and offers a
 > consistent API with a different
 > [philosophy](https://tidyverse.tidyverse.org/articles/manifesto.html).
+
+## Presentation
+
+Learn more about tidypandas
+([presentation](https://github.com/talegari/tidypandas/blob/master/docs/tp_pres.html))
 
 ## Installation
 

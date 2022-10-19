@@ -42,6 +42,7 @@ df.filter(lambda x: x['col_1'] > x['col_1'].mean(), by = 'col_2')
    )
 ```
 
+
 ## Why use `tidypandas`
 
 `tidypandas` is for you if:
@@ -53,6 +54,11 @@ df.filter(lambda x: x['col_1'] > x['col_1'].mean(), by = 'col_2')
 -   you prefer writing free flowing, expressive code in [dplyr](https://dplyr.tidyverse.org/) style
 
 > `tidypandas` relies on the amazing `pandas` library and offers a consistent API with a different [philosophy](https://tidyverse.tidyverse.org/articles/manifesto.html).
+
+
+## Presentation
+
+Learn more about tidypandas ([presentation](https://github.com/talegari/tidypandas/blob/master/docs/tp_pres.html))
 
 ## Installation
 
