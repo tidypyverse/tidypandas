@@ -1,5 +1,15 @@
 # Changelog
 
+## v0.2.3 (19th Oct 2022)
+- bugfix: show proper error message when tidyframe cannot be created from pandas dataframe with some column starting with underscore
+- bugfix: tidyframe.separate now handles NAs
+
+## v0.2.2 (28 Jun 2022)
+- minor bug in _is_kwargable is fixed, making mutate better 
+- minor bug in filter with mask is fixed
+- CI is enabled with github actions
+
+
 ## v0.2.1 (14th June 2022)
 - glimpse by default shows 100 columns
 - add_row_number is more efficient

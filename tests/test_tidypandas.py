@@ -506,7 +506,16 @@ def test_complete(penguins_data):
     with pytest.raises(Exception) as e_info:    
         # by should not intersect spec
         penguins_tidy.complete({"species", "iceland"}, by = "species")
-                      
+        
+# Test: separate
+def test_separate(penguins_data):
+    tf = tidyframe(pd.DataFrame({'col': ["a_b", "c_d", "e_f_g"]}))
+    res = tf.separate('col', sep = "_", into = ['A', 'B', 'C'], strict = False)
+    assert isinstance(res, tidyframe)
+    assert res.ncol == 3
     
-    
+    tf = tidyframe(pd.DataFrame({'col': ["a_b", pd.NA, "e_f_g"]}))
+    tf.separate('col', sep = "_", into = ['A', 'B', 'C'], strict = False)
+    assert isinstance(res, tidyframe)
+    assert res.ncol == 3
     

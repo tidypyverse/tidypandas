@@ -154,7 +154,7 @@ def simplify(pdf
     
     # column names should not start from an underscore
     if any([acol[0] == "_" for acol in list(pdf.columns)]):
-        raise Exception(f"Unable to simplify as column {acol} starts with " 
+        raise Exception(f"Unable to simplify as some column starts with " 
                         "an underscore"
                         )
             
@@ -239,7 +239,7 @@ def is_simple(pdf, verbose = False):
             print("Column index should be string column names.")
         if not unique_flag:
             print("Column names should be unique.")
-        if not unique_flag    :
+        if not underscore_flag    :
             print("Column names should not start with an underscore.")
             
     return flag

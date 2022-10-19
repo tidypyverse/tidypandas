@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "tidypandas"
-version = "0.2.1"
+version = "0.2.2"
 description = "A grammar of data manipulation for pandas inspired by tidyverse"
 authors = ["Srikanth Komala Sheshachala <sri.teach@gmail.com>", "Ashish Raj <ashishrj.162@gmail.com>"]
 maintainers = ["Srikanth Komala Sheshachala <sri.teach@gmail.com>", "Ashish Raj <ashishrj.162@gmail.com>"]

@@ -237,7 +237,8 @@ class tidyframe:
             x = pd.DataFrame(args[0])
         
         if check:
-            if not is_simple(x, verbose = True):
+            simple_flag = is_simple(x, verbose = True)
+            if not simple_flag:
                 try:
                     x = simplify(x, verbose = True)
                 except:
@@ -5247,8 +5248,8 @@ class tidyframe:
             "arg 'keep' should be a bool" 
             
         # split  and form a pandas df
-        split_df = (pd.DataFrame([re.split(sep, i) for i in self.pull(column_name)])
-                      .fillna(pd.NA)
+        split_df = (pd.DataFrame([[pd.NA] if pd.isna(i) else re.split(sep, i) for i in self.pull(column_name)])
+                      .convert_dtypes()
                       )
         
         if len(into) == split_df.shape[1]:
