@@ -161,8 +161,13 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#v0-2-2-28th-june-2022">
-   v0.2.2 (28th June 2022)
+  <a class="reference internal nav-link" href="#v0-2-3-19th-oct-2022">
+   v0.2.3 (19th Oct 2022)
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#v0-2-2-28-jun-2022">
+   v0.2.2 (28 Jun 2022)
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
@@ -233,11 +238,18 @@
                 
   <section class="tex2jax_ignore mathjax_ignore" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">#</a></h1>
-<section id="v0-2-2-28th-june-2022">
-<h2>v0.2.2 (28th June 2022)<a class="headerlink" href="#v0-2-2-28th-june-2022" title="Permalink to this headline">#</a></h2>
+<section id="v0-2-3-19th-oct-2022">
+<h2>v0.2.3 (19th Oct 2022)<a class="headerlink" href="#v0-2-3-19th-oct-2022" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
-<li><p>minor bug in <code class="docutils literal notranslate"><span class="pre">_is_kwargable</span></code> is fixed, making mutate better</p></li>
-<li><p>minor bug in <code class="docutils literal notranslate"><span class="pre">filter</span></code> with mask is fixed</p></li>
+<li><p>bugfix: show proper error message when tidyframe cannot be created from pandas dataframe with some column starting with underscore</p></li>
+<li><p>bugfix: tidyframe.separate now handles NAs</p></li>
+</ul>
+</section>
+<section id="v0-2-2-28-jun-2022">
+<h2>v0.2.2 (28 Jun 2022)<a class="headerlink" href="#v0-2-2-28-jun-2022" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>minor bug in _is_kwargable is fixed, making mutate better</p></li>
+<li><p>minor bug in filter with mask is fixed</p></li>
 <li><p>CI is enabled with github actions</p></li>
 </ul>
 </section>

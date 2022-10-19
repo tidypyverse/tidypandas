@@ -3,28 +3,6 @@
 
 .. py:module:: tidypandas
 
-.. autoapi-nested-parse::
-
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   ..
-       !! processed by numpydoc !!
-
 
 Submodules
 ----------
@@ -241,209 +219,47 @@ Classes
 
       
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
    .. py:attribute:: rowid_to_column
       
 
       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
 
    .. py:attribute:: summarize
       
 
       
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
    .. py:attribute:: full_join
       
 
       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
 
    .. py:attribute:: head
       
 
       
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
    .. py:attribute:: tail
       
 
       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
 
    .. py:attribute:: sample
       
 
       
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
    .. py:attribute:: fill
       
 
       
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
 
    .. py:attribute:: group_split
       
 
       
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: __repr__(self) -> str
+   .. py:method:: __repr__() -> str
 
       
       Return a string representation for a particular DataFrame.
@@ -466,7 +282,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: _repr_html_(self)
+   .. py:method:: _repr_html_()
 
       
       Return a html representation for a particular DataFrame.
@@ -490,51 +306,13 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: show(self, n=10)
-
-      
+   .. py:method:: show(n=10)
 
 
+   .. py:method:: glimpse(n=100)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: glimpse(self, n=100)
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: to_pandas(self, copy=True)
+   .. py:method:: to_pandas(copy=True)
 
       
       Return copy of underlying pandas dataframe
@@ -572,7 +350,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: pull(self, column_name=None, copy=True)
+   .. py:method:: pull(column_name=None, copy=True)
 
       
       pull (aka to_series)
@@ -609,7 +387,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: pipe(self, func, *args, **kwargs)
+   .. py:method:: pipe(func, *args, **kwargs)
 
       
       Returns func(self)
@@ -636,7 +414,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: pipe_tee(self, func, *args, **kwargs)
+   .. py:method:: pipe_tee(func, *args, **kwargs)
 
       
       pipe for side-effect
@@ -663,122 +441,27 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: nrow(self)
+   .. py:method:: nrow()
       :property:
 
-      
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: ncol(self)
+   .. py:method:: ncol()
       :property:
 
-      
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: shape(self)
+   .. py:method:: shape()
       :property:
 
-      
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: dim(self)
+   .. py:method:: dim()
       :property:
 
-      
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: colnames(self)
+   .. py:method:: colnames()
       :property:
 
-      
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: skim(self, return_self=False)
+   .. py:method:: skim(return_self=False)
 
       
       Skim the tidy dataframe.
@@ -812,73 +495,16 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: _validate_by(self, by)
-
-      
+   .. py:method:: _validate_by(by)
 
 
+   .. py:method:: _validate_column_names(column_names)
 
 
+   .. py:method:: _clean_order_by(order_by)
 
 
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: _validate_column_names(self, column_names)
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: _clean_order_by(self, order_by)
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: add_group_number(self, by=None, name='group_number')
+   .. py:method:: add_group_number(by=None, name='group_number')
 
       
       Add a group number column to tidyframe
@@ -922,7 +548,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: add_row_number(self, by=None, name='row_number')
+   .. py:method:: add_row_number(by=None, name='row_number')
 
       
       add_row_number (aka rowid_to_column)
@@ -969,7 +595,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: group_modify(self, func, by, preserve_row_order=False, row_order_column_name='rowid_temp', is_pandas_udf=False, **kwargs)
+   .. py:method:: group_modify(func, by, preserve_row_order=False, row_order_column_name='rowid_temp', is_pandas_udf=False, **kwargs)
 
       
       Split by some columns, apply a function per chunk which returns a
@@ -1054,7 +680,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: select(self, column_names=None, predicate=None, include=True)
+   .. py:method:: select(column_names=None, predicate=None, include=True)
 
       
       Select a subset of columns by name or predicate
@@ -1113,7 +739,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: relocate(self, column_names, before=None, after=None)
+   .. py:method:: relocate(column_names, before=None, after=None)
 
       
       relocate the columns of the tidy pandas dataframe
@@ -1163,7 +789,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: rename(self, old_new_dict=None, predicate=None, func=None)
+   .. py:method:: rename(old_new_dict=None, predicate=None, func=None)
 
       
       Rename columns of the tidy pandas dataframe
@@ -1203,7 +829,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: slice(self, row_numbers, by=None)
+   .. py:method:: slice(row_numbers, by=None)
 
       
       Subset rows of a tidyframe
@@ -1253,7 +879,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: arrange(self, order_by, na_position='last', by=None)
+   .. py:method:: arrange(order_by, na_position='last', by=None)
 
       
       Orders the rows by the values of selected columns
@@ -1336,7 +962,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: filter(self, query=None, mask=None, by=None, **kwargs)
+   .. py:method:: filter(query=None, mask=None, by=None, **kwargs)
 
       
       subset some rows
@@ -1398,7 +1024,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: distinct(self, column_names=None, keep_all=False)
+   .. py:method:: distinct(column_names=None, keep_all=False)
 
       
       subset unique rows from the dataframe
@@ -1448,51 +1074,13 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: _mutate(self, dictionary, order_by=None, **kwargs)
-
-      
+   .. py:method:: _mutate(dictionary, order_by=None, **kwargs)
 
 
+   .. py:method:: _mutate_across(func, column_names=None, predicate=None, prefix='', order_by=None, **kwargs)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: _mutate_across(self, func, column_names=None, predicate=None, prefix='', order_by=None, **kwargs)
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: mutate(self, dictionary=None, func=None, column_names=None, predicate=None, prefix='', by=None, order_by=None, **kwargs)
+   .. py:method:: mutate(dictionary=None, func=None, column_names=None, predicate=None, prefix='', by=None, order_by=None, **kwargs)
 
       
       Add or modify some columns
@@ -1645,29 +1233,10 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: _summarise(self, dictionary, **kwargs)
-
-      
+   .. py:method:: _summarise(dictionary, **kwargs)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: summarise(self, dictionary=None, func=None, column_names=None, predicate=None, prefix='', by=None, **kwargs)
+   .. py:method:: summarise(dictionary=None, func=None, column_names=None, predicate=None, prefix='', by=None, **kwargs)
 
       
       Creates one row per group summarising the input dataframe
@@ -1792,51 +1361,13 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: _validate_join(self, y, how, on, on_x, on_y, sort, suffix_y)
-
-      
+   .. py:method:: _validate_join(y, how, on, on_x, on_y, sort, suffix_y)
 
 
+   .. py:method:: _join(y, how, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y', validate=True)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: _join(self, y, how, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y', validate=True)
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: inner_join(self, y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: inner_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
 
       
       Joins columns of y to self by matching rows
@@ -1891,7 +1422,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: outer_join(self, y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: outer_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
 
       
       Joins columns of y to self by matching rows
@@ -1946,7 +1477,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: left_join(self, y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: left_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
 
       
       Joins columns of y to self by matching rows
@@ -2001,7 +1532,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: right_join(self, y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: right_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
 
       
       Joins columns of y to self by matching rows
@@ -2056,7 +1587,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: semi_join(self, y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: semi_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
 
       
       Joins columns of y to self by matching rows
@@ -2111,7 +1642,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: anti_join(self, y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: anti_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
 
       
       Joins columns of y to self by matching rows
@@ -2166,7 +1697,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: cross_join(self, y, sort=True, suffix_y='_y')
+   .. py:method:: cross_join(y, sort=True, suffix_y='_y')
 
       
       Joins columns of y to self by matching rows
@@ -2217,7 +1748,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: cbind(self, y)
+   .. py:method:: cbind(y)
 
       
       bind columns of y to self
@@ -2258,7 +1789,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: rbind(self, y)
+   .. py:method:: rbind(y)
 
       
       bind rows of y to self
@@ -2300,7 +1831,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: count(self, column_names=None, name='n', decreasing=True, wt=None)
+   .. py:method:: count(column_names=None, name='n', decreasing=True, wt=None)
 
       
       count rows by groups
@@ -2350,7 +1881,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: add_count(self, column_names=None, name='n', wt=None)
+   .. py:method:: add_count(column_names=None, name='n', wt=None)
 
       
       adds counts of rows by groups as a column
@@ -2396,7 +1927,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: pivot_wider(self, names_from, values_from, values_fill=None, values_fn=None, id_cols=None, sep='__', names_prefix='')
+   .. py:method:: pivot_wider(names_from, values_from, values_fill=None, values_fn=None, id_cols=None, sep='__', names_prefix='')
 
       
       Pivot data from long to wide
@@ -2525,7 +2056,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: pivot_longer(self, cols, names_to='name', values_to='value', include=True, values_drop_na=False)
+   .. py:method:: pivot_longer(cols, names_to='name', values_to='value', include=True, values_drop_na=False)
 
       
       Pivot from wide to long
@@ -2593,7 +2124,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: slice_head(self, n=None, prop=None, rounding_type='round', by=None)
+   .. py:method:: slice_head(n=None, prop=None, rounding_type='round', by=None)
 
       
       Subset first few rows
@@ -2644,7 +2175,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: slice_tail(self, n=None, prop=None, rounding_type='round', by=None)
+   .. py:method:: slice_tail(n=None, prop=None, rounding_type='round', by=None)
 
       
       Subset last few rows
@@ -2694,7 +2225,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: slice_sample(self, n=None, prop=None, replace=False, weights=None, random_state=None, by=None)
+   .. py:method:: slice_sample(n=None, prop=None, replace=False, weights=None, random_state=None, by=None)
 
       
       Sample a few rows
@@ -2765,7 +2296,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: slice_min(self, n=None, prop=None, order_by_column=None, with_ties=True, rounding_type='round', by=None)
+   .. py:method:: slice_min(n=None, prop=None, order_by_column=None, with_ties=True, rounding_type='round', by=None)
 
       
       Subset top rows ordered by some columns
@@ -2843,7 +2374,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: slice_max(self, n=None, prop=None, order_by_column=None, with_ties=True, rounding_type='round', by=None)
+   .. py:method:: slice_max(n=None, prop=None, order_by_column=None, with_ties=True, rounding_type='round', by=None)
 
       
       Subset top rows ordered by some columns
@@ -2921,7 +2452,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: union(self, y)
+   .. py:method:: union(y)
 
       
       Union of rows y with the self
@@ -2956,7 +2487,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: intersection(self, y)
+   .. py:method:: intersection(y)
 
       
       Intersection of rows y with the self
@@ -2991,7 +2522,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: setdiff(self, y)
+   .. py:method:: setdiff(y)
 
       
       Keep rows of self which are not in y
@@ -3026,7 +2557,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: any_na(self)
+   .. py:method:: any_na()
 
       
       Is there a missing value in the dataframe?
@@ -3051,7 +2582,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: replace_na(self, value)
+   .. py:method:: replace_na(value)
 
       
       Replace missing values with a specified value
@@ -3089,7 +2620,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: drop_na(self, column_names=None)
+   .. py:method:: drop_na(column_names=None)
 
       
       Drops rows if missing values are present in specified columns
@@ -3127,7 +2658,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: fill_na(self, column_direction_dict, order_by=None, ascending=True, na_position='last', by=None)
+   .. py:method:: fill_na(column_direction_dict, order_by=None, ascending=True, na_position='last', by=None)
 
       
       Fill missing values from neighboring values per column
@@ -3192,7 +2723,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: separate(self, column_name, into, sep='[^[:alnum:]]+', strict=True, keep=False)
+   .. py:method:: separate(column_name, into, sep='[^[:alnum:]]+', strict=True, keep=False)
 
       
       Split a string column into multiple string columns rowwise
@@ -3237,7 +2768,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: unite(self, column_names, into, sep='_', keep=False)
+   .. py:method:: unite(column_names, into, sep='_', keep=False)
 
       
       Split a string column into multiple string columns rowwise
@@ -3284,7 +2815,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: separate_rows(self, column_name, sep=';')
+   .. py:method:: separate_rows(column_name, sep=';')
 
       
       split a string column using a seperator and create a row for each
@@ -3319,7 +2850,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: nest_by(self, by=None, nest_column_name='data', drop_by=True)
+   .. py:method:: nest_by(by=None, nest_column_name='data', drop_by=True)
 
       
       Nest all columns of tidy dataframe with respect to 'by' columns
@@ -3361,7 +2892,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: nest(self, column_names=None, nest_column_name='data', include=True)
+   .. py:method:: nest(column_names=None, nest_column_name='data', include=True)
 
       
       Nest columns of tidy dataframe
@@ -3404,7 +2935,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: unnest(self, nest_column_name='data')
+   .. py:method:: unnest(nest_column_name='data')
 
       
       Unnest a nested column of a tidy dataframe
@@ -3461,7 +2992,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: split(self, by)
+   .. py:method:: split(by)
 
       
       split
@@ -3495,7 +3026,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: __getitem__(self, key)
+   .. py:method:: __getitem__(key)
 
       
       Subset some and columns of the dataframe
@@ -3564,7 +3095,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: __setitem__(self, key, value)
+   .. py:method:: __setitem__(key, value)
 
       
       Change a subset of the dataframe in-place
@@ -3630,95 +3161,19 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: _crossing(self, col_list)
+   .. py:method:: _crossing(col_list)
 
-      
 
+   .. py:method:: _nesting(col_list)
 
 
+   .. py:method:: _flatten(spec_list, is_tuple)
 
 
+   .. py:method:: _expand(spec)
 
 
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: _nesting(self, col_list)
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: _flatten(self, spec_list, is_tuple)
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: _expand(self, spec)
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: expand(self, spec, by=None)
+   .. py:method:: expand(spec, by=None)
 
       
       Creates combinations of columns using specification
@@ -3782,29 +3237,10 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: _complete(self, spec, fill=None)
-
-      
+   .. py:method:: _complete(spec, fill=None)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: complete(self, spec, fill=None, by=None)
+   .. py:method:: complete(spec, fill=None, by=None)
 
       
       Completes a tidyframe with missing combinations of data

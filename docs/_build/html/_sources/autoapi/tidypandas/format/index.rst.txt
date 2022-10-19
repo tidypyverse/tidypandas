@@ -3,12 +3,6 @@
 
 .. py:module:: tidypandas.format
 
-.. autoapi-nested-parse::
-
-   
-   ..
-       !! processed by numpydoc !!
-
 
 Module Contents
 ---------------
@@ -26,7 +20,7 @@ Classes
 
 
 
-.. py:class:: TidyDataFrameFormatter(frame: pandas.DataFrame, columns: Sequence[str] | None = None, col_space: ColspaceArgType | None = None, header: bool | Sequence[str] = True, index: bool = True, na_rep: str = 'NaN', formatters: FormattersType | None = None, justify: str | None = None, float_format: FloatFormatType | None = None, sparsify: bool | None = None, index_names: bool = True, max_rows: int | None = None, min_rows: int | None = None, max_cols: int | None = None, show_dimensions: bool | str = False, decimal: str = '.', bold_rows: bool = False, escape: bool = True)
+.. py:class:: TidyDataFrameFormatter(frame: pandas.DataFrame, columns: Sequence[Hashable] | None = None, col_space: ColspaceArgType | None = None, header: bool | Sequence[str] = True, index: bool = True, na_rep: str = 'NaN', formatters: FormattersType | None = None, justify: str | None = None, float_format: FloatFormatType | None = None, sparsify: bool | None = None, index_names: bool = True, max_rows: int | None = None, min_rows: int | None = None, max_cols: int | None = None, show_dimensions: bool | str = False, decimal: str = '.', bold_rows: bool = False, escape: bool = True)
 
    Bases: :py:obj:`pandas.io.formats.format.DataFrameFormatter`
 
@@ -50,7 +44,7 @@ Classes
 
    ..
        !! processed by numpydoc !!
-   .. py:method:: _truncate_horizontally(self) -> None
+   .. py:method:: _truncate_horizontally() -> None
 
       
       Remove columns, which are not to be displayed and adjust formatters.
@@ -77,7 +71,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: _truncate_vertically(self) -> None
+   .. py:method:: _truncate_vertically() -> None
 
       
       Remove rows, which are not to be displayed.
@@ -103,7 +97,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: format_col(self, i: int)
+   .. py:method:: format_col(i: int)
 
       
       Format column, add dtype ahead
@@ -126,7 +120,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: get_strcols(self)
+   .. py:method:: get_strcols()
 
       
       Render a DataFrame to a list of columns (as lists of strings).
@@ -150,7 +144,7 @@ Classes
           !! processed by numpydoc !!
 
 
-.. py:class:: TidyHTMLFormatter(formatter: pandas.io.formats.format.DataFrameFormatter, classes: str | list[str] | tuple[str, ...] | None = None, border: int | None = None, table_id: str | None = None, render_links: bool = False)
+.. py:class:: TidyHTMLFormatter(formatter: pandas.io.formats.format.DataFrameFormatter, classes: str | list[str] | tuple[str, ...] | None = None, border: int | bool | None = None, table_id: str | None = None, render_links: bool = False)
 
    Bases: :py:obj:`pandas.io.formats.html.HTMLFormatter`
 
@@ -179,74 +173,17 @@ Classes
 
    ..
        !! processed by numpydoc !!
-   .. py:method:: render(self)
-
-      
+   .. py:method:: render()
 
 
+   .. py:method:: _write_body(indent: int)
 
 
-
-
+   .. py:method:: _write_row_column_types(column_types)
 
 
 
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: _write_body(self, indent: int)
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: _write_row_column_types(self, column_types)
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-
-.. py:class:: TidyNotebookFormatter(formatter: pandas.io.formats.format.DataFrameFormatter, classes: str | list[str] | tuple[str, ...] | None = None, border: int | None = None, table_id: str | None = None, render_links: bool = False)
+.. py:class:: TidyNotebookFormatter(formatter: pandas.io.formats.format.DataFrameFormatter, classes: str | list[str] | tuple[str, ...] | None = None, border: int | bool | None = None, table_id: str | None = None, render_links: bool = False)
 
    Bases: :py:obj:`TidyHTMLFormatter`
 
@@ -272,93 +209,17 @@ Classes
 
    ..
        !! processed by numpydoc !!
-   .. py:method:: _get_formatted_values(self)
+   .. py:method:: _get_formatted_values()
 
-      
 
+   .. py:method:: _get_columns_formatted_values()
 
 
+   .. py:method:: write_style()
 
 
+   .. py:method:: render()
 
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: _get_columns_formatted_values(self)
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: write_style(self)
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
-
-   .. py:method:: render(self)
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      ..
-          !! processed by numpydoc !!
 
 
 .. py:class:: TidyDataFrameRenderer(fmt: DataFrameFormatter)
@@ -395,7 +256,7 @@ Classes
 
    ..
        !! processed by numpydoc !!
-   .. py:method:: to_html(self, buf=None, encoding=None, classes=None, notebook=False, border=None, table_id=None, render_links=False)
+   .. py:method:: to_html(buf=None, encoding=None, classes=None, notebook=False, border=None, table_id=None, render_links=False)
 
       
       Render a DataFrame to a html table.

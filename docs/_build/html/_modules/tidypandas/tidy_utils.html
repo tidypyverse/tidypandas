@@ -317,7 +317,7 @@
     
     <span class="c1"># column names should not start from an underscore</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">acol</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;_&quot;</span> <span class="k">for</span> <span class="n">acol</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">pdf</span><span class="o">.</span><span class="n">columns</span><span class="p">)]):</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to simplify as column </span><span class="si">{</span><span class="n">acol</span><span class="si">}</span><span class="s2"> starts with &quot;</span> 
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unable to simplify as some column starts with &quot;</span> 
                         <span class="s2">&quot;an underscore&quot;</span>
                         <span class="p">)</span>
             
@@ -402,7 +402,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Column index should be string column names.&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">unique_flag</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Column names should be unique.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">unique_flag</span>    <span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">underscore_flag</span>    <span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Column names should not start with an underscore.&quot;</span><span class="p">)</span>
             
     <span class="k">return</span> <span class="n">flag</span></div>
