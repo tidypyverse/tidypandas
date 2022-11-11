@@ -222,7 +222,129 @@ def test_filter(penguins_data):
     assert isinstance(exp, tidyframe)
     
 ## test joins
+def test_joins(penguins_data):
+    penguins_tidy = tidyframe(penguins_data, copy=False)
 
+    # inner join ---------------------------------------------------------------
+    penguins_tidy_s1 = (penguins_tidy.tail(n = 1, by = 'species')
+                                     .select(['species', 'bill_length_mm', 'island'])
+                                     )
+    penguins_tidy_s2 = (penguins_tidy.head(n = 1, by = 'species')
+                                     .select(['species', 'island', 'bill_depth_mm'])
+                                     )
+    penguins_tidy_s3 = penguins_tidy_s2.rename({'island': 'island2'})
+    
+    # on-test                              
+    res = penguins_tidy_s1.inner_join(penguins_tidy_s2,
+                                      on = 'island',
+                                      suffix = ['_x', '_y']
+                                      )
+    exp_cols_list = ['species_x', 'bill_length_mm', 'island', 'species_y','bill_depth_mm']
+    assert sorted(res.colnames) == sorted(exp_cols_list)
+    
+    # on_x and on_y test
+    res = penguins_tidy_s1.inner_join(penguins_tidy_s3,
+                                      on_x   = 'island',
+                                      on_y   = 'island2',
+                                      suffix = ['_x', '_y']
+                                      )
+    exp_cols_list = ['species_x', 'bill_length_mm',
+                     'island', 'species_y','bill_depth_mm', 'island2']
+    assert sorted(res.colnames) == sorted(exp_cols_list)
+    
+    # left join ---------------------------------------------------------------
+    # on-test                              
+    res = penguins_tidy_s1.left_join(penguins_tidy_s2,
+                                      on = 'island',
+                                      suffix = ['_x', '_y']
+                                      )
+    exp_cols_list = ['species_x', 'bill_length_mm', 'island', 'species_y','bill_depth_mm']
+    assert sorted(res.colnames) == sorted(exp_cols_list)
+    
+    # on_x and on_y test
+    res = penguins_tidy_s1.left_join(penguins_tidy_s3,
+                                      on_x   = 'island',
+                                      on_y   = 'island2',
+                                      suffix = ['_x', '_y']
+                                      )
+    exp_cols_list = ['species_x', 'bill_length_mm',
+                     'island', 'species_y','bill_depth_mm', 'island2']
+    assert sorted(res.colnames) == sorted(exp_cols_list)
+    
+    # right join ---------------------------------------------------------------
+    # on-test                              
+    res = penguins_tidy_s1.right_join(penguins_tidy_s2,
+                                      on = 'island',
+                                      suffix = ['_x', '_y']
+                                      )
+    exp_cols_list = ['species_x', 'bill_length_mm', 'island', 'species_y','bill_depth_mm']
+    assert sorted(res.colnames) == sorted(exp_cols_list)
+    
+    # on_x and on_y test
+    res = penguins_tidy_s1.right_join(penguins_tidy_s3,
+                                      on_x   = 'island',
+                                      on_y   = 'island2',
+                                      suffix = ['_x', '_y']
+                                      )
+    exp_cols_list = ['species_x', 'bill_length_mm',
+                     'island', 'species_y','bill_depth_mm', 'island2']
+    assert sorted(res.colnames) == sorted(exp_cols_list)
+    
+    # full join ---------------------------------------------------------------
+    # on-test                              
+    res = penguins_tidy_s1.full_join(penguins_tidy_s2,
+                                      on = 'island',
+                                      suffix = ['_x', '_y']
+                                      )
+    exp_cols_list = ['species_x', 'bill_length_mm', 'island', 'species_y','bill_depth_mm']
+    assert sorted(res.colnames) == sorted(exp_cols_list)
+    
+    # on_x and on_y test
+    res = penguins_tidy_s1.full_join(penguins_tidy_s3,
+                                      on_x   = 'island',
+                                      on_y   = 'island2',
+                                      suffix = ['_x', '_y']
+                                      )
+    exp_cols_list = ['species_x', 'bill_length_mm',
+                     'island', 'species_y','bill_depth_mm', 'island2']
+    assert sorted(res.colnames) == sorted(exp_cols_list)
+    
+    # semi join ---------------------------------------------------------------
+    # on-test                              
+    res = penguins_tidy_s1.semi_join(penguins_tidy_s2,on = 'island')
+    exp_cols_list = ['species', 'bill_length_mm', 'island']
+    assert sorted(res.colnames) == sorted(exp_cols_list)
+    
+    # on_x and on_y test
+    res = penguins_tidy_s1.semi_join(penguins_tidy_s3,
+                                      on_x   = 'island',
+                                      on_y   = 'island2'
+                                      )
+    exp_cols_list = ['species', 'bill_length_mm','island']
+    print(sorted(res.colnames))
+    assert sorted(res.colnames) == sorted(exp_cols_list)
+    
+    # anti join ---------------------------------------------------------------
+    # on-test                              
+    res = penguins_tidy_s1.anti_join(penguins_tidy_s2,on = 'island')
+    exp_cols_list = ['species', 'bill_length_mm', 'island']
+    assert sorted(res.colnames) == sorted(exp_cols_list)
+    
+    # on_x and on_y test
+    res = penguins_tidy_s1.anti_join(penguins_tidy_s3,
+                                      on_x   = 'island',
+                                      on_y   = 'island2'
+                                      )
+    exp_cols_list = ['species', 'bill_length_mm','island']
+    assert sorted(res.colnames) == sorted(exp_cols_list)
+    
+    # cross join ---------------------------------------------------------------
+    # on-test                              
+    res = penguins_tidy_s1.cross_join(penguins_tidy_s2)
+    exp_cols_list = ['species', 'bill_length_mm', 'island',
+                     'species_y', 'island_y', 'bill_depth_mm']
+    assert sorted(res.colnames) == sorted(exp_cols_list)
+    
 ## test pivot
 
 ## test slice and its extensions

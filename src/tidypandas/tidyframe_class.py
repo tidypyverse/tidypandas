@@ -2770,7 +2770,7 @@ class tidyframe:
                        , on_x
                        , on_y
                        , sort
-                       , suffix_y
+                       , suffix
                        ):
                            
         assert isinstance(y, tidyframe),\
@@ -2822,12 +2822,18 @@ class tidyframe:
             assert set(on).issubset(cn_y),\
                 "arg 'on' should be a subset of column names of y"
         
-        assert isinstance(suffix_y, str),\
-            "arg 'suffix_y' should be a string"
+        assert isinstance(suffix, list),\
+            "arg 'suffix' should list"
             
-        assert suffix_y != "",\
-            "arg 'suffix_y' should be a non-empty string"
+        assert len(suffix) == 2,\
+            "arg 'suffix' should be a list of length 2"
             
+        assert isinstance(suffix[0], str) and isinstance(suffix[1], str),\
+            "arg 'suffix' should be a list of two strings"
+        
+        assert suffix[0] != suffix[1],\
+            "left and right suffix should be different."
+        
         assert isinstance(sort, bool),\
             "arg 'sort' should be a boolean"
         
@@ -2837,11 +2843,11 @@ class tidyframe:
     def _join(self
               , y
               , how
+              , suffix
               , on = None
               , on_x = None
               , on_y = None
               , sort = True
-              , suffix_y = "_y"
               , validate = True
               ):
         
@@ -2852,7 +2858,7 @@ class tidyframe:
                                 , on_x = on_x
                                 , on_y = on_y
                                 , sort = sort
-                                , suffix_y = suffix_y
+                                , suffix = suffix
                                 )
         
         cn_x = self.colnames
@@ -2890,7 +2896,7 @@ class tidyframe:
                               , left_index = False
                               , right_index = False
                               , sort = False
-                              , suffixes = ["", suffix_y]
+                              , suffixes = suffix
                               , copy = True
                               , indicator = False
                               , validate = None
@@ -2913,7 +2919,7 @@ class tidyframe:
                               , left_index = False
                               , right_index = False
                               , sort = False
-                              , suffixes = ["", suffix_y]
+                              , suffixes = suffix
                               , copy = True
                               , indicator = False
                               , validate = None
@@ -2923,11 +2929,7 @@ class tidyframe:
                                     )
                        .drop(columns = ["__rn_x", "__rn_y"])
                        )
-                # remove the right keys
-                on_y_with_suffix = [x + suffix_y for x in on_y]
-                right_keys = set(res.columns).intersection(on_y_with_suffix)
-                res = res.drop(columns = right_keys)
-        else:
+        else: # no sorting
             if on is not None:
                 res = (self
                        .__data
@@ -2937,7 +2939,7 @@ class tidyframe:
                               , left_index = False
                               , right_index = False
                               , sort = False
-                              , suffixes = ["", suffix_y]
+                              , suffixes = suffix
                               , copy = True
                               , indicator = False
                               , validate = None
@@ -2953,25 +2955,20 @@ class tidyframe:
                               , left_index = False
                               , right_index = False
                               , sort = False
-                              , suffixes = ["", suffix_y]
+                              , suffixes = suffix
                               , copy = True
                               , indicator = False
                               , validate = None
                               )
                        )
-                # remove the right keys
-                on_y_with_suffix = [x + suffix_y for x in on_y]
-                right_keys = set(res.columns).intersection(on_y_with_suffix)
-                res = res.drop(columns = right_keys)
         
-        res = (tidyframe(res
-                         , check = False
-                         , copy = False
-                         )
-                .relocate(cn_x)
-                )
+        res = tidyframe(res,
+                        check = False,
+                        copy = False
+                        )
         
         return res
+   # end of _join method -------------------------------------------------------
         
     def inner_join(self
                    , y
@@ -2979,7 +2976,7 @@ class tidyframe:
                    , on_x = None
                    , on_y = None
                    , sort = True
-                   , suffix_y = "_y"
+                   , suffix = ["", "_y"]
                    ):
         '''
         Joins columns of y to self by matching rows
@@ -2996,17 +2993,12 @@ class tidyframe:
             Column names of y to be matched with arg 'on_x'
         sort: bool
             Whether to sort by row order of self and row order of y
-        suffix_y: string
-            suffix to append the columns of y which have same names as self's 
-            column names
+        suffix: list of two stings
+            suffix to append the columns of left and right in order to create unique names after the merge
           
         Returns
         -------
         tidyframe
-        
-        Notes
-        -----
-        1. Column names of self will not have a suffix.
         
         Examples
         --------
@@ -3029,7 +3021,7 @@ class tidyframe:
                         , on_x = on_x
                         , on_y = on_y
                         , sort = sort
-                        , suffix_y = suffix_y
+                        , suffix = suffix
                         )
         return res
     
@@ -3040,7 +3032,7 @@ class tidyframe:
                    , on_x = None
                    , on_y = None
                    , sort = True
-                   , suffix_y = "_y"
+                   , suffix = ["", "_y"]
                    ):
         '''
         Joins columns of y to self by matching rows
@@ -3057,17 +3049,12 @@ class tidyframe:
             Column names of y to be matched with arg 'on_x'
         sort: bool
             Whether to sort by row order of self and row order of y
-        suffix_y: string
-            suffix to append the columns of y which have same names as self's 
-            column names
+        suffix: list of two stings
+            suffix to append the columns of left and right in order to create unique names after the merge
           
         Returns
         -------
         tidyframe
-        
-        Notes
-        -----
-        1. Column names of self will not have a suffix.
         
         Examples
         --------
@@ -3089,7 +3076,7 @@ class tidyframe:
                         , on_x = on_x
                         , on_y = on_y
                         , sort = sort
-                        , suffix_y = suffix_y
+                        , suffix = suffix
                         )
         return res
     
@@ -3101,7 +3088,7 @@ class tidyframe:
                    , on_x = None
                    , on_y = None
                    , sort = True
-                   , suffix_y = "_y"
+                   , suffix = ["", "_y"]
                    ):
         '''
         Joins columns of y to self by matching rows
@@ -3118,17 +3105,12 @@ class tidyframe:
             Column names of y to be matched with arg 'on_x'
         sort: bool
             Whether to sort by row order of self and row order of y
-        suffix_y: string
-            suffix to append the columns of y which have same names as self's 
-            column names
+        suffix: list of two stings
+            suffix to append the columns of left and right in order to create unique names after the merge
           
         Returns
         -------
         tidyframe
-        
-        Notes
-        -----
-        1. Column names of self will not have a suffix.
         
         Examples
         --------
@@ -3150,7 +3132,7 @@ class tidyframe:
                         , on_x = on_x
                         , on_y = on_y
                         , sort = sort
-                        , suffix_y = suffix_y
+                        , suffix = suffix
                         )
         return res
         
@@ -3160,7 +3142,7 @@ class tidyframe:
                    , on_x = None
                    , on_y = None
                    , sort = True
-                   , suffix_y = "_y"
+                   , suffix = ["", "_y"]
                    ):
         '''
         Joins columns of y to self by matching rows
@@ -3177,17 +3159,12 @@ class tidyframe:
             Column names of y to be matched with arg 'on_x'
         sort: bool
             Whether to sort by row order of self and row order of y
-        suffix_y: string
-            suffix to append the columns of y which have same names as self's 
-            column names
+        suffix: list of two stings
+            suffix to append the columns of left and right in order to create unique names after the merge
           
         Returns
         -------
         tidyframe
-        
-        Notes
-        -----
-        1. Column names of self will not have a suffix.
         
         Examples
         --------
@@ -3209,7 +3186,7 @@ class tidyframe:
                         , on_x = on_x
                         , on_y = on_y
                         , sort = sort
-                        , suffix_y = suffix_y
+                        , suffix = suffix
                         )
         return res
     
@@ -3220,7 +3197,6 @@ class tidyframe:
                    , on_x = None
                    , on_y = None
                    , sort = True
-                   , suffix_y = "_y"
                    ):
         '''
         Joins columns of y to self by matching rows
@@ -3237,17 +3213,9 @@ class tidyframe:
             Column names of y to be matched with arg 'on_x'
         sort: bool
             Whether to sort by row order of self and row order of y
-        suffix_y: string
-            suffix to append the columns of y which have same names as self's 
-            column names
-          
         Returns
         -------
         tidyframe
-        
-        Notes
-        -----
-        1. Column names of self will not have a suffix.
         
         Examples
         --------
@@ -3269,7 +3237,7 @@ class tidyframe:
                             , on_x = on_x
                             , on_y = on_y
                             , sort = sort
-                            , suffix_y = suffix_y
+                            , suffix = ["", "_y"] # this has no significance
                             )
         
         if on is None:
@@ -3277,15 +3245,17 @@ class tidyframe:
         else:
             y2 = y.distinct(on)
         
-        res = self._join(y = y2
+        res = (self._join(y = y2
                          , how = "inner"
                          , on = on
                          , on_x = on_x
                          , on_y = on_y
                          , sort = sort
-                         , suffix_y = suffix_y
+                         , suffix = ["", "_y"] # this has no significance
                          , validate = False
                          )
+                    .select(self.colnames)
+                    )
         return res
     
     # rows of A that do not match B
@@ -3295,7 +3265,6 @@ class tidyframe:
                    , on_x = None
                    , on_y = None
                    , sort = True
-                   , suffix_y = "_y"
                    ):
         '''
         Joins columns of y to self by matching rows
@@ -3312,17 +3281,10 @@ class tidyframe:
             Column names of y to be matched with arg 'on_x'
         sort: bool
             Whether to sort by row order of self and row order of y
-        suffix_y: string
-            suffix to append the columns of y which have same names as self's 
-            column names
-          
+        
         Returns
         -------
         tidyframe
-        
-        Notes
-        -----
-        1. Column names of self will not have a suffix.
         
         Examples
         --------
@@ -3344,7 +3306,7 @@ class tidyframe:
                             , on_x = on_x
                             , on_y = on_y
                             , sort = sort
-                            , suffix_y = suffix_y
+                            , suffix = ["", "_y"] # this has no significance
                             )
         
         string = _generate_new_string(y.colnames)
@@ -3360,16 +3322,16 @@ class tidyframe:
                            , on_x = on_x
                            , on_y = on_y
                            , sort = sort
-                           , suffix_y = suffix_y
+                           , suffix = ["", "_y"] # this has no significance
                            , validate = False
                            )
                     .filter(lambda x: x[string].isna())
-                    .select(string, include = False)
+                    .select(self.colnames)
                     )
         return res
     
     # cross join
-    def cross_join(self, y, sort = True, suffix_y = "_y"):
+    def cross_join(self, y, sort = True, suffix = ["","_y"]):
         '''
         Joins columns of y to self by matching rows
         Includes all cartersian product
@@ -3379,17 +3341,12 @@ class tidyframe:
         y: tidyframe
         sort: bool
             Whether to sort by row order of self and row order of y
-        suffix_y: string
-            suffix to append the columns of y which have same names as self's 
-            column names
+        suffix: list of two stings
+            suffix to append the columns of left and right in order to create unique names after the merge
           
         Returns
         -------
         tidyframe
-        
-        Notes
-        -----
-        1. Column names of self will not have a suffix.
         
         Examples
         --------
@@ -3412,11 +3369,17 @@ class tidyframe:
         assert isinstance(sort, bool),\
           "arg 'sort' should be a bool"
         
-        assert isinstance(suffix_y, str),\
-          "arg 'suffix_y' should be a string"
+        assert isinstance(suffix, list),\
+            "arg 'suffix' should list"
+            
+        assert len(suffix) == 2,\
+            "arg 'suffix' should be a list of length 2"
+            
+        assert isinstance(suffix[0], str) and isinstance(suffix[1], str),\
+            "arg 'suffix' should be a list of two strings"
         
-        assert suffix_y != "",\
-          "arg 'suffix_y' should not be an empty string"
+        assert suffix[0] != suffix[1],\
+            "left and right suffix should be different."
         
         if sort:
             res = (pd.merge((self.__data
@@ -3427,7 +3390,7 @@ class tidyframe:
                             , how = "cross"
                             , left_index = False
                             , right_index = False
-                            , suffixes = ["", suffix_y]
+                            , suffixes = suffix
                             )
                      .sort_values(by = ["__rn_x", "__rn_y"]
                                   , ignore_index = True
@@ -3440,7 +3403,7 @@ class tidyframe:
                            , how = "cross"
                            , left_index = False
                            , right_index = False
-                           , suffixes = ["", suffix_y]
+                           , suffixes = suffix
                            )
         
         return tidyframe(res, check = False, copy = False)
