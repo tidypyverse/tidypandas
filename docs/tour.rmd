@@ -7,7 +7,7 @@ output: md_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 # you might need to set the virtualenv correctly in the next line
-reticulate::use_virtualenv("~/.cache/pypoetry/virtualenvs/tidypandas-cfuMUHaV-py3.8/"
+reticulate::use_virtualenv("~/tpenv/"
                            , required = TRUE
                            )
 ```
@@ -38,7 +38,7 @@ reticulate::use_virtualenv("~/.cache/pypoetry/virtualenvs/tidypandas-cfuMUHaV-py
 ```{python}
 from tidypandas import tidyframe
 from tidypandas.series_utils import *
-from plotnine import *
+import plotnine as gg
 ```
 
 ## Load and Display `flights` data
@@ -98,11 +98,11 @@ data_for_plot = (out.pivot_longer(cols = ['avg_dep_delay', 'avg_arr_delay'],
                     )
 print(data_for_plot)
 
-(ggplot(data_for_plot.to_pandas(),
-        aes('value', 'cancelled_prop', color = 'delay_type')
+(gg.ggplot(data_for_plot.to_pandas(),
+        gg.aes('value', 'cancelled_prop', color = 'delay_type')
         ) +
-    geom_point() +
-    geom_smooth(method = "lm")
+    gg.geom_point() +
+    gg.geom_smooth(method = "lm")
     )
 ```
 
@@ -142,9 +142,11 @@ age_delay_stats_frame = \
                )
 print(age_delay_stats_frame)
 
-(ggplot(age_delay_stats_frame.to_pandas(), aes('age', 'mean_arr_delay')) +
-     geom_point() +
-     xlim(0, 20) +
-     ylim(0, 11)
+(gg.ggplot(age_delay_stats_frame.to_pandas(),
+           gg.aes('age', 'mean_arr_delay')
+           ) +
+     gg.geom_point() +
+     gg.xlim(0, 20) +
+     gg.ylim(0, 11)
      )
 ```

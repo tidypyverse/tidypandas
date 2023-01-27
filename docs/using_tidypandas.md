@@ -11,8 +11,8 @@ A pandas dataframe is said to be ‘simple’ if:
 
 1.  Column names (x.columns) are an unnamed pd.Index object of unique
     strings.
-2.  Row names (x.index) are an unnamed pd.RangeIndex object with start =
-    0 and step = 1.
+2.  Row names (x.index) is a numeric index (x.index.is\_numeric() is
+    True)
 
 `tidypandas` provides the following utilities:
 
@@ -46,19 +46,19 @@ makes a copy).
     print(penguins_tidy)
 
     ## # A tidy dataframe: 344 X 8
-    ##    species     island  bill_length_mm  ...  body_mass_g      sex    year
-    ##   <object>   <object>       <float64>  ...    <float64> <object> <int64>
-    ## 0   Adelie  Torgersen            39.1  ...       3750.0     male    2007
-    ## 1   Adelie  Torgersen            39.5  ...       3800.0   female    2007
-    ## 2   Adelie  Torgersen            40.3  ...       3250.0   female    2007
-    ## 3   Adelie  Torgersen             NaN  ...          NaN      NaN    2007
-    ## 4   Adelie  Torgersen            36.7  ...       3450.0   female    2007
-    ## 5   Adelie  Torgersen            39.3  ...       3650.0     male    2007
-    ## 6   Adelie  Torgersen            38.9  ...       3625.0   female    2007
-    ## 7   Adelie  Torgersen            39.2  ...       4675.0     male    2007
-    ## 8   Adelie  Torgersen            34.1  ...       3475.0      NaN    2007
-    ## 9   Adelie  Torgersen            42.0            4250.0      NaN    2007
-    ## #... with 334 more rows
+    ##    species     island  bill_length_mm  bill_depth_mm  flipper_length_mm  body_mass_g  ...
+    ##   <object>   <object>       <float64>      <float64>          <float64>    <float64>  ...
+    ## 0   Adelie  Torgersen            39.1           18.7              181.0       3750.0  ...
+    ## 1   Adelie  Torgersen            39.5           17.4              186.0       3800.0  ...
+    ## 2   Adelie  Torgersen            40.3           18.0              195.0       3250.0  ...
+    ## 3   Adelie  Torgersen             NaN            NaN                NaN          NaN  ...
+    ## 4   Adelie  Torgersen            36.7           19.3              193.0       3450.0  ...
+    ## 5   Adelie  Torgersen            39.3           20.6              190.0       3650.0  ...
+    ## 6   Adelie  Torgersen            38.9           17.8              181.0       3625.0  ...
+    ## 7   Adelie  Torgersen            39.2           19.6              195.0       4675.0  ...
+    ## 8   Adelie  Torgersen            34.1           18.1              193.0       3475.0  ...
+    ## 9   Adelie  Torgersen            42.0           20.2              190.0       4250.0     
+    ## #... with 334 more rows, and 2 more columns: sex <object>, year <int64>
 
 ## Working with `tidyframe`s
 

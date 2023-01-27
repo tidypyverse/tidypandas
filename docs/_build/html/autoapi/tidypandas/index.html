@@ -766,8 +766,7 @@ DataFrame object with method similar to tidyverse.</p>
 <ol class="arabic simple">
 <li><p>Column names (x.columns) are an unnamed pd.Index object of unique
 strings.</p></li>
-<li><p>Row names (x.index) are an unnamed pd.RangeIndex object with start = 0
-and step = 1.</p></li>
+<li><p>Row names (x.index) is a numeric index (x.indx.is_numeric() is True).</p></li>
 </ol>
 <ul class="simple">
 <li><p>Methods constitute a grammar of data manipulation mostly returning a
@@ -1213,7 +1212,7 @@ a side-effect</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe.add_group_number">
-<span class="sig-name descname"><span class="pre">add_group_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group_number'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.add_group_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.add_group_number" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">add_group_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">by</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'group_number'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.add_group_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.add_group_number" title="Permalink to this definition">#</a></dt>
 <dd><p>Add a group number column to tidyframe</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1932,17 +1931,17 @@ examples for various sytles.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe._validate_join">
-<span class="sig-name descname"><span class="pre">_validate_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">how</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe._validate_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe._validate_join" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">_validate_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">how</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe._validate_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe._validate_join" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe._join">
-<span class="sig-name descname"><span class="pre">_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">how</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe._join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe._join" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">how</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe._join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe._join" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe.inner_join">
-<span class="sig-name descname"><span class="pre">inner_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_y'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.inner_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.inner_join" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">inner_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['',</span> <span class="pre">'_y']</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.inner_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.inner_join" title="Permalink to this definition">#</a></dt>
 <dd><p>Joins columns of y to self by matching rows
 Includes only matching keys</p>
 <dl class="field-list simple">
@@ -1953,18 +1952,13 @@ Includes only matching keys</p>
 <li><p><strong>on_x</strong> – Column names of self to be matched with arg ‘on_y’</p></li>
 <li><p><strong>on_y</strong> – Column names of y to be matched with arg ‘on_x’</p></li>
 <li><p><strong>sort</strong> (<em>bool</em>) – Whether to sort by row order of self and row order of y</p></li>
-<li><p><strong>suffix_y</strong> (<em>string</em>) – suffix to append the columns of y which have same names as self’s
-column names</p></li>
+<li><p><strong>suffix</strong> (<em>list of two stings</em>) – suffix to append the columns of left and right in order to create unique names after the merge</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="#tidypandas.tidyframe" title="tidypandas.tidyframe">tidyframe</a></p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<ol class="arabic simple">
-<li><p>Column names of self will not have a suffix.</p></li>
-</ol>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
@@ -1983,7 +1977,7 @@ column names</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe.outer_join">
-<span class="sig-name descname"><span class="pre">outer_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_y'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.outer_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.outer_join" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">outer_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['',</span> <span class="pre">'_y']</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.outer_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.outer_join" title="Permalink to this definition">#</a></dt>
 <dd><p>Joins columns of y to self by matching rows
 Includes all keys</p>
 <dl class="field-list simple">
@@ -1994,18 +1988,13 @@ Includes all keys</p>
 <li><p><strong>on_x</strong> – Column names of self to be matched with arg ‘on_y’</p></li>
 <li><p><strong>on_y</strong> – Column names of y to be matched with arg ‘on_x’</p></li>
 <li><p><strong>sort</strong> (<em>bool</em>) – Whether to sort by row order of self and row order of y</p></li>
-<li><p><strong>suffix_y</strong> (<em>string</em>) – suffix to append the columns of y which have same names as self’s
-column names</p></li>
+<li><p><strong>suffix</strong> (<em>list of two stings</em>) – suffix to append the columns of left and right in order to create unique names after the merge</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="#tidypandas.tidyframe" title="tidypandas.tidyframe">tidyframe</a></p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<ol class="arabic simple">
-<li><p>Column names of self will not have a suffix.</p></li>
-</ol>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
@@ -2024,7 +2013,7 @@ column names</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe.left_join">
-<span class="sig-name descname"><span class="pre">left_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_y'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.left_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.left_join" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">left_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['',</span> <span class="pre">'_y']</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.left_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.left_join" title="Permalink to this definition">#</a></dt>
 <dd><p>Joins columns of y to self by matching rows
 Includes all keys in self</p>
 <dl class="field-list simple">
@@ -2035,18 +2024,13 @@ Includes all keys in self</p>
 <li><p><strong>on_x</strong> – Column names of self to be matched with arg ‘on_y’</p></li>
 <li><p><strong>on_y</strong> – Column names of y to be matched with arg ‘on_x’</p></li>
 <li><p><strong>sort</strong> (<em>bool</em>) – Whether to sort by row order of self and row order of y</p></li>
-<li><p><strong>suffix_y</strong> (<em>string</em>) – suffix to append the columns of y which have same names as self’s
-column names</p></li>
+<li><p><strong>suffix</strong> (<em>list of two stings</em>) – suffix to append the columns of left and right in order to create unique names after the merge</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="#tidypandas.tidyframe" title="tidypandas.tidyframe">tidyframe</a></p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<ol class="arabic simple">
-<li><p>Column names of self will not have a suffix.</p></li>
-</ol>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
@@ -2065,7 +2049,7 @@ column names</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe.right_join">
-<span class="sig-name descname"><span class="pre">right_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_y'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.right_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.right_join" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">right_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['',</span> <span class="pre">'_y']</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.right_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.right_join" title="Permalink to this definition">#</a></dt>
 <dd><p>Joins columns of y to self by matching rows
 Includes all keys in y</p>
 <dl class="field-list simple">
@@ -2076,18 +2060,13 @@ Includes all keys in y</p>
 <li><p><strong>on_x</strong> – Column names of self to be matched with arg ‘on_y’</p></li>
 <li><p><strong>on_y</strong> – Column names of y to be matched with arg ‘on_x’</p></li>
 <li><p><strong>sort</strong> (<em>bool</em>) – Whether to sort by row order of self and row order of y</p></li>
-<li><p><strong>suffix_y</strong> (<em>string</em>) – suffix to append the columns of y which have same names as self’s
-column names</p></li>
+<li><p><strong>suffix</strong> (<em>list of two stings</em>) – suffix to append the columns of left and right in order to create unique names after the merge</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="#tidypandas.tidyframe" title="tidypandas.tidyframe">tidyframe</a></p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<ol class="arabic simple">
-<li><p>Column names of self will not have a suffix.</p></li>
-</ol>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
@@ -2106,7 +2085,7 @@ column names</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe.semi_join">
-<span class="sig-name descname"><span class="pre">semi_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_y'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.semi_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.semi_join" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">semi_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.semi_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.semi_join" title="Permalink to this definition">#</a></dt>
 <dd><p>Joins columns of y to self by matching rows
 Includes keys in self if present in y</p>
 <dl class="field-list simple">
@@ -2117,18 +2096,12 @@ Includes keys in self if present in y</p>
 <li><p><strong>on_x</strong> – Column names of self to be matched with arg ‘on_y’</p></li>
 <li><p><strong>on_y</strong> – Column names of y to be matched with arg ‘on_x’</p></li>
 <li><p><strong>sort</strong> (<em>bool</em>) – Whether to sort by row order of self and row order of y</p></li>
-<li><p><strong>suffix_y</strong> (<em>string</em>) – suffix to append the columns of y which have same names as self’s
-column names</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="#tidypandas.tidyframe" title="tidypandas.tidyframe">tidyframe</a></p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<ol class="arabic simple">
-<li><p>Column names of self will not have a suffix.</p></li>
-</ol>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
@@ -2147,7 +2120,7 @@ column names</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe.anti_join">
-<span class="sig-name descname"><span class="pre">anti_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_y'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.anti_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.anti_join" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">anti_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.anti_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.anti_join" title="Permalink to this definition">#</a></dt>
 <dd><p>Joins columns of y to self by matching rows
 Includes keys in self if not present in y</p>
 <dl class="field-list simple">
@@ -2158,18 +2131,12 @@ Includes keys in self if not present in y</p>
 <li><p><strong>on_x</strong> – Column names of self to be matched with arg ‘on_y’</p></li>
 <li><p><strong>on_y</strong> – Column names of y to be matched with arg ‘on_x’</p></li>
 <li><p><strong>sort</strong> (<em>bool</em>) – Whether to sort by row order of self and row order of y</p></li>
-<li><p><strong>suffix_y</strong> (<em>string</em>) – suffix to append the columns of y which have same names as self’s
-column names</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="#tidypandas.tidyframe" title="tidypandas.tidyframe">tidyframe</a></p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<ol class="arabic simple">
-<li><p>Column names of self will not have a suffix.</p></li>
-</ol>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
@@ -2188,7 +2155,7 @@ column names</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe.cross_join">
-<span class="sig-name descname"><span class="pre">cross_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'_y'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.cross_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.cross_join" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">cross_join</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['',</span> <span class="pre">'_y']</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe.cross_join"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe.cross_join" title="Permalink to this definition">#</a></dt>
 <dd><p>Joins columns of y to self by matching rows
 Includes all cartersian product</p>
 <dl class="field-list simple">
@@ -2196,18 +2163,13 @@ Includes all cartersian product</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>y</strong> (<a class="reference internal" href="#tidypandas.tidyframe" title="tidypandas.tidyframe"><em>tidyframe</em></a>) – </p></li>
 <li><p><strong>sort</strong> (<em>bool</em>) – Whether to sort by row order of self and row order of y</p></li>
-<li><p><strong>suffix_y</strong> (<em>string</em>) – suffix to append the columns of y which have same names as self’s
-column names</p></li>
+<li><p><strong>suffix</strong> (<em>list of two stings</em>) – suffix to append the columns of left and right in order to create unique names after the merge</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="#tidypandas.tidyframe" title="tidypandas.tidyframe">tidyframe</a></p>
 </dd>
 </dl>
-<p class="rubric">Notes</p>
-<ol class="arabic simple">
-<li><p>Column names of self will not have a suffix.</p></li>
-</ol>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>

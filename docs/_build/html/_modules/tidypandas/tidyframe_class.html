@@ -213,8 +213,7 @@
 <span class="sd">    </span>
 <span class="sd">    1. Column names (x.columns) are an unnamed pd.Index object of unique </span>
 <span class="sd">       strings.</span>
-<span class="sd">    2. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0</span>
-<span class="sd">       and step = 1.</span>
+<span class="sd">    2. Row names (x.index) is a numeric index (x.indx.is_numeric() is True).</span>
 <span class="sd">    </span>
 <span class="sd">    * Methods constitute a grammar of data manipulation mostly returning a </span>
 <span class="sd">      tidy dataframe as a result. </span>
@@ -403,7 +402,7 @@
             <span class="n">simple_flag</span> <span class="o">=</span> <span class="n">is_simple</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">simple_flag</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">x</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">simplify</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">),</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
                 <span class="k">except</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">((</span><span class="s2">&quot;Input pandas dataframe could not be simplified&quot;</span>
                                      <span class="s2">&quot; See to above warnings.&quot;</span>
@@ -888,7 +887,7 @@
     <span class="c1">##########################################################################</span>
     <span class="c1"># add_group_number</span>
     <span class="c1">##########################################################################</span>
-<div class="viewcode-block" id="tidyframe.add_group_number"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.add_group_number">[docs]</a>    <span class="k">def</span> <span class="nf">add_group_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;group_number&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="tidyframe.add_group_number"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.add_group_number">[docs]</a>    <span class="k">def</span> <span class="nf">add_group_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;group_number&#39;</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Add a group number column to tidyframe</span>
 <span class="sd">        </span>
@@ -2933,7 +2932,7 @@
                        <span class="p">,</span> <span class="n">on_x</span>
                        <span class="p">,</span> <span class="n">on_y</span>
                        <span class="p">,</span> <span class="n">sort</span>
-                       <span class="p">,</span> <span class="n">suffix_y</span>
+                       <span class="p">,</span> <span class="n">suffix</span>
                        <span class="p">):</span>
                            
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">tidyframe</span><span class="p">),</span>\
@@ -2985,12 +2984,18 @@
             <span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">on</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">cn_y</span><span class="p">),</span>\
                 <span class="s2">&quot;arg &#39;on&#39; should be a subset of column names of y&quot;</span>
         
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">suffix_y</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>\
-            <span class="s2">&quot;arg &#39;suffix_y&#39; should be a string&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span> <span class="nb">list</span><span class="p">),</span>\
+            <span class="s2">&quot;arg &#39;suffix&#39; should list&quot;</span>
             
-        <span class="k">assert</span> <span class="n">suffix_y</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>\
-            <span class="s2">&quot;arg &#39;suffix_y&#39; should be a non-empty string&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span>\
+            <span class="s2">&quot;arg &#39;suffix&#39; should be a list of length 2&quot;</span>
             
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">suffix</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">suffix</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>\
+            <span class="s2">&quot;arg &#39;suffix&#39; should be a list of two strings&quot;</span>
+        
+        <span class="k">assert</span> <span class="n">suffix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">suffix</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>\
+            <span class="s2">&quot;left and right suffix should be different.&quot;</span>
+        
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sort</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>\
             <span class="s2">&quot;arg &#39;sort&#39; should be a boolean&quot;</span>
         
@@ -3000,11 +3005,11 @@
 <div class="viewcode-block" id="tidyframe._join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe._join">[docs]</a>    <span class="k">def</span> <span class="nf">_join</span><span class="p">(</span><span class="bp">self</span>
               <span class="p">,</span> <span class="n">y</span>
               <span class="p">,</span> <span class="n">how</span>
+              <span class="p">,</span> <span class="n">suffix</span>
               <span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="kc">None</span>
               <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
               <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
               <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
-              <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
               <span class="p">,</span> <span class="n">validate</span> <span class="o">=</span> <span class="kc">True</span>
               <span class="p">):</span>
         
@@ -3015,7 +3020,7 @@
                                 <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
                                 <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
                                 <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
-                                <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                                <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="n">suffix</span>
                                 <span class="p">)</span>
         
         <span class="n">cn_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span>
@@ -3053,7 +3058,7 @@
                               <span class="p">,</span> <span class="n">left_index</span> <span class="o">=</span> <span class="kc">False</span>
                               <span class="p">,</span> <span class="n">right_index</span> <span class="o">=</span> <span class="kc">False</span>
                               <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">False</span>
-                              <span class="p">,</span> <span class="n">suffixes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">suffix_y</span><span class="p">]</span>
+                              <span class="p">,</span> <span class="n">suffixes</span> <span class="o">=</span> <span class="n">suffix</span>
                               <span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">True</span>
                               <span class="p">,</span> <span class="n">indicator</span> <span class="o">=</span> <span class="kc">False</span>
                               <span class="p">,</span> <span class="n">validate</span> <span class="o">=</span> <span class="kc">None</span>
@@ -3076,7 +3081,7 @@
                               <span class="p">,</span> <span class="n">left_index</span> <span class="o">=</span> <span class="kc">False</span>
                               <span class="p">,</span> <span class="n">right_index</span> <span class="o">=</span> <span class="kc">False</span>
                               <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">False</span>
-                              <span class="p">,</span> <span class="n">suffixes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">suffix_y</span><span class="p">]</span>
+                              <span class="p">,</span> <span class="n">suffixes</span> <span class="o">=</span> <span class="n">suffix</span>
                               <span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">True</span>
                               <span class="p">,</span> <span class="n">indicator</span> <span class="o">=</span> <span class="kc">False</span>
                               <span class="p">,</span> <span class="n">validate</span> <span class="o">=</span> <span class="kc">None</span>
@@ -3086,11 +3091,7 @@
                                     <span class="p">)</span>
                        <span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;__rn_x&quot;</span><span class="p">,</span> <span class="s2">&quot;__rn_y&quot;</span><span class="p">])</span>
                        <span class="p">)</span>
-                <span class="c1"># remove the right keys</span>
-                <span class="n">on_y_with_suffix</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="n">suffix_y</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">on_y</span><span class="p">]</span>
-                <span class="n">right_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">on_y_with_suffix</span><span class="p">)</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="n">right_keys</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># no sorting</span>
             <span class="k">if</span> <span class="n">on</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span>
                        <span class="o">.</span><span class="n">__data</span>
@@ -3100,7 +3101,7 @@
                               <span class="p">,</span> <span class="n">left_index</span> <span class="o">=</span> <span class="kc">False</span>
                               <span class="p">,</span> <span class="n">right_index</span> <span class="o">=</span> <span class="kc">False</span>
                               <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">False</span>
-                              <span class="p">,</span> <span class="n">suffixes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">suffix_y</span><span class="p">]</span>
+                              <span class="p">,</span> <span class="n">suffixes</span> <span class="o">=</span> <span class="n">suffix</span>
                               <span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">True</span>
                               <span class="p">,</span> <span class="n">indicator</span> <span class="o">=</span> <span class="kc">False</span>
                               <span class="p">,</span> <span class="n">validate</span> <span class="o">=</span> <span class="kc">None</span>
@@ -3116,25 +3117,20 @@
                               <span class="p">,</span> <span class="n">left_index</span> <span class="o">=</span> <span class="kc">False</span>
                               <span class="p">,</span> <span class="n">right_index</span> <span class="o">=</span> <span class="kc">False</span>
                               <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">False</span>
-                              <span class="p">,</span> <span class="n">suffixes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">suffix_y</span><span class="p">]</span>
+                              <span class="p">,</span> <span class="n">suffixes</span> <span class="o">=</span> <span class="n">suffix</span>
                               <span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">True</span>
                               <span class="p">,</span> <span class="n">indicator</span> <span class="o">=</span> <span class="kc">False</span>
                               <span class="p">,</span> <span class="n">validate</span> <span class="o">=</span> <span class="kc">None</span>
                               <span class="p">)</span>
                        <span class="p">)</span>
-                <span class="c1"># remove the right keys</span>
-                <span class="n">on_y_with_suffix</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="n">suffix_y</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">on_y</span><span class="p">]</span>
-                <span class="n">right_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">on_y_with_suffix</span><span class="p">)</span>
-                <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="n">right_keys</span><span class="p">)</span>
         
-        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">tidyframe</span><span class="p">(</span><span class="n">res</span>
-                         <span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span>
-                         <span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span>
-                         <span class="p">)</span>
-                <span class="o">.</span><span class="n">relocate</span><span class="p">(</span><span class="n">cn_x</span><span class="p">)</span>
-                <span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">res</span><span class="p">,</span>
+                        <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                        <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="p">)</span>
         
         <span class="k">return</span> <span class="n">res</span></div>
+   <span class="c1"># end of _join method -------------------------------------------------------</span>
         
 <div class="viewcode-block" id="tidyframe.inner_join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.inner_join">[docs]</a>    <span class="k">def</span> <span class="nf">inner_join</span><span class="p">(</span><span class="bp">self</span>
                    <span class="p">,</span> <span class="n">y</span>
@@ -3142,7 +3138,7 @@
                    <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
-                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
+                   <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_y&quot;</span><span class="p">]</span>
                    <span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Joins columns of y to self by matching rows</span>
@@ -3159,17 +3155,12 @@
 <span class="sd">            Column names of y to be matched with arg &#39;on_x&#39;</span>
 <span class="sd">        sort: bool</span>
 <span class="sd">            Whether to sort by row order of self and row order of y</span>
-<span class="sd">        suffix_y: string</span>
-<span class="sd">            suffix to append the columns of y which have same names as self&#39;s </span>
-<span class="sd">            column names</span>
+<span class="sd">        suffix: list of two stings</span>
+<span class="sd">            suffix to append the columns of left and right in order to create unique names after the merge</span>
 <span class="sd">          </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        tidyframe</span>
-<span class="sd">        </span>
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        1. Column names of self will not have a suffix.</span>
 <span class="sd">        </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -3192,7 +3183,7 @@
                         <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
                         <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
                         <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
-                        <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                        <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="n">suffix</span>
                         <span class="p">)</span>
         <span class="k">return</span> <span class="n">res</span></div>
     
@@ -3203,7 +3194,7 @@
                    <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
-                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
+                   <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_y&quot;</span><span class="p">]</span>
                    <span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Joins columns of y to self by matching rows</span>
@@ -3220,17 +3211,12 @@
 <span class="sd">            Column names of y to be matched with arg &#39;on_x&#39;</span>
 <span class="sd">        sort: bool</span>
 <span class="sd">            Whether to sort by row order of self and row order of y</span>
-<span class="sd">        suffix_y: string</span>
-<span class="sd">            suffix to append the columns of y which have same names as self&#39;s </span>
-<span class="sd">            column names</span>
+<span class="sd">        suffix: list of two stings</span>
+<span class="sd">            suffix to append the columns of left and right in order to create unique names after the merge</span>
 <span class="sd">          </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        tidyframe</span>
-<span class="sd">        </span>
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        1. Column names of self will not have a suffix.</span>
 <span class="sd">        </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -3252,7 +3238,7 @@
                         <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
                         <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
                         <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
-                        <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                        <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="n">suffix</span>
                         <span class="p">)</span>
         <span class="k">return</span> <span class="n">res</span></div>
     
@@ -3264,7 +3250,7 @@
                    <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
-                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
+                   <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_y&quot;</span><span class="p">]</span>
                    <span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Joins columns of y to self by matching rows</span>
@@ -3281,17 +3267,12 @@
 <span class="sd">            Column names of y to be matched with arg &#39;on_x&#39;</span>
 <span class="sd">        sort: bool</span>
 <span class="sd">            Whether to sort by row order of self and row order of y</span>
-<span class="sd">        suffix_y: string</span>
-<span class="sd">            suffix to append the columns of y which have same names as self&#39;s </span>
-<span class="sd">            column names</span>
+<span class="sd">        suffix: list of two stings</span>
+<span class="sd">            suffix to append the columns of left and right in order to create unique names after the merge</span>
 <span class="sd">          </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        tidyframe</span>
-<span class="sd">        </span>
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        1. Column names of self will not have a suffix.</span>
 <span class="sd">        </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -3313,7 +3294,7 @@
                         <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
                         <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
                         <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
-                        <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                        <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="n">suffix</span>
                         <span class="p">)</span>
         <span class="k">return</span> <span class="n">res</span></div>
         
@@ -3323,7 +3304,7 @@
                    <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
-                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
+                   <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_y&quot;</span><span class="p">]</span>
                    <span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Joins columns of y to self by matching rows</span>
@@ -3340,17 +3321,12 @@
 <span class="sd">            Column names of y to be matched with arg &#39;on_x&#39;</span>
 <span class="sd">        sort: bool</span>
 <span class="sd">            Whether to sort by row order of self and row order of y</span>
-<span class="sd">        suffix_y: string</span>
-<span class="sd">            suffix to append the columns of y which have same names as self&#39;s </span>
-<span class="sd">            column names</span>
+<span class="sd">        suffix: list of two stings</span>
+<span class="sd">            suffix to append the columns of left and right in order to create unique names after the merge</span>
 <span class="sd">          </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        tidyframe</span>
-<span class="sd">        </span>
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        1. Column names of self will not have a suffix.</span>
 <span class="sd">        </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -3372,7 +3348,7 @@
                         <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
                         <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
                         <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
-                        <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                        <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="n">suffix</span>
                         <span class="p">)</span>
         <span class="k">return</span> <span class="n">res</span></div>
     
@@ -3383,7 +3359,6 @@
                    <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
-                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
                    <span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Joins columns of y to self by matching rows</span>
@@ -3400,17 +3375,9 @@
 <span class="sd">            Column names of y to be matched with arg &#39;on_x&#39;</span>
 <span class="sd">        sort: bool</span>
 <span class="sd">            Whether to sort by row order of self and row order of y</span>
-<span class="sd">        suffix_y: string</span>
-<span class="sd">            suffix to append the columns of y which have same names as self&#39;s </span>
-<span class="sd">            column names</span>
-<span class="sd">          </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        tidyframe</span>
-<span class="sd">        </span>
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        1. Column names of self will not have a suffix.</span>
 <span class="sd">        </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -3432,7 +3399,7 @@
                             <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
                             <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
                             <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
-                            <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                            <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_y&quot;</span><span class="p">]</span> <span class="c1"># this has no significance</span>
                             <span class="p">)</span>
         
         <span class="k">if</span> <span class="n">on</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -3440,15 +3407,17 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">y2</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="n">on</span><span class="p">)</span>
         
-        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_join</span><span class="p">(</span><span class="n">y</span> <span class="o">=</span> <span class="n">y2</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_join</span><span class="p">(</span><span class="n">y</span> <span class="o">=</span> <span class="n">y2</span>
                          <span class="p">,</span> <span class="n">how</span> <span class="o">=</span> <span class="s2">&quot;inner&quot;</span>
                          <span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="n">on</span>
                          <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
                          <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
                          <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
-                         <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                         <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_y&quot;</span><span class="p">]</span> <span class="c1"># this has no significance</span>
                          <span class="p">,</span> <span class="n">validate</span> <span class="o">=</span> <span class="kc">False</span>
                          <span class="p">)</span>
+                    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">)</span>
+                    <span class="p">)</span>
         <span class="k">return</span> <span class="n">res</span></div>
     
     <span class="c1"># rows of A that do not match B</span>
@@ -3458,7 +3427,6 @@
                    <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
-                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
                    <span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Joins columns of y to self by matching rows</span>
@@ -3475,17 +3443,10 @@
 <span class="sd">            Column names of y to be matched with arg &#39;on_x&#39;</span>
 <span class="sd">        sort: bool</span>
 <span class="sd">            Whether to sort by row order of self and row order of y</span>
-<span class="sd">        suffix_y: string</span>
-<span class="sd">            suffix to append the columns of y which have same names as self&#39;s </span>
-<span class="sd">            column names</span>
-<span class="sd">          </span>
+<span class="sd">        </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        tidyframe</span>
-<span class="sd">        </span>
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        1. Column names of self will not have a suffix.</span>
 <span class="sd">        </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -3507,7 +3468,7 @@
                             <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
                             <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
                             <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
-                            <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                            <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_y&quot;</span><span class="p">]</span> <span class="c1"># this has no significance</span>
                             <span class="p">)</span>
         
         <span class="n">string</span> <span class="o">=</span> <span class="n">_generate_new_string</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">colnames</span><span class="p">)</span>
@@ -3523,16 +3484,16 @@
                            <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
                            <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
                            <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
-                           <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                           <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_y&quot;</span><span class="p">]</span> <span class="c1"># this has no significance</span>
                            <span class="p">,</span> <span class="n">validate</span> <span class="o">=</span> <span class="kc">False</span>
                            <span class="p">)</span>
                     <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">string</span><span class="p">]</span><span class="o">.</span><span class="n">isna</span><span class="p">())</span>
-                    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">include</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">)</span>
                     <span class="p">)</span>
         <span class="k">return</span> <span class="n">res</span></div>
     
     <span class="c1"># cross join</span>
-<div class="viewcode-block" id="tidyframe.cross_join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.cross_join">[docs]</a>    <span class="k">def</span> <span class="nf">cross_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="tidyframe.cross_join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.cross_join">[docs]</a>    <span class="k">def</span> <span class="nf">cross_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="s2">&quot;_y&quot;</span><span class="p">]):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Joins columns of y to self by matching rows</span>
 <span class="sd">        Includes all cartersian product</span>
@@ -3542,17 +3503,12 @@
 <span class="sd">        y: tidyframe</span>
 <span class="sd">        sort: bool</span>
 <span class="sd">            Whether to sort by row order of self and row order of y</span>
-<span class="sd">        suffix_y: string</span>
-<span class="sd">            suffix to append the columns of y which have same names as self&#39;s </span>
-<span class="sd">            column names</span>
+<span class="sd">        suffix: list of two stings</span>
+<span class="sd">            suffix to append the columns of left and right in order to create unique names after the merge</span>
 <span class="sd">          </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        tidyframe</span>
-<span class="sd">        </span>
-<span class="sd">        Notes</span>
-<span class="sd">        -----</span>
-<span class="sd">        1. Column names of self will not have a suffix.</span>
 <span class="sd">        </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -3575,11 +3531,17 @@
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sort</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>\
           <span class="s2">&quot;arg &#39;sort&#39; should be a bool&quot;</span>
         
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">suffix_y</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>\
-          <span class="s2">&quot;arg &#39;suffix_y&#39; should be a string&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">suffix</span><span class="p">,</span> <span class="nb">list</span><span class="p">),</span>\
+            <span class="s2">&quot;arg &#39;suffix&#39; should list&quot;</span>
+            
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span>\
+            <span class="s2">&quot;arg &#39;suffix&#39; should be a list of length 2&quot;</span>
+            
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">suffix</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">suffix</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>\
+            <span class="s2">&quot;arg &#39;suffix&#39; should be a list of two strings&quot;</span>
         
-        <span class="k">assert</span> <span class="n">suffix_y</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>\
-          <span class="s2">&quot;arg &#39;suffix_y&#39; should not be an empty string&quot;</span>
+        <span class="k">assert</span> <span class="n">suffix</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">suffix</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>\
+            <span class="s2">&quot;left and right suffix should be different.&quot;</span>
         
         <span class="k">if</span> <span class="n">sort</span><span class="p">:</span>
             <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">__data</span>
@@ -3590,7 +3552,7 @@
                             <span class="p">,</span> <span class="n">how</span> <span class="o">=</span> <span class="s2">&quot;cross&quot;</span>
                             <span class="p">,</span> <span class="n">left_index</span> <span class="o">=</span> <span class="kc">False</span>
                             <span class="p">,</span> <span class="n">right_index</span> <span class="o">=</span> <span class="kc">False</span>
-                            <span class="p">,</span> <span class="n">suffixes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">suffix_y</span><span class="p">]</span>
+                            <span class="p">,</span> <span class="n">suffixes</span> <span class="o">=</span> <span class="n">suffix</span>
                             <span class="p">)</span>
                      <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;__rn_x&quot;</span><span class="p">,</span> <span class="s2">&quot;__rn_y&quot;</span><span class="p">]</span>
                                   <span class="p">,</span> <span class="n">ignore_index</span> <span class="o">=</span> <span class="kc">True</span>
@@ -3603,7 +3565,7 @@
                            <span class="p">,</span> <span class="n">how</span> <span class="o">=</span> <span class="s2">&quot;cross&quot;</span>
                            <span class="p">,</span> <span class="n">left_index</span> <span class="o">=</span> <span class="kc">False</span>
                            <span class="p">,</span> <span class="n">right_index</span> <span class="o">=</span> <span class="kc">False</span>
-                           <span class="p">,</span> <span class="n">suffixes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">suffix_y</span><span class="p">]</span>
+                           <span class="p">,</span> <span class="n">suffixes</span> <span class="o">=</span> <span class="n">suffix</span>
                            <span class="p">)</span>
         
         <span class="k">return</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>

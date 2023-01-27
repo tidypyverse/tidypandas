@@ -9,7 +9,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 # you might need to set the virtualenv correctly in the next line
-reticulate::use_virtualenv("~/.cache/pypoetry/virtualenvs/tidypandas-cfuMUHaV-py3.8/"
+reticulate::use_virtualenv("~/tpenv/"
                            , required = TRUE
                            )
 ```
@@ -23,7 +23,7 @@ reticulate::use_virtualenv("~/.cache/pypoetry/virtualenvs/tidypandas-cfuMUHaV-py
 A pandas dataframe is said to be 'simple' if:
     
   1. Column names (x.columns) are an unnamed pd.Index object of unique strings.
-  2. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0 and step = 1.
+  2. Row names (x.index) is a numeric index (x.index.is_numeric() is True)
 
 `tidypandas` provides the following utilities:
 

@@ -40,7 +40,7 @@ Functions
 
        1. Column names (x.columns) are an unnamed pd.Index object of unique
           strings. Column names do not start from "_".
-       2. Row index is absent (pandas rangeindex starting from 1)
+       2. Row names (x.index) is a numeric index (x.indx.is_numeric() is True).
 
    This is done by collapsing the column MultiIndex by concatenating names
    using separator 'sep' and ensuring that the resulting names are unique.
@@ -107,7 +107,7 @@ Functions
 
        1. Column names (x.columns) are an unnamed pd.Index object of unique
           strings. Column names do not start from "_".
-       2. Row index is absent (pandas rangeindex starting from 0).
+       2. Row names (x.index) is a numeric index (x.indx.is_numeric() is True).
 
    :returns: True if the input is 'simple' and False if the input is not 'simple'.
    :rtype: bool

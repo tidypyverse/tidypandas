@@ -43,7 +43,7 @@ def simplify(pdf
         
         1. Column names (x.columns) are an unnamed pd.Index object of unique 
            strings. Column names do not start from "_".
-        2. Row index is absent (pandas rangeindex starting from 1)
+        2. Row names (x.index) is a numeric index (x.indx.is_numeric() is True).
     
     This is done by collapsing the column MultiIndex by concatenating names 
     using separator 'sep' and ensuring that the resulting names are unique. 
@@ -184,7 +184,7 @@ def is_simple(pdf, verbose = False):
     
         1. Column names (x.columns) are an unnamed pd.Index object of unique 
            strings. Column names do not start from "_".
-        2. Row index is absent (pandas rangeindex starting from 0).
+        2. Row names (x.index) is a numeric index (x.indx.is_numeric() is True).
         
     Returns
     -------
@@ -205,11 +205,11 @@ def is_simple(pdf, verbose = False):
     
     row_flag = not isinstance(pdf.index, pd.MultiIndex)
     col_flag = not isinstance(pdf.columns, pd.MultiIndex)
-    # check if row index is rangeIndex
-    flag_no_index = False
-    if isinstance(pdf.index, pd.RangeIndex):
-        if pdf.index.start == 0 and pdf.index.step == 1:
-            flag_no_index = True 
+    
+    # check if row index is numeric
+    flag_numeric_index = False
+    if pdf.index.is_numeric():
+        flag_numeric_index = True 
             
     # check if all column names are strings
     columns = list(pdf.columns)
@@ -225,16 +225,20 @@ def is_simple(pdf, verbose = False):
     if not any([acol[0] == "_" for acol in columns]):
         underscore_flag = True
     
-    flag = all([row_flag, col_flag, flag_no_index, str_flag
-                , unique_flag, underscore_flag])
+    flag = all([row_flag,
+                col_flag,
+                flag_numeric_index,
+                str_flag,
+                unique_flag,
+                underscore_flag])
     
     if verbose and not flag:
         if not row_flag:
             print("Row index should not be a MultiIndex object.")
         if not col_flag:
             print("Column index should not be a MultiIndex object.")
-        if not flag_no_index:
-            print("Row index should be a RangeIndex (0-n)")
+        if not flag_numeric_index:
+            print("Row index should be a numeric")
         if not str_flag:
             print("Column index should be string column names.")
         if not unique_flag:

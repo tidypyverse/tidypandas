@@ -32,7 +32,7 @@ of other useful datasets.
 
     from tidypandas import tidyframe
     from tidypandas.series_utils import *
-    from plotnine import *
+    import plotnine as gg
 
 ## Load and Display `flights` data
 
@@ -41,19 +41,19 @@ of other useful datasets.
     print(flights_tidy)
 
     ## # A tidy dataframe: 336776 X 19
-    ##      year   month     day  ...    hour  minute             time_hour
-    ##   <int64> <int64> <int64>  ... <int64> <int64>              <object>
-    ## 0    2013       1       1  ...       5      15  2013-01-01T10:00:00Z
-    ## 1    2013       1       1  ...       5      29  2013-01-01T10:00:00Z
-    ## 2    2013       1       1  ...       5      40  2013-01-01T10:00:00Z
-    ## 3    2013       1       1  ...       5      45  2013-01-01T10:00:00Z
-    ## 4    2013       1       1  ...       6       0  2013-01-01T11:00:00Z
-    ## 5    2013       1       1  ...       5      58  2013-01-01T10:00:00Z
-    ## 6    2013       1       1  ...       6       0  2013-01-01T11:00:00Z
-    ## 7    2013       1       1  ...       6       0  2013-01-01T11:00:00Z
-    ## 8    2013       1       1  ...       6       0  2013-01-01T11:00:00Z
-    ## 9    2013       1       1            6       0  2013-01-01T11:00:00Z
-    ## #... with 336766 more rows
+    ##      year   month     day  dep_time  sched_dep_time  dep_delay  arr_time  ...
+    ##   <int64> <int64> <int64> <float64>         <int64>  <float64> <float64>  ...
+    ## 0    2013       1       1     517.0             515        2.0     830.0  ...
+    ## 1    2013       1       1     533.0             529        4.0     850.0  ...
+    ## 2    2013       1       1     542.0             540        2.0     923.0  ...
+    ## 3    2013       1       1     544.0             545       -1.0    1004.0  ...
+    ## 4    2013       1       1     554.0             600       -6.0     812.0  ...
+    ## 5    2013       1       1     554.0             558       -4.0     740.0  ...
+    ## 6    2013       1       1     555.0             600       -5.0     913.0  ...
+    ## 7    2013       1       1     557.0             600       -3.0     709.0  ...
+    ## 8    2013       1       1     557.0             600       -3.0     838.0  ...
+    ## 9    2013       1       1     558.0             600       -2.0     753.0     
+    ## #... with 336766 more rows, and 12 more columns: sched_arr_time <int64>, arr_delay <float64>, carrier <object>, flight <int64>, tailnum <object>, origin <object>, dest <object>, air_time <float64>, distance <int64>, hour <int64>, minute <int64>, time_hour <object>
 
 ## Exercise: Find all flights that arrived more than two hours late, but didn’t leave late.
 
@@ -140,28 +140,28 @@ of other useful datasets.
     print(data_for_plot)
 
     ## # A tidy dataframe: 730 X 6
-    ##     month     day  cancelled_prop    year     delay_type      value
-    ##   <int64> <int64>       <float64> <int64>       <object>  <float64>
-    ## 0       1       1        0.013064    2013  avg_dep_delay  11.548926
-    ## 1       1       2        0.015907    2013  avg_dep_delay  13.858824
-    ## 2       1       3        0.015317    2013  avg_dep_delay  10.987832
-    ## 3       1       4        0.007650    2013  avg_dep_delay   8.951595
-    ## 4       1       5        0.004167    2013  avg_dep_delay   5.732218
-    ## 5       1       6        0.003606    2013  avg_dep_delay   7.148014
-    ## 6       1       7        0.003215    2013  avg_dep_delay   5.417204
-    ## 7       1       8        0.007786    2013  avg_dep_delay   2.553073
-    ## 8       1       9        0.009978    2013  avg_dep_delay   2.276477
-    ## 9       1      10        0.003219    2013  avg_dep_delay   2.844995
+    ##       day  cancelled_prop   month    year     delay_type      value
+    ##   <int64>       <float64> <int64> <int64>       <object>  <float64>
+    ## 0       1        0.013064       1    2013  avg_dep_delay  11.548926
+    ## 1       2        0.015907       1    2013  avg_dep_delay  13.858824
+    ## 2       3        0.015317       1    2013  avg_dep_delay  10.987832
+    ## 3       4        0.007650       1    2013  avg_dep_delay   8.951595
+    ## 4       5        0.004167       1    2013  avg_dep_delay   5.732218
+    ## 5       6        0.003606       1    2013  avg_dep_delay   7.148014
+    ## 6       7        0.003215       1    2013  avg_dep_delay   5.417204
+    ## 7       8        0.007786       1    2013  avg_dep_delay   2.553073
+    ## 8       9        0.009978       1    2013  avg_dep_delay   2.276477
+    ## 9      10        0.003219       1    2013  avg_dep_delay   2.844995
     ## #... with 720 more rows
 
-    (ggplot(data_for_plot.to_pandas(),
-            aes('value', 'cancelled_prop', color = 'delay_type')
+    (gg.ggplot(data_for_plot.to_pandas(),
+            gg.aes('value', 'cancelled_prop', color = 'delay_type')
             ) +
-        geom_point() +
-        geom_smooth(method = "lm")
+        gg.geom_point() +
+        gg.geom_smooth(method = "lm")
         )
 
-    ## <ggplot: (8743692138734)>
+    ## <ggplot: (305770403)>
 
 <img src="tour_files/figure-markdown_strict/unnamed-chunk-6-1.png" width="614" />
 
@@ -195,19 +195,19 @@ of other useful datasets.
     print(planes_tidy)
 
     ## # A tidy dataframe: 3322 X 9
-    ##    tailnum      year                     type  ...   seats     speed     engine
-    ##   <object> <float64>                 <object>  ... <int64> <float64>   <object>
-    ## 0   N10156    2004.0  Fixed wing multi engine  ...      55       NaN  Turbo-fan
-    ## 1   N102UW    1998.0  Fixed wing multi engine  ...     182       NaN  Turbo-fan
-    ## 2   N103US    1999.0  Fixed wing multi engine  ...     182       NaN  Turbo-fan
-    ## 3   N104UW    1999.0  Fixed wing multi engine  ...     182       NaN  Turbo-fan
-    ## 4   N10575    2002.0  Fixed wing multi engine  ...      55       NaN  Turbo-fan
-    ## 5   N105UW    1999.0  Fixed wing multi engine  ...     182       NaN  Turbo-fan
-    ## 6   N107US    1999.0  Fixed wing multi engine  ...     182       NaN  Turbo-fan
-    ## 7   N108UW    1999.0  Fixed wing multi engine  ...     182       NaN  Turbo-fan
-    ## 8   N109UW    1999.0  Fixed wing multi engine  ...     182       NaN  Turbo-fan
-    ## 9   N110UW    1999.0  Fixed wing multi engine          182       NaN  Turbo-fan
-    ## #... with 3312 more rows
+    ##    tailnum      year                     type      manufacturer      model  engines  ...
+    ##   <object> <float64>                 <object>          <object>   <object>  <int64>  ...
+    ## 0   N10156    2004.0  Fixed wing multi engine           EMBRAER  EMB-145XR        2  ...
+    ## 1   N102UW    1998.0  Fixed wing multi engine  AIRBUS INDUSTRIE   A320-214        2  ...
+    ## 2   N103US    1999.0  Fixed wing multi engine  AIRBUS INDUSTRIE   A320-214        2  ...
+    ## 3   N104UW    1999.0  Fixed wing multi engine  AIRBUS INDUSTRIE   A320-214        2  ...
+    ## 4   N10575    2002.0  Fixed wing multi engine           EMBRAER  EMB-145LR        2  ...
+    ## 5   N105UW    1999.0  Fixed wing multi engine  AIRBUS INDUSTRIE   A320-214        2  ...
+    ## 6   N107US    1999.0  Fixed wing multi engine  AIRBUS INDUSTRIE   A320-214        2  ...
+    ## 7   N108UW    1999.0  Fixed wing multi engine  AIRBUS INDUSTRIE   A320-214        2  ...
+    ## 8   N109UW    1999.0  Fixed wing multi engine  AIRBUS INDUSTRIE   A320-214        2  ...
+    ## 9   N110UW    1999.0  Fixed wing multi engine  AIRBUS INDUSTRIE   A320-214        2     
+    ## #... with 3312 more rows, and 3 more columns: seats <int64>, speed <float64>, engine <object>
 
     planes_year_frame = (planes_tidy.select(['tailnum', 'year'])
                                     .rename({'year': 'plane_year'})
@@ -257,14 +257,16 @@ of other useful datasets.
     ## 9       5.0        5.572951       13.158852
     ## #... with 36 more rows
 
-    (ggplot(age_delay_stats_frame.to_pandas(), aes('age', 'mean_arr_delay')) +
-         geom_point() +
-         xlim(0, 20) +
-         ylim(0, 11)
+    (gg.ggplot(age_delay_stats_frame.to_pandas(),
+               gg.aes('age', 'mean_arr_delay')
+               ) +
+         gg.geom_point() +
+         gg.xlim(0, 20) +
+         gg.ylim(0, 11)
          )
 
-    ## <ggplot: (8743691916276)>
+    ## <ggplot: (307959763)>
     ## 
-    ## /home/dattachidambara/.cache/pypoetry/virtualenvs/tidypandas-cfuMUHaV-py3.8/lib/python3.8/site-packages/plotnine/layer.py:401: PlotnineWarning: geom_point : Removed 25 rows containing missing values.
+    ## /Users/s0k06e8/tpenv/lib/python3.9/site-packages/plotnine/layer.py:401: PlotnineWarning: geom_point : Removed 25 rows containing missing values.
 
 <img src="tour_files/figure-markdown_strict/unnamed-chunk-8-3.png" width="614" />

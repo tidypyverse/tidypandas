@@ -50,8 +50,7 @@ class tidyframe:
     
     1. Column names (x.columns) are an unnamed pd.Index object of unique 
        strings.
-    2. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0
-       and step = 1.
+    2. Row names (x.index) is a numeric index (x.indx.is_numeric() is True).
     
     * Methods constitute a grammar of data manipulation mostly returning a 
       tidy dataframe as a result. 
@@ -240,7 +239,7 @@ class tidyframe:
             simple_flag = is_simple(x, verbose = True)
             if not simple_flag:
                 try:
-                    x = simplify(x, verbose = True)
+                    x = simplify(x.reset_index(drop = True), verbose = True)
                 except:
                     raise Exception(("Input pandas dataframe could not be simplified"
                                      " See to above warnings."
@@ -725,7 +724,7 @@ class tidyframe:
     ##########################################################################
     # add_group_number
     ##########################################################################
-    def add_group_number(self, by = None, name = 'group_number'):
+    def add_group_number(self, by, name = 'group_number'):
         '''
         Add a group number column to tidyframe
         

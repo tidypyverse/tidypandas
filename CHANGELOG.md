@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.2.4 (27th Jan 2023)
+- tidyframe drops row indexes when constructed using a pandas dataframe
+- User is expected to run tidypandas.tidy_utils.simplify() beforehand to
+  handle complicated pandas dataframe input
+
 ## v0.2.3 (19th Oct 2022)
 - bugfix: show proper error message when tidyframe cannot be created from pandas dataframe with some column starting with underscore
 - bugfix: tidyframe.separate now handles NAs

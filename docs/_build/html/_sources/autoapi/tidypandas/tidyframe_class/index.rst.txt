@@ -30,8 +30,7 @@ Classes
 
    1. Column names (x.columns) are an unnamed pd.Index object of unique
       strings.
-   2. Row names (x.index) are an unnamed pd.RangeIndex object with start = 0
-      and step = 1.
+   2. Row names (x.index) is a numeric index (x.indx.is_numeric() is True).
 
    * Methods constitute a grammar of data manipulation mostly returning a
      tidy dataframe as a result.
@@ -490,7 +489,7 @@ Classes
    .. py:method:: _clean_order_by(order_by)
 
 
-   .. py:method:: add_group_number(by=None, name='group_number')
+   .. py:method:: add_group_number(by, name='group_number')
 
       
       Add a group number column to tidyframe
@@ -1347,13 +1346,13 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: _validate_join(y, how, on, on_x, on_y, sort, suffix_y)
+   .. py:method:: _validate_join(y, how, on, on_x, on_y, sort, suffix)
 
 
-   .. py:method:: _join(y, how, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y', validate=True)
+   .. py:method:: _join(y, how, suffix, on=None, on_x=None, on_y=None, sort=True, validate=True)
 
 
-   .. py:method:: inner_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: inner_join(y, on=None, on_x=None, on_y=None, sort=True, suffix=['', '_y'])
 
       
       Joins columns of y to self by matching rows
@@ -1367,15 +1366,10 @@ Classes
       :param on_y: Column names of y to be matched with arg 'on_x'
       :param sort: Whether to sort by row order of self and row order of y
       :type sort: bool
-      :param suffix_y: suffix to append the columns of y which have same names as self's
-                       column names
-      :type suffix_y: string
+      :param suffix: suffix to append the columns of left and right in order to create unique names after the merge
+      :type suffix: list of two stings
 
       :rtype: tidyframe
-
-      .. rubric:: Notes
-
-      1. Column names of self will not have a suffix.
 
       .. rubric:: Examples
 
@@ -1408,7 +1402,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: outer_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: outer_join(y, on=None, on_x=None, on_y=None, sort=True, suffix=['', '_y'])
 
       
       Joins columns of y to self by matching rows
@@ -1422,15 +1416,10 @@ Classes
       :param on_y: Column names of y to be matched with arg 'on_x'
       :param sort: Whether to sort by row order of self and row order of y
       :type sort: bool
-      :param suffix_y: suffix to append the columns of y which have same names as self's
-                       column names
-      :type suffix_y: string
+      :param suffix: suffix to append the columns of left and right in order to create unique names after the merge
+      :type suffix: list of two stings
 
       :rtype: tidyframe
-
-      .. rubric:: Notes
-
-      1. Column names of self will not have a suffix.
 
       .. rubric:: Examples
 
@@ -1463,7 +1452,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: left_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: left_join(y, on=None, on_x=None, on_y=None, sort=True, suffix=['', '_y'])
 
       
       Joins columns of y to self by matching rows
@@ -1477,15 +1466,10 @@ Classes
       :param on_y: Column names of y to be matched with arg 'on_x'
       :param sort: Whether to sort by row order of self and row order of y
       :type sort: bool
-      :param suffix_y: suffix to append the columns of y which have same names as self's
-                       column names
-      :type suffix_y: string
+      :param suffix: suffix to append the columns of left and right in order to create unique names after the merge
+      :type suffix: list of two stings
 
       :rtype: tidyframe
-
-      .. rubric:: Notes
-
-      1. Column names of self will not have a suffix.
 
       .. rubric:: Examples
 
@@ -1518,7 +1502,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: right_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: right_join(y, on=None, on_x=None, on_y=None, sort=True, suffix=['', '_y'])
 
       
       Joins columns of y to self by matching rows
@@ -1532,15 +1516,10 @@ Classes
       :param on_y: Column names of y to be matched with arg 'on_x'
       :param sort: Whether to sort by row order of self and row order of y
       :type sort: bool
-      :param suffix_y: suffix to append the columns of y which have same names as self's
-                       column names
-      :type suffix_y: string
+      :param suffix: suffix to append the columns of left and right in order to create unique names after the merge
+      :type suffix: list of two stings
 
       :rtype: tidyframe
-
-      .. rubric:: Notes
-
-      1. Column names of self will not have a suffix.
 
       .. rubric:: Examples
 
@@ -1573,7 +1552,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: semi_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: semi_join(y, on=None, on_x=None, on_y=None, sort=True)
 
       
       Joins columns of y to self by matching rows
@@ -1587,15 +1566,8 @@ Classes
       :param on_y: Column names of y to be matched with arg 'on_x'
       :param sort: Whether to sort by row order of self and row order of y
       :type sort: bool
-      :param suffix_y: suffix to append the columns of y which have same names as self's
-                       column names
-      :type suffix_y: string
 
       :rtype: tidyframe
-
-      .. rubric:: Notes
-
-      1. Column names of self will not have a suffix.
 
       .. rubric:: Examples
 
@@ -1628,7 +1600,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: anti_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: anti_join(y, on=None, on_x=None, on_y=None, sort=True)
 
       
       Joins columns of y to self by matching rows
@@ -1642,15 +1614,8 @@ Classes
       :param on_y: Column names of y to be matched with arg 'on_x'
       :param sort: Whether to sort by row order of self and row order of y
       :type sort: bool
-      :param suffix_y: suffix to append the columns of y which have same names as self's
-                       column names
-      :type suffix_y: string
 
       :rtype: tidyframe
-
-      .. rubric:: Notes
-
-      1. Column names of self will not have a suffix.
 
       .. rubric:: Examples
 
@@ -1683,7 +1648,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: cross_join(y, sort=True, suffix_y='_y')
+   .. py:method:: cross_join(y, sort=True, suffix=['', '_y'])
 
       
       Joins columns of y to self by matching rows
@@ -1693,15 +1658,10 @@ Classes
       :type y: tidyframe
       :param sort: Whether to sort by row order of self and row order of y
       :type sort: bool
-      :param suffix_y: suffix to append the columns of y which have same names as self's
-                       column names
-      :type suffix_y: string
+      :param suffix: suffix to append the columns of left and right in order to create unique names after the merge
+      :type suffix: list of two stings
 
       :rtype: tidyframe
-
-      .. rubric:: Notes
-
-      1. Column names of self will not have a suffix.
 
       .. rubric:: Examples
 

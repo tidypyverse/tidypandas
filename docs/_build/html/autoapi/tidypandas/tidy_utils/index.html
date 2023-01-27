@@ -329,7 +329,7 @@ This might be helpful before creating a tidyframe object.</p>
 <div><ol class="arabic simple">
 <li><p>Column names (x.columns) are an unnamed pd.Index object of unique
 strings. Column names do not start from “_”.</p></li>
-<li><p>Row index is absent (pandas rangeindex starting from 1)</p></li>
+<li><p>Row names (x.index) is a numeric index (x.indx.is_numeric() is True).</p></li>
 </ol>
 </div></blockquote>
 <p>This is done by collapsing the column MultiIndex by concatenating names
@@ -383,7 +383,7 @@ Whether the input pandas dataframe is ‘simple’ or not</p>
 <div><ol class="arabic simple">
 <li><p>Column names (x.columns) are an unnamed pd.Index object of unique
 strings. Column names do not start from “_”.</p></li>
-<li><p>Row index is absent (pandas rangeindex starting from 0).</p></li>
+<li><p>Row names (x.index) is a numeric index (x.indx.is_numeric() is True).</p></li>
 </ol>
 </div></blockquote>
 <dl class="field-list simple">
