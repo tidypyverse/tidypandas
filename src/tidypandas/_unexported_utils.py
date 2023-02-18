@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import inspect
 import pandas.api.types as dtypes
+from tidypandas import tidyselect
 import warnings
 
 def _is_kwargable(func):
@@ -53,6 +54,43 @@ def _is_string_or_string_list(x):
         res = True
     elif isinstance(x, list) and len(x) >= 1:
         if all([isinstance(i, str) for i in x]):
+            res = True
+    else:
+        res = False
+    
+    return res
+
+def _is_tidyselect_compatible(x):
+    '''
+    _is_tidyselect_compatible(x)
+    
+    Check whether the input is a string or a tidyselect closure or a list of strings and/or tidyselect closures
+
+    Parameters
+    ----------
+    x : object
+        Any python object
+
+    Returns
+    -------
+    bool
+    True if input is a string or a list of strings
+    
+    Examples
+    --------
+    >>> _is_tidyselect_compatible("bar")      # True
+    >>> _is_tidyselect_compatible(["bar"])    # True
+    >>> _is_tidyselect_compatible(("bar",))   # False
+    >>> _is_tidyselect_compatible(["bar", 1]) # False
+    >>> _is_tidyselect_compatible(["bar", ends_with("_mean")]) # True
+    '''
+    res = False
+    if isinstance(x, str):
+        res = True
+    elif callable(x) and hasattr(tidyselect, x.__name__.lstrip("_").rstrip("_")):
+        res = True
+    elif isinstance(x, list) and len(x) >= 1:
+        if all([isinstance(i, str) or (callable(i) and hasattr(tidyselect, i.__name__.lstrip("_").rstrip("_"))) for i in x]):
             res = True
     else:
         res = False
@@ -242,6 +280,17 @@ def _flatten_strings(x):
         else:
             res = res.union(set(ele))
     return list(res)
+
+def _flatten_list(x):
+    res = []
+    for ele in list(x):
+        if isinstance(ele, list):
+            res += ele
+        elif _is_nested(ele):
+            res += _flatten_list(ele)
+        else:
+            res.append(ele)
+    return res
 
 def _nested_is_unique(x):
     res = list()

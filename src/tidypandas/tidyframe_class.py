@@ -23,6 +23,7 @@ from tidypandas._unexported_utils import (
                                             _is_kwargable,
                                             _is_valid_colname,
                                             _is_string_or_string_list,
+                                            _is_tidyselect_compatible,
                                             _enlist,
                                             _get_unique_names,
                                             _is_unique_list,
@@ -32,8 +33,14 @@ from tidypandas._unexported_utils import (
                                             _coerce_pdf,
                                             _is_nested,
                                             _flatten_strings,
+                                            _flatten_list,
                                             _nested_is_unique
                                         )
+from tidypandas.tidyselect import (
+                                    starts_with,
+                                    ends_with,
+                                    contains
+                                  )
 import tidypandas.format as tidy_fmt
 
 
@@ -679,6 +686,16 @@ class tidyframe:
             )
         
         return None
+
+    def _get_simplified_column_names(self, column_names):
+        assert _is_tidyselect_compatible(column_names),\
+                "arg 'column_names' should be tidyselect compatible"
+        column_names = _enlist(column_names)
+        column_names = [x(self) if callable(x) else x for x in column_names]
+        column_names = _flatten_list(column_names)
+        column_names = list(dict.fromkeys(column_names))
+        self._validate_column_names(column_names)
+        return column_names
       
     def _clean_order_by(self, order_by):
         
@@ -839,7 +856,7 @@ class tidyframe:
             raise Exception("'name' should not start with an underscore")
         
         if name in cn:
-            raise Expection("'name' should not be an existing column name.")
+            raise Exception("'name' should not be an existing column name.")
             
         if by is None:
             po = self.__data.assign(**{name : np.arange(nr)})
@@ -1128,8 +1145,8 @@ class tidyframe:
                                     )
             column_names = list(np.array(cn)[col_bool_list])
         else:
-            self._validate_column_names(column_names)
-            column_names = _enlist(column_names)
+            column_names = self._get_simplified_column_names(column_names)
+            
         
         if not include:
             column_names = list(setlist(cn).difference(column_names))
@@ -1183,8 +1200,7 @@ class tidyframe:
         >>> penguins_tidy.relocate(["island", "species"], after = "year")
         '''
         
-        self._validate_column_names(column_names) 
-        column_names = _enlist(column_names)
+        column_names = self._get_simplified_column_names(column_names)
         cn = self.colnames
          
         assert not ((before is not None) and (after is not None)),\
@@ -2063,18 +2079,13 @@ class tidyframe:
         
         # use column_names
         if column_names is not None:
-            assert isinstance(column_names, list)
-            assert all([isinstance(acol, str) for acol in column_names])
+            # assert isinstance(column_names, list)
+            # assert all([isinstance(acol, str) for acol in column_names])
+            column_names = self._get_simplified_column_names(column_names)
         # use predicate to assign appropriate column_names
         else:
             mask = list(self.__data.apply(predicate, axis = 0))
-            assert all([isinstance(x, bool) for x in mask])(self.group_modify(lambda chunk: chunk.query(query)
-                                             , by = by
-                                             , is_pandas_udf = True
-                                             , preserve_row_order = True
-                                             , row_order_column_name = ro_name
-                                             )
-                               )
+            assert all([isinstance(x, bool) for x in mask])
             column_names = self.__data.columns[mask]
         
         # make a copy of the dataframe and apply mutate in order
@@ -2644,8 +2655,9 @@ class tidyframe:
             
             # use column_names
             if column_names is not None:
-                self._validate_column_names(column_names)
-                column_names = _enlist(column_names)
+                # self._validate_column_names(column_names)
+                # column_names = _enlist(column_names)
+                column_names = self._get_simplified_column_names(column_names)
             # use predicate to assign appropriate column_names
             else:
                 mask = list(self.__data.apply(predicate, axis = 0))
@@ -3792,19 +3804,21 @@ class tidyframe:
         
         cn = self.colnames
         
-        assert _is_string_or_string_list(names_from),\
-            "arg 'names_from' should be string or a list of strings"
-        names_from = _enlist(names_from)
-        assert _is_unique_list(names_from),\
-            "arg 'names_from' should have unique strings"
-        assert set(names_from).issubset(cn),\
-            "arg 'names_from' should be a subset of existing column names"
+        # assert _is_string_or_string_list(names_from),\
+        #     "arg 'names_from' should be string or a list of strings"
+        # names_from = _enlist(names_from)
+        # assert _is_unique_list(names_from),\
+        #     "arg 'names_from' should have unique strings"
+        # assert set(names_from).issubset(cn),\
+        #     "arg 'names_from' should be a subset of existing column names"
+        names_from = self._get_simplified_column_names(names_from)
         
-        assert _is_string_or_string_list(values_from),\
-            "arg 'values_from' should be string or a list of strings"
-        values_from = _enlist(values_from)
-        assert set(values_from).issubset(cn),\
-            "arg 'names_from' should have unique strings"
+        # assert _is_string_or_string_list(values_from),\
+        #     "arg 'values_from' should be string or a list of strings"
+        # values_from = _enlist(values_from)
+        # assert set(values_from).issubset(cn),\
+        #     "arg 'names_from' should have unique strings"
+        values_from = self._get_simplified_column_names(values_from)
         assert len(set(values_from).intersection(names_from)) == 0,\
             ("arg 'names_from' and 'values_from' should not "
              "have common column names"
@@ -3822,11 +3836,12 @@ class tidyframe:
             else:
                 print("'id_cols' chosen: " + str(id_cols))
         else:
-            assert _is_string_or_string_list(id_cols),\
-                "arg 'id_cols' should be string or a list of strings"
-            id_cols = _enlist(id_cols)
-            assert _is_unique_list(id_cols),\
-                "arg 'id_cols' should have unique strings"
+            # assert _is_string_or_string_list(id_cols),\
+            #     "arg 'id_cols' should be string or a list of strings"
+            # id_cols = _enlist(id_cols)
+            # assert _is_unique_list(id_cols),\
+            #     "arg 'id_cols' should have unique strings"
+            id_cols = self._get_simplified_column_names(id_cols)
             assert len(set(id_cols).intersection(names_values_from)) == 0,\
                 ("arg 'id_cols' should not have common names with either "
                  "'names_from' or 'values_from'"
@@ -3968,11 +3983,12 @@ class tidyframe:
         '''
         # assertions
         cn = self.colnames
-        assert _is_string_or_string_list(cols),\
-            "arg 'cols' should be a string or a list of strings"
-        cols = _enlist(cols)
-        assert set(cols).issubset(cn),\
-            "arg 'cols' should be a subset of existing column names"
+        # assert _is_string_or_string_list(cols),\
+        #     "arg 'cols' should be a string or a list of strings"
+        # cols = _enlist(cols)
+        # assert set(cols).issubset(cn),\
+        #     "arg 'cols' should be a subset of existing column names"
+        cols = self._get_simplified_column_names(cols)
         assert isinstance(include, bool),\
             "arg 'include' should be a bool"
         if not include:
@@ -5001,8 +5017,9 @@ class tidyframe:
         '''
         cn = self.colnames
         if column_names is not None:
-            self._validate_column_names(column_names)
-            column_names = _enlist(column_names)
+            # self._validate_column_names(column_names)
+            # column_names = _enlist(column_names)
+            column_names = self._get_simplified_column_names(column_names)
         else:
             column_names = cn
         
@@ -5272,13 +5289,13 @@ class tidyframe:
         >>> df.separate('col', into = ["col_1", "col_2"], sep = "_", strict = False)
         '''
         
-        
+        column_names = self._get_simplified_column_names(column_names)
         def reduce_join(df, columns, sep):
             assert len(columns) > 1
             slist = [df[x].astype(str) for x in columns]
             red_series = functools.reduce(lambda x, y: x + sep + y, slist[1:], slist[0])
             return red_series.to_frame(name = into)
-                
+        
         joined = reduce_join(self.__data, column_names, sep)
         
         if not keep:
@@ -5476,8 +5493,9 @@ class tidyframe:
         '''
         
         cn = self.colnames
-        self._validate_column_names(column_names)
-        column_names = _enlist(column_names)
+        # self._validate_column_names(column_names)
+        # column_names = _enlist(column_names)
+        column_names = self._get_simplified_column_names(column_names)
         if not include:
             column_names = list(setlist(cn).difference(column_names))
         by = list(setlist(cn).difference(column_names))
