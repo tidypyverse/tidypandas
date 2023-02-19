@@ -1763,7 +1763,7 @@ class tidyframe:
         keys = dictionary.keys()
         # ensure new column names to be created are valid (do not start with '_')
         keys_flattened = list(
-          np.concatenate([[x] if np.isscalar(x) else list(x) for x in keys])
+          np.concatenate([[x] if (np.ndim(x) == 0) else list(x) for x in keys])
           )
         assert np.all([_is_valid_colname(x) for x in keys_flattened]),\
           (f"column names to be created/modified should be valid column names. "
@@ -1790,7 +1790,7 @@ class tidyframe:
         keys = dictionary.keys()
         # ensure new column names to be created are valid (do not start with '_')
         keys_flattened = list(
-          np.concatenate([[x] if np.isscalar(x) else list(x) for x in keys])
+          np.concatenate([[x] if (np.ndim(x) == 0) else list(x) for x in keys])
           )
         assert np.all([_is_valid_colname(x) for x in keys_flattened]),\
           (f"column names to be created/modified should be valid column names. "
@@ -1826,7 +1826,7 @@ class tidyframe:
                 
                 # 1. direct assign
                 if isinstance(rhs, ((pd.Series, np.ndarray)) 
-                                    or np.isscalar(rhs)):
+                                    or (np.ndim(rhs) == 0)):
                     mutated[akey] = rhs
                 
                 # 2. assign via function -- pandas style UDF
@@ -2266,7 +2266,7 @@ class tidyframe:
                 keys = dictionary.keys()
                 keys_flattened = list(
                   np.concatenate(
-                    [[x] if np.isscalar(x) else list(x) for x in keys]
+                    [[x] if (np.ndim(x) == 0) else list(x) for x in keys]
                     )
                   )
                 # keys should not intersect with 'by' columns
@@ -2323,8 +2323,8 @@ class tidyframe:
         
         def _validate_rhs_val(akey, rhs_val):
             if not pd.isna(rhs_val):
-                if not np.isscalar(rhs_val):
-                    if not (len(rhs_val) == 1 and np.isscalar(rhs_val[0])):
+                if not (np.ndim(rhs_val) == 0):
+                    if not (len(rhs_val) == 1 and (np.ndim(rhs_val[0]) == 0)):
                         raise Exception((f"Summarised value for key {akey} does not"
                                          " turn out to be a scalar or cannot be "
                                          "converted to a scalar")
@@ -2678,7 +2678,7 @@ class tidyframe:
                 keys = dictionary.keys()
                 keys_flattened = list(
                   np.concatenate(
-                    [[x] if np.isscalar(x) else list(x) for x in keys]
+                    [[x] if (np.ndim(x) == 0) else list(x) for x in keys]
                     )
                   )
                 assert len(set(by).intersection(keys_flattened)) == 0,\
@@ -3831,7 +3831,7 @@ class tidyframe:
                  "'names_from' or 'values_from'"
                  )
         if values_fill is not None:
-            assert np.isscalar(values_fill),\
+            assert np.ndim(values_fill) == 0,\
                 "arg 'values_fill' should be a scalar"
         
         assert (values_fn is None 
@@ -5546,7 +5546,7 @@ class tidyframe:
         def is_list_scalar_na(x):
             if isinstance(x, (list, pd.core.arrays.floating.FloatingArray)):
                 res = True
-            elif np.isscalar(x):
+            elif np.ndim(x) == 0:
                 res = True
             elif isinstance(pd.isna(x), bool) and pd.isna(x):
                 res = True
