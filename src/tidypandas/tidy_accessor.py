@@ -108,7 +108,7 @@ class tp:
                            
     def rename(self, old_new_dict = None, predicate = None, func = None):
         tf = tidyframe(self._obj, copy = False, check = False)
-        res = (tf.rename(old_new_dict = old_new_dict,
+        return (tf.rename(old_new_dict = old_new_dict,
                          predicate = predicate,
                          func = func
                         )
