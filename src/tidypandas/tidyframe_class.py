@@ -4448,13 +4448,124 @@ class tidyframe:
     # slice min/max
     ##########################################################################
     
-    def slice_min(self
-                  , n = None
-                  , prop = None
-                  , order_by_column = None
-                  , with_ties = True
-                  , rounding_type = "round"
-                  , by = None
+    def _slice_order(self,
+                     n = None,
+                     prop = None,
+                     order_by_column = None,
+                     with_ties = True,
+                     rounding_type = "round",
+                     by = None,
+                     ascending_flag = None
+                     ):
+        nr = self.nrow
+        cn = self.colnames
+
+        # exactly one of then should be none
+        assert not ((n is None) and (prop is None)),\
+            "Exactly one arg among 'n', 'prop' should be provided"
+        assert not ((n is not None) and (prop is not None)),\
+            "Exactly one arg among 'n', 'prop' should be provided"
+            
+        if n is not None:
+            assert isinstance(n, int),\
+                "arg 'n' should be a positive integer"
+            assert n > 0,\
+                "arg 'n' should be atleast 1"
+            case_prop = False
+            
+        if prop is not None:
+            assert isinstance(prop, (float, int)),\
+                "arg 'prop' should be a positive float or int not exceeding 1"
+            assert prop > 0 and prop <= 1,\
+                "arg 'prop' should be a positive float or int not exceeding 1"
+            # n is infered from prop when by is absent
+            n = int(np.round(prop * nr))
+            case_prop = True
+        
+        if order_by_column is None:
+            raise Exception("arg 'order_by' should not be None")
+        else:
+            assert order_by_column in self.colnames,\
+                "'order_by_column' should be a existing column name"
+          
+        assert isinstance(with_ties, bool),\
+            "arg 'with_ties' should be a bool"
+        
+        assert isinstance(ascending_flag, bool),\
+            "arg 'ascending_flag' should be a bool"
+            
+        if with_ties:
+            rank_method = 'dense'
+        else:
+            rank_method = 'first'
+        res = self.to_pandas()
+        
+        if by is None:
+            # 'n' is infered in both 'n' and 'prop' case
+            res['rank_'] = res[order_by_column].rank(method = rank_method,
+                                                     ascending = ascending_flag,
+                                                     na_option = 'bottom'
+                                                     )
+            res = (res.query("rank_ <= @n")
+                      .sort_values('rank_', ignore_index = True)
+                      .drop(columns = ['rank_'])
+                      )
+        else:
+            self._validate_by(by)
+            by = _enlist(by)
+            
+            if case_prop:
+                assert rounding_type in ['round', 'ceiling', 'floor'],\
+                    ("arg 'ties_method' should be one among: 'round' (default),"
+                     " 'ceiling', 'floor'"
+                     )
+                if rounding_type == "round":
+                    roundf = np.round
+                elif rounding_type == "ceiling":
+                    roundf = np.ceil
+                else:
+                    roundf = np.floor
+                
+                # 'size_' of reach group
+                group_size_df = (self.select(by)
+                                     .to_pandas()
+                                     .groupby(by)
+                                     .size()
+                                     .reset_index()
+                                     .rename(columns = {0: 'n_'})
+                                     )
+                # n_ is the column to filter per group
+                group_size_df['n_'] = roundf(group_size_df['n_'] * prop)
+            
+            # core rank logic per group
+            res['rank_'] = (res.groupby(by)[order_by_column]
+                               .rank(method = rank_method,
+                                     ascending = ascending_flag,
+                                     na_option = 'bottom'
+                                     )
+                               )
+            # core filter logic
+            if case_prop:
+                res = (pd.merge(res, group_size_df, on = by, how = 'left')
+                         .query('rank_ <= n_')
+                         .sort_values(by + ['rank_'], ignore_index = True)
+                         .drop(columns = ['rank_', 'n_'])
+                         )
+            else:
+                res = (res.query('rank_ <= @n')
+                          .sort_values(by + ['rank_'], ignore_index = True)
+                          .drop(columns = ['rank_'])
+                          )
+            
+        return tidyframe(res, copy = False)
+    
+    def slice_min(self,
+                  n = None,
+                  prop = None,
+                  order_by_column = None,
+                  with_ties = True,
+                  rounding_type = "round",
+                  by = None
                   ):
         '''
         Subset top rows ordered by some columns
@@ -4482,8 +4593,12 @@ class tidyframe:
         
         Notes
         -----
-        1. Only one argument among 'n' and 'prop' should be provided.S
+        1. Only one argument among 'n' and 'prop' should be provided.
         2. Row order is not preserved by the method.
+        3. Rows corresponding to missing values in order_by_column are always 
+           ranked to the 'bottom'.
+        4. If n is larger than the group size, then it is silently truncated to
+           the group size.
         
         Examples
         --------
@@ -4518,131 +4633,24 @@ class tidyframe:
         >>>  .slice_min(n = 5, order_by_column = "rank")
         >>>  .select("rank", include = False)
         >>>  )
-        '''
-        nr = self.nrow
-        cn = self.colnames
-
-        # exactly one of then should be none
-        assert not ((n is None) and (prop is None)),\
-            "Exactly one arg among 'n', 'prop' should be provided"
-        assert not ((n is not None) and (prop is not None)),\
-            "Exactly one arg among 'n', 'prop' should be provided"
-            
-        if n is not None:
-            assert isinstance(n, int),\
-                "arg 'n' should be a positive integer"
-            assert n > 0,\
-                "arg 'n' should be atleast 1"
-            case_prop = False
-            
-        if prop is not None:
-            assert isinstance(prop, (float, int)),\
-                "arg 'prop' should be a positive float or int not exceeding 1"
-            assert prop > 0 and prop <= 1,\
-                "arg 'prop' should be a positive float or int not exceeding 1"
-            n = int(np.round(prop * nr))
-            case_prop = True
-        
-        if order_by_column is None:
-            raise Exception("arg 'order_by' should not be None")
-        else:
-            assert order_by_column in self.colnames,\
-                "'order_by_column' should be a existing column name"
-          
-        assert isinstance(with_ties, bool),\
-            "arg 'with_ties' should be a bool"
-            
-        if with_ties:
-            keep_value = "all"
-        else:
-            keep_value = "first"
-        
-        if by is None:
-            ro_name = _generate_new_string(self.colnames)
-            res = (self.add_row_number(name = ro_name)
-                       .to_pandas(copy = False)
-                       .nsmallest(n, columns = order_by_column, keep = keep_value)
-                       .reset_index(drop = True)
-                       .sort_values(ro_name, ignore_index = True)
-                       .loc[:, cn]
-                       .pipe(lambda x: tidyframe(x, check = False))
-                       )
-        else:
-            self._validate_by(by)
-            by = _enlist(by)
-            
-            if case_prop: # grouped prop
-                assert isinstance(rounding_type, str),\
-                    "arg 'ties_method' should be a string"
-                assert rounding_type in ['round', 'ceiling', 'floor'],\
-                    ("arg 'ties_method' should be one among: 'round' (default),"
-                     " 'ceiling', 'floor'"
-                     )
-                
-                if rounding_type == "round":
-                    roundf = np.round
-                elif rounding_type == "ceiling":
-                    roundf = np.ceil
-                else:
-                    roundf = np.floor
-
-                res = (self.group_modify(
-                              lambda x: (x.to_pandas(copy = False)
-                                          .nsmallest(int(roundf(x.shape[0] * prop))
-                                                    , columns = order_by_column
-                                                    , keep = keep_value
-                                                    )
-                                          .pipe(tidyframe
-                                                , copy = False
-                                                , check = False
-                                                )
-                                        )
-                              , by = by
-                              , preserve_row_order = True
-                              , row_order_column_name = _generate_new_string(cn)
-                              )
-                           .select(cn)
-                           .arrange(order_by_column, by = by)
-                           )
-            else: # grouped n
-                min_group_size = (self.__data
-                                      .groupby(by, sort = False, dropna = False)
-                                      .size()
-                                      .min()
-                                      )
-                if n > min_group_size:
-                    print("Minimum group size is ", min_group_size)
-                assert n <= min_group_size,\
-                    ("arg 'n' should not exceed the size of any chunk after "
-                    "grouping")
-                
-                res = (self.group_modify(
-                              lambda x: (x.to_pandas(copy = False)
-                                          .nsmallest(n
-                                                    , columns = order_by_column
-                                                    , keep = keep_value
-                                                    )
-                                          .pipe(tidyframe
-                                                , copy = False
-                                                , check = False
-                                                )
-                                        )
-                              , by = by
-                              , preserve_row_order = True
-                              , row_order_column_name = _generate_new_string(cn)
-                              )
-                           .select(cn)
-                           .arrange(order_by_column, by = by)
-                           )
-        return res.relocate(cn)
+        '''                 
+        res = self._slice_order(n = n,
+                                prop = prop,
+                                order_by_column = order_by_column,
+                                with_ties = with_ties,
+                                rounding_type = rounding_type,
+                                by = by,
+                                ascending_flag = True
+                                )
+        return res
     
-    def slice_max(self
-                  , n = None
-                  , prop = None
-                  , order_by_column = None
-                  , with_ties = True
-                  , rounding_type = "round"
-                  , by = None
+    def slice_max(self,
+                  n = None,
+                  prop = None,
+                  order_by_column = None,
+                  with_ties = True,
+                  rounding_type = "round",
+                  by = None
                   ):
         '''
         Subset top rows ordered by some columns
@@ -4672,6 +4680,10 @@ class tidyframe:
         -----
         1. Only one argument among 'n' and 'prop' should be provided.
         2. Row order is not preserved by the method.
+        3. Rows corresponding to missing values in order_by_column are always 
+           ranked to the 'bottom'.
+        4. If n is larger than the group size, then it is silently truncated to
+           the group size.
         
         Examples
         --------
@@ -4706,123 +4718,16 @@ class tidyframe:
         >>>  .slice_max(n = 5, order_by_column = "rank")
         >>>  .select("rank", include = False)
         >>>  )
-        '''
-        nr = self.nrow
-        cn = self.colnames
-
-        # exactly one of then should be none
-        assert not ((n is None) and (prop is None)),\
-            "Exactly one arg among 'n', 'prop' should be provided"
-        assert not ((n is not None) and (prop is not None)),\
-            "Exactly one arg among 'n', 'prop' should be provided"
-            
-        if n is not None:
-            assert isinstance(n, int),\
-                "arg 'n' should be a positive integer"
-            assert n > 0,\
-                "arg 'n' should be atleast 1"
-            case_prop = False
-            
-        if prop is not None:
-            assert isinstance(prop, (float, int)),\
-                "arg 'prop' should be a positive float or int not exceeding 1"
-            assert prop > 0 and prop <= 1,\
-                "arg 'prop' should be a positive float or int not exceeding 1"
-            n = int(np.round(prop * nr))
-            case_prop = True
-        
-        if order_by_column is None:
-            raise Exception("arg 'order_by' should not be None")
-        else:
-            assert order_by_column in self.colnames,\
-                "'order_by_column' should be a existing column name"
-          
-        assert isinstance(with_ties, bool),\
-            "arg 'with_ties' should be a bool"
-            
-        if with_ties:
-            keep_value = "all"
-        else:
-            keep_value = "first"
-        
-        if by is None:
-            ro_name = _generate_new_string(self.colnames)
-            res = (self.add_row_number(name = ro_name)
-                       .to_pandas(copy = False)
-                       .nlargest(n, columns = order_by_column, keep = keep_value)
-                       .reset_index(drop = True)
-                       .sort_values(ro_name, ignore_index = True)
-                       .loc[:, cn]
-                       .pipe(lambda x: tidyframe(x, check = False))
-                       )
-        else:
-            self._validate_by(by)
-            by = _enlist(by)
-            
-            if case_prop:
-                assert isinstance(rounding_type, str),\
-                    "arg 'ties_method' should be a string"
-                assert rounding_type in ['round', 'ceiling', 'floor'],\
-                    ("arg 'ties_method' should be one among: 'round' (default),"
-                     " 'ceiling', 'floor'"
-                     )
-                
-                if rounding_type == "round":
-                    roundf = np.round
-                elif rounding_type == "ceiling":
-                    roundf = np.ceil
-                else:
-                    roundf = np.floor
-
-                res = (self.group_modify(
-                              lambda x: (x.to_pandas(copy = False)
-                                          .nlargest(int(roundf(x.shape[0] * prop))
-                                                    , columns = order_by_column
-                                                    , keep = keep_value
-                                                    )
-                                          .pipe(tidyframe
-                                                , copy = False
-                                                , check = False
-                                                )
-                                        )
-                              , by = by
-                              , preserve_row_order = True
-                              , row_order_column_name = _generate_new_string(cn)
-                              )
-                           .select(cn)
-                           .arrange(order_by_column, by = by)
-                      )
-            else: # grouped n
-                min_group_size = (self.__data
-                                      .groupby(by, sort = False, dropna = False)
-                                      .size()
-                                      .min()
-                                      )
-                if n > min_group_size:
-                    print("Minimum group size is ", min_group_size)
-                assert n <= min_group_size,\
-                    ("arg 'n' should not exceed the size of any chunk after "
-                    "grouping")
-                
-                res = (self.group_modify(
-                              lambda x: (x.to_pandas(copy = False)
-                                          .nlargest(n
-                                                    , columns = order_by_column
-                                                    , keep = keep_value
-                                                    )
-                                          .pipe(tidyframe
-                                                , copy = False
-                                                , check = False
-                                                )
-                                        )
-                              , by = by
-                              , preserve_row_order = True
-                              , row_order_column_name = _generate_new_string(cn)
-                              )
-                           .select(cn)
-                           .arrange(order_by_column, by = by)
-                           )
-        return res.relocate(cn)
+        '''            
+        res = self._slice_order(n = n,
+                                prop = prop,
+                                order_by_column = order_by_column,
+                                with_ties = with_ties,
+                                rounding_type = rounding_type,
+                                by = by,
+                                ascending_flag = False
+                                )
+        return res
     
     # set like methods
     def union(self, y):

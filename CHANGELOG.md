@@ -1,5 +1,8 @@
 # Changelog
 
+## v0.2.5 (13th June 2023)
+- slice_max and slice_min are rewritten to avoid pandas apply and using pandas.groupbBy.Series.rank, thereby being fast for larger datasets.
+
 ## v0.2.4 (27th Jan 2023)
 - tidyframe drops row indexes when constructed using a pandas dataframe
 - User is expected to run tidypandas.tidy_utils.simplify() beforehand to
