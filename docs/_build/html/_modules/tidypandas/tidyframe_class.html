@@ -201,7 +201,7 @@
 
 
 <div class="viewcode-block" id="tidyframe"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe">[docs]</a><span class="k">class</span> <span class="nc">tidyframe</span><span class="p">:</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    tidyframe class</span>
 <span class="sd">    A tidy pandas dataframe is a wrapper over &#39;simple&#39; pandas </span>
 <span class="sd">    DataFrame object with method similar to tidyverse.</span>
@@ -346,7 +346,7 @@
     <span class="c1">##########################################################################</span>
     
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        init</span>
 <span class="sd">        Create tidy dataframe from a &#39;simple&#39; ungrouped pandas dataframe</span>
 
@@ -419,7 +419,7 @@
     <span class="c1">##########################################################################</span>
 
 <div class="viewcode-block" id="tidyframe.__repr__"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.__repr__">[docs]</a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a string representation for a particular DataFrame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># if self._info_repr():</span>
@@ -494,7 +494,7 @@
 
 
 <div class="viewcode-block" id="tidyframe._repr_html_"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe._repr_html_">[docs]</a>    <span class="k">def</span> <span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return a html representation for a particular DataFrame.</span>
 <span class="sd">        Mainly for IPython notebook.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -620,7 +620,7 @@
     <span class="c1">##########################################################################</span>
     
 <div class="viewcode-block" id="tidyframe.to_pandas"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.to_pandas">[docs]</a>    <span class="k">def</span> <span class="nf">to_pandas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Return copy of underlying pandas dataframe</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -656,7 +656,7 @@
     <span class="c1"># to_series or pull</span>
     <span class="c1">##########################################################################</span>
 <div class="viewcode-block" id="tidyframe.pull"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.pull">[docs]</a>    <span class="k">def</span> <span class="nf">pull</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_name</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        pull (aka to_series)</span>
 <span class="sd">        Returns a copy of column as pandas series</span>
 <span class="sd">        </span>
@@ -708,7 +708,7 @@
     
     <span class="c1"># pipe</span>
 <div class="viewcode-block" id="tidyframe.pipe"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.pipe">[docs]</a>    <span class="k">def</span> <span class="nf">pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Returns func(self)</span>
 
 <span class="sd">        Parameters</span>
@@ -719,14 +719,14 @@
 <span class="sd">        -------</span>
 <span class="sd">        Depends on the return type of `func`</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">func</span><span class="p">),</span>\
+        <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">func</span><span class="p">),</span>\
             <span class="s2">&quot;arg &#39;func&#39; should be callable&quot;</span>
         
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
     
     <span class="c1"># pipe_tee</span>
 <div class="viewcode-block" id="tidyframe.pipe_tee"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.pipe_tee">[docs]</a>    <span class="k">def</span> <span class="nf">pipe_tee</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        pipe for side-effect</span>
 
 <span class="sd">        Parameters</span>
@@ -737,7 +737,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        tidyframe</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">func</span><span class="p">),</span>\
+        <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">func</span><span class="p">),</span>\
             <span class="s2">&quot;arg &#39;func&#39; should be callable&quot;</span>
             
         <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="c1"># side-effect</span>
@@ -774,7 +774,7 @@
     <span class="c1">##########################################################################</span>
     
 <div class="viewcode-block" id="tidyframe.skim"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.skim">[docs]</a>    <span class="k">def</span> <span class="nf">skim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_self</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Skim the tidy dataframe.</span>
 <span class="sd">        Provides a meaningful summary of the dataframe</span>
 
@@ -888,7 +888,7 @@
     <span class="c1"># add_group_number</span>
     <span class="c1">##########################################################################</span>
 <div class="viewcode-block" id="tidyframe.add_group_number"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.add_group_number">[docs]</a>    <span class="k">def</span> <span class="nf">add_group_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;group_number&#39;</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Add a group number column to tidyframe</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -959,7 +959,7 @@
     <span class="c1"># add_row_number</span>
     <span class="c1">##########################################################################</span>
 <div class="viewcode-block" id="tidyframe.add_row_number"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.add_row_number">[docs]</a>    <span class="k">def</span> <span class="nf">add_row_number</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;row_number&#39;</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        add_row_number (aka rowid_to_column)</span>
 <span class="sd">        Add a row number column to tidyframe</span>
 <span class="sd">        </span>
@@ -1033,7 +1033,7 @@
                      <span class="p">,</span> <span class="n">is_pandas_udf</span> <span class="o">=</span> <span class="kc">False</span>
                      <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
                      <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Split by some columns, apply a function per chunk which returns a </span>
 <span class="sd">        dataframe and combine it back into a single dataframe</span>
 <span class="sd">        </span>
@@ -1112,7 +1112,7 @@
         <span class="n">cn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span>
         <span class="n">nr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span>
         
-        <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">func</span><span class="p">),</span>\
+        <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">func</span><span class="p">),</span>\
             <span class="s2">&quot;&#39;func&#39; should be a function: tidy df --&gt; tidy df&quot;</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">preserve_row_order</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>\
             <span class="s2">&quot;arg &#39;preserve_row_order&#39; should be a bool&quot;</span>
@@ -1225,7 +1225,7 @@
     <span class="c1">##########################################################################</span>
     
 <div class="viewcode-block" id="tidyframe.select"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_names</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">predicate</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">include</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Select a subset of columns by name or predicate</span>
 
 <span class="sd">        Parameters</span>
@@ -1281,7 +1281,7 @@
                              <span class="s2">&quot;should not be None&quot;</span><span class="p">))</span>
         
         <span class="k">if</span> <span class="n">column_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">predicate</span><span class="p">),</span>\
+            <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">predicate</span><span class="p">),</span>\
                 <span class="s2">&quot;arg &#39;predicate&#39;(series --&gt; bool) should be a function&quot;</span>
             <span class="n">col_bool_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">predicate</span>
                                                             <span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="s2">&quot;index&quot;</span>
@@ -1308,7 +1308,7 @@
     <span class="c1">##########################################################################</span>
     
 <div class="viewcode-block" id="tidyframe.relocate"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.relocate">[docs]</a>    <span class="k">def</span> <span class="nf">relocate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_names</span><span class="p">,</span> <span class="n">before</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">after</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        relocate the columns of the tidy pandas dataframe</span>
 
 <span class="sd">        Parameters</span>
@@ -1398,7 +1398,7 @@
     <span class="c1">##########################################################################</span>
     
 <div class="viewcode-block" id="tidyframe.rename"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.rename">[docs]</a>    <span class="k">def</span> <span class="nf">rename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_new_dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">predicate</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">func</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Rename columns of the tidy pandas dataframe</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -1447,9 +1447,9 @@
             <span class="k">assert</span> <span class="n">_is_unique_list</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">old_new_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span>\
                 <span class="s2">&quot;values of the dict should be unique&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">predicate</span><span class="p">),</span>\
+            <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">predicate</span><span class="p">),</span>\
                 <span class="s2">&quot;predicate should be a function&quot;</span>
-            <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">func</span><span class="p">),</span>\
+            <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">func</span><span class="p">),</span>\
                 <span class="s2">&quot;func should be a function&quot;</span>
         
         <span class="c1"># create old_new_dict in predicate case</span>
@@ -1478,7 +1478,7 @@
     <span class="c1">##########################################################################</span>
     
 <div class="viewcode-block" id="tidyframe.slice"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.slice">[docs]</a>    <span class="k">def</span> <span class="nf">slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_numbers</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Subset rows of a tidyframe</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -1572,7 +1572,7 @@
                 <span class="p">,</span> <span class="n">na_position</span> <span class="o">=</span> <span class="s1">&#39;last&#39;</span>
                 <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Orders the rows by the values of selected columns</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -1715,7 +1715,7 @@
     <span class="c1">##########################################################################</span>
         
 <div class="viewcode-block" id="tidyframe.filter"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.filter">[docs]</a>    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mask</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        subset some rows</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -1769,7 +1769,7 @@
         
         <span class="c1"># validate query</span>
         <span class="k">if</span> <span class="n">query</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">query</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">query</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
             
         <span class="c1"># validate mask</span>
         <span class="k">if</span> <span class="n">mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -1852,7 +1852,7 @@
     <span class="c1">##########################################################################</span>
         
 <div class="viewcode-block" id="tidyframe.distinct"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.distinct">[docs]</a>    <span class="k">def</span> <span class="nf">distinct</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_names</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">keep_all</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        subset unique rows from the dataframe</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -1993,8 +1993,8 @@
                     <span class="n">mutated</span><span class="p">[</span><span class="n">akey</span><span class="p">]</span> <span class="o">=</span> <span class="n">rhs</span>
                 
                 <span class="c1"># 2. assign via function -- pandas style UDF</span>
-                <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">):</span>
+                <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">):</span>
                         <span class="k">if</span> <span class="n">_is_kwargable</span><span class="p">(</span><span class="n">rhs</span><span class="p">):</span>
                             <span class="n">mutated</span><span class="p">[</span><span class="n">akey</span><span class="p">]</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">(</span><span class="n">mutated</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
@@ -2009,19 +2009,19 @@
                         <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;When RHS is a tuple, RHS should not have more than &quot;</span>
                          <span class="s2">&quot;two elements&quot;</span>
                          <span class="p">)</span>
-                    <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>\
+                    <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>\
                         <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;When RHS is a tuple, first element of RHS should be &quot;</span>
                          <span class="s2">&quot;a function or a string which can be enclosed in a &quot;</span>
                          <span class="s2">&quot;lambda function and evaluated&quot;</span>
                          <span class="p">)</span>
                     <span class="c1"># 3a. assign a preexisting column</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                             <span class="k">assert</span> <span class="n">akey</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">mutated</span><span class="o">.</span><span class="n">columns</span><span class="p">),</span>\
                                 <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;When RHS is a tuple with function alone, &quot;</span>
                                  <span class="s2">&quot;</span><span class="si">{akey}</span><span class="s2"> should be an exisiting column&quot;</span>
                                  <span class="p">)</span>
-                            <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                            <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                                 <span class="k">if</span> <span class="n">_is_kwargable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                                     <span class="n">mutated</span><span class="p">[</span><span class="n">akey</span><span class="p">]</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="n">mutated</span><span class="p">[</span><span class="n">akey</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                                 <span class="k">else</span><span class="p">:</span>
@@ -2040,7 +2040,7 @@
                         <span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">mutated</span><span class="o">.</span><span class="n">columns</span><span class="p">)),</span>\
                             <span class="sa">f</span><span class="s2">&quot;RHS should contain valid columns for LHS &#39;</span><span class="si">{</span><span class="n">akey</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
                         
-                        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                             <span class="k">if</span> <span class="n">_is_kwargable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                                 <span class="n">mutated</span><span class="p">[</span><span class="n">akey</span><span class="p">]</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="o">*</span><span class="p">[</span><span class="n">mutated</span><span class="p">[</span><span class="n">acol</span><span class="p">]</span> <span class="k">for</span> <span class="n">acol</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                             <span class="k">else</span><span class="p">:</span>
@@ -2069,9 +2069,9 @@
                 <span class="c1"># 1. direct assign is not supported for multi assignment</span>
                 
                 <span class="c1"># 2. assign via function</span>
-                <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                     
-                    <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">):</span>
                         <span class="k">if</span> <span class="n">_is_kwargable</span><span class="p">(</span><span class="n">rhs</span><span class="p">):</span>
                             <span class="n">rhs_res</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">(</span><span class="n">mutated</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
@@ -2096,7 +2096,7 @@
                         <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;When RHS is a tuple, RHS should not have more &quot;</span>
                          <span class="s2">&quot;than two elements&quot;</span>
                          <span class="p">)</span>
-                    <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>\
+                    <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>\
                         <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;When RHS is a tuple, first element of RHS should be &quot;</span>
                          <span class="s2">&quot;a function or a string which can be enclosed in a &quot;</span>
                          <span class="s2">&quot;lambda function and evaluated&quot;</span>
@@ -2107,7 +2107,7 @@
                             <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;When RHS is a tuple with function alone, </span><span class="si">{</span><span class="n">akey</span><span class="si">}</span><span class="s2">&quot;</span>
                              <span class="s2">&quot;should be an exisiting columns&quot;</span>
                              <span class="p">)</span>
-                        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                             <span class="k">if</span> <span class="n">_is_kwargable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                                 <span class="n">rhs_res</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="o">*</span><span class="p">[</span><span class="n">mutated</span><span class="p">[</span><span class="n">acol</span><span class="p">]</span> <span class="k">for</span> <span class="n">acol</span> <span class="ow">in</span> <span class="n">akey</span><span class="p">]</span>
                                                  <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
@@ -2144,7 +2144,7 @@
                         <span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">mutated</span><span class="o">.</span><span class="n">columns</span><span class="p">)),</span>\
                             <span class="sa">f</span><span class="s2">&quot;RHS should contain valid columns for LHS &#39;</span><span class="si">{</span><span class="n">akey</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
                         
-                        <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                             <span class="k">if</span> <span class="n">_is_kwargable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                                 <span class="n">rhs_res</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="o">*</span><span class="p">[</span><span class="n">mutated</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                             <span class="k">else</span><span class="p">:</span>
@@ -2193,7 +2193,7 @@
                        <span class="p">):</span>
         
         <span class="n">cn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span>
-        <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">func</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>\
+        <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">func</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>\
             <span class="p">(</span><span class="s2">&quot;arg &#39;func&#39; should be a function or a string which is convertible &quot;</span>
              <span class="s2">&quot;to a lambda function&quot;</span>
              <span class="p">)</span>
@@ -2241,7 +2241,7 @@
         
         <span class="c1"># make a copy of the dataframe and apply mutate in order</span>
         <span class="k">for</span> <span class="n">acol</span> <span class="ow">in</span> <span class="n">column_names</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">_is_kwargable</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
                     <span class="n">mutated</span><span class="p">[</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">acol</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">mutated</span><span class="p">[</span><span class="n">acol</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
@@ -2265,7 +2265,7 @@
                <span class="p">,</span> <span class="n">order_by</span> <span class="o">=</span> <span class="kc">None</span>
                <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
                <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Add or modify some columns</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -2519,8 +2519,8 @@
                 <span class="c1">#   2. assign with column args</span>
                 
                 <span class="c1"># 1. assign via function</span>
-                <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">):</span>
                         <span class="k">if</span> <span class="n">_is_kwargable</span><span class="p">(</span><span class="n">rhs</span><span class="p">):</span>
                             <span class="n">rhs_val</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                         <span class="k">else</span><span class="p">:</span>
@@ -2540,7 +2540,7 @@
                         <span class="n">rhs</span> <span class="o">=</span> <span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">akey</span><span class="p">)</span>
                     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span>\
                         <span class="sa">f</span><span class="s2">&quot;When RHS is a tuple, RHS should have two elements&quot;</span>
-                    <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>\
+                    <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>\
                         <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;When RHS is a tuple, first element of RHS should be &quot;</span>
                          <span class="s2">&quot;a function or a string which can be enclosed in a &quot;</span>
                          <span class="s2">&quot;lambda function and evaluated&quot;</span>
@@ -2553,7 +2553,7 @@
                     <span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">cn</span><span class="p">),</span>\
                         <span class="sa">f</span><span class="s2">&quot;RHS should contain valid columns for LHS &#39;</span><span class="si">{</span><span class="n">akey</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
                     
-                    <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                         <span class="k">if</span> <span class="n">_is_kwargable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                             <span class="n">rhs_val</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="o">*</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="p">[</span><span class="n">acol</span><span class="p">]</span> <span class="k">for</span> <span class="n">acol</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">]</span>
                                              <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
@@ -2586,8 +2586,8 @@
             <span class="c1"># multiple assignments</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># 1. assign via function</span>
-                <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">):</span>
                         <span class="n">rhs</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="s2">&quot;lambda x, **kwargs: &quot;</span> <span class="o">+</span> <span class="n">rhs</span><span class="p">)</span>
                     
                     <span class="k">if</span> <span class="n">_is_kwargable</span><span class="p">(</span><span class="n">rhs</span><span class="p">):</span>
@@ -2611,7 +2611,7 @@
                 <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
                     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span>\
                         <span class="sa">f</span><span class="s2">&quot;When RHS is a tuple, RHS should have two elements&quot;</span>
-                    <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>\
+                    <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">),</span>\
                         <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;When RHS is a tuple, first element of RHS should be &quot;</span>
                          <span class="s2">&quot;a function or a string which can be enclosed in a &quot;</span>
                          <span class="s2">&quot;lambda function and evaluated&quot;</span>
@@ -2624,7 +2624,7 @@
                     <span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">cn</span><span class="p">),</span>\
                         <span class="sa">f</span><span class="s2">&quot;RHS should contain valid columns for LHS &#39;</span><span class="si">{</span><span class="n">akey</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
                     
-                    <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                    <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                         <span class="k">if</span> <span class="n">_is_kwargable</span><span class="p">(</span><span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
                             <span class="n">rhs_val</span> <span class="o">=</span> <span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">](</span><span class="o">*</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="p">[</span><span class="n">acol</span><span class="p">]</span> <span class="k">for</span> <span class="n">acol</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">]</span>
                                              <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
@@ -2671,7 +2671,7 @@
                   <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
                   <span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
                   <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Creates one row per group summarising the input dataframe</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -2790,7 +2790,7 @@
         
         <span class="c1"># assertions for across case                    </span>
         <span class="k">if</span> <span class="n">dictionary</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">func</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>\
+            <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">func</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>\
                 <span class="p">(</span><span class="s2">&quot;arg &#39;func&#39; should be a function or a string which is convertible &quot;</span>
                  <span class="s2">&quot;to a lambda function&quot;</span>
                  <span class="p">)</span>
@@ -2857,7 +2857,7 @@
                     <span class="c1"># {&#39;new_col&#39;: (np.mean, &#39;col&#39;)}</span>
                     <span class="c1"># {&#39;col&#39;: (np.mean, )}</span>
                     <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">_enlist</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dv</span><span class="p">]):</span>
-                        <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="n">callable</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dv</span><span class="p">]):</span>
+                        <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="nb">callable</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">dv</span><span class="p">]):</span>
                             <span class="n">special_case</span> <span class="o">=</span> <span class="kc">True</span>
                 
                 <span class="k">if</span> <span class="n">special_case</span><span class="p">:</span>
@@ -3140,7 +3140,7 @@
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
                    <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_y&quot;</span><span class="p">]</span>
                    <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Joins columns of y to self by matching rows</span>
 <span class="sd">        Includes only matching keys</span>
 <span class="sd">        </span>
@@ -3196,7 +3196,7 @@
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
                    <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_y&quot;</span><span class="p">]</span>
                    <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Joins columns of y to self by matching rows</span>
 <span class="sd">        Includes all keys</span>
 <span class="sd">        </span>
@@ -3252,7 +3252,7 @@
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
                    <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_y&quot;</span><span class="p">]</span>
                    <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Joins columns of y to self by matching rows</span>
 <span class="sd">        Includes all keys in self</span>
 <span class="sd">        </span>
@@ -3306,7 +3306,7 @@
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
                    <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_y&quot;</span><span class="p">]</span>
                    <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Joins columns of y to self by matching rows</span>
 <span class="sd">        Includes all keys in y</span>
 <span class="sd">        </span>
@@ -3360,7 +3360,7 @@
                    <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
                    <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Joins columns of y to self by matching rows</span>
 <span class="sd">        Includes keys in self if present in y</span>
 <span class="sd">        </span>
@@ -3428,7 +3428,7 @@
                    <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
                    <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Joins columns of y to self by matching rows</span>
 <span class="sd">        Includes keys in self if not present in y</span>
 <span class="sd">        </span>
@@ -3494,7 +3494,7 @@
     
     <span class="c1"># cross join</span>
 <div class="viewcode-block" id="tidyframe.cross_join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.cross_join">[docs]</a>    <span class="k">def</span> <span class="nf">cross_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="s2">&quot;_y&quot;</span><span class="p">]):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Joins columns of y to self by matching rows</span>
 <span class="sd">        Includes all cartersian product</span>
 <span class="sd">        </span>
@@ -3575,7 +3575,7 @@
     <span class="c1">##########################################################################  </span>
       
 <div class="viewcode-block" id="tidyframe.cbind"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.cbind">[docs]</a>    <span class="k">def</span> <span class="nf">cbind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        bind columns of y to self</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -3617,7 +3617,7 @@
         <span class="k">return</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">res</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="tidyframe.rbind"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.rbind">[docs]</a>    <span class="k">def</span> <span class="nf">rbind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        bind rows of y to self</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -3660,7 +3660,7 @@
               <span class="p">,</span> <span class="n">decreasing</span> <span class="o">=</span> <span class="kc">True</span>
               <span class="p">,</span> <span class="n">wt</span> <span class="o">=</span> <span class="kc">None</span>
               <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        count rows by groups</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -3771,8 +3771,8 @@
                   <span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;n&#39;</span>
                   <span class="p">,</span> <span class="n">wt</span> <span class="o">=</span> <span class="kc">None</span>
                   <span class="p">):</span>
-        
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        adds counts of rows by groups as a column</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -3831,7 +3831,7 @@
                     <span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;__&quot;</span>
                     <span class="p">,</span> <span class="n">names_prefix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
                     <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Pivot data from long to wide</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -3998,7 +3998,7 @@
                 <span class="s2">&quot;arg &#39;values_fill&#39; should be a scalar&quot;</span>
         
         <span class="k">assert</span> <span class="p">(</span><span class="n">values_fn</span> <span class="ow">is</span> <span class="kc">None</span> 
-                <span class="ow">or</span> <span class="n">callable</span><span class="p">(</span><span class="n">values_fn</span><span class="p">)</span> 
+                <span class="ow">or</span> <span class="nb">callable</span><span class="p">(</span><span class="n">values_fn</span><span class="p">)</span> 
                 <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values_fn</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)),</span>\
             <span class="s2">&quot;When not None, arg &#39;values_fn&#39; should be a callable or dict&quot;</span>
         
@@ -4021,7 +4021,7 @@
                 <span class="p">(</span><span class="s2">&quot;When arg &#39;values_fn&#39; is a dict, keys should match &quot;</span>
                  <span class="s2">&quot;arg &#39;values_from&#39;&quot;</span>
                  <span class="p">)</span>
-            <span class="k">assert</span> <span class="nb">all</span><span class="p">([</span><span class="n">callable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values_fn</span><span class="o">.</span><span class="n">values</span><span class="p">()]),</span>\
+            <span class="k">assert</span> <span class="nb">all</span><span class="p">([</span><span class="nb">callable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values_fn</span><span class="o">.</span><span class="n">values</span><span class="p">()]),</span>\
                 <span class="s2">&quot;When arg &#39;values_fn&#39; is a dict, values should be functions&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">pass</span>
@@ -4075,7 +4075,7 @@
                      <span class="p">,</span> <span class="n">include</span> <span class="o">=</span> <span class="kc">True</span>
                      <span class="p">,</span> <span class="n">values_drop_na</span> <span class="o">=</span> <span class="kc">False</span>
                      <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Pivot from wide to long</span>
 <span class="sd">        aka melt</span>
 <span class="sd">        </span>
@@ -4179,7 +4179,7 @@
                    <span class="p">,</span> <span class="n">rounding_type</span> <span class="o">=</span> <span class="s2">&quot;round&quot;</span>
                    <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Subset first few rows</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -4299,7 +4299,7 @@
                    <span class="p">,</span> <span class="n">rounding_type</span> <span class="o">=</span> <span class="s2">&quot;round&quot;</span>
                    <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Subset last few rows</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -4421,7 +4421,7 @@
                      <span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="kc">None</span>
                      <span class="p">,</span> <span class="n">by</span>           <span class="o">=</span> <span class="kc">None</span>
                      <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Sample a few rows</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -4611,15 +4611,126 @@
     <span class="c1"># slice min/max</span>
     <span class="c1">##########################################################################</span>
     
-<div class="viewcode-block" id="tidyframe.slice_min"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.slice_min">[docs]</a>    <span class="k">def</span> <span class="nf">slice_min</span><span class="p">(</span><span class="bp">self</span>
-                  <span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="kc">None</span>
-                  <span class="p">,</span> <span class="n">prop</span> <span class="o">=</span> <span class="kc">None</span>
-                  <span class="p">,</span> <span class="n">order_by_column</span> <span class="o">=</span> <span class="kc">None</span>
-                  <span class="p">,</span> <span class="n">with_ties</span> <span class="o">=</span> <span class="kc">True</span>
-                  <span class="p">,</span> <span class="n">rounding_type</span> <span class="o">=</span> <span class="s2">&quot;round&quot;</span>
-                  <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
+<div class="viewcode-block" id="tidyframe._slice_order"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe._slice_order">[docs]</a>    <span class="k">def</span> <span class="nf">_slice_order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                     <span class="n">n</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">prop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">order_by_column</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">with_ties</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                     <span class="n">rounding_type</span> <span class="o">=</span> <span class="s2">&quot;round&quot;</span><span class="p">,</span>
+                     <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                     <span class="n">ascending_flag</span> <span class="o">=</span> <span class="kc">None</span>
+                     <span class="p">):</span>
+        <span class="n">nr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span>
+        <span class="n">cn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span>
+
+        <span class="c1"># exactly one of then should be none</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="p">((</span><span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">prop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)),</span>\
+            <span class="s2">&quot;Exactly one arg among &#39;n&#39;, &#39;prop&#39; should be provided&quot;</span>
+        <span class="k">assert</span> <span class="ow">not</span> <span class="p">((</span><span class="n">n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">prop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)),</span>\
+            <span class="s2">&quot;Exactly one arg among &#39;n&#39;, &#39;prop&#39; should be provided&quot;</span>
+            
+        <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>\
+                <span class="s2">&quot;arg &#39;n&#39; should be a positive integer&quot;</span>
+            <span class="k">assert</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>\
+                <span class="s2">&quot;arg &#39;n&#39; should be atleast 1&quot;</span>
+            <span class="n">case_prop</span> <span class="o">=</span> <span class="kc">False</span>
+            
+        <span class="k">if</span> <span class="n">prop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)),</span>\
+                <span class="s2">&quot;arg &#39;prop&#39; should be a positive float or int not exceeding 1&quot;</span>
+            <span class="k">assert</span> <span class="n">prop</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">prop</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span>\
+                <span class="s2">&quot;arg &#39;prop&#39; should be a positive float or int not exceeding 1&quot;</span>
+            <span class="c1"># n is infered from prop when by is absent</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">prop</span> <span class="o">*</span> <span class="n">nr</span><span class="p">))</span>
+            <span class="n">case_prop</span> <span class="o">=</span> <span class="kc">True</span>
+        
+        <span class="k">if</span> <span class="n">order_by_column</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;arg &#39;order_by&#39; should not be None&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">order_by_column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">,</span>\
+                <span class="s2">&quot;&#39;order_by_column&#39; should be a existing column name&quot;</span>
+          
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">with_ties</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>\
+            <span class="s2">&quot;arg &#39;with_ties&#39; should be a bool&quot;</span>
+        
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ascending_flag</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>\
+            <span class="s2">&quot;arg &#39;ascending_flag&#39; should be a bool&quot;</span>
+            
+        <span class="k">if</span> <span class="n">with_ties</span><span class="p">:</span>
+            <span class="n">rank_method</span> <span class="o">=</span> <span class="s1">&#39;dense&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rank_method</span> <span class="o">=</span> <span class="s1">&#39;first&#39;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">by</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># &#39;n&#39; is infered in both &#39;n&#39; and &#39;prop&#39; case</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;rank_&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="n">order_by_column</span><span class="p">]</span><span class="o">.</span><span class="n">rank</span><span class="p">(</span><span class="n">method</span> <span class="o">=</span> <span class="n">rank_method</span><span class="p">,</span>
+                                                     <span class="n">ascending</span> <span class="o">=</span> <span class="n">ascending_flag</span><span class="p">,</span>
+                                                     <span class="n">na_option</span> <span class="o">=</span> <span class="s1">&#39;bottom&#39;</span>
+                                                     <span class="p">)</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;rank_ &lt;= @n&quot;</span><span class="p">)</span>
+                      <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;rank_&#39;</span><span class="p">,</span> <span class="n">ignore_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+                      <span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rank_&#39;</span><span class="p">])</span>
+                      <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_by</span><span class="p">(</span><span class="n">by</span><span class="p">)</span>
+            <span class="n">by</span> <span class="o">=</span> <span class="n">_enlist</span><span class="p">(</span><span class="n">by</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">case_prop</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">rounding_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;round&#39;</span><span class="p">,</span> <span class="s1">&#39;ceiling&#39;</span><span class="p">,</span> <span class="s1">&#39;floor&#39;</span><span class="p">],</span>\
+                    <span class="p">(</span><span class="s2">&quot;arg &#39;ties_method&#39; should be one among: &#39;round&#39; (default),&quot;</span>
+                     <span class="s2">&quot; &#39;ceiling&#39;, &#39;floor&#39;&quot;</span>
+                     <span class="p">)</span>
+                <span class="k">if</span> <span class="n">rounding_type</span> <span class="o">==</span> <span class="s2">&quot;round&quot;</span><span class="p">:</span>
+                    <span class="n">roundf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span>
+                <span class="k">elif</span> <span class="n">rounding_type</span> <span class="o">==</span> <span class="s2">&quot;ceiling&quot;</span><span class="p">:</span>
+                    <span class="n">roundf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">roundf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span>
+                
+                <span class="c1"># &#39;size_&#39; of reach group</span>
+                <span class="n">group_size_df</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">by</span><span class="p">)</span>
+                                     <span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+                                     <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="p">)</span>
+                                     <span class="o">.</span><span class="n">size</span><span class="p">()</span>
+                                     <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+                                     <span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="s1">&#39;n_&#39;</span><span class="p">})</span>
+                                     <span class="p">)</span>
+                <span class="c1"># n_ is the column to filter per group</span>
+                <span class="n">group_size_df</span><span class="p">[</span><span class="s1">&#39;n_&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">roundf</span><span class="p">(</span><span class="n">group_size_df</span><span class="p">[</span><span class="s1">&#39;n_&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">prop</span><span class="p">)</span>
+            
+            <span class="c1"># core rank logic per group</span>
+            <span class="n">res</span><span class="p">[</span><span class="s1">&#39;rank_&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="p">)[</span><span class="n">order_by_column</span><span class="p">]</span>
+                               <span class="o">.</span><span class="n">rank</span><span class="p">(</span><span class="n">method</span> <span class="o">=</span> <span class="n">rank_method</span><span class="p">,</span>
+                                     <span class="n">ascending</span> <span class="o">=</span> <span class="n">ascending_flag</span><span class="p">,</span>
+                                     <span class="n">na_option</span> <span class="o">=</span> <span class="s1">&#39;bottom&#39;</span>
+                                     <span class="p">)</span>
+                               <span class="p">)</span>
+            <span class="c1"># core filter logic</span>
+            <span class="k">if</span> <span class="n">case_prop</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">group_size_df</span><span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="n">by</span><span class="p">,</span> <span class="n">how</span> <span class="o">=</span> <span class="s1">&#39;left&#39;</span><span class="p">)</span>
+                         <span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;rank_ &lt;= n_&#39;</span><span class="p">)</span>
+                         <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;rank_&#39;</span><span class="p">],</span> <span class="n">ignore_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+                         <span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rank_&#39;</span><span class="p">,</span> <span class="s1">&#39;n_&#39;</span><span class="p">])</span>
+                         <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;rank_ &lt;= @n&#39;</span><span class="p">)</span>
+                          <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;rank_&#39;</span><span class="p">],</span> <span class="n">ignore_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+                          <span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rank_&#39;</span><span class="p">])</span>
+                          <span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="tidyframe.slice_min"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.slice_min">[docs]</a>    <span class="k">def</span> <span class="nf">slice_min</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                  <span class="n">n</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">prop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">order_by_column</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">with_ties</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                  <span class="n">rounding_type</span> <span class="o">=</span> <span class="s2">&quot;round&quot;</span><span class="p">,</span>
+                  <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
                   <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Subset top rows ordered by some columns</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -4645,8 +4756,12 @@
 <span class="sd">        </span>
 <span class="sd">        Notes</span>
 <span class="sd">        -----</span>
-<span class="sd">        1. Only one argument among &#39;n&#39; and &#39;prop&#39; should be provided.S</span>
+<span class="sd">        1. Only one argument among &#39;n&#39; and &#39;prop&#39; should be provided.</span>
 <span class="sd">        2. Row order is not preserved by the method.</span>
+<span class="sd">        3. Rows corresponding to missing values in order_by_column are always </span>
+<span class="sd">           ranked to the &#39;bottom&#39;.</span>
+<span class="sd">        4. If n is larger than the group size, then it is silently truncated to</span>
+<span class="sd">           the group size.</span>
 <span class="sd">        </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -4681,133 +4796,26 @@
 <span class="sd">        &gt;&gt;&gt;  .slice_min(n = 5, order_by_column = &quot;rank&quot;)</span>
 <span class="sd">        &gt;&gt;&gt;  .select(&quot;rank&quot;, include = False)</span>
 <span class="sd">        &gt;&gt;&gt;  )</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">nr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span>
-        <span class="n">cn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span>
-
-        <span class="c1"># exactly one of then should be none</span>
-        <span class="k">assert</span> <span class="ow">not</span> <span class="p">((</span><span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">prop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)),</span>\
-            <span class="s2">&quot;Exactly one arg among &#39;n&#39;, &#39;prop&#39; should be provided&quot;</span>
-        <span class="k">assert</span> <span class="ow">not</span> <span class="p">((</span><span class="n">n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">prop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)),</span>\
-            <span class="s2">&quot;Exactly one arg among &#39;n&#39;, &#39;prop&#39; should be provided&quot;</span>
-            
-        <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>\
-                <span class="s2">&quot;arg &#39;n&#39; should be a positive integer&quot;</span>
-            <span class="k">assert</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>\
-                <span class="s2">&quot;arg &#39;n&#39; should be atleast 1&quot;</span>
-            <span class="n">case_prop</span> <span class="o">=</span> <span class="kc">False</span>
-            
-        <span class="k">if</span> <span class="n">prop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)),</span>\
-                <span class="s2">&quot;arg &#39;prop&#39; should be a positive float or int not exceeding 1&quot;</span>
-            <span class="k">assert</span> <span class="n">prop</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">prop</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span>\
-                <span class="s2">&quot;arg &#39;prop&#39; should be a positive float or int not exceeding 1&quot;</span>
-            <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">prop</span> <span class="o">*</span> <span class="n">nr</span><span class="p">))</span>
-            <span class="n">case_prop</span> <span class="o">=</span> <span class="kc">True</span>
-        
-        <span class="k">if</span> <span class="n">order_by_column</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;arg &#39;order_by&#39; should not be None&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">order_by_column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">,</span>\
-                <span class="s2">&quot;&#39;order_by_column&#39; should be a existing column name&quot;</span>
-          
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">with_ties</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>\
-            <span class="s2">&quot;arg &#39;with_ties&#39; should be a bool&quot;</span>
-            
-        <span class="k">if</span> <span class="n">with_ties</span><span class="p">:</span>
-            <span class="n">keep_value</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">keep_value</span> <span class="o">=</span> <span class="s2">&quot;first&quot;</span>
-        
-        <span class="k">if</span> <span class="n">by</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ro_name</span> <span class="o">=</span> <span class="n">_generate_new_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">)</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_row_number</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="n">ro_name</span><span class="p">)</span>
-                       <span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-                       <span class="o">.</span><span class="n">nsmallest</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">order_by_column</span><span class="p">,</span> <span class="n">keep</span> <span class="o">=</span> <span class="n">keep_value</span><span class="p">)</span>
-                       <span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-                       <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ro_name</span><span class="p">,</span> <span class="n">ignore_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-                       <span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">cn</span><span class="p">]</span>
-                       <span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">))</span>
-                       <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_by</span><span class="p">(</span><span class="n">by</span><span class="p">)</span>
-            <span class="n">by</span> <span class="o">=</span> <span class="n">_enlist</span><span class="p">(</span><span class="n">by</span><span class="p">)</span>
-            
-            <span class="k">if</span> <span class="n">case_prop</span><span class="p">:</span> <span class="c1"># grouped prop</span>
-                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rounding_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>\
-                    <span class="s2">&quot;arg &#39;ties_method&#39; should be a string&quot;</span>
-                <span class="k">assert</span> <span class="n">rounding_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;round&#39;</span><span class="p">,</span> <span class="s1">&#39;ceiling&#39;</span><span class="p">,</span> <span class="s1">&#39;floor&#39;</span><span class="p">],</span>\
-                    <span class="p">(</span><span class="s2">&quot;arg &#39;ties_method&#39; should be one among: &#39;round&#39; (default),&quot;</span>
-                     <span class="s2">&quot; &#39;ceiling&#39;, &#39;floor&#39;&quot;</span>
-                     <span class="p">)</span>
-                
-                <span class="k">if</span> <span class="n">rounding_type</span> <span class="o">==</span> <span class="s2">&quot;round&quot;</span><span class="p">:</span>
-                    <span class="n">roundf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span>
-                <span class="k">elif</span> <span class="n">rounding_type</span> <span class="o">==</span> <span class="s2">&quot;ceiling&quot;</span><span class="p">:</span>
-                    <span class="n">roundf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">roundf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span>
-
-                <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_modify</span><span class="p">(</span>
-                              <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-                                          <span class="o">.</span><span class="n">nsmallest</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">roundf</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">prop</span><span class="p">))</span>
-                                                    <span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">order_by_column</span>
-                                                    <span class="p">,</span> <span class="n">keep</span> <span class="o">=</span> <span class="n">keep_value</span>
-                                                    <span class="p">)</span>
-                                          <span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">tidyframe</span>
-                                                <span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span>
-                                                <span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span>
-                                                <span class="p">)</span>
-                                        <span class="p">)</span>
-                              <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span>
-                              <span class="p">,</span> <span class="n">preserve_row_order</span> <span class="o">=</span> <span class="kc">True</span>
-                              <span class="p">,</span> <span class="n">row_order_column_name</span> <span class="o">=</span> <span class="n">_generate_new_string</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
-                              <span class="p">)</span>
-                           <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
-                           <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="n">order_by_column</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span><span class="p">)</span>
-                           <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span> <span class="c1"># grouped n</span>
-                <span class="n">min_group_size</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__data</span>
-                                      <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">dropna</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-                                      <span class="o">.</span><span class="n">size</span><span class="p">()</span>
-                                      <span class="o">.</span><span class="n">min</span><span class="p">()</span>
-                                      <span class="p">)</span>
-                <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="n">min_group_size</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Minimum group size is &quot;</span><span class="p">,</span> <span class="n">min_group_size</span><span class="p">)</span>
-                <span class="k">assert</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="n">min_group_size</span><span class="p">,</span>\
-                    <span class="p">(</span><span class="s2">&quot;arg &#39;n&#39; should not exceed the size of any chunk after &quot;</span>
-                    <span class="s2">&quot;grouping&quot;</span><span class="p">)</span>
-                
-                <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_modify</span><span class="p">(</span>
-                              <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-                                          <span class="o">.</span><span class="n">nsmallest</span><span class="p">(</span><span class="n">n</span>
-                                                    <span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">order_by_column</span>
-                                                    <span class="p">,</span> <span class="n">keep</span> <span class="o">=</span> <span class="n">keep_value</span>
-                                                    <span class="p">)</span>
-                                          <span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">tidyframe</span>
-                                                <span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span>
-                                                <span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span>
-                                                <span class="p">)</span>
-                                        <span class="p">)</span>
-                              <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span>
-                              <span class="p">,</span> <span class="n">preserve_row_order</span> <span class="o">=</span> <span class="kc">True</span>
-                              <span class="p">,</span> <span class="n">row_order_column_name</span> <span class="o">=</span> <span class="n">_generate_new_string</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
-                              <span class="p">)</span>
-                           <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
-                           <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="n">order_by_column</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span><span class="p">)</span>
-                           <span class="p">)</span>
-        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">relocate</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span></div>
+<span class="sd">        &#39;&#39;&#39;</span>                 
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slice_order</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="p">,</span>
+                                <span class="n">prop</span> <span class="o">=</span> <span class="n">prop</span><span class="p">,</span>
+                                <span class="n">order_by_column</span> <span class="o">=</span> <span class="n">order_by_column</span><span class="p">,</span>
+                                <span class="n">with_ties</span> <span class="o">=</span> <span class="n">with_ties</span><span class="p">,</span>
+                                <span class="n">rounding_type</span> <span class="o">=</span> <span class="n">rounding_type</span><span class="p">,</span>
+                                <span class="n">by</span> <span class="o">=</span> <span class="n">by</span><span class="p">,</span>
+                                <span class="n">ascending_flag</span> <span class="o">=</span> <span class="kc">True</span>
+                                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div>
     
-<div class="viewcode-block" id="tidyframe.slice_max"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.slice_max">[docs]</a>    <span class="k">def</span> <span class="nf">slice_max</span><span class="p">(</span><span class="bp">self</span>
-                  <span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="kc">None</span>
-                  <span class="p">,</span> <span class="n">prop</span> <span class="o">=</span> <span class="kc">None</span>
-                  <span class="p">,</span> <span class="n">order_by_column</span> <span class="o">=</span> <span class="kc">None</span>
-                  <span class="p">,</span> <span class="n">with_ties</span> <span class="o">=</span> <span class="kc">True</span>
-                  <span class="p">,</span> <span class="n">rounding_type</span> <span class="o">=</span> <span class="s2">&quot;round&quot;</span>
-                  <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
+<div class="viewcode-block" id="tidyframe.slice_max"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.slice_max">[docs]</a>    <span class="k">def</span> <span class="nf">slice_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                  <span class="n">n</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">prop</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">order_by_column</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                  <span class="n">with_ties</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                  <span class="n">rounding_type</span> <span class="o">=</span> <span class="s2">&quot;round&quot;</span><span class="p">,</span>
+                  <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
                   <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Subset top rows ordered by some columns</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -4835,6 +4843,10 @@
 <span class="sd">        -----</span>
 <span class="sd">        1. Only one argument among &#39;n&#39; and &#39;prop&#39; should be provided.</span>
 <span class="sd">        2. Row order is not preserved by the method.</span>
+<span class="sd">        3. Rows corresponding to missing values in order_by_column are always </span>
+<span class="sd">           ranked to the &#39;bottom&#39;.</span>
+<span class="sd">        4. If n is larger than the group size, then it is silently truncated to</span>
+<span class="sd">           the group size.</span>
 <span class="sd">        </span>
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
@@ -4869,127 +4881,20 @@
 <span class="sd">        &gt;&gt;&gt;  .slice_max(n = 5, order_by_column = &quot;rank&quot;)</span>
 <span class="sd">        &gt;&gt;&gt;  .select(&quot;rank&quot;, include = False)</span>
 <span class="sd">        &gt;&gt;&gt;  )</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">nr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nrow</span>
-        <span class="n">cn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span>
-
-        <span class="c1"># exactly one of then should be none</span>
-        <span class="k">assert</span> <span class="ow">not</span> <span class="p">((</span><span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">prop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)),</span>\
-            <span class="s2">&quot;Exactly one arg among &#39;n&#39;, &#39;prop&#39; should be provided&quot;</span>
-        <span class="k">assert</span> <span class="ow">not</span> <span class="p">((</span><span class="n">n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">prop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)),</span>\
-            <span class="s2">&quot;Exactly one arg among &#39;n&#39;, &#39;prop&#39; should be provided&quot;</span>
-            
-        <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>\
-                <span class="s2">&quot;arg &#39;n&#39; should be a positive integer&quot;</span>
-            <span class="k">assert</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>\
-                <span class="s2">&quot;arg &#39;n&#39; should be atleast 1&quot;</span>
-            <span class="n">case_prop</span> <span class="o">=</span> <span class="kc">False</span>
-            
-        <span class="k">if</span> <span class="n">prop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)),</span>\
-                <span class="s2">&quot;arg &#39;prop&#39; should be a positive float or int not exceeding 1&quot;</span>
-            <span class="k">assert</span> <span class="n">prop</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">prop</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span>\
-                <span class="s2">&quot;arg &#39;prop&#39; should be a positive float or int not exceeding 1&quot;</span>
-            <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">prop</span> <span class="o">*</span> <span class="n">nr</span><span class="p">))</span>
-            <span class="n">case_prop</span> <span class="o">=</span> <span class="kc">True</span>
-        
-        <span class="k">if</span> <span class="n">order_by_column</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;arg &#39;order_by&#39; should not be None&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">order_by_column</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">,</span>\
-                <span class="s2">&quot;&#39;order_by_column&#39; should be a existing column name&quot;</span>
-          
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">with_ties</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>\
-            <span class="s2">&quot;arg &#39;with_ties&#39; should be a bool&quot;</span>
-            
-        <span class="k">if</span> <span class="n">with_ties</span><span class="p">:</span>
-            <span class="n">keep_value</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">keep_value</span> <span class="o">=</span> <span class="s2">&quot;first&quot;</span>
-        
-        <span class="k">if</span> <span class="n">by</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">ro_name</span> <span class="o">=</span> <span class="n">_generate_new_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">)</span>
-            <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_row_number</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="n">ro_name</span><span class="p">)</span>
-                       <span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-                       <span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">order_by_column</span><span class="p">,</span> <span class="n">keep</span> <span class="o">=</span> <span class="n">keep_value</span><span class="p">)</span>
-                       <span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-                       <span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ro_name</span><span class="p">,</span> <span class="n">ignore_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
-                       <span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="n">cn</span><span class="p">]</span>
-                       <span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">))</span>
-                       <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_by</span><span class="p">(</span><span class="n">by</span><span class="p">)</span>
-            <span class="n">by</span> <span class="o">=</span> <span class="n">_enlist</span><span class="p">(</span><span class="n">by</span><span class="p">)</span>
-            
-            <span class="k">if</span> <span class="n">case_prop</span><span class="p">:</span>
-                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rounding_type</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>\
-                    <span class="s2">&quot;arg &#39;ties_method&#39; should be a string&quot;</span>
-                <span class="k">assert</span> <span class="n">rounding_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;round&#39;</span><span class="p">,</span> <span class="s1">&#39;ceiling&#39;</span><span class="p">,</span> <span class="s1">&#39;floor&#39;</span><span class="p">],</span>\
-                    <span class="p">(</span><span class="s2">&quot;arg &#39;ties_method&#39; should be one among: &#39;round&#39; (default),&quot;</span>
-                     <span class="s2">&quot; &#39;ceiling&#39;, &#39;floor&#39;&quot;</span>
-                     <span class="p">)</span>
-                
-                <span class="k">if</span> <span class="n">rounding_type</span> <span class="o">==</span> <span class="s2">&quot;round&quot;</span><span class="p">:</span>
-                    <span class="n">roundf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span>
-                <span class="k">elif</span> <span class="n">rounding_type</span> <span class="o">==</span> <span class="s2">&quot;ceiling&quot;</span><span class="p">:</span>
-                    <span class="n">roundf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">roundf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span>
-
-                <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_modify</span><span class="p">(</span>
-                              <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-                                          <span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">roundf</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">prop</span><span class="p">))</span>
-                                                    <span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">order_by_column</span>
-                                                    <span class="p">,</span> <span class="n">keep</span> <span class="o">=</span> <span class="n">keep_value</span>
-                                                    <span class="p">)</span>
-                                          <span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">tidyframe</span>
-                                                <span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span>
-                                                <span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span>
-                                                <span class="p">)</span>
-                                        <span class="p">)</span>
-                              <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span>
-                              <span class="p">,</span> <span class="n">preserve_row_order</span> <span class="o">=</span> <span class="kc">True</span>
-                              <span class="p">,</span> <span class="n">row_order_column_name</span> <span class="o">=</span> <span class="n">_generate_new_string</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
-                              <span class="p">)</span>
-                           <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
-                           <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="n">order_by_column</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span><span class="p">)</span>
-                      <span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span> <span class="c1"># grouped n</span>
-                <span class="n">min_group_size</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__data</span>
-                                      <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">by</span><span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">dropna</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-                                      <span class="o">.</span><span class="n">size</span><span class="p">()</span>
-                                      <span class="o">.</span><span class="n">min</span><span class="p">()</span>
-                                      <span class="p">)</span>
-                <span class="k">if</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="n">min_group_size</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Minimum group size is &quot;</span><span class="p">,</span> <span class="n">min_group_size</span><span class="p">)</span>
-                <span class="k">assert</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="n">min_group_size</span><span class="p">,</span>\
-                    <span class="p">(</span><span class="s2">&quot;arg &#39;n&#39; should not exceed the size of any chunk after &quot;</span>
-                    <span class="s2">&quot;grouping&quot;</span><span class="p">)</span>
-                
-                <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group_modify</span><span class="p">(</span>
-                              <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-                                          <span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="n">n</span>
-                                                    <span class="p">,</span> <span class="n">columns</span> <span class="o">=</span> <span class="n">order_by_column</span>
-                                                    <span class="p">,</span> <span class="n">keep</span> <span class="o">=</span> <span class="n">keep_value</span>
-                                                    <span class="p">)</span>
-                                          <span class="o">.</span><span class="n">pipe</span><span class="p">(</span><span class="n">tidyframe</span>
-                                                <span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span>
-                                                <span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span>
-                                                <span class="p">)</span>
-                                        <span class="p">)</span>
-                              <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span>
-                              <span class="p">,</span> <span class="n">preserve_row_order</span> <span class="o">=</span> <span class="kc">True</span>
-                              <span class="p">,</span> <span class="n">row_order_column_name</span> <span class="o">=</span> <span class="n">_generate_new_string</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
-                              <span class="p">)</span>
-                           <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span>
-                           <span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="n">order_by_column</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">by</span><span class="p">)</span>
-                           <span class="p">)</span>
-        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">relocate</span><span class="p">(</span><span class="n">cn</span><span class="p">)</span></div>
+<span class="sd">        &#39;&#39;&#39;</span>            
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slice_order</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span><span class="p">,</span>
+                                <span class="n">prop</span> <span class="o">=</span> <span class="n">prop</span><span class="p">,</span>
+                                <span class="n">order_by_column</span> <span class="o">=</span> <span class="n">order_by_column</span><span class="p">,</span>
+                                <span class="n">with_ties</span> <span class="o">=</span> <span class="n">with_ties</span><span class="p">,</span>
+                                <span class="n">rounding_type</span> <span class="o">=</span> <span class="n">rounding_type</span><span class="p">,</span>
+                                <span class="n">by</span> <span class="o">=</span> <span class="n">by</span><span class="p">,</span>
+                                <span class="n">ascending_flag</span> <span class="o">=</span> <span class="kc">False</span>
+                                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div>
     
     <span class="c1"># set like methods</span>
 <div class="viewcode-block" id="tidyframe.union"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.union">[docs]</a>    <span class="k">def</span> <span class="nf">union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Union of rows y with the self</span>
 <span class="sd">        Equivalent to outer join over all columns</span>
 <span class="sd">        </span>
@@ -5017,7 +4922,7 @@
         <span class="k">return</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="tidyframe.intersection"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.intersection">[docs]</a>    <span class="k">def</span> <span class="nf">intersection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Intersection of rows y with the self</span>
 <span class="sd">        Equivalent to inner join over all columns</span>
 <span class="sd">        </span>
@@ -5049,7 +4954,7 @@
         <span class="k">return</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
       
 <div class="viewcode-block" id="tidyframe.setdiff"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.setdiff">[docs]</a>    <span class="k">def</span> <span class="nf">setdiff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Keep rows of self which are not in y</span>
 <span class="sd">        Equivalent to anti join over all columns</span>
 <span class="sd">        </span>
@@ -5088,7 +4993,7 @@
     <span class="c1"># any_na</span>
     <span class="c1">############################################################################</span>
 <div class="viewcode-block" id="tidyframe.any_na"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.any_na">[docs]</a>    <span class="k">def</span> <span class="nf">any_na</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Is there a missing value in the dataframe?</span>
 <span class="sd">        </span>
 <span class="sd">        Returns</span>
@@ -5109,7 +5014,7 @@
   <span class="c1">##############################################################################</span>
     
 <div class="viewcode-block" id="tidyframe.replace_na"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.replace_na">[docs]</a>    <span class="k">def</span> <span class="nf">replace_na</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Replace missing values with a specified value</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -5138,7 +5043,7 @@
                           <span class="p">)</span></div>
     
 <div class="viewcode-block" id="tidyframe.drop_na"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.drop_na">[docs]</a>    <span class="k">def</span> <span class="nf">drop_na</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_names</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Drops rows if missing values are present in specified columns</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -5190,7 +5095,7 @@
                 <span class="p">,</span> <span class="n">na_position</span> <span class="o">=</span> <span class="s2">&quot;last&quot;</span>
                 <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Fill missing values from neighboring values per column</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -5327,8 +5232,8 @@
                  <span class="p">,</span> <span class="n">strict</span> <span class="o">=</span> <span class="kc">True</span>
                  <span class="p">,</span> <span class="n">keep</span> <span class="o">=</span> <span class="kc">False</span>
                  <span class="p">):</span>
-        
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Split a string column into multiple string columns rowwise</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -5403,7 +5308,7 @@
         <span class="k">return</span> <span class="n">res</span></div>
     
 <div class="viewcode-block" id="tidyframe.unite"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.unite">[docs]</a>    <span class="k">def</span> <span class="nf">unite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_names</span><span class="p">,</span> <span class="n">into</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">keep</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Split a string column into multiple string columns rowwise</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -5453,7 +5358,7 @@
         <span class="k">return</span> <span class="n">res</span></div>
     
 <div class="viewcode-block" id="tidyframe.separate_rows"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.separate_rows">[docs]</a>    <span class="k">def</span> <span class="nf">separate_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">column_name</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;;&#39;</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        split a string column using a seperator and create a row for each</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -5505,7 +5410,7 @@
                 <span class="p">,</span> <span class="n">nest_column_name</span> <span class="o">=</span> <span class="s1">&#39;data&#39;</span>
                 <span class="p">,</span> <span class="n">drop_by</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Nest all columns of tidy dataframe with respect to &#39;by&#39; columns</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -5608,7 +5513,7 @@
              <span class="p">,</span> <span class="n">nest_column_name</span> <span class="o">=</span> <span class="s1">&#39;data&#39;</span>
              <span class="p">,</span> <span class="n">include</span> <span class="o">=</span> <span class="kc">True</span>
              <span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Nest columns of tidy dataframe</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -5652,7 +5557,7 @@
     <span class="c1"># unnest</span>
     <span class="c1">##########################################################################    </span>
 <div class="viewcode-block" id="tidyframe.unnest"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.unnest">[docs]</a>    <span class="k">def</span> <span class="nf">unnest</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nest_column_name</span> <span class="o">=</span> <span class="s1">&#39;data&#39;</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Unnest a nested column of a tidy dataframe</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -5753,7 +5658,7 @@
     <span class="c1"># split (group_split)</span>
     <span class="c1">##########################################################################</span>
 <div class="viewcode-block" id="tidyframe.split"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.split">[docs]</a>    <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">by</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        split</span>
 <span class="sd">        split rows of a dataframe by groups</span>
 <span class="sd">        </span>
@@ -5800,7 +5705,7 @@
     <span class="c1">##########################################################################</span>
     
 <div class="viewcode-block" id="tidyframe.__getitem__"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.__getitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-      <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">      </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">      Subset some and columns of the dataframe</span>
 <span class="sd">      Always returns a copy and not a view</span>
 <span class="sd">      </span>
@@ -5893,7 +5798,7 @@
       <span class="k">return</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="tidyframe.__setitem__"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.__setitem__">[docs]</a>    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-      <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">      </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">      Change a subset of the dataframe in-place</span>
 <span class="sd">      </span>
 <span class="sd">      Parameters</span>
@@ -6088,7 +5993,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flatten</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">spec</span><span class="p">),</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span></div>
     
 <div class="viewcode-block" id="tidyframe.expand"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.expand">[docs]</a>    <span class="k">def</span> <span class="nf">expand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Creates combinations of columns using specification</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>
@@ -6155,7 +6060,7 @@
         <span class="k">return</span> <span class="n">res</span></div>
     
 <div class="viewcode-block" id="tidyframe.complete"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.complete">[docs]</a>    <span class="k">def</span> <span class="nf">complete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Completes a tidyframe with missing combinations of data</span>
 <span class="sd">        </span>
 <span class="sd">        Parameters</span>

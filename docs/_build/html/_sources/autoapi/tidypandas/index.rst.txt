@@ -2256,6 +2256,9 @@ Classes
       ..
           !! processed by numpydoc !!
 
+   .. py:method:: _slice_order(n=None, prop=None, order_by_column=None, with_ties=True, rounding_type='round', by=None, ascending_flag=None)
+
+
    .. py:method:: slice_min(n=None, prop=None, order_by_column=None, with_ties=True, rounding_type='round', by=None)
 
       
@@ -2280,8 +2283,12 @@ Classes
 
       .. rubric:: Notes
 
-      1. Only one argument among 'n' and 'prop' should be provided.S
+      1. Only one argument among 'n' and 'prop' should be provided.
       2. Row order is not preserved by the method.
+      3. Rows corresponding to missing values in order_by_column are always
+         ranked to the 'bottom'.
+      4. If n is larger than the group size, then it is silently truncated to
+         the group size.
 
       .. rubric:: Examples
 
@@ -2360,6 +2367,10 @@ Classes
 
       1. Only one argument among 'n' and 'prop' should be provided.
       2. Row order is not preserved by the method.
+      3. Rows corresponding to missing values in order_by_column are always
+         ranked to the 'bottom'.
+      4. If n is larger than the group size, then it is silently truncated to
+         the group size.
 
       .. rubric:: Examples
 

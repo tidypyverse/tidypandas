@@ -569,6 +569,11 @@
         </a>
        </li>
        <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe._slice_order">
+         _slice_order
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
         <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe.slice_min">
          slice_min
         </a>
@@ -1295,18 +1300,18 @@ to each chunk. udf should pass it through without modification.</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># pick a sample of rows per chunk defined by &#39;species&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">group_modify</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                            <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span>                            <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># apply a pandas udf per chunk defined by &#39;species&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># groupby columns are always added to the left</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">group_modify</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                            <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;sex&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span>                            <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># preserve row order</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># a temporary column (default: &#39;rowid_temp&#39;) is added to each chunk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># udf should not meddle with the temporary column</span>
@@ -1321,7 +1326,7 @@ to each chunk. udf should pass it through without modification.</p></li>
 <span class="gp">&gt;&gt;&gt; </span>                  <span class="p">,</span> <span class="n">preserve_row_order</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="gp">&gt;&gt;&gt; </span>                  <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># use kwargs</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">group_modify</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>                            <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span>
@@ -1359,18 +1364,18 @@ indicates whether the column should be selected or not.</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">re</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># select with names</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="s1">&#39;species&#39;</span><span class="p">])</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># select using a predicate: only non-numeric columns</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">predicate</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span> <span class="o">!=</span> <span class="s2">&quot;string&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># select columns ending with &#39;mm&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">predicate</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;.*mm$&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># invert the selection</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="s1">&#39;species&#39;</span><span class="p">],</span> <span class="n">include</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 </pre></div>
@@ -1399,13 +1404,13 @@ the columns are added to the begining of the dataframe (leftmost)</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># move &quot;island&quot; and &quot;species&quot; columns to the left of the dataframe</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">relocate</span><span class="p">([</span><span class="s2">&quot;island&quot;</span><span class="p">,</span> <span class="s2">&quot;species&quot;</span><span class="p">])</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># move &quot;sex&quot; and &quot;year&quot; columns to the left of &quot;island&quot; column</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">relocate</span><span class="p">([</span><span class="s2">&quot;sex&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">],</span> <span class="n">before</span> <span class="o">=</span> <span class="s2">&quot;island&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># move &quot;island&quot; and &quot;species&quot; columns to the right of &quot;year&quot; column</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">relocate</span><span class="p">([</span><span class="s2">&quot;island&quot;</span><span class="p">,</span> <span class="s2">&quot;species&quot;</span><span class="p">],</span> <span class="n">after</span> <span class="o">=</span> <span class="s2">&quot;year&quot;</span><span class="p">)</span>
 </pre></div>
@@ -1465,13 +1470,13 @@ the columns are added to the begining of the dataframe (leftmost)</p>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># pick first three rows of the dataframe</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># pick these row numbers: [0, 3, 8]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># pick first three rows per specie</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">by</span> <span class="o">=</span> <span class="s2">&quot;species&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># pick first three rows for each species and sex combination</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">by</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;sex&quot;</span><span class="p">])</span>
 </pre></div>
@@ -1498,30 +1503,30 @@ the columns are added to the begining of the dataframe (leftmost)</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># arrange by ascending order of column &#39;bill_length_mm&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># equivalent to below:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># penguins_tidy.arrange([(&#39;bill_length_mm&#39;, &#39;asc&#39;)])</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># arrange by descding order of column &#39;bill_length_mm&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">arrange</span><span class="p">([(</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;desc&#39;</span><span class="p">)])</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># arrange by ascending order of column &#39;body_mass_g&#39; and break ties with</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># ascending order to &#39;bill_length_mm&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">arrange</span><span class="p">([(</span><span class="s1">&#39;body_mass_g&#39;</span><span class="p">,</span> <span class="s1">&#39;asc&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;asc&#39;</span><span class="p">)])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># equivalent to below:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># penguins_tidy.arrange([&#39;body_mass_g&#39;, &#39;bill_length_mm&#39;])</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># arrange by ascending order of column &#39;body_mass_g&#39; and break ties with</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># descending order to &#39;bill_length_mm&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">arrange</span><span class="p">([(</span><span class="s1">&#39;body_mass_g&#39;</span><span class="p">,</span> <span class="s1">&#39;asc&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;desc&#39;</span><span class="p">)])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># equivalent to below:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">arrange</span><span class="p">([</span><span class="s1">&#39;body_mass_g&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;desc&#39;</span><span class="p">)])</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># determine where NA has to appear</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="n">na_position</span> <span class="o">=</span> <span class="s1">&#39;first&#39;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># grouped arrange: rearranges within the group</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;sex&#39;</span><span class="p">)</span>
@@ -1569,21 +1574,21 @@ of length equal to numbers of rows of the input dataframe</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># query with pandas eval. pandas eval does not support complicated expressions.</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s2">&quot;body_mass_g &gt; 4000&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># subset with a mask -- list or array or pandas Series of precomputed booleans</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s2">&quot;year&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2007</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># equivalently:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># penguins_tidy.filter(lambda x: x.year == 2007)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># use complex expressions as a lambda function and filter</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">]))</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># per group filter retains the row order</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">]),</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;sex&#39;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># using kwargs</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">year</span> <span class="o">==</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;some_kwarg&#39;</span><span class="p">],</span>
 <span class="gp">&gt;&gt;&gt; </span>                     <span class="n">some_kwarg</span> <span class="o">=</span> <span class="mi">2009</span>
@@ -1618,12 +1623,12 @@ is preserved.</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tidy_penguins</span><span class="o">.</span><span class="n">distinct</span><span class="p">()</span> <span class="c1"># distinct over all columns</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tidy_penguins</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="s1">&#39;species&#39;</span><span class="p">)</span> <span class="c1"># keep only &#39;distinct&#39; columns</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tidy_penguins</span><span class="o">.</span><span class="n">distinct</span><span class="p">(</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="n">keep_all</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="c1"># keep all columns</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tidy_penguins</span><span class="o">.</span><span class="n">distinct</span><span class="p">([</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_depth_mm&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -1688,59 +1693,59 @@ examples for various sytles.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># mutate with dict</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">mutate</span><span class="p">({</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="c1"># 1. direct assign</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="s1">&#39;ind&#39;</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">344</span><span class="p">),</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="c1"># 2. using pandas style lambda function</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="s2">&quot;yp1&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="c1"># 2a. pass the content of lambda function as a string</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="s2">&quot;yp1_string&quot;</span><span class="p">:</span> <span class="s2">&quot;x[&#39;year&#39;] + 1&quot;</span><span class="p">,</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="c1"># 3. pass a tuple of function and column list</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="s2">&quot;yp1_abstract&quot;</span><span class="p">:</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">),</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="c1"># 3a. pass the tuple of function content as string and the column list</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="s2">&quot;yp2_abstract&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;x + 1&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">),</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="c1"># 4. pass multiple columns</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="s2">&quot;x_plus_y&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;x + y&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;bill_length_mm&quot;</span><span class="p">,</span> <span class="s2">&quot;bill_depth_mm&quot;</span><span class="p">]),</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="c1"># the above is equivalent to:</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="c1"># &quot;x_plus_y&quot;: (lambda x, y: x + y, [&quot;bill_length_mm&quot;, &quot;bill_depth_mm&quot;]),</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="c1"># 5. output multiple columns as a list</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">):</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="c1"># the above is equivalent to:</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="c1"># (&#39;x2&#39;, &#39;y2&#39;): &quot;[x[&#39;year&#39;] - 1, x[&#39;year&#39;] + 1]&quot;,</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="c1"># change an existing column: add one to &#39;bill_length_mm&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="s1">&#39;bill_length_mm&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;x + 1&quot;</span><span class="p">,</span> <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="c1"># the above is equivalent to these:</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="c1"># &#39;bill_length_mm&#39;: (&quot;x + 1&quot;, &#39;bill_length_mm&#39;),</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="c1"># &#39;bill_length_mm&#39;: (lambda x: x + 1, &#39;bill_length_mm&#39;)</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="p">})</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># mutate with dict and groupby</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">mutate</span><span class="p">({</span><span class="s1">&#39;x&#39;</span> <span class="p">:</span> <span class="s2">&quot;x[&#39;year&#39;] + np.mean(x[&#39;year&#39;]) - 4015&quot;</span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span>                     <span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;sex&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span>                     <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># mutate can use columns created in the dict before</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>              <span class="o">.</span><span class="n">mutate</span><span class="p">({</span><span class="s1">&#39;yp1&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;x + 1&quot;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">),</span>
 <span class="gp">&gt;&gt;&gt; </span>                       <span class="s1">&#39;yp1m1&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;x - 1&quot;</span><span class="p">,</span> <span class="s1">&#39;yp1&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                      <span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span>              <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># use kwargs</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">penguins_tidy</span>
 <span class="gp">&gt;&gt;&gt; </span> <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span> <span class="o">.</span><span class="n">mutate</span><span class="p">({</span><span class="s1">&#39;yp1&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;x + kwargs[&#39;akwarg&#39;]&quot;</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">)},</span> <span class="n">akwarg</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span> <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># &#39;order_by&#39; some column before the mutate opeation</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># order_by column &#39;bill_length_mm&#39; before computing cumsum over &#39;year&#39; columns</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># row order is preserved</span>
@@ -1752,7 +1757,7 @@ examples for various sytles.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cumsum_df</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># confirm the computation:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cumsum_df</span><span class="o">.</span><span class="n">arrange</span><span class="p">(</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># across mode with column names</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;body_mass_g&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>              <span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;body_mass_g&#39;</span><span class="p">]</span>
@@ -1760,7 +1765,7 @@ examples for various sytles.</p>
 <span class="gp">&gt;&gt;&gt; </span>                      <span class="p">,</span> <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;demean_&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>                      <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>              <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># grouped across with column names</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;body_mass_g&#39;</span><span class="p">,</span> <span class="s1">&#39;species&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>              <span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;body_mass_g&#39;</span><span class="p">],</span>
@@ -1769,13 +1774,13 @@ examples for various sytles.</p>
 <span class="gp">&gt;&gt;&gt; </span>                      <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span>                      <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>              <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># across mode with predicate</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
 <span class="gp">&gt;&gt;&gt; </span>                     <span class="n">predicate</span> <span class="o">=</span> <span class="n">dtypes</span><span class="o">.</span><span class="n">is_numeric_dtype</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>                     <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;demean_&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>                     <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># grouped across with predicate without prefix</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># this will return a copy with columns changed without changing names</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">mutate</span><span class="p">(</span><span class="n">func</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
@@ -1838,68 +1843,68 @@ examples for various sytles.</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pandas.api.types</span> <span class="k">as</span> <span class="nn">dtypes</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># summarise in dict mode</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">summarise</span><span class="p">({</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># using pandas style lambda function</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;a_mean&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># pass the content of lambda function as a string</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;b_mean&quot;</span><span class="p">:</span> <span class="s2">&quot;x[&#39;year&#39;].mean()&quot;</span><span class="p">,</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># pass a tuple of function and column list</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;a_median&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">),</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># pass a tuple of function to retain same column name</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">,</span> <span class="p">),</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># pass multiple columns as a string</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="s2">&quot;x_plus_y_mean&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;np.mean(x + y)&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;bill_length_mm&quot;</span><span class="p">,</span> <span class="s2">&quot;bill_depth_mm&quot;</span><span class="p">]),</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># output multiple columns as a list (pandas style)</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">):</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">])),</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># same as above in string style</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">(</span><span class="s1">&#39;x2&#39;</span><span class="p">,</span> <span class="s1">&#39;y2&#39;</span><span class="p">):</span> <span class="s2">&quot;list(np.quantile(x[&#39;year&#39;], [0.25, 0.75]))&quot;</span><span class="p">,</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="c1"># tuple style with multiple output</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">(</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">):</span> <span class="p">(</span><span class="s2">&quot;[np.mean(x + y), np.mean(x - y)]&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>                 <span class="p">,</span> <span class="p">[</span><span class="s2">&quot;bill_length_mm&quot;</span><span class="p">,</span> <span class="s2">&quot;bill_depth_mm&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span>                 <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">})</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># grouped summarise in dict mode</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">summarise</span><span class="p">({</span><span class="s2">&quot;a_mean&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="s1">&#39;year&#39;</span><span class="p">)},</span>
 <span class="gp">&gt;&gt;&gt; </span>                        <span class="n">by</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;sex&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span>                        <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># use kwargs</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">summarise</span><span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="p">{</span><span class="s2">&quot;a_mean&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;year&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">+</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;leap&#39;</span><span class="p">]},</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="n">by</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;sex&#39;</span><span class="p">],</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="n">leap</span> <span class="o">=</span> <span class="mi">4</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># equivalently:</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">summarise</span><span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="p">{</span><span class="s2">&quot;a_mean&quot;</span><span class="p">:</span> <span class="s2">&quot;x[&#39;year&#39;].mean() + kwargs[&#39;leap&#39;]&quot;</span><span class="p">},</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="n">by</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;sex&#39;</span><span class="p">],</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="n">leap</span> <span class="o">=</span> <span class="mi">4</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># across mode with column names</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">summarise</span><span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="n">func</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_depth_mm&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># across mode with predicate</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">summarise</span><span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="n">func</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="n">predicate</span> <span class="o">=</span> <span class="n">dtypes</span><span class="o">.</span><span class="n">is_numeric_dtype</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;avg_&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># grouped across with predicate</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">summarise</span><span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="n">func</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span>
@@ -1944,14 +1949,14 @@ Includes only matching keys</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s1</span> <span class="o">=</span> <span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;island&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s2</span> <span class="o">=</span> <span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;island&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_depth_mm&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s1</span><span class="o">.</span><span class="n">inner_join</span><span class="p">(</span><span class="n">penguins_tidy_s2</span><span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="s1">&#39;island&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1980,14 +1985,14 @@ Includes all keys</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s1</span> <span class="o">=</span> <span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;island&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s2</span> <span class="o">=</span> <span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;island&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_depth_mm&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s1</span><span class="o">.</span><span class="n">outer_join</span><span class="p">(</span><span class="n">penguins_tidy_s2</span><span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="s1">&#39;island&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2016,14 +2021,14 @@ Includes all keys in self</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s1</span> <span class="o">=</span> <span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;island&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s2</span> <span class="o">=</span> <span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;island&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_depth_mm&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s1</span><span class="o">.</span><span class="n">left_join</span><span class="p">(</span><span class="n">penguins_tidy_s2</span><span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="s1">&#39;island&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2052,14 +2057,14 @@ Includes all keys in y</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s1</span> <span class="o">=</span> <span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;island&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s2</span> <span class="o">=</span> <span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;island&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_depth_mm&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s1</span><span class="o">.</span><span class="n">right_join</span><span class="p">(</span><span class="n">penguins_tidy_s2</span><span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="s1">&#39;island&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2087,14 +2092,14 @@ Includes keys in self if present in y</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s1</span> <span class="o">=</span> <span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;island&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s2</span> <span class="o">=</span> <span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;island&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_depth_mm&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s2</span><span class="o">.</span><span class="n">semi_join</span><span class="p">(</span><span class="n">penguins_tidy_s1</span><span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="s1">&#39;island&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2122,14 +2127,14 @@ Includes keys in self if not present in y</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s1</span> <span class="o">=</span> <span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;island&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s2</span> <span class="o">=</span> <span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;island&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_depth_mm&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s2</span><span class="o">.</span><span class="n">anti_join</span><span class="p">(</span><span class="n">penguins_tidy_s1</span><span class="p">,</span> <span class="n">on</span> <span class="o">=</span> <span class="s1">&#39;island&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2155,14 +2160,14 @@ Includes all cartersian product</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s1</span> <span class="o">=</span> <span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;island&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s2</span> <span class="o">=</span> <span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;island&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_depth_mm&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>                                 <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy_s2</span><span class="o">.</span><span class="n">cross_join</span><span class="p">(</span><span class="n">penguins_tidy_s1</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2188,7 +2193,7 @@ Includes all cartersian product</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;island&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>              <span class="o">.</span><span class="n">cbind</span><span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_depth_mm&#39;</span><span class="p">]))</span>
 <span class="gp">&gt;&gt;&gt; </span>              <span class="p">)</span>
@@ -2217,7 +2222,7 @@ dataframe and not in the other.</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;island&#39;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span>              <span class="o">.</span><span class="n">rbind</span><span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s1">&#39;island&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_depth_mm&#39;</span><span class="p">]))</span>
 <span class="gp">&gt;&gt;&gt; </span>              <span class="p">)</span>
@@ -2245,15 +2250,15 @@ When wt is present, then wt column is summed up.</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># count rows</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># count number of rows of &#39;sex&#39; column</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># count column is always ordered in descending order unless decreasing is False</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;cnt&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;cnt&quot;</span><span class="p">,</span> <span class="n">decreasing</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># sum up a column (weighted sum of rows)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">count</span><span class="p">([</span><span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="s1">&#39;species&#39;</span><span class="p">],</span> <span class="n">wt</span> <span class="o">=</span> <span class="s1">&#39;year&#39;</span><span class="p">)</span>
 </pre></div>
@@ -2279,13 +2284,13 @@ When wt is present, then wt column is summed up.</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># count rows</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">add_count</span><span class="p">()</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># count number of rows of &#39;sex&#39; column</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">add_count</span><span class="p">(</span><span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;cnt&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># sum up a column (weighted sum of rows)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">add_count</span><span class="p">([</span><span class="s1">&#39;sex&#39;</span><span class="p">,</span> <span class="s1">&#39;species&#39;</span><span class="p">],</span> <span class="n">wt</span> <span class="o">=</span> <span class="s1">&#39;year&#39;</span><span class="p">)</span>
 </pre></div>
@@ -2322,22 +2327,22 @@ supposed to stay put)</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># generic widening leads to list-columns</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">pivot_wider</span><span class="p">(</span><span class="n">id_cols</span>       <span class="o">=</span> <span class="s2">&quot;island&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>                          <span class="p">,</span> <span class="n">names_from</span>  <span class="o">=</span> <span class="s2">&quot;sex&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>                          <span class="p">,</span> <span class="n">values_from</span> <span class="o">=</span> <span class="s2">&quot;bill_length_mm&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>                          <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># aggregate with a function</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">pivot_wider</span><span class="p">(</span><span class="n">id_cols</span>       <span class="o">=</span> <span class="s2">&quot;island&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>                          <span class="p">,</span> <span class="n">names_from</span>  <span class="o">=</span> <span class="s2">&quot;sex&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>                          <span class="p">,</span> <span class="n">values_from</span> <span class="o">=</span> <span class="s2">&quot;bill_length_mm&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>                          <span class="p">,</span> <span class="n">values_fn</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span>
 <span class="gp">&gt;&gt;&gt; </span>                          <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># choose different aggregation logic for value_from columns</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">pivot_wider</span><span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="n">id_cols</span>       <span class="o">=</span> <span class="s2">&quot;island&quot;</span>
@@ -2345,7 +2350,7 @@ supposed to stay put)</p></li>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="p">,</span> <span class="n">values_from</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;bill_length_mm&quot;</span><span class="p">,</span> <span class="s2">&quot;bill_depth_mm&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="p">,</span> <span class="n">values_fn</span>   <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;bill_length_mm&quot;</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">,</span> <span class="s2">&quot;bill_depth_mm&quot;</span> <span class="p">:</span> <span class="nb">list</span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># aggregate with almost any function</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">pivot_wider</span><span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="n">id_cols</span>       <span class="o">=</span> <span class="s2">&quot;island&quot;</span>
@@ -2353,31 +2358,31 @@ supposed to stay put)</p></li>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="p">,</span> <span class="n">values_from</span> <span class="o">=</span> <span class="s2">&quot;sex&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="p">,</span> <span class="n">values_fn</span>   <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">value_counts</span><span class="p">())</span>
 <span class="gp">&gt;&gt;&gt; </span>  <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># All three inputs: &#39;id_cols&#39;, &#39;names_from&#39;, &#39;values_from&#39; can be lists</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">pivot_wider</span><span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">id_cols</span>       <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;island&quot;</span><span class="p">,</span> <span class="s2">&quot;sex&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">,</span> <span class="n">names_from</span>  <span class="o">=</span> <span class="s2">&quot;species&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">,</span> <span class="n">values_from</span> <span class="o">=</span> <span class="s2">&quot;bill_length_mm&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">pivot_wider</span><span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">id_cols</span>       <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;island&quot;</span><span class="p">,</span> <span class="s2">&quot;sex&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">,</span> <span class="n">names_from</span>  <span class="o">=</span> <span class="s2">&quot;species&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">,</span> <span class="n">values_from</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;bill_length_mm&quot;</span><span class="p">,</span> <span class="s2">&quot;bill_depth_mm&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">pivot_wider</span><span class="p">(</span><span class="n">id_cols</span>       <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;island&quot;</span><span class="p">,</span> <span class="s2">&quot;sex&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span>                          <span class="p">,</span> <span class="n">names_from</span>  <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span>                          <span class="p">,</span> <span class="n">values_from</span> <span class="o">=</span> <span class="s2">&quot;bill_length_mm&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>                          <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">pivot_wider</span><span class="p">(</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="n">id_cols</span>       <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;island&quot;</span><span class="p">,</span> <span class="s2">&quot;sex&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">,</span> <span class="n">names_from</span>  <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">,</span> <span class="n">values_from</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;bill_length_mm&quot;</span><span class="p">,</span> <span class="s2">&quot;bill_depth_mm&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span>    <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># when id_cols is empty, all columns except the columns from</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># `names_from` and `values_from` are considered as id_cols</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">penguins_tidy</span>
@@ -2386,7 +2391,7 @@ supposed to stay put)</p></li>
 <span class="gp">&gt;&gt;&gt; </span>              <span class="p">,</span> <span class="n">values_from</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;bill_length_mm&quot;</span><span class="p">,</span> <span class="s2">&quot;bill_depth_mm&quot;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span>              <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span> <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># fill the missing values with something</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">pivot_wider</span><span class="p">(</span><span class="n">id_cols</span>       <span class="o">=</span> <span class="s2">&quot;island&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span>                          <span class="p">,</span> <span class="n">names_from</span>  <span class="o">=</span> <span class="s2">&quot;species&quot;</span>
@@ -2432,7 +2437,7 @@ columns</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># pivot to bring values from columns ending with &#39;mm&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;species&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span>       <span class="p">,</span> <span class="s1">&#39;bill_length_mm&#39;</span>
@@ -2445,7 +2450,7 @@ columns</p></li>
 <span class="gp">&gt;&gt;&gt; </span>                                    <span class="s1">&#39;flipper_length_mm&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span>                            <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>              <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># pivot by specifying &#39;id&#39; columns to obtain the same result as above</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># this is helpful when there are many columns to melt</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">cns</span><span class="p">)</span>
@@ -2484,10 +2489,10 @@ Options: ‘round’ (default), ‘floor’, ‘ceiling’</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_head</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_head</span><span class="p">(</span><span class="n">prop</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_head</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_head</span><span class="p">(</span><span class="n">prop</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 </pre></div>
@@ -2520,10 +2525,10 @@ Options: ‘round’ (default), ‘floor’, ‘ceiling’</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_tail</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_tail</span><span class="p">(</span><span class="n">prop</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_tail</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_tail</span><span class="p">(</span><span class="n">prop</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">)</span>
 </pre></div>
@@ -2559,31 +2564,36 @@ When None, a pseudorandom seed is chosen</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># swor: sample without replacement</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># swr: sample with replacement</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># sample by specifiying count</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_sample</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>                    <span class="c1"># swor</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_sample</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">replace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>    <span class="c1"># swr, smaller than input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_sample</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">replace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="c1"># swr, larger than input</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># sample by specifiying proportion of number of rows of the input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_sample</span><span class="p">(</span><span class="n">prop</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">)</span>                 <span class="c1"># swor</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_sample</span><span class="p">(</span><span class="n">prop</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">replace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="c1"># swr, smaller than input</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_sample</span><span class="p">(</span><span class="n">prop</span> <span class="o">=</span> <span class="mf">1.1</span><span class="p">,</span> <span class="n">replace</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="c1"># swr, larger than input</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># sample with weights</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_sample</span><span class="p">(</span><span class="n">prop</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="s1">&#39;year&#39;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># sampling is reproducible by setting a random state</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_sample</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">42</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># per group sampling</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_sample</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="n">random_state</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe._slice_order">
+<span class="sig-name descname"><span class="pre">_slice_order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_by_column</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_ties</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rounding_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'round'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">by</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ascending_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe._slice_order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe._slice_order" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe.slice_min">
@@ -2608,29 +2618,33 @@ be one among: ‘round’, ‘ceiling’, ‘floor’</p></li>
 </dl>
 <p class="rubric">Notes</p>
 <ol class="arabic simple">
-<li><p>Only one argument among ‘n’ and ‘prop’ should be provided.S</p></li>
+<li><p>Only one argument among ‘n’ and ‘prop’ should be provided.</p></li>
 <li><p>Row order is not preserved by the method.</p></li>
+<li><p>Rows corresponding to missing values in order_by_column are always
+ranked to the ‘bottom’.</p></li>
+<li><p>If n is larger than the group size, then it is silently truncated to
+the group size.</p></li>
 </ol>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># subset atleast 4 rows corresponding to ascending &#39;body_mass_g&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_min</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">order_by_column</span> <span class="o">=</span> <span class="s1">&#39;body_mass_g&#39;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># subset exactly 4 rows corresponding to ascending &#39;body_mass_g&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># when more than &#39;n&#39; rows exist, top n rows in the row order are chosen</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_min</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">order_by_column</span> <span class="o">=</span> <span class="s1">&#39;body_mass_g&#39;</span><span class="p">,</span> <span class="n">with_ties</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># subset a fraction of rows corresponding to ascending &#39;body_mass_g&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_min</span><span class="p">(</span><span class="n">prop</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">order_by_column</span> <span class="o">=</span> <span class="s1">&#39;body_mass_g&#39;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># subset atleast 3 rows corresponding to ascending &#39;bill_length_mm&#39; per each &#39;species&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_min</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">order_by_column</span> <span class="o">=</span> <span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;sex&#39;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># subset atleast 1% corresponding to ascending &#39;bill_length_mm&#39; per each &#39;species&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_min</span><span class="p">(</span><span class="n">prop</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">order_by_column</span> <span class="o">=</span> <span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;sex&#39;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># order by column &#39;bill_length_mm&#39; and break ties using &#39;bill_depth_mm&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># in decreasing order and then pick the min 5 rows</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">penguins_tidy</span>
@@ -2672,27 +2686,31 @@ be one among: ‘round’, ‘ceiling’, ‘floor’</p></li>
 <ol class="arabic simple">
 <li><p>Only one argument among ‘n’ and ‘prop’ should be provided.</p></li>
 <li><p>Row order is not preserved by the method.</p></li>
+<li><p>Rows corresponding to missing values in order_by_column are always
+ranked to the ‘bottom’.</p></li>
+<li><p>If n is larger than the group size, then it is silently truncated to
+the group size.</p></li>
 </ol>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># subset atleast 4 rows corresponding to descending &#39;body_mass_g&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_max</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">order_by_column</span> <span class="o">=</span> <span class="s1">&#39;body_mass_g&#39;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># subset exactly 4 rows corresponding to descending &#39;body_mass_g&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># when more than &#39;n&#39; rows exist, top n rows in the row order are chosen</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_max</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="n">order_by_column</span> <span class="o">=</span> <span class="s1">&#39;body_mass_g&#39;</span><span class="p">,</span> <span class="n">with_ties</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># subset a fraction of rows corresponding to descending &#39;body_mass_g&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_max</span><span class="p">(</span><span class="n">prop</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">order_by_column</span> <span class="o">=</span> <span class="s1">&#39;body_mass_g&#39;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># subset atleast 3 rows corresponding to descending &#39;bill_length_mm&#39; per each &#39;species&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_max</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">order_by_column</span> <span class="o">=</span> <span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;sex&#39;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># subset atleast 1% corresponding to descending &#39;bill_length_mm&#39; per each &#39;species&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">slice_max</span><span class="p">(</span><span class="n">prop</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span> <span class="n">order_by_column</span> <span class="o">=</span> <span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;sex&#39;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># order by column &#39;bill_length_mm&#39; and break ties using &#39;bill_depth_mm&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># in decreasing order and then pick the min 5 rows</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">penguins_tidy</span>
@@ -2725,7 +2743,7 @@ Equivalent to outer join over all columns</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span> <span class="p">:])</span>
 </pre></div>
 </div>
@@ -2747,7 +2765,7 @@ Equivalent to inner join over all columns</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span> <span class="p">:])</span>
 </pre></div>
 </div>
@@ -2769,7 +2787,7 @@ Equivalent to anti join over all columns</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">setdiff</span><span class="p">(</span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">6</span><span class="p">,</span> <span class="p">:])</span>
 </pre></div>
 </div>
@@ -2807,7 +2825,7 @@ value</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">replace_na</span><span class="p">({</span><span class="s1">&#39;sex&#39;</span><span class="p">:</span> <span class="s1">&#39;unknown&#39;</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">predicate</span> <span class="o">=</span> <span class="n">dtypes</span><span class="o">.</span><span class="n">is_numeric_dtype</span><span class="p">)</span><span class="o">.</span><span class="n">replace_na</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
@@ -2830,7 +2848,7 @@ column_names. When None, all columns are considered.</p>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">drop_na</span><span class="p">()</span> <span class="c1"># remove a row if any column has a NA</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># remove a row only if there is a missing value in &#39;bill_length_mm&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># column</span>
@@ -2872,17 +2890,17 @@ Direction should be one among: ‘up’, ‘down’, ‘updown’ and ‘downup�
 <span class="gp">&gt;&gt;&gt; </span>                      <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>         <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;up&#39;</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;down&#39;</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;downup&#39;</span><span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;updown&#39;</span><span class="p">})</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;up&#39;</span><span class="p">},</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;down&#39;</span><span class="p">},</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;updown&#39;</span><span class="p">},</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;downup&#39;</span><span class="p">},</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;updown&#39;</span><span class="p">},</span> <span class="n">order_by</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">fill_na</span><span class="p">({</span><span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="s1">&#39;updown&#39;</span><span class="p">},</span> <span class="n">order_by</span> <span class="o">=</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span><span class="p">)</span>
 </pre></div>
@@ -2908,10 +2926,10 @@ to result into ‘into’ number of columns.</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;col&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a_b&quot;</span><span class="p">,</span> <span class="s2">&quot;c_d&quot;</span><span class="p">,</span> <span class="s2">&quot;e_f_g&quot;</span><span class="p">]}))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># separate into three columns</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">separate</span><span class="p">(</span><span class="s1">&#39;col&#39;</span><span class="p">,</span> <span class="n">into</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;col_1&quot;</span><span class="p">,</span> <span class="s2">&quot;col_2&quot;</span><span class="p">,</span> <span class="s2">&quot;col_3&quot;</span><span class="p">],</span> <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># separate into two columns and ignore the last piece</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">separate</span><span class="p">(</span><span class="s1">&#39;col&#39;</span><span class="p">,</span> <span class="n">into</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;col_1&quot;</span><span class="p">,</span> <span class="s2">&quot;col_2&quot;</span><span class="p">],</span> <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">strict</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 </pre></div>
@@ -2937,12 +2955,12 @@ to result into ‘into’ number of columns.</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;col&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;a_b&quot;</span><span class="p">,</span> <span class="s2">&quot;c_d&quot;</span><span class="p">,</span> <span class="s2">&quot;e_f_g&quot;</span><span class="p">]}))</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># separate into three columns</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">separate</span><span class="p">(</span><span class="s1">&#39;col&#39;</span><span class="p">,</span> <span class="n">into</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;col_1&quot;</span><span class="p">,</span> <span class="s2">&quot;col_2&quot;</span><span class="p">,</span> <span class="s2">&quot;col_3&quot;</span><span class="p">],</span> <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>   <span class="o">.</span><span class="n">unite</span><span class="p">(</span><span class="n">column_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;col_1&quot;</span><span class="p">,</span> <span class="s2">&quot;col_2&quot;</span><span class="p">,</span> <span class="s2">&quot;col_3&quot;</span><span class="p">],</span> <span class="n">into</span> <span class="o">=</span> <span class="s2">&quot;united&quot;</span><span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>   <span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># separate into two columns and ignore the last piece</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">separate</span><span class="p">(</span><span class="s1">&#39;col&#39;</span><span class="p">,</span> <span class="n">into</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;col_1&quot;</span><span class="p">,</span> <span class="s2">&quot;col_2&quot;</span><span class="p">],</span> <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="n">strict</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
 </pre></div>
@@ -3025,7 +3043,7 @@ for nesting)</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">nest</span><span class="p">([</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_depth_mm&#39;</span><span class="p">,</span>
 <span class="gp">&gt;&gt;&gt; </span>                    <span class="s1">&#39;flipper_length_mm&#39;</span><span class="p">,</span> <span class="s1">&#39;body_mass_g&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span>                   <span class="p">)</span>
@@ -3062,16 +3080,16 @@ same column</p></li>
 <span class="gp">&gt;&gt;&gt; </span>                                         <span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>                  <span class="p">})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">nested_pdf</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># unnest nested lists</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tidyframe</span><span class="p">(</span><span class="n">nested_pdf</span><span class="p">)</span><span class="o">.</span><span class="n">unnest</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins</span> <span class="o">=</span> <span class="n">load_penguins</span><span class="p">()</span><span class="o">.</span><span class="n">convert_dtypes</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">penguins</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pen_nested_by_species</span> <span class="o">=</span> <span class="n">penguins_tidy</span><span class="o">.</span><span class="n">nest_by</span><span class="p">(</span><span class="s1">&#39;species&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pen_nested_by_species</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># unnest nested dataframes</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pen_nested_by_species</span><span class="o">.</span><span class="n">unnest</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
 </pre></div>
@@ -3124,29 +3142,29 @@ column names or by providing a boolean mask.</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Rows can be subset with integer indexes with slice objects</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># right end is not included in slice objects</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># first four rows</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">,:]</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># a row can be subset with a single integer</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># moreover subsetting always returns a dataframe</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="p">:]</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Rows can be subset with a boolean mask</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[</span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">pull</span><span class="p">(</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">40</span><span class="p">,</span> <span class="p">:]</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Columns can be subset using column names</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">]]</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># A single column can be subset by specifying column name as a string</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># moreover subsetting always returns a dataframe</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;species&quot;</span><span class="p">]</span> <span class="c1"># same as: penguins_tidy[0:5, [&quot;species&quot;]]</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># columns can be subset by integer position</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># row and columns can be subset with different types of specifications</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="c1"># same as: penguins_tidy[[0, 1], &#39;island&#39;]</span>
 </pre></div>
@@ -3182,19 +3200,19 @@ assignment exceptions are handled by this method and they will cascade.</p></li>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># assign a single value with correct type</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;a&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="p">:]</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># assign a multiple values with correct type</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;b&quot;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="p">:]</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># assign a row partially by a list of appropriate types</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;species&#39;</span><span class="p">,</span> <span class="s1">&#39;bill_length_mm&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span> <span class="p">:]</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># assign a subset with another tidyframe</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;species&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span>                                        <span class="p">,</span> <span class="s1">&#39;island&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">]</span>
@@ -3259,25 +3277,25 @@ assignment exceptions are handled by this method and they will cascade.</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tidypandas</span> <span class="kn">import</span> <span class="n">tidyframe</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># crossing: tuple bracket</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># nesting: set bracket</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># simple crossing</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">expand</span><span class="p">((</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">))</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># simple nesting</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">expand</span><span class="p">({</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">})</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># nest outside and crossing inside</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">expand</span><span class="p">({</span><span class="s2">&quot;sex&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">)})</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># crossing outside and nesting inside</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">expand</span><span class="p">((</span><span class="s2">&quot;sex&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">}))</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># more &#39;nesting&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">expand</span><span class="p">(((</span><span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;bill_length_mm&quot;</span><span class="p">),</span> <span class="p">{</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">}))</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># grouped expand</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">expand</span><span class="p">({</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">},</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;sex&#39;</span><span class="p">)</span>
 </pre></div>
@@ -3326,28 +3344,28 @@ dict (key: column name, value: value to fill)</p></li>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">tidypandas</span> <span class="kn">import</span> <span class="n">tidyframe</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">palmerpenguins</span> <span class="kn">import</span> <span class="n">load_penguins</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">load_penguins</span><span class="p">())</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># crossing: tuple bracket</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># nesting: set bracket</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># simple crossing</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">complete</span><span class="p">((</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">))</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># simple nesting</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">complete</span><span class="p">({</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">})</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># nest outside and crossing inside</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">complete</span><span class="p">({</span><span class="s2">&quot;sex&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">)})</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># crossing outside and nesting inside</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">complete</span><span class="p">((</span><span class="s2">&quot;sex&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">}))</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># more &#39;nesting&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">complete</span><span class="p">(((</span><span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="s2">&quot;bill_length_mm&quot;</span><span class="p">),</span> <span class="p">{</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">}))</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># filling missing values</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">complete</span><span class="p">((</span><span class="s2">&quot;sex&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">}),</span> <span class="n">fill</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bill_length_mm&#39;</span><span class="p">:</span> <span class="mi">100</span><span class="p">})</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># grouped complete</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">penguins_tidy</span><span class="o">.</span><span class="n">complete</span><span class="p">({</span><span class="s2">&quot;species&quot;</span><span class="p">,</span> <span class="s2">&quot;island&quot;</span><span class="p">},</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">&#39;sex&#39;</span><span class="p">)</span>
 </pre></div>

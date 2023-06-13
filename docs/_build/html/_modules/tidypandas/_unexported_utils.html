@@ -175,7 +175,7 @@
 
 <div class="viewcode-block" id="_is_kwargable"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._is_kwargable">[docs]</a><span class="k">def</span> <span class="nf">_is_kwargable</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
     <span class="n">res</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">func</span><span class="p">),</span> <span class="s2">&quot;arg &#39;func&#39; should be callable&quot;</span>
+    <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">func</span><span class="p">),</span> <span class="s2">&quot;arg &#39;func&#39; should be callable&quot;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">spec</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">varkw</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -189,7 +189,7 @@
     <span class="k">return</span> <span class="n">res</span></div>
   
 <div class="viewcode-block" id="_is_string_or_string_list"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._is_string_or_string_list">[docs]</a><span class="k">def</span> <span class="nf">_is_string_or_string_list</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    _is_string_or_string_list(x)</span>
 <span class="sd">    </span>
 <span class="sd">    Check whether the input is a string or a list of strings</span>
@@ -223,7 +223,7 @@
     <span class="k">return</span> <span class="n">res</span></div>
     
 <div class="viewcode-block" id="_enlist"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._enlist">[docs]</a><span class="k">def</span> <span class="nf">_enlist</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    _enlist(x)</span>
 <span class="sd">    </span>
 <span class="sd">    Returns the input in a list (as first element of the list) unless input itself is a list</span>
@@ -250,7 +250,7 @@
     <span class="k">return</span> <span class="n">x</span></div>
 
 <div class="viewcode-block" id="_get_unique_names"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._get_unique_names">[docs]</a><span class="k">def</span> <span class="nf">_get_unique_names</span><span class="p">(</span><span class="n">strings</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    _get_unique_names(strings)</span>
 <span class="sd">    </span>
 <span class="sd">    Returns a list of same length as the input such that elements are unique. This is done by adding &#39;_1&#39;. The resulting list does not alter nth element if the nth element occurs for the first time in the input list starting from left.</span>
@@ -303,7 +303,7 @@
     <span class="k">return</span> <span class="n">new_list</span></div>
 
 <div class="viewcode-block" id="_is_unique_list"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._is_unique_list">[docs]</a><span class="k">def</span> <span class="nf">_is_unique_list</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    _is_unique_list(x)</span>
 <span class="sd">    </span>
 <span class="sd">    Returns True if input list does not have duplicates</span>
@@ -343,7 +343,7 @@
     <span class="k">return</span> <span class="n">random_string</span></div>
 
 <div class="viewcode-block" id="_coerce_series"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._coerce_series">[docs]</a><span class="k">def</span> <span class="nf">_coerce_series</span><span class="p">(</span><span class="n">aseries</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    _coerce_series</span>
 <span class="sd">    Convert the series type to its nullable type</span>
 <span class="sd">    </span>

@@ -174,7 +174,7 @@
 
 <div class="viewcode-block" id="TidyDataFrameFormatter"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyDataFrameFormatter">[docs]</a><span class="k">class</span> <span class="nc">TidyDataFrameFormatter</span><span class="p">(</span><span class="n">DataFrameFormatter</span><span class="p">):</span>
 <div class="viewcode-block" id="TidyDataFrameFormatter._truncate_horizontally"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyDataFrameFormatter._truncate_horizontally">[docs]</a>    <span class="k">def</span> <span class="nf">_truncate_horizontally</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Remove columns, which are not to be displayed and adjust formatters.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove columns, which are not to be displayed and adjust formatters.</span>
 <span class="sd">        Attributes affected:</span>
 <span class="sd">            - tr_frame</span>
 <span class="sd">            - formatters</span>
@@ -203,7 +203,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tr_col_num</span> <span class="o">=</span> <span class="n">col_num</span></div>
 
 <div class="viewcode-block" id="TidyDataFrameFormatter._truncate_vertically"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyDataFrameFormatter._truncate_vertically">[docs]</a>    <span class="k">def</span> <span class="nf">_truncate_vertically</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Remove rows, which are not to be displayed.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove rows, which are not to be displayed.</span>
 <span class="sd">        Attributes affected:</span>
 <span class="sd">            - tr_frame</span>
 <span class="sd">            - tr_row_num</span>
@@ -222,7 +222,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tr_row_num</span> <span class="o">=</span> <span class="n">row_num</span></div>
 
 <div class="viewcode-block" id="TidyDataFrameFormatter.format_col"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyDataFrameFormatter.format_col">[docs]</a>    <span class="k">def</span> <span class="nf">format_col</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Format column, add dtype ahead&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Format column, add dtype ahead&quot;&quot;&quot;</span>
         <span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tr_frame</span>
         <span class="n">formatter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_formatter</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="n">dtype</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">name</span>
@@ -239,7 +239,7 @@
 
 
 <div class="viewcode-block" id="TidyDataFrameFormatter.get_strcols"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyDataFrameFormatter.get_strcols">[docs]</a>    <span class="k">def</span> <span class="nf">get_strcols</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Render a DataFrame to a list of columns (as lists of strings).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">strcols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_strcols_without_index</span><span class="p">()</span>
@@ -316,7 +316,7 @@
 
 
 <div class="viewcode-block" id="TidyNotebookFormatter"><a class="viewcode-back" href="../../autoapi/tidypandas/format/index.html#tidypandas.format.TidyNotebookFormatter">[docs]</a><span class="k">class</span> <span class="nc">TidyNotebookFormatter</span><span class="p">(</span><span class="n">TidyHTMLFormatter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Internal class for formatting output data in html for display in Jupyter</span>
 <span class="sd">    Notebooks. This class is intended for functionality specific to</span>
 <span class="sd">    DataFrame._repr_html_() and DataFrame.to_html(notebook=True)</span>
