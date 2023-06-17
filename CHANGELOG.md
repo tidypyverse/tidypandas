@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.2.5 (13th June 2023)
+## v0.2.6 (18th June 2023)
 - pivot_wider gains a new argument `id_expand` (False by default)
 
 ## v0.2.5 (13th June 2023)
