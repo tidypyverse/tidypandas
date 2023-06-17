@@ -3659,14 +3659,15 @@ class tidyframe:
         return res
     
     # pivot methods
-    def pivot_wider(self
-                    , names_from
-                    , values_from
-                    , values_fill = None
-                    , values_fn = None
-                    , id_cols = None
-                    , sep = "__"
-                    , names_prefix = ""
+    def pivot_wider(self,
+                    names_from,
+                    values_from,
+                    values_fill = None,
+                    values_fn = None,
+                    id_cols = None,
+                    sep = "__",
+                    names_prefix = "",
+                    id_expand = False
                     ):
         '''
         Pivot data from long to wide
@@ -3700,6 +3701,11 @@ class tidyframe:
             
         names_prefix: string
             prefix for new columns
+            
+        id_expand: flag
+            Should the values in the id_cols columns be expanded before 
+            pivoting? This results in more rows, the output will contain a
+            complete expansion of all possible values in id_cols.
             
         Returns
         -------
@@ -3870,21 +3876,24 @@ class tidyframe:
             "arg 'names_prefix' should be a string without spaces"
         assert ' ' not in names_prefix,\
             "arg 'names_prefix' should be a string without spaces"
+            
+        assert isinstance(id_expand, bool),\
+            "arg 'id_expand' should be a flag"
         
         # make values_from a scalar if it is
         if len(values_from) == 1:
             values_from = values_from[0]
         
         # core pivoting logic
-        res = pd.pivot_table(data         = self.__data
-                             , index      = id_cols
-                             , columns    = names_from
-                             , values     = values_from
-                             , fill_value = values_fill
-                             , aggfunc    = values_fn
-                             , margins    = False
-                             , dropna     = False
-                             , observed   = True
+        res = pd.pivot_table(data       = self.__data,
+                             index      = id_cols,
+                             columns    = names_from,
+                             values     = values_from,
+                             fill_value = values_fill,
+                             aggfunc    = values_fn,
+                             margins    = False,
+                             dropna     = not id_expand,
+                             observed   = True
                              )
         
         res = tidyframe(simplify(res), copy = False, check = False)
