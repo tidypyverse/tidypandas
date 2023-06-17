@@ -346,7 +346,29 @@ def test_joins(penguins_data):
     assert sorted(res.colnames) == sorted(exp_cols_list)
     
 ## test pivot
-
+def test_pivot_wider(penguins_data):
+    df = pd.DataFrame({"a": [1,2,3,1],
+                       "b": [1,2,3,1],
+                       "c": ["aa", "bb", "aa", "bb"],
+                       "d": [1,2,3,1]
+                       })
+    tidy_df = tidyframe(df)
+    
+    # id_expand is False by default
+    res = tidy_df.pivot_wider(id_cols=["a", "b"],
+                              names_from=["c"],
+                              values_from=["d"]
+                              )
+    assert res.nrow == 3
+    
+    # should get more rows when True
+    res = tidy_df.pivot_wider(id_cols=["a", "b"],
+                              names_from=["c"],
+                              values_from=["d"],
+                              id_expand = True
+                              )
+    assert res.nrow == 9
+    
 ## test slice and its extensions
 def test_slice(penguins_data):
     penguins_tidy = tidyframe(penguins_data)

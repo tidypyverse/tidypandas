@@ -51,6 +51,9 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
+.Rhistory
+*.Rproj
+
 # Translations
 *.mo
 *.pot
@@ -131,3 +134,4 @@ dmypy.json
 
 .DS_Store
 .Rhistory
+.Rproj.user

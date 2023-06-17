@@ -348,6 +348,7 @@ class tp:
                     , id_cols = None
                     , sep = "__"
                     , names_prefix = ""
+                    , id_expand = False
                     ):
         tf = tidyframe(self._obj, copy = False, check = False)
         return tf.pivot_wider(names_from = names_from
@@ -357,6 +358,7 @@ class tp:
                               , id_cols = id_cols
                               , sep = sep
                               , names_prefix = names_prefix
+                              , id_expand = id_expand
                               ).to_pandas(copy = False)
     
     def pivot_longer(self
