@@ -3822,14 +3822,15 @@
         <span class="k">return</span> <span class="n">res</span></div>
     
     <span class="c1"># pivot methods</span>
-<div class="viewcode-block" id="tidyframe.pivot_wider"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.pivot_wider">[docs]</a>    <span class="k">def</span> <span class="nf">pivot_wider</span><span class="p">(</span><span class="bp">self</span>
-                    <span class="p">,</span> <span class="n">names_from</span>
-                    <span class="p">,</span> <span class="n">values_from</span>
-                    <span class="p">,</span> <span class="n">values_fill</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="p">,</span> <span class="n">values_fn</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="p">,</span> <span class="n">id_cols</span> <span class="o">=</span> <span class="kc">None</span>
-                    <span class="p">,</span> <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;__&quot;</span>
-                    <span class="p">,</span> <span class="n">names_prefix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<div class="viewcode-block" id="tidyframe.pivot_wider"><a class="viewcode-back" href="../../autoapi/tidypandas/tidyframe_class/index.html#tidypandas.tidyframe.pivot_wider">[docs]</a>    <span class="k">def</span> <span class="nf">pivot_wider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                    <span class="n">names_from</span><span class="p">,</span>
+                    <span class="n">values_from</span><span class="p">,</span>
+                    <span class="n">values_fill</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">values_fn</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">id_cols</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                    <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;__&quot;</span><span class="p">,</span>
+                    <span class="n">names_prefix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+                    <span class="n">id_expand</span> <span class="o">=</span> <span class="kc">False</span>
                     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Pivot data from long to wide</span>
@@ -3863,6 +3864,11 @@
 <span class="sd">            </span>
 <span class="sd">        names_prefix: string</span>
 <span class="sd">            prefix for new columns</span>
+<span class="sd">            </span>
+<span class="sd">        id_expand: flag</span>
+<span class="sd">            Should the values in the id_cols columns be expanded before </span>
+<span class="sd">            pivoting? This results in more rows, the output will contain a</span>
+<span class="sd">            complete expansion of all possible values in id_cols.</span>
 <span class="sd">            </span>
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -4033,21 +4039,24 @@
             <span class="s2">&quot;arg &#39;names_prefix&#39; should be a string without spaces&quot;</span>
         <span class="k">assert</span> <span class="s1">&#39; &#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">names_prefix</span><span class="p">,</span>\
             <span class="s2">&quot;arg &#39;names_prefix&#39; should be a string without spaces&quot;</span>
+            
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">id_expand</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>\
+            <span class="s2">&quot;arg &#39;id_expand&#39; should be a flag&quot;</span>
         
         <span class="c1"># make values_from a scalar if it is</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values_from</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">values_from</span> <span class="o">=</span> <span class="n">values_from</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         
         <span class="c1"># core pivoting logic</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">data</span>         <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data</span>
-                             <span class="p">,</span> <span class="n">index</span>      <span class="o">=</span> <span class="n">id_cols</span>
-                             <span class="p">,</span> <span class="n">columns</span>    <span class="o">=</span> <span class="n">names_from</span>
-                             <span class="p">,</span> <span class="n">values</span>     <span class="o">=</span> <span class="n">values_from</span>
-                             <span class="p">,</span> <span class="n">fill_value</span> <span class="o">=</span> <span class="n">values_fill</span>
-                             <span class="p">,</span> <span class="n">aggfunc</span>    <span class="o">=</span> <span class="n">values_fn</span>
-                             <span class="p">,</span> <span class="n">margins</span>    <span class="o">=</span> <span class="kc">False</span>
-                             <span class="p">,</span> <span class="n">dropna</span>     <span class="o">=</span> <span class="kc">False</span>
-                             <span class="p">,</span> <span class="n">observed</span>   <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">data</span>       <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__data</span><span class="p">,</span>
+                             <span class="n">index</span>      <span class="o">=</span> <span class="n">id_cols</span><span class="p">,</span>
+                             <span class="n">columns</span>    <span class="o">=</span> <span class="n">names_from</span><span class="p">,</span>
+                             <span class="n">values</span>     <span class="o">=</span> <span class="n">values_from</span><span class="p">,</span>
+                             <span class="n">fill_value</span> <span class="o">=</span> <span class="n">values_fill</span><span class="p">,</span>
+                             <span class="n">aggfunc</span>    <span class="o">=</span> <span class="n">values_fn</span><span class="p">,</span>
+                             <span class="n">margins</span>    <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                             <span class="n">dropna</span>     <span class="o">=</span> <span class="ow">not</span> <span class="n">id_expand</span><span class="p">,</span>
+                             <span class="n">observed</span>   <span class="o">=</span> <span class="kc">True</span>
                              <span class="p">)</span>
         
         <span class="n">res</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">simplify</span><span class="p">(</span><span class="n">res</span><span class="p">),</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
