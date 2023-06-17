@@ -167,7 +167,7 @@ Classes
    .. py:method:: add_count(column_names=None, name='n', wt=None)
 
 
-   .. py:method:: pivot_wider(names_from, values_from, values_fill=None, values_fn=None, id_cols=None, sep='__', names_prefix='')
+   .. py:method:: pivot_wider(names_from, values_from, values_fill=None, values_fn=None, id_cols=None, sep='__', names_prefix='', id_expand=False)
 
 
    .. py:method:: pivot_longer(cols, names_to='name', values_to='value', include=True, values_drop_na=False)

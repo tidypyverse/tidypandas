@@ -1887,7 +1887,7 @@ Classes
       ..
           !! processed by numpydoc !!
 
-   .. py:method:: pivot_wider(names_from, values_from, values_fill=None, values_fn=None, id_cols=None, sep='__', names_prefix='')
+   .. py:method:: pivot_wider(names_from, values_from, values_fill=None, values_fn=None, id_cols=None, sep='__', names_prefix='', id_expand=False)
 
       
       Pivot data from long to wide
@@ -1913,6 +1913,10 @@ Classes
       :type sep: string
       :param names_prefix: prefix for new columns
       :type names_prefix: string
+      :param id_expand: Should the values in the id_cols columns be expanded before
+                        pivoting? This results in more rows, the output will contain a
+                        complete expansion of all possible values in id_cols.
+      :type id_expand: flag
 
       :rtype: tidyframe
 
