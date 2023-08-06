@@ -7,6 +7,11 @@ import pytest
 
 from tidypandas import tidyframe
 from tidypandas.tidy_utils import simplify
+from tidypandas.tidyselect import (
+    starts_with, 
+    ends_with,
+    contains
+)
 
 @pytest.fixture
 def penguins_data():
@@ -211,6 +216,34 @@ def test_select(penguins_data):
     expected = penguins_data.loc[:, sel_cols]
     result = penguins_tidy.select(['sex', 'species'], include = False).to_pandas()
     assert_frame_equal_v2(expected, result)
+
+def test_tidyselect(penguins_data):
+    penguins_tidy = tidyframe(penguins_data, copy=False)
+
+    expected = penguins_data[["bill_length_mm", "bill_depth_mm"]]
+    result = penguins_tidy.select(starts_with("bill")).to_pandas()
+    assert_frame_equal_v2(expected, result)
+
+    expected = penguins_data[["bill_length_mm", "bill_depth_mm", "flipper_length_mm"]]
+    result = penguins_tidy.select(ends_with("mm")).to_pandas()
+    assert_frame_equal_v2(expected, result)
+
+    expected = penguins_data[["bill_length_mm", "flipper_length_mm"]]
+    result = penguins_tidy.select(contains("length")).to_pandas()
+    assert_frame_equal_v2(expected, result)
+
+    expected = (penguins_data
+                   .melt(id_vars         = list(set(penguins_data.columns).difference(["bill_length_mm", "flipper_length_mm"]))
+                         , value_vars    = ["bill_length_mm", "flipper_length_mm"]
+                         , var_name      = "name"
+                         , value_name    = "value"
+                         , ignore_index  = True
+                         )
+                )
+    result = penguins_tidy.pivot_longer(cols=contains("length")).to_pandas()
+    assert_frame_equal_v2(expected, result)
+
+
 
 def test_filter(penguins_data):
     penguins_tidy = tidyframe(penguins_data, copy=False)
