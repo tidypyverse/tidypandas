@@ -2321,15 +2321,15 @@ class tidyframe:
         cn = self.colnames
         summary_dict = {}
         
-        def _validate_rhs_val(akey, rhs_val):
-            if not pd.isna(rhs_val):
-                if not np.isscalar(rhs_val):
-                    if not (len(rhs_val) == 1 and np.isscalar(rhs_val[0])):
-                        raise Exception((f"Summarised value for key {akey} does not"
-                                         " turn out to be a scalar or cannot be "
-                                         "converted to a scalar")
-                                        )
-            return None
+        # def _validate_rhs_val(akey, rhs_val):
+        #     if not pd.isna(rhs_val):
+        #         if not np.isscalar(rhs_val):
+        #             if not (len(rhs_val) == 1 and np.isscalar(rhs_val[0])):
+        #                 raise Exception((f"Summarised value for key {akey} does not"
+        #                                  " turn out to be a scalar or cannot be "
+        #                                  "converted to a scalar")
+        #                                 )
+        #     return None
         
         for akey in dictionary:
             
@@ -2363,12 +2363,12 @@ class tidyframe:
                         else:
                             rhs_val = rhs(self.__data)
                             
-                        _validate_rhs_val(akey, rhs_val)
+                        #_validate_rhs_val(akey, rhs_val)
                         summary_dict[akey] = rhs_val
                     else:
                         rhs = eval("lambda x, **kwargs: " + rhs)
                         rhs_val = rhs(self.__data, **kwargs)
-                        _validate_rhs_val(akey, rhs_val)
+                        #_validate_rhs_val(akey, rhs_val)
                         summary_dict[akey] = rhs_val
                                  
                 # 2. assign via simple function
@@ -2398,7 +2398,7 @@ class tidyframe:
                         else:
                             rhs_val = rhs[0](*[self.__data[acol] for acol in cols])
                             
-                        _validate_rhs_val(akey, rhs_val)
+                        #_validate_rhs_val(akey, rhs_val)
                         summary_dict[akey] = rhs_val
                     else:
                         # string case
@@ -2413,7 +2413,7 @@ class tidyframe:
                                    )
                       
                         rhs_val = fun(*[self.__data[acol] for acol in cols], **kwargs)
-                        _validate_rhs_val(akey, rhs_val)
+                        #_validate_rhs_val(akey, rhs_val)
                         summary_dict[akey] = rhs_val
                 else:
                     raise Exception((f"RHS for key '{akey}' should be in some "
@@ -2432,7 +2432,7 @@ class tidyframe:
                     else:
                         rhs_val = rhs(self.__data)
                         
-                    [_validate_rhs_val(akey, x) for x in rhs_val]
+                    #[_validate_rhs_val(akey, x) for x in rhs_val]
                         
                     assert (isinstance(rhs_val, list) 
                             and len(rhs_val) == len(akey)
@@ -2480,7 +2480,7 @@ class tidyframe:
                                    )  
                         rhs_val = fun(*[self.__data[acol] for acol in cols], **kwargs)
                         
-                    [_validate_rhs_val(akey, x) for x in rhs_val]
+                    #[_validate_rhs_val(akey, x) for x in rhs_val]
                     
                     assert (isinstance(rhs_val, list) 
                             and len(rhs_val) == len(akey)
@@ -2495,7 +2495,12 @@ class tidyframe:
                     raise Exception((f"RHS for key '{akey}' should be in some "
                                      "standard form"
                                      ))
-                                     
+        
+        # If summarise results an iterable, to wrap it in a list before creating the dataframe
+        for k in summary_dict:
+            if hasattr(summary_dict[k], "__iter__"):
+                summary_dict[k] = [summary_dict[k]]
+
         res = pd.DataFrame(summary_dict, index = [0])
         return tidyframe(res, copy = False, check = False)
   
