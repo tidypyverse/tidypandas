@@ -108,7 +108,7 @@ class tp:
                            
     def rename(self, old_new_dict = None, predicate = None, func = None):
         tf = tidyframe(self._obj, copy = False, check = False)
-        res = (tf.rename(old_new_dict = old_new_dict,
+        return (tf.rename(old_new_dict = old_new_dict,
                          predicate = predicate,
                          func = func
                         )
@@ -194,7 +194,7 @@ class tp:
                    , on_x = None
                    , on_y = None
                    , sort = True
-                   , suffix_y = "_y"
+                   , suffix = ["", "_y"]
                    ):
         tf = tidyframe(self._obj, copy = False, check = False)
         y  = tidyframe(y, copy = False, check = True)
@@ -203,7 +203,7 @@ class tp:
                              , on_x = on_x
                              , on_y = on_y
                              , sort = sort
-                             , suffix_y = suffix_y
+                             , suffix = suffix
                              ).to_pandas(copy = False)
     
     def full_join(self
@@ -212,7 +212,7 @@ class tp:
                    , on_x = None
                    , on_y = None
                    , sort = True
-                   , suffix_y = "_y"
+                   , suffix = ["", "_y"]
                    ):
         tf = tidyframe(self._obj, copy = False, check = False)
         y  = tidyframe(y, copy = False, check = True)
@@ -221,7 +221,7 @@ class tp:
                              , on_x = on_x
                              , on_y = on_y
                              , sort = sort
-                             , suffix_y = suffix_y
+                             , suffix = suffix
                              ).to_pandas(copy = False)
     
     outer_join = full_join
@@ -232,7 +232,7 @@ class tp:
                    , on_x = None
                    , on_y = None
                    , sort = True
-                   , suffix_y = "_y"
+                   , suffix = ["", "_y"]
                    ):
         tf = tidyframe(self._obj, copy = False, check = False)
         y  = tidyframe(y, copy = False, check = True)
@@ -241,7 +241,7 @@ class tp:
                              , on_x = on_x
                              , on_y = on_y
                              , sort = sort
-                             , suffix_y = suffix_y
+                             , suffix = suffix
                              ).to_pandas(copy = False)
                              
     def right_join(self
@@ -250,7 +250,7 @@ class tp:
                    , on_x = None
                    , on_y = None
                    , sort = True
-                   , suffix_y = "_y"
+                   , suffix = ["", "_y"]
                    ):
         tf = tidyframe(self._obj, copy = False, check = False)
         y  = tidyframe(y, copy = False, check = True)
@@ -259,7 +259,7 @@ class tp:
                              , on_x = on_x
                              , on_y = on_y
                              , sort = sort
-                             , suffix_y = suffix_y
+                             , suffix = suffix
                              ).to_pandas(copy = False)
     
     def semi_join(self
@@ -268,7 +268,6 @@ class tp:
                    , on_x = None
                    , on_y = None
                    , sort = True
-                   , suffix_y = "_y"
                    ):
         tf = tidyframe(self._obj, copy = False, check = False)
         y  = tidyframe(y, copy = False, check = True)
@@ -277,7 +276,6 @@ class tp:
                              , on_x = on_x
                              , on_y = on_y
                              , sort = sort
-                             , suffix_y = suffix_y
                              ).to_pandas(copy = False)
                            
     def anti_join(self
@@ -286,7 +284,6 @@ class tp:
                    , on_x = None
                    , on_y = None
                    , sort = True
-                   , suffix_y = "_y"
                    ):
         tf = tidyframe(self._obj, copy = False, check = False)
         y  = tidyframe(y, copy = False, check = True)
@@ -295,15 +292,14 @@ class tp:
                              , on_x = on_x
                              , on_y = on_y
                              , sort = sort
-                             , suffix_y = suffix_y
                              ).to_pandas(copy = False)
     
-    def cross_join(self, y, sort = True, suffix_y = "_y"):
+    def cross_join(self, y, sort = True, suffix = ["","_y"]):
         tf = tidyframe(self._obj, copy = False, check = False)
         y  = tidyframe(y, copy = False, check = True)
         return tf.cross_join(y = y
                              , sort = sort
-                             , suffix_y = suffix_y
+                             , suffix = suffix
                              ).to_pandas(copy = False)
     
     def cbind(self, y):

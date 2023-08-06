@@ -1430,8 +1430,6 @@ class tidyframe:
         
         Parameters
         ----------
-        column_names : list of strings
-            column names to order by.
         order_by: str, list, tuple
             column names and asc/desc tuples. See examples.
         na_position : str, optional
