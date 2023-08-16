@@ -1,0 +1,30 @@
+:py:mod:`tidypandas.tidyselect`
+===============================
+
+.. py:module:: tidypandas.tidyselect
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   tidypandas.tidyselect.starts_with
+   tidypandas.tidyselect.ends_with
+   tidypandas.tidyselect.contains
+
+
+
+.. py:function:: starts_with(prefix)
+
+
+.. py:function:: ends_with(suffix)
+
+
+.. py:function:: contains(pattern)
+
+

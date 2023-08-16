@@ -39,7 +39,7 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Changelog" href="../../../changelog.html" />
+    <link rel="next" title="tidypandas.tidyselect" href="../tidyselect/index.html" />
     <link rel="prev" title="tidypandas.tidy_utils" href="../tidy_utils/index.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
@@ -204,6 +204,15 @@
      <code class="xref py py-mod docutils literal notranslate">
       <span class="pre">
        tidypandas.tidyframe_class
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tidyselect/index.html">
+     <code class="xref py py-mod docutils literal notranslate">
+      <span class="pre">
+       tidypandas.tidyselect
       </span>
      </code>
     </a>
@@ -396,6 +405,11 @@
        <li class="toc-h5 nav-item toc-entry">
         <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe._validate_column_names">
          _validate_column_names
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#tidypandas.tidyframe_class.tidyframe._get_simplified_column_names">
+         _get_simplified_column_names
         </a>
        </li>
        <li class="toc-h5 nav-item toc-entry">
@@ -1193,6 +1207,11 @@ a side-effect</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe._get_simplified_column_names">
+<span class="sig-name descname"><span class="pre">_get_simplified_column_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe._get_simplified_column_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe._get_simplified_column_names" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe_class.tidyframe._clean_order_by">
 <span class="sig-name descname"><span class="pre">_clean_order_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order_by</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/tidyframe_class.html#tidyframe._clean_order_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe_class.tidyframe._clean_order_by" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
@@ -1490,7 +1509,6 @@ the columns are added to the begining of the dataframe (leftmost)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>column_names</strong> (<em>list of strings</em>) – column names to order by.</p></li>
 <li><p><strong>order_by</strong> (<em>str</em><em>, </em><em>list</em><em>, </em><em>tuple</em>) – column names and asc/desc tuples. See examples.</p></li>
 <li><p><strong>na_position</strong> (<em>str</em><em>, </em><em>optional</em>) – One among: ‘first’, ‘last’. The default is ‘last’.</p></li>
 <li><p><strong>by</strong> (<em>str</em><em>, </em><em>list of strings</em><em> (</em><em>default: None</em><em>)</em>) – Column names to group by</p></li>
@@ -3394,10 +3412,10 @@ dict (key: column name, value: value to fill)</p></li>
             <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tidypandas.tidy_utils</span></code></p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="../../../changelog.html" title="next page">
+    <a class='right-next' id="next-link" href="../tidyselect/index.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Changelog</p>
+        <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tidypandas.tidyselect</span></code></p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

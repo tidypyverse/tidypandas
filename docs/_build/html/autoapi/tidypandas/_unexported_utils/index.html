@@ -208,6 +208,15 @@
      </code>
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../tidyselect/index.html">
+     <code class="xref py py-mod docutils literal notranslate">
+      <span class="pre">
+       tidypandas.tidyselect
+      </span>
+     </code>
+    </a>
+   </li>
   </ul>
  </li>
 </ul>
@@ -259,6 +268,11 @@
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#tidypandas._unexported_utils._is_tidyselect_compatible">
+       _is_tidyselect_compatible
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#tidypandas._unexported_utils._enlist">
        _enlist
       </a>
@@ -301,6 +315,11 @@
      <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#tidypandas._unexported_utils._flatten_strings">
        _flatten_strings
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#tidypandas._unexported_utils._flatten_list">
+       _flatten_list
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
@@ -354,31 +373,37 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._is_string_or_string_list" title="tidypandas._unexported_utils._is_string_or_string_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_is_string_or_string_list</span></code></a>(x)</p></td>
 <td><p>Check whether the input is a string or a list of strings</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._enlist" title="tidypandas._unexported_utils._enlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_enlist</span></code></a>(x)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._is_tidyselect_compatible" title="tidypandas._unexported_utils._is_tidyselect_compatible"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_is_tidyselect_compatible</span></code></a>(x)</p></td>
+<td><p>Check whether the input is a string or a tidyselect closure or a list of strings and/or tidyselect closures</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._enlist" title="tidypandas._unexported_utils._enlist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_enlist</span></code></a>(x)</p></td>
 <td><p>Returns the input in a list (as first element of the list) unless input itself is a list</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._get_unique_names" title="tidypandas._unexported_utils._get_unique_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_unique_names</span></code></a>(strings)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._get_unique_names" title="tidypandas._unexported_utils._get_unique_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_unique_names</span></code></a>(strings)</p></td>
 <td><p>Returns a list of same length as the input such that elements are unique. This is done by adding '_1'. The resulting list does not alter nth element if the nth element occurs for the first time in the input list starting from left.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._is_unique_list" title="tidypandas._unexported_utils._is_unique_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_is_unique_list</span></code></a>(x)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._is_unique_list" title="tidypandas._unexported_utils._is_unique_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_is_unique_list</span></code></a>(x)</p></td>
 <td><p>Returns True if input list does not have duplicates</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._get_dtype_dict" title="tidypandas._unexported_utils._get_dtype_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_dtype_dict</span></code></a>(pdf)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._get_dtype_dict" title="tidypandas._unexported_utils._get_dtype_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_dtype_dict</span></code></a>(pdf)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._generate_new_string" title="tidypandas._unexported_utils._generate_new_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_generate_new_string</span></code></a>(strings)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._generate_new_string" title="tidypandas._unexported_utils._generate_new_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_generate_new_string</span></code></a>(strings)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._coerce_series" title="tidypandas._unexported_utils._coerce_series"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_coerce_series</span></code></a>(aseries)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._coerce_series" title="tidypandas._unexported_utils._coerce_series"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_coerce_series</span></code></a>(aseries)</p></td>
 <td><p>_coerce_series</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._coerce_pdf" title="tidypandas._unexported_utils._coerce_pdf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_coerce_pdf</span></code></a>(pdf)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._coerce_pdf" title="tidypandas._unexported_utils._coerce_pdf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_coerce_pdf</span></code></a>(pdf)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._is_nested" title="tidypandas._unexported_utils._is_nested"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_is_nested</span></code></a>(x)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._is_nested" title="tidypandas._unexported_utils._is_nested"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_is_nested</span></code></a>(x)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._flatten_strings" title="tidypandas._unexported_utils._flatten_strings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_flatten_strings</span></code></a>(x)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._flatten_strings" title="tidypandas._unexported_utils._flatten_strings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_flatten_strings</span></code></a>(x)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._flatten_list" title="tidypandas._unexported_utils._flatten_list"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_flatten_list</span></code></a>(x)</p></td>
 <td><p></p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tidypandas._unexported_utils._nested_is_unique" title="tidypandas._unexported_utils._nested_is_unique"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_nested_is_unique</span></code></a>(x)</p></td>
@@ -417,6 +442,32 @@
 <span class="gp">&gt;&gt;&gt; </span><span class="n">_is_string_or_string_list</span><span class="p">([</span><span class="s2">&quot;bar&quot;</span><span class="p">])</span>    <span class="c1"># True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">_is_string_or_string_list</span><span class="p">((</span><span class="s2">&quot;bar&quot;</span><span class="p">,))</span>   <span class="c1"># False</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">_is_string_or_string_list</span><span class="p">([</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="c1"># False</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tidypandas._unexported_utils._is_tidyselect_compatible">
+<span class="sig-prename descclassname"><span class="pre">tidypandas._unexported_utils.</span></span><span class="sig-name descname"><span class="pre">_is_tidyselect_compatible</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/_unexported_utils.html#_is_tidyselect_compatible"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas._unexported_utils._is_tidyselect_compatible" title="Permalink to this definition">#</a></dt>
+<dd><p>Check whether the input is a string or a tidyselect closure or a list of strings and/or tidyselect closures</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>object</em>) – Any python object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>bool</em></p></li>
+<li><p><em>True if input is a string or a list of strings</em></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">_is_tidyselect_compatible</span><span class="p">(</span><span class="s2">&quot;bar&quot;</span><span class="p">)</span>      <span class="c1"># True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_is_tidyselect_compatible</span><span class="p">([</span><span class="s2">&quot;bar&quot;</span><span class="p">])</span>    <span class="c1"># True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_is_tidyselect_compatible</span><span class="p">((</span><span class="s2">&quot;bar&quot;</span><span class="p">,))</span>   <span class="c1"># False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_is_tidyselect_compatible</span><span class="p">([</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="c1"># False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">_is_tidyselect_compatible</span><span class="p">([</span><span class="s2">&quot;bar&quot;</span><span class="p">,</span> <span class="n">ends_with</span><span class="p">(</span><span class="s2">&quot;_mean&quot;</span><span class="p">)])</span> <span class="c1"># True</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -519,6 +570,11 @@ Convert the series type to its nullable type</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="tidypandas._unexported_utils._flatten_strings">
 <span class="sig-prename descclassname"><span class="pre">tidypandas._unexported_utils.</span></span><span class="sig-name descname"><span class="pre">_flatten_strings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/_unexported_utils.html#_flatten_strings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas._unexported_utils._flatten_strings" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tidypandas._unexported_utils._flatten_list">
+<span class="sig-prename descclassname"><span class="pre">tidypandas._unexported_utils.</span></span><span class="sig-name descname"><span class="pre">_flatten_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/tidypandas/_unexported_utils.html#_flatten_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas._unexported_utils._flatten_list" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">

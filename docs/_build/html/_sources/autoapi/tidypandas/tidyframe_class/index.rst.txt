@@ -486,6 +486,9 @@ Classes
    .. py:method:: _validate_column_names(column_names)
 
 
+   .. py:method:: _get_simplified_column_names(column_names)
+
+
    .. py:method:: _clean_order_by(order_by)
 
 
@@ -869,8 +872,6 @@ Classes
       
       Orders the rows by the values of selected columns
 
-      :param column_names: column names to order by.
-      :type column_names: list of strings
       :param order_by: column names and asc/desc tuples. See examples.
       :type order_by: str, list, tuple
       :param na_position: One among: 'first', 'last'. The default is 'last'.

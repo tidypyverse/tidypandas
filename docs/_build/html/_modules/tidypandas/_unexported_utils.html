@@ -171,6 +171,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">pandas.api.types</span> <span class="k">as</span> <span class="nn">dtypes</span>
+<span class="kn">from</span> <span class="nn">tidypandas</span> <span class="kn">import</span> <span class="n">tidyselect</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <div class="viewcode-block" id="_is_kwargable"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._is_kwargable">[docs]</a><span class="k">def</span> <span class="nf">_is_kwargable</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
@@ -216,6 +217,43 @@
         <span class="n">res</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]):</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="kc">False</span>
+    
+    <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="_is_tidyselect_compatible"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._is_tidyselect_compatible">[docs]</a><span class="k">def</span> <span class="nf">_is_tidyselect_compatible</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    _is_tidyselect_compatible(x)</span>
+<span class="sd">    </span>
+<span class="sd">    Check whether the input is a string or a tidyselect closure or a list of strings and/or tidyselect closures</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : object</span>
+<span class="sd">        Any python object</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">    True if input is a string or a list of strings</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; _is_tidyselect_compatible(&quot;bar&quot;)      # True</span>
+<span class="sd">    &gt;&gt;&gt; _is_tidyselect_compatible([&quot;bar&quot;])    # True</span>
+<span class="sd">    &gt;&gt;&gt; _is_tidyselect_compatible((&quot;bar&quot;,))   # False</span>
+<span class="sd">    &gt;&gt;&gt; _is_tidyselect_compatible([&quot;bar&quot;, 1]) # False</span>
+<span class="sd">    &gt;&gt;&gt; _is_tidyselect_compatible([&quot;bar&quot;, ends_with(&quot;_mean&quot;)]) # True</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="nb">callable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tidyselect</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">callable</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">tidyselect</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]):</span>
             <span class="n">res</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">res</span> <span class="o">=</span> <span class="kc">False</span>
@@ -405,6 +443,17 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ele</span><span class="p">))</span>
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">res</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="_flatten_list"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._flatten_list">[docs]</a><span class="k">def</span> <span class="nf">_flatten_list</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ele</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ele</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">res</span> <span class="o">+=</span> <span class="n">ele</span>
+        <span class="k">elif</span> <span class="n">_is_nested</span><span class="p">(</span><span class="n">ele</span><span class="p">):</span>
+            <span class="n">res</span> <span class="o">+=</span> <span class="n">_flatten_list</span><span class="p">(</span><span class="n">ele</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ele</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span></div>
 
 <div class="viewcode-block" id="_nested_is_unique"><a class="viewcode-back" href="../../autoapi/tidypandas/_unexported_utils/index.html#tidypandas._unexported_utils._nested_is_unique">[docs]</a><span class="k">def</span> <span class="nf">_nested_is_unique</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="n">res</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>

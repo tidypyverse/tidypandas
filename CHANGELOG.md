@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.3.0 (16th Aug 2023)
+- `tidyselect` is introduced in a few verbs (methods) which support `start_with`, `ends_with` and `contains`.
+- `summarise` now supports returning an iterable within a list as a output, no longer restricts the output to a scalar.
+
 ## v0.2.6 (18th June 2023)
 - pivot_wider gains a new argument `id_expand` (False by default)
 

@@ -16,6 +16,7 @@ Submodules
    tidy_accessor/index.rst
    tidy_utils/index.rst
    tidyframe_class/index.rst
+   tidyselect/index.rst
 
 
 Package Contents
@@ -28,6 +29,16 @@ Classes
 
    tidypandas.tidyframe
 
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   tidypandas.starts_with
+   tidypandas.ends_with
+   tidypandas.contains
 
 
 
@@ -500,6 +511,9 @@ Classes
    .. py:method:: _validate_column_names(column_names)
 
 
+   .. py:method:: _get_simplified_column_names(column_names)
+
+
    .. py:method:: _clean_order_by(order_by)
 
 
@@ -883,8 +897,6 @@ Classes
       
       Orders the rows by the values of selected columns
 
-      :param column_names: column names to order by.
-      :type column_names: list of strings
       :param order_by: column names and asc/desc tuples. See examples.
       :type order_by: str, list, tuple
       :param na_position: One among: 'first', 'last'. The default is 'last'.
@@ -3284,5 +3296,14 @@ Classes
 
       ..
           !! processed by numpydoc !!
+
+
+.. py:function:: starts_with(prefix)
+
+
+.. py:function:: ends_with(suffix)
+
+
+.. py:function:: contains(pattern)
 
 

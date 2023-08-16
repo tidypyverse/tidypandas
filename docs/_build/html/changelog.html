@@ -39,7 +39,7 @@
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="tidypandas.tidyframe_class" href="autoapi/tidypandas/tidyframe_class/index.html" />
+    <link rel="prev" title="tidypandas.tidyselect" href="autoapi/tidypandas/tidyselect/index.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="None">
     
@@ -161,12 +161,17 @@
 <nav id="bd-toc-nav">
     <ul class="visible nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#v0-2-5-13th-june-2023">
-   v0.2.5 (13th June 2023)
+  <a class="reference internal nav-link" href="#v0-3-0-16th-aug-2023">
+   v0.3.0 (16th Aug 2023)
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id1">
+  <a class="reference internal nav-link" href="#v0-2-6-18th-june-2023">
+   v0.2.6 (18th June 2023)
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#v0-2-5-13th-june-2023">
    v0.2.5 (13th June 2023)
   </a>
  </li>
@@ -196,7 +201,7 @@
   </a>
  </li>
  <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#id2">
+  <a class="reference internal nav-link" href="#id1">
    v0.2.0 (12th June 2022)
   </a>
  </li>
@@ -253,14 +258,21 @@
                 
   <section class="tex2jax_ignore mathjax_ignore" id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">#</a></h1>
-<section id="v0-2-5-13th-june-2023">
-<h2>v0.2.5 (13th June 2023)<a class="headerlink" href="#v0-2-5-13th-june-2023" title="Permalink to this headline">#</a></h2>
+<section id="v0-3-0-16th-aug-2023">
+<h2>v0.3.0 (16th Aug 2023)<a class="headerlink" href="#v0-3-0-16th-aug-2023" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tidyselect</span></code> is introduced in a few verbs (methods) which support <code class="docutils literal notranslate"><span class="pre">start_with</span></code>, <code class="docutils literal notranslate"><span class="pre">ends_with</span></code> and <code class="docutils literal notranslate"><span class="pre">contains</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">summarise</span></code> now supports returning an iterable within a list as a output, no longer restricts the output to a scalar.</p></li>
+</ul>
+</section>
+<section id="v0-2-6-18th-june-2023">
+<h2>v0.2.6 (18th June 2023)<a class="headerlink" href="#v0-2-6-18th-june-2023" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
 <li><p>pivot_wider gains a new argument <code class="docutils literal notranslate"><span class="pre">id_expand</span></code> (False by default)</p></li>
 </ul>
 </section>
-<section id="id1">
-<h2>v0.2.5 (13th June 2023)<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h2>
+<section id="v0-2-5-13th-june-2023">
+<h2>v0.2.5 (13th June 2023)<a class="headerlink" href="#v0-2-5-13th-june-2023" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
 <li><p>slice_max and slice_min are rewritten to avoid pandas apply and using pandas.groupbBy.Series.rank, thereby being fast for larger datasets.</p></li>
 </ul>
@@ -304,8 +316,8 @@ handle complicated pandas dataframe input</p></li>
 <li><p>All changes of github only release v0.1.5</p></li>
 </ul>
 </section>
-<section id="id2">
-<h2>v0.2.0 (12th June 2022)<a class="headerlink" href="#id2" title="Permalink to this headline">#</a></h2>
+<section id="id1">
+<h2>v0.2.0 (12th June 2022)<a class="headerlink" href="#id1" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
 <li><p>show method added (print specified number of rows)</p></li>
 <li><p>glimpse method added (to see dataframe in horizontal form)</p></li>
@@ -363,11 +375,11 @@ handle complicated pandas dataframe input</p></li>
               
               <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="autoapi/tidypandas/tidyframe_class/index.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="autoapi/tidypandas/tidyselect/index.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tidypandas.tidyframe_class</span></code></p>
+            <p class="prev-next-title"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tidypandas.tidyselect</span></code></p>
         </div>
     </a>
 </div>

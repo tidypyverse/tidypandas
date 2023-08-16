@@ -271,7 +271,7 @@
                            
 <div class="viewcode-block" id="tp.rename"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.rename">[docs]</a>    <span class="k">def</span> <span class="nf">rename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_new_dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">predicate</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">func</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="n">res</span> <span class="o">=</span> <span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">old_new_dict</span> <span class="o">=</span> <span class="n">old_new_dict</span><span class="p">,</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">old_new_dict</span> <span class="o">=</span> <span class="n">old_new_dict</span><span class="p">,</span>
                          <span class="n">predicate</span> <span class="o">=</span> <span class="n">predicate</span><span class="p">,</span>
                          <span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
                         <span class="p">)</span>
@@ -357,7 +357,7 @@
                    <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
-                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
+                   <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_y&quot;</span><span class="p">]</span>
                    <span class="p">):</span>
         <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
@@ -366,7 +366,7 @@
                              <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
                              <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
                              <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
-                             <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                             <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="n">suffix</span>
                              <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="tp.full_join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.full_join">[docs]</a>    <span class="k">def</span> <span class="nf">full_join</span><span class="p">(</span><span class="bp">self</span>
@@ -375,7 +375,7 @@
                    <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
-                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
+                   <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_y&quot;</span><span class="p">]</span>
                    <span class="p">):</span>
         <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
@@ -384,7 +384,7 @@
                              <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
                              <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
                              <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
-                             <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                             <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="n">suffix</span>
                              <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
     
     <span class="n">outer_join</span> <span class="o">=</span> <span class="n">full_join</span>
@@ -395,7 +395,7 @@
                    <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
-                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
+                   <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_y&quot;</span><span class="p">]</span>
                    <span class="p">):</span>
         <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
@@ -404,7 +404,7 @@
                              <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
                              <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
                              <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
-                             <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                             <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="n">suffix</span>
                              <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
                              
 <div class="viewcode-block" id="tp.right_join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.right_join">[docs]</a>    <span class="k">def</span> <span class="nf">right_join</span><span class="p">(</span><span class="bp">self</span>
@@ -413,7 +413,7 @@
                    <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
-                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
+                   <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;_y&quot;</span><span class="p">]</span>
                    <span class="p">):</span>
         <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
@@ -422,7 +422,7 @@
                              <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
                              <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
                              <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
-                             <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                             <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="n">suffix</span>
                              <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="tp.semi_join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.semi_join">[docs]</a>    <span class="k">def</span> <span class="nf">semi_join</span><span class="p">(</span><span class="bp">self</span>
@@ -431,7 +431,6 @@
                    <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
-                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
                    <span class="p">):</span>
         <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
@@ -440,7 +439,6 @@
                              <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
                              <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
                              <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
-                             <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
                              <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
                            
 <div class="viewcode-block" id="tp.anti_join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.anti_join">[docs]</a>    <span class="k">def</span> <span class="nf">anti_join</span><span class="p">(</span><span class="bp">self</span>
@@ -449,7 +447,6 @@
                    <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="kc">None</span>
                    <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span>
-                   <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span>
                    <span class="p">):</span>
         <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
@@ -458,15 +455,14 @@
                              <span class="p">,</span> <span class="n">on_x</span> <span class="o">=</span> <span class="n">on_x</span>
                              <span class="p">,</span> <span class="n">on_y</span> <span class="o">=</span> <span class="n">on_y</span>
                              <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
-                             <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
                              <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
     
-<div class="viewcode-block" id="tp.cross_join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.cross_join">[docs]</a>    <span class="k">def</span> <span class="nf">cross_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="s2">&quot;_y&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="tp.cross_join"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.cross_join">[docs]</a>    <span class="k">def</span> <span class="nf">cross_join</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="s2">&quot;_y&quot;</span><span class="p">]):</span>
         <span class="n">tf</span> <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obj</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">y</span>  <span class="o">=</span> <span class="n">tidyframe</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tf</span><span class="o">.</span><span class="n">cross_join</span><span class="p">(</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
                              <span class="p">,</span> <span class="n">sort</span> <span class="o">=</span> <span class="n">sort</span>
-                             <span class="p">,</span> <span class="n">suffix_y</span> <span class="o">=</span> <span class="n">suffix_y</span>
+                             <span class="p">,</span> <span class="n">suffix</span> <span class="o">=</span> <span class="n">suffix</span>
                              <span class="p">)</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">(</span><span class="n">copy</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span></div>
     
 <div class="viewcode-block" id="tp.cbind"><a class="viewcode-back" href="../../autoapi/tidypandas/tidy_accessor/index.html#tidypandas.tidy_accessor.tp.cbind">[docs]</a>    <span class="k">def</span> <span class="nf">cbind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>

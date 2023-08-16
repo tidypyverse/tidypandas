@@ -208,6 +208,15 @@
      </code>
     </a>
    </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="tidyselect/index.html">
+     <code class="xref py py-mod docutils literal notranslate">
+      <span class="pre">
+       tidypandas.tidyselect
+      </span>
+     </code>
+    </a>
+   </li>
   </ul>
  </li>
 </ul>
@@ -246,6 +255,11 @@
    <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#classes">
      Classes
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#functions">
+     Functions
     </a>
     <ul class="nav section-nav flex-column">
      <li class="toc-h4 nav-item toc-entry">
@@ -401,6 +415,11 @@
        <li class="toc-h5 nav-item toc-entry">
         <a class="reference internal nav-link" href="#tidypandas.tidyframe._validate_column_names">
          _validate_column_names
+        </a>
+       </li>
+       <li class="toc-h5 nav-item toc-entry">
+        <a class="reference internal nav-link" href="#tidypandas.tidyframe._get_simplified_column_names">
+         _get_simplified_column_names
         </a>
        </li>
        <li class="toc-h5 nav-item toc-entry">
@@ -705,6 +724,21 @@
        </li>
       </ul>
      </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#tidypandas.starts_with">
+       starts_with
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#tidypandas.ends_with">
+       ends_with
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#tidypandas.contains">
+       contains
+      </a>
+     </li>
     </ul>
    </li>
   </ul>
@@ -742,6 +776,7 @@
 <li class="toctree-l1"><a class="reference internal" href="tidy_accessor/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tidypandas.tidy_accessor</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="tidy_utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tidypandas.tidy_utils</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="tidyframe_class/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tidypandas.tidyframe_class</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="tidyselect/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">tidypandas.tidyselect</span></code></a></li>
 </ul>
 </div>
 </section>
@@ -757,6 +792,26 @@
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#tidypandas.tidyframe" title="tidypandas.tidyframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tidyframe</span></code></a></p></td>
 <td><p>tidyframe class</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">#</a></h3>
+<table class="autosummary longtable table autosummary">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tidypandas.starts_with" title="tidypandas.starts_with"><code class="xref py py-obj docutils literal notranslate"><span class="pre">starts_with</span></code></a>(prefix)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#tidypandas.ends_with" title="tidypandas.ends_with"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ends_with</span></code></a>(suffix)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#tidypandas.contains" title="tidypandas.contains"><code class="xref py py-obj docutils literal notranslate"><span class="pre">contains</span></code></a>(pattern)</p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
@@ -1211,6 +1266,11 @@ a side-effect</p>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="tidypandas.tidyframe._get_simplified_column_names">
+<span class="sig-name descname"><span class="pre">_get_simplified_column_names</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column_names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe._get_simplified_column_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe._get_simplified_column_names" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="tidypandas.tidyframe._clean_order_by">
 <span class="sig-name descname"><span class="pre">_clean_order_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">order_by</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyframe_class.html#tidyframe._clean_order_by"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.tidyframe._clean_order_by" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
@@ -1508,7 +1568,6 @@ the columns are added to the begining of the dataframe (leftmost)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>column_names</strong> (<em>list of strings</em>) – column names to order by.</p></li>
 <li><p><strong>order_by</strong> (<em>str</em><em>, </em><em>list</em><em>, </em><em>tuple</em>) – column names and asc/desc tuples. See examples.</p></li>
 <li><p><strong>na_position</strong> (<em>str</em><em>, </em><em>optional</em>) – One among: ‘first’, ‘last’. The default is ‘last’.</p></li>
 <li><p><strong>by</strong> (<em>str</em><em>, </em><em>list of strings</em><em> (</em><em>default: None</em><em>)</em>) – Column names to group by</p></li>
@@ -3394,6 +3453,21 @@ dict (key: column name, value: value to fill)</p></li>
 </dd></dl>
 
 </dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tidypandas.starts_with">
+<span class="sig-prename descclassname"><span class="pre">tidypandas.</span></span><span class="sig-name descname"><span class="pre">starts_with</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyselect.html#starts_with"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.starts_with" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tidypandas.ends_with">
+<span class="sig-prename descclassname"><span class="pre">tidypandas.</span></span><span class="sig-name descname"><span class="pre">ends_with</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">suffix</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyselect.html#ends_with"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.ends_with" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="tidypandas.contains">
+<span class="sig-prename descclassname"><span class="pre">tidypandas.</span></span><span class="sig-name descname"><span class="pre">contains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pattern</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/tidypandas/tidyselect.html#contains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tidypandas.contains" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
 </section>
 </section>

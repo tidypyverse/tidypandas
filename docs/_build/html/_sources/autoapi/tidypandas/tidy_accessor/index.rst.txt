@@ -134,25 +134,25 @@ Classes
    .. py:method:: summarise(dictionary=None, func=None, column_names=None, predicate=None, prefix='', by=None, **kwargs)
 
 
-   .. py:method:: inner_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: inner_join(y, on=None, on_x=None, on_y=None, sort=True, suffix=['', '_y'])
 
 
-   .. py:method:: full_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: full_join(y, on=None, on_x=None, on_y=None, sort=True, suffix=['', '_y'])
 
 
-   .. py:method:: left_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: left_join(y, on=None, on_x=None, on_y=None, sort=True, suffix=['', '_y'])
 
 
-   .. py:method:: right_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: right_join(y, on=None, on_x=None, on_y=None, sort=True, suffix=['', '_y'])
 
 
-   .. py:method:: semi_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: semi_join(y, on=None, on_x=None, on_y=None, sort=True)
 
 
-   .. py:method:: anti_join(y, on=None, on_x=None, on_y=None, sort=True, suffix_y='_y')
+   .. py:method:: anti_join(y, on=None, on_x=None, on_y=None, sort=True)
 
 
-   .. py:method:: cross_join(y, sort=True, suffix_y='_y')
+   .. py:method:: cross_join(y, sort=True, suffix=['', '_y'])
 
 
    .. py:method:: cbind(y)

@@ -16,6 +16,7 @@ Functions
    tidypandas._unexported_utils._is_kwargable
    tidypandas._unexported_utils._is_valid_colname
    tidypandas._unexported_utils._is_string_or_string_list
+   tidypandas._unexported_utils._is_tidyselect_compatible
    tidypandas._unexported_utils._enlist
    tidypandas._unexported_utils._get_unique_names
    tidypandas._unexported_utils._is_unique_list
@@ -25,6 +26,7 @@ Functions
    tidypandas._unexported_utils._coerce_pdf
    tidypandas._unexported_utils._is_nested
    tidypandas._unexported_utils._flatten_strings
+   tidypandas._unexported_utils._flatten_list
    tidypandas._unexported_utils._nested_is_unique
 
 
@@ -52,6 +54,42 @@ Functions
    >>> _is_string_or_string_list(["bar"])    # True
    >>> _is_string_or_string_list(("bar",))   # False
    >>> _is_string_or_string_list(["bar", 1]) # False
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: _is_tidyselect_compatible(x)
+
+   
+   Check whether the input is a string or a tidyselect closure or a list of strings and/or tidyselect closures
+
+   :param x: Any python object
+   :type x: object
+
+   :returns: * *bool*
+             * *True if input is a string or a list of strings*
+
+   .. rubric:: Examples
+
+   >>> _is_tidyselect_compatible("bar")      # True
+   >>> _is_tidyselect_compatible(["bar"])    # True
+   >>> _is_tidyselect_compatible(("bar",))   # False
+   >>> _is_tidyselect_compatible(["bar", 1]) # False
+   >>> _is_tidyselect_compatible(["bar", ends_with("_mean")]) # True
 
 
 
@@ -209,6 +247,9 @@ Functions
 
 
 .. py:function:: _flatten_strings(x)
+
+
+.. py:function:: _flatten_list(x)
 
 
 .. py:function:: _nested_is_unique(x)
