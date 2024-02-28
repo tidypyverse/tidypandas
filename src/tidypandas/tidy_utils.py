@@ -15,9 +15,9 @@ import functools
 # simplify
 # -----------------------------------------------------------------------------
 
-def simplify(pdf
-             , sep = "__"
-             , verbose = False
+def simplify(pdf,
+             sep = "__",
+             verbose = False
              ):
     '''
     simplify(pdf)
@@ -184,7 +184,7 @@ def is_simple(pdf, verbose = False):
     
         1. Column names (x.columns) are an unnamed pd.Index object of unique 
            strings. Column names do not start from "_".
-        2. Row names (x.index) is a numeric index (x.indx.is_numeric() is True).
+        2. Row names (x.index) is a numeric index (x.index.is_numeric() is True).
         
     Returns
     -------
@@ -207,8 +207,9 @@ def is_simple(pdf, verbose = False):
     col_flag = not isinstance(pdf.columns, pd.MultiIndex)
     
     # check if row index is numeric
+    from pandas.api.types import is_numeric_dtype
     flag_numeric_index = False
-    if pdf.index.is_numeric():
+    if is_numeric_dtype(pdf.index):
         flag_numeric_index = True 
             
     # check if all column names are strings

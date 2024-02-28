@@ -76,12 +76,16 @@ def test_mutate(penguins_data):
 def test_mutate_groupby(penguins_data):
     penguins_tidy = tidyframe(penguins_data, copy=False)
 
-
-    expected = penguins_data.groupby("sex", dropna=False)\
-                  .apply(lambda x: x.assign(year_mod=lambda y: y["year"] + np.mean(y["year"]) - 4015))
+    expected = (penguins_data
+                .groupby("sex", dropna=False)
+                .apply(lambda x: x.assign(year_mod=lambda y: y["year"] + np.mean(y["year"]) - 4015))
+                .reset_index(drop = True)
+                .sort_values(list(penguins_data.columns), ignore_index = True)
+                )
     result = penguins_tidy.mutate({'year_mod' : "x['year'] + np.mean(x['year']) - 4015"}
                                    , by = 'sex'
-                                   ).to_pandas()
+                                   ).to_pandas().sort_values(list(penguins_data.columns), ignore_index = True)
+                                   
     assert_frame_equal_v2(expected, result)
 
 def test_mutate_orderby(penguins_data):
@@ -103,8 +107,6 @@ def test_mutate_orderby(penguins_data):
 def test_mutate_across(penguins_data):
     penguins_tidy = tidyframe(penguins_data, copy=False)
 
-
-
     # across mode with column names
     expected = penguins_data[['bill_length_mm', 'body_mass_g']]\
                     .assign(demean_bill_length_mm=lambda x: x["bill_length_mm"] - np.mean(x["bill_length_mm"]))\
@@ -121,7 +123,10 @@ def test_mutate_across(penguins_data):
     expected = penguins_data[['bill_length_mm', 'body_mass_g', 'species']]
     expected = expected.groupby("species")\
                 .apply(lambda x: x.assign(demean_bill_length_mm=lambda y: y["bill_length_mm"] - np.mean(y["bill_length_mm"]))\
-                                  .assign(demean_body_mass_g=lambda y: y["body_mass_g"] - np.mean(y["body_mass_g"])))
+                                  .assign(demean_body_mass_g=lambda y: y["body_mass_g"] - np.mean(y["body_mass_g"])))\
+                                  .reset_index(drop = True)
+                                  
+    expected = expected.sort_values(list(expected.columns), ignore_index = True)
 
     result = (penguins_tidy.select(['bill_length_mm', 'body_mass_g', 'species'])
                            .mutate(column_names = ['bill_length_mm', 'body_mass_g'],
@@ -130,6 +135,7 @@ def test_mutate_across(penguins_data):
                                     by = 'species'
                                     )
               ).to_pandas()
+    result = result.sort_values(list(result.columns), ignore_index = True)
     assert_frame_equal_v2(expected, result)
 
 

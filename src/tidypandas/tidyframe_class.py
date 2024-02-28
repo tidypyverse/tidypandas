@@ -879,6 +879,7 @@ class tidyframe:
     ##########################################################################
     # group_modify
     ##########################################################################
+    
     def group_modify(self
                      , func
                      , by
@@ -1068,6 +1069,183 @@ class tidyframe:
                          , check = False
                          , copy = False
                          )
+                         
+    # def group_modify(self
+    #                  , func
+    #                  , by
+    #                  , preserve_row_order = False
+    #                  , row_order_column_name = "rowid_temp"
+    #                  , is_pandas_udf = False
+    #                  , **kwargs
+    #                  ):
+    #     '''
+    #     Split by some columns, apply a function per chunk which returns a 
+    #     dataframe and combine it back into a single dataframe
+    #     
+    #     Parameters
+    #     ----------
+    #     func: callable
+    #         Type 1. A function: TidyDataFrame --> TidyDataFrame
+    #         Type 2. A function: simple pandas df --> simple pandas df
+    #         In latter case, set 'is_pandas_udf' to True
+    #     
+    #     by: string or list of strings
+    #         Column names to group by
+    #     
+    #     preserve_row_order: bool (default is False)
+    #         Whether to preserve the row order of the input dataframe
+    #     
+    #     row_order_column_name: string
+    #         Temporary column name to be created to maintain row order
+    #         
+    #     is_pandas_udf: bool (default is False)
+    #         Whether the 'func' argument is of type 2
+    #         
+    #     **kwargs: arguments to 'func'
+    #     
+    #     Returns
+    #     -------
+    #     tidyframe
+    #     
+    #     Notes
+    #     -----
+    #     1. Chunks will always include the grouping columns.
+    #     2. If grouping columns are found in output of 'func', then they are
+    #        removed and replaced with value in input chunk.
+    #     3. When 'preserve_row_order' is True, a temporary column is added
+    #        to each chunk. udf should pass it through without modification.
+    #     
+    #     Examples
+    #     --------
+    #     >>> from palmerpenguins import load_penguins
+    #     >>> penguins_tidy = tidyframe(load_penguins())
+    #     >>> 
+    #     >>> # pick a sample of rows per chunk defined by 'species'
+    #     >>> penguins_tidy.group_modify(lambda x: x.sample(n = 3), by = 'species')
+    #     >>> 
+    #     >>> # apply a pandas udf per chunk defined by 'species'
+    #     >>> # groupby columns are always added to the left
+    #     >>> penguins_tidy.group_modify(lambda x: x.select('year'), by = ['species', 'sex'])
+    #     >>>                                 
+    #     >>> # preserve row order
+    #     >>> # a temporary column (default: 'rowid_temp') is added to each chunk
+    #     >>> # udf should not meddle with the temporary column
+    #     >>> (penguins_tidy
+    #     >>>     .select('sex')
+    #     >>>     # add 'row_number' column to illustrate row preservation
+    #     >>>     .add_row_number()
+    #     >>>     # print the output of each chunk
+    #     >>>     # sample 2 rows
+    #     >>>     .group_modify(lambda x: x.pipe_tee(print).sample(2)
+    #     >>>                   , by = 'sex'
+    #     >>>                   , preserve_row_order = True
+    #     >>>                   )
+    #     >>>   )
+    #     >>>   
+    #     >>> # use kwargs
+    #     >>> penguins_tidy.group_modify(lambda x, **kwargs: x.sample(n = kwargs['size'])
+    #     >>>                             , by = 'species'
+    #     >>>                             , size = 3
+    #     >>>                             )
+    #     '''
+    #     self._validate_by(by)
+    #     by = _enlist(by)
+    #     cn = self.colnames
+    #     nr = self.nrow
+    #     
+    #     assert callable(func),\
+    #         "'func' should be a function: tidy df --> tidy df"
+    #     assert isinstance(preserve_row_order, bool),\
+    #         "arg 'preserve_row_order' should be a bool"
+    #     assert isinstance(row_order_column_name, str),\
+    #         "arg 'row_order_column_name' should be a string"
+    #     assert row_order_column_name not in self.colnames,\
+    #         "arg 'row_order_column_name' should not be a existing column name"
+    #     
+    #     # create a group column as an alias to grouping columns ----------------
+    #     # This will handle NA in groups
+    #     group_cn                 = _generate_new_string(cn)
+    #     group_id_frame           = self.__data.loc[:, by].drop_duplicates()
+    #     group_id_frame[group_cn] = np.arange(group_id_frame.shape[0])
+    #   
+    #     # create wrapper function ----------------------------------------------
+    #     # grouping columns are present in each chunk
+    #     if is_pandas_udf:
+    #         def wrapper_func(chunk, **kwargs):
+    #             res = (chunk.drop(columns = group_cn, errors = "ignore")
+    #                         .reset_index(drop = True)
+    #                         .pipe(func, **kwargs)
+    #                         .drop(columns = by, errors = "ignore")
+    #                         )
+    #             
+    #             print(chunk)
+    #             # put/edit the grouping columns back  
+    #             print(by)
+    #             for acolname in by:
+    #                 print(chunk[acolname].loc[0])
+    #                 res[acolname] = chunk[acolname].loc[0]
+    #             
+    #             return res
+    #     else:
+    #         def wrapper_func(chunk, **kwargs):
+    #             # i/o are pdfs
+    #             res = (chunk.drop(columns = group_cn, errors = "ignore")
+    #                         .reset_index(drop = True)
+    #                         .pipe(lambda x: tidyframe(x, copy = False, check = False))
+    #                         .pipe(func, **kwargs)
+    #                         .to_pandas(copy = False)
+    #                         .drop(columns = by, errors = "ignore")
+    #                         )
+    #             print(chunk)
+    #             print(by)
+    #             # put/edit the grouping columns back
+    #             for acolname in by:
+    #                 print(chunk[acolname].loc[0])
+    #                 res[acolname] = chunk[acolname].loc[0]            
+    #             
+    #             return res
+    #     
+    #     # core apply operation -------------------------------------------------    
+    #     if preserve_row_order:
+    #         assert row_order_column_name not in cn,\
+    #             "arg 'row_order_column_name' should not be an existing column name"
+    #         
+    #         res = (self.__data
+    #                     # add a column to track row order
+    #                     .assign(**{row_order_column_name: np.arange(nr)})
+    #                     # bring in 'group_cn' column
+    #                     .merge(group_id_frame, on = by)
+    #                     .groupby(group_cn, sort = False, dropna = False)
+    #                     .apply(wrapper_func, include_groups = False, **kwargs)
+    #                     .drop(columns = group_cn)
+    #                     )
+    #     else:
+    #         res = (self.__data
+    #                    .merge(group_id_frame, on = by)
+    #                    .groupby(group_cn, sort = False, dropna = False)
+    #                    .apply(wrapper_func, include_groups = False, **kwargs)
+    #                    .drop(columns = group_cn)
+    #                    )
+    #     # simplify brings back group columns -----------------------------------
+    #     try:
+    #         res = simplify(res)
+    #     except:
+    #         exc_msg = "Result of apply is too complex to be simplified"
+    #         raise Exception(exc_msg)
+    #     
+    #     # preserve row order if required ---------------------------------------
+    #     if preserve_row_order:    
+    #         if row_order_column_name in list(res.columns):
+    #             res.sort_values(row_order_column_name, inplace = True, ignore_index = True)
+    #             res.drop(columns = row_order_column_name, inplace = True)
+    #         else:
+    #             exc_msg = ("'row_order_column_name' in each chunk should "
+    #                        "be retained, when 'preserve_row_order' is True"
+    #                        )
+    #             raise Exception(exc_msg)
+    #     
+    #     # return ---------------------------------------------------------------                
+    #     return tidyframe(res, check = False, copy = False)
     
     ##########################################################################
     # basic verbs
@@ -1405,11 +1583,11 @@ class tidyframe:
                                  "not exceed the number of rows of the group"
                                  ))
             
-            res = (self.group_modify(lambda chunk: chunk.iloc[row_numbers, :]
-                                     , by = by
-                                     , is_pandas_udf = True
-                                     , preserve_row_order = True
-                                     , row_order_column_name = _generate_new_string(self.colnames)
+            res = (self.group_modify(lambda chunk: chunk.iloc[row_numbers, :],
+                                     by = by,
+                                     is_pandas_udf = True,
+                                     preserve_row_order = True,
+                                     row_order_column_name = _generate_new_string(self.colnames)
                                      )
                        .relocate(self.colnames)
                        )
@@ -4125,10 +4303,10 @@ class tidyframe:
                     "arg 'n' should not exceed the size of any chunk after grouping"
                 
                 ro_name = _generate_new_string(cn) 
-                res = (self.group_modify(lambda x: x.slice(np.arange(n))
-                                         , by = by
-                                         , preserve_row_order = True
-                                         , row_order_column_name = ro_name
+                res = (self.group_modify(lambda x: x.slice(np.arange(n)),
+                                         by = by,
+                                         preserve_row_order = True,
+                                         row_order_column_name = ro_name
                                          )
                            )
             else:
@@ -4148,10 +4326,10 @@ class tidyframe:
                 
                 ro_name = _generate_new_string(cn)    
                 res = self.group_modify(
-                          lambda x: x.slice(range(int(roundf(x.shape[0] * prop))))
-                          , by = by
-                          , preserve_row_order = True
-                          , row_order_column_name = ro_name
+                          lambda x: x.slice(range(int(roundf(x.shape[0] * prop)))),
+                          by = by,
+                          preserve_row_order = True,
+                          row_order_column_name = ro_name
                           )
             
         return res.relocate(cn)
@@ -4243,12 +4421,12 @@ class tidyframe:
                     "arg 'n' should not exceed the size of any chunk after grouping"
                 
                 ro_name = _generate_new_string(cn) 
-                res = (self.group_modify(lambda x: x.tail(n).reset_index(drop = True)
-                                             , by = by
-                                             , is_pandas_udf = True
-                                             , preserve_row_order = True
-                                             , row_order_column_name = ro_name
-                                             )
+                res = (self.group_modify(lambda x: x.tail(n).reset_index(drop = True),
+                                         by = by,
+                                         is_pandas_udf = True,
+                                         preserve_row_order = True,
+                                         row_order_column_name = ro_name
+                                         )
                            )
             else:
                 assert isinstance(rounding_type, str),\
@@ -4954,12 +5132,12 @@ class tidyframe:
     # fill_na (fill)
     ############################################################################
         
-    def fill_na(self
-                , column_direction_dict
-                , order_by = None
-                , ascending = True
-                , na_position = "last"
-                , by = None
+    def fill_na(self,
+                column_direction_dict,
+                order_by = None,
+                ascending = True,
+                na_position = "last",
+                by = None
                 ):
         '''
         Fill missing values from neighboring values per column
@@ -5011,6 +5189,8 @@ class tidyframe:
         >>> df.fill_na({'B': 'updown'}, order_by = "C")
         >>> df.fill_na({'B': 'updown'}, order_by = "C", by = "A")
         '''
+        
+        # assertions -----------------------------------------------------------
         cn = self.colnames
         assert isinstance(column_direction_dict, dict),\
             "arg 'column_direction_dict' should be a dict"
@@ -5042,55 +5222,61 @@ class tidyframe:
             if order_by is not None:
                 assert len(set(by).intersection([x[0] for x in order_by])) == 0,\
                     "'by' columns should not intersect with 'order_by' columns"
-
-        def fill_chunk(x, cdd):
-            
-            chunk = x.copy()
-            
-            for akey in cdd:
-                method = cdd[akey]
-                if method == "up":
-                    chunk[akey] = chunk[akey].bfill()
-                elif method == "down":
-                    chunk[akey] = chunk[akey].ffill()
-                elif method == "updown":
-                    chunk[akey] = chunk[akey].bfill()
-                    chunk[akey] = chunk[akey].ffill()
-                else:
-                    chunk[akey] = chunk[akey].ffill()
-                    chunk[akey] = chunk[akey].bfill()
-                
-            return chunk
         
+        # generic function to fill the series ----------------------------------
+        def fill_series(x, method):
+
+            if method == "up":
+                res = x.bfill()
+            elif method == "down":
+                res = x.ffill()
+            elif method == "updown":
+                res = x.bfill().ffill()
+            else:
+                res = x.ffill().bfill()
+                
+            return res
+        
+        # arrange before fill --------------------------------------------------
+        # row order of the original dataframe is maintained
         if order_by is not None:
             ro_name = _generate_new_string(self.colnames)
-            res = self.add_row_number(name = ro_name).arrange(order_by)
+            res_pd  = (self.add_row_number(name = ro_name)
+                           .arrange(order_by)
+                           .to_pandas()
+                           )
         else:
-            res = self
+            res_pd = self.to_pandas()
         
-        
-        
-        if by is not None:
-            res = res.group_modify(
-              lambda x: fill_chunk(x, column_direction_dict)
-              , by = by
-              , preserve_row_order = True
-              , is_pandas_udf = True
-              )
-        else:
-            res = (res.to_pandas(copy = False)
-                      .pipe(lambda x: fill_chunk(x, column_direction_dict))
-                      .pipe(lambda x: tidyframe(x, copy = False, check = False))
-                      )
-        
-        if order_by is not None:
-            res = res.arrange(ro_name).select(ro_name, include = False)
-         
-        return res
     
+        # fill each series -----------------------------------------------------
+        if by is None:
+            out_pd = res_pd
+        else:
+            out_pd = res_pd.groupby(by, dropna = False)
+        
+        for acolname, method in column_direction_dict.items():
+            res_pd[acolname] = fill_series(out_pd[acolname], method)
+        
+        # reorder the dataframe if necessary -----------------------------------
+        if order_by is not None:
+            res = (tidyframe(res_pd, check = False, copy = False)
+                   .arrange(ro_name)
+                   .select(ro_name, include = False)
+                   )
+        else:
+            res = tidyframe(res_pd, check = False, copy = False)
+        
+        # return ---------------------------------------------------------------
+        return res    
+    
+    # alias for fill_na
     fill = fill_na
     
+    ############################################################################
     # string utilities
+    ############################################################################
+    
     def separate(self
                  , column_name
                  , into
@@ -5473,13 +5659,13 @@ class tidyframe:
         assert nest_column_name in cn,\
             "arg 'nest_column_name' should be a exisiting column name"
             
-        all_are_tidy = all(map(lambda x: isinstance(x, tidyframe)
-                               , list(self.__data[nest_column_name])
+        all_are_tidy = all(map(lambda x: isinstance(x, tidyframe),
+                               list(self.__data[nest_column_name])
                                )
                            )
         
         def is_list_scalar_na(x):
-            if isinstance(x, (list, pd.core.arrays.floating.FloatingArray)):
+            if isinstance(x, (list, pd.core.arrays.floating.FloatingArray, np.ndarray)):
                 res = True
             elif np.isscalar(x):
                 res = True
@@ -5489,10 +5675,7 @@ class tidyframe:
                 res = False
             return res
         
-        all_are_list = all(map(is_list_scalar_na
-                               , list(self.__data[nest_column_name])
-                               )
-                           )
+        all_are_list = all(map(is_list_scalar_na, list(self.__data[nest_column_name])))
          
         assert all_are_tidy or all_are_list,\
             ("arg 'nest_column_name' column is neither a column of "
@@ -5520,6 +5703,76 @@ class tidyframe:
                        )
                 
         return tidyframe(res)
+    
+    ##########################################################################
+    # unnest_wider
+    ##########################################################################
+    
+    def unnest_wider(self, nest_column_name, names_sep = None):
+        '''
+        Unnest a column of dicts into multiple columns 
+        
+        Parameters
+        ----------
+        nest_column_name: str
+            Name of the column to be unnested
+        
+        Returns
+        -------
+        tidyframe
+        
+        Notes
+        -----
+        1. unnest_wider is helpful when nested input typically parsed from a
+        a json requires to be unnested.
+        
+        Examples
+        --------
+        >>> import pandas as pd
+        >>> df = pd.DataFrame({'x': [1,2]})
+        >>> df['y'] = pd.Series([{"a": 1, 'b': 2}, {'a': 3, 'b': 4}])
+        >>> df_tidy = tidyframe(df)
+        >>> 
+        >>> # unnest nested lists
+        >>> df_tidy.unnest_wider('y')
+        '''
+        
+        # assertions -----------------------------------------------------------
+        assert isinstance(nest_column_name, str),\
+            "'nest_column_name' arg should be a string"
+        assert nest_column_name in self.colnames,\
+            f"{nest_column_name} is not a valid column name"
+        assert all([isinstance(x, dict) for x in self.pull(nest_column_name)]),\
+            "Every element of the column should be a dict"
+        
+        if names_sep is not None:
+            assert isinstance(names_sep, str),\
+                "When not None, 'names_sep' arg should be a string"
+        
+        # core unnest operation ------------------------------------------------
+        # max_level at 0 exactly unnests one level
+        col_wide_df = pd.json_normalize(self.pull(nest_column_name),
+                                        max_level = 0
+                                        )
+        col_wide_df.reset_index(inplace = True, drop = True)
+        
+        # prefix by original column name with separator 'sep' ------------------
+        if names_sep is not None:                    
+            col_wide_df.columns = map(lambda x: nest_column_name + names_sep + x,
+                                      list(col_wide_df.columns)
+                                      )
+        
+        # concat untouched columns and unnested df -----------------------------
+        res = self.to_pandas()
+        res.drop(columns = [nest_column_name], inplace = True)
+        res.reset_index(inplace = True, drop = True)
+        res = pd.concat([res, col_wide_df], axis = 1)
+        res.columns = _get_unique_names(list(res.columns))
+        
+        # return ---------------------------------------------------------------
+        return tidyframe(res, check = False, copy = False)
+            
+        
     
     ##########################################################################
     # split (group_split)

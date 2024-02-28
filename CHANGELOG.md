@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.3.1 (24th Jan 2024)
+- Handled deprecation [warnings](https://github.com/tidypyverse/tidypandas/issues/51) created by pandas >= 2.0.0. Use of `group_modify` still produces warning. This is doe to the fact that `include_groups` argument needs to be set to False by default.
+- `unnest` method allows a list of numpy ndarrays (as column to be unnested)
+- `unnest_wider` method is introduced
+- `fill_na` reimplemented to be performant (using Series.groupby.xfill), no user facing change
+
+
 ## v0.3.0 (16th Aug 2023)
 - `tidyselect` is introduced in a few verbs (methods) which support `start_with`, `ends_with` and `contains`.
 - `summarise` now supports returning an iterable within a list as a output, no longer restricts the output to a scalar.

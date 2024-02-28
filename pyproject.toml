@@ -1,18 +1,18 @@
 [tool.poetry]
 name = "tidypandas"
-version = "0.3.0"
+version = "0.3.1"
 description = "A grammar of data manipulation for pandas inspired by tidyverse"
 authors = ["Srikanth Komala Sheshachala <sri.teach@gmail.com>", "Ashish Raj <ashishrj.162@gmail.com>"]
 maintainers = ["Srikanth Komala Sheshachala <sri.teach@gmail.com>", "Ashish Raj <ashishrj.162@gmail.com>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://talegari.github.io/tidypandas/"
-repository = "https://github.com/talegari/tidypandas"
-documentation = "https://talegari.github.io/tidypandas/_build/html/autoapi/index.html"
+homepage = "https://tidypyverse.github.io/tidypandas/"
+repository = "https://github.com/tidypyverse/tidypandas"
+documentation = "https://tidypyverse.github.io/tidypandas/_build/html/autoapi/index.html"
 classifiers = ["Development Status :: 4 - Beta"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.9"
 pandas = ">=1.0.0"
 collections-extended = ">=2.0.2"
 skimpy = {version = ">=0.0.5", optional = true}

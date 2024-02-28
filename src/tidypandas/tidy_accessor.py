@@ -555,6 +555,38 @@ class tp:
         tf = tidyframe(self._obj, copy = False, check = False)
         return tf.unnest(nest_column_name = nest_column_name).to_pandas(copy = False)
     
+    def unnest_wider(self, nest_column_name, names_sep = None):
+        '''
+        Unnest a column of dicts into multiple columns 
+        
+        Parameters
+        ----------
+        nest_column_name: str
+            Name of the column to be unnested
+        
+        Returns
+        -------
+        tidyframe
+        
+        Notes
+        -----
+        1. unnest_wider is helpful when nested input typically parsed from a
+        a json requires to be unnested.
+        
+        Examples
+        --------
+        >>> from tidypandas.tidy_accessor import tp
+        >>> import pandas as pd
+        >>> df = pd.DataFrame({'x': [1,2]})
+        >>> df['y'] = pd.Series([{"a": 1, 'b': 2}, {'a': 3, 'b': 4}])
+        >>> df.tp.unnest_wider('y')
+        '''
+        
+        tf  = tidyframe(self._obj, copy = False, check = True)
+        res = tf.unnest_wider(nest_column_name = nest_column_name,
+                              names_sep = names_sep
+                              )
+        return res.to_pandas(copy = False)
     
     def split(self, by):
         tf = tidyframe(self._obj, copy = False, check = False)
